@@ -1,8 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <rect width="512" height="512" fill="#14122A"/>
-  <circle cx="256" cy="286" r="118" fill="#8BF0A0" stroke="#1B1830" stroke-width="14"/>
-  <path d="M256 352 V226 M200 278 L256 222 L312 278" fill="none" stroke="#14122A" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M104 300 Q104 96 256 96 Q408 96 408 300" fill="none" stroke="#FF6FAE" stroke-width="34" stroke-linecap="round"/>
-  <rect x="70" y="250" width="72" height="128" rx="36" fill="#FF6FAE" stroke="#1B1830" stroke-width="14"/>
-  <rect x="370" y="250" width="72" height="128" rx="36" fill="#FF6FAE" stroke="#1B1830" stroke-width="14"/>
+  <g transform="translate(0,4)">
+  <!-- green coin with arrow, centered under the headphones -->
+  <circle cx="256" cy="276" r="112" fill="#8BF0A0" stroke="#0D0B1E" stroke-width="14"/>
+  <ellipse cx="226" cy="226" rx="44" ry="24" fill="#FFFFFF" opacity="0.28" transform="rotate(-30 226 226)"/>
+  <path d="M256 340 V218 M204 268 L256 216 L308 268" fill="none" stroke="#14122A" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- headband: dark outline then white -->
+  <path d="M126 262 A130 130 0 0 1 386 262" fill="none" stroke="#0D0B1E" stroke-width="46" stroke-linecap="round"/>
+  <path d="M126 262 A130 130 0 0 1 386 262" fill="none" stroke="#F4F1EA" stroke-width="28" stroke-linecap="round"/>
+  <path d="M168 170 A118 118 0 0 1 300 140" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+  <!-- left ear cup: cushion + shell, hugging the coin -->
+  <rect x="80" y="214" width="92" height="150" rx="40" fill="#F4F1EA" stroke="#0D0B1E" stroke-width="14"/>
+  <rect x="140" y="230" width="26" height="118" rx="13" fill="#000" opacity="0.14"/>
+  <ellipse cx="108" cy="262" rx="11" ry="26" fill="#FFFFFF" opacity="0.95"/>
+  <!-- right ear cup -->
+  <rect x="340" y="214" width="92" height="150" rx="40" fill="#F4F1EA" stroke="#0D0B1E" stroke-width="14"/>
+  <rect x="346" y="230" width="26" height="118" rx="13" fill="#000" opacity="0.14"/>
+  <ellipse cx="404" cy="262" rx="11" ry="26" fill="#FFFFFF" opacity="0.95"/>
+  </g>
 </svg>
