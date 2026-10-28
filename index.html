@@ -344,9 +344,9 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .chartme { border: 2px solid var(--gem); }
 .chartme .rank { width: 40px; text-align: center; font: 400 18px var(--display); color: var(--gem); }
 .chartme .xv { font: 400 20px var(--display); color: var(--gem); padding-right: 6px; } .chartme .xv small { font: 700 11px var(--body); color: var(--muted); }
-.clist { display: flex; flex-direction: column; gap: 6px; min-height: 300px; transition: opacity .15s; }
+.clist { display: flex; flex-direction: column; gap: 6px; transition: opacity .15s; }
 .clist.dim { opacity: .45; }
-.sheet.tall { height: 84%; }
+.sheet.tall { height: 76%; }
 .crow { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 8px 12px 8px 8px; }
 .crow.me { box-shadow: inset 0 0 0 2px var(--gem); }
 .crow .cr { width: 32px; text-align: center; font: 400 15px var(--display); color: var(--muted); }
@@ -795,7 +795,7 @@ const ITEMS = [
   { id: 'lucky', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, legendary: true, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 32, CONTACT = 'elicosand@gmail.com';
+const BUILD = 33, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
