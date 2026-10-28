@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Studio Hustle">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
 html { height: 100%; background: #14122A; }
 body { margin: 0; font: 14px system-ui, sans-serif; }
@@ -53,7 +53,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .app { position: fixed; top: 0; bottom: 0; left: 0; right: 0; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); background: var(--ink); }
 
 /* HUD */
-.hud { display: flex; align-items: center; gap: 8px; padding-block: 4px 8px;
+.hud { display: flex; align-items: center; gap: 8px; padding-block: 12px 8px;
   padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
 .pill { height: 42px; border-radius: 999px; background: var(--panel); display: flex; align-items: center; gap: 8px; }
 .cash-pill { flex: 1; min-width: 0; padding: 0 14px 0 6px; }
@@ -528,7 +528,7 @@ const ITEMS = [
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 6, CONTACT = 'elicosand@gmail.com';
+const BUILD = 7, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the green button to upgrade it. Hold it to buy faster.', target: () => $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -818,13 +818,7 @@ function fit() {
   stage.style.transform = `translate(-50%, -50%) scale(${s})`;
 }
 new ResizeObserver(fit).observe(wrap);
-function fitStandalone() {
-  if (navigator.standalone !== true) return;   // iOS home-screen mode only
-  const h = Math.max(window.innerHeight, screen.height);
-  const app = $('app'); app.style.bottom = 'auto'; app.style.height = h + 'px';
-}
-fitStandalone();
-window.addEventListener('resize', fitStandalone);
+
 
 function moveArtist(st) {
   const [x, y] = st ? st.spot : LOC().home;
