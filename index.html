@@ -54,10 +54,10 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .app { position: fixed; top: 0; bottom: 0; left: 0; right: 0; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); background: var(--ink); }
 
 /* HUD: two equal pills centered as a group; each icon overlaps its pill's left edge and the value is centered in what's left */
-.hud { position: relative; z-index: 7; display: flex; align-items: center; padding-block: 12px 22px;
+.hud { position: relative; z-index: 7; display: flex; align-items: center; padding-block: 20px 26px;
   padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: env(safe-area-inset-right, 0px); }
-.hud-pills { flex: 1; min-width: 0; display: flex; justify-content: center; gap: 12px; }
-#settings { flex: 0 0 62px; }
+.hud-pills { flex: 1; min-width: 0; display: flex; justify-content: center; gap: 12px; padding-left: 16px; }
+#settings { flex: 0 0 58px; }
 .pill { position: relative; height: 36px; border-radius: 12px; background: var(--panel); display: flex; align-items: center; box-shadow: inset 0 -3px 0 rgba(20,18,42,.25); }
 .cash-pill, .gem-pill { flex: 1 1 0; min-width: 0; max-width: 150px; margin-left: 18px; }
 .cash-pill { padding: 0 10px 0 26px; }
@@ -344,6 +344,20 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .chartme { border: 2px solid var(--gem); }
 .chartme .rank { width: 40px; text-align: center; font: 400 18px var(--display); color: var(--gem); }
 .chartme .xv { font: 400 20px var(--display); color: var(--gem); padding-right: 6px; } .chartme .xv small { font: 700 11px var(--body); color: var(--muted); }
+.clist { display: flex; flex-direction: column; gap: 6px; }
+.crow { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 8px 12px 8px 8px; }
+.crow.me { box-shadow: inset 0 0 0 2px var(--gem); }
+.crow .cr { width: 32px; text-align: center; font: 400 15px var(--display); color: var(--muted); }
+.crow:nth-child(1) .cr { color: #FFC94A; } .crow:nth-child(2) .cr { color: #D9DCE6; } .crow:nth-child(3) .cr { color: #E0A070; }
+.crow .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.crow .rt b { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .crow .rt span { font-size: 12px; color: var(--muted); }
+.crow .ca { font: 400 18px var(--display); color: var(--gem); display: flex; flex-direction: column; align-items: flex-end; line-height: 1; }
+.crow .ca small { font: 700 10px var(--body); color: var(--muted); }
+.cnote { text-align: center; font-size: 13px !important; }
+.fcode { font: 400 17px var(--display); letter-spacing: .08em; color: var(--gem); }
+.addrow { display: flex; gap: 8px; } .addrow .nameinput { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: .1em; }
+.addf { display: flex; flex-direction: column; gap: 6px; }
+.csel { max-width: 50%; height: 40px; border-radius: 10px; background: var(--panel); color: var(--text); border: 2px solid var(--line); font: 600 14px var(--body); padding: 0 8px; }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
 
@@ -778,7 +792,7 @@ const ITEMS = [
   { id: 'lucky', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, legendary: true, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 28, CONTACT = 'elicosand@gmail.com';
+const BUILD = 30, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -914,6 +928,12 @@ const SFX = {
   upgrade: () => { tone(523, 0.08, 'square', 0.03); tone(784, 0.12, 'square', 0.03, 0.06); },
   milestone: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.14, 'square', 0.03, i * 0.06)),
   unlock: () => { tone(392, 0.12, 'triangle', 0.06); tone(523, 0.12, 'triangle', 0.06, 0.08); tone(784, 0.25, 'triangle', 0.06, 0.16); },
+  // shop purchase: sparkling chime with a shimmer on top
+  bling: () => { [1319, 1760, 2349].forEach((f, i) => tone(f, 0.22, 'sine', 0.05, i * 0.055));
+    [3136, 3951, 4699].forEach((f, i) => tone(f, 0.12, 'triangle', 0.018, 0.12 + i * 0.045)); tone(659, 0.3, 'triangle', 0.035); },
+  // gem pack: a cascade of coins falling into a pile
+  gems: () => { for (let i = 0; i < 9; i++) tone([2093, 2637, 3136, 2349, 2794, 3520, 2637, 3136, 4186][i], 0.09, 'sine', 0.035, i * 0.045);
+    tone(523, 0.35, 'triangle', 0.04); tone(784, 0.35, 'triangle', 0.03, 0.05); },
   reward: () => [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, 0.18, 'sine', 0.05, i * 0.07)),
   hype: () => tone(220, 0.35, 'sawtooth', 0.04, 0, 880),
   move: () => [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, i === 4 ? 0.5 : 0.16, 'square', 0.035, i * 0.11)),
@@ -1269,7 +1289,7 @@ function dropAlbum() {
   const it = ITEMS.find(i => i.album === S.albums);
   S.gems += GEMS_PER_ALBUM;
   if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; }
-  buildRoom(); save(); render(); sfx('move');
+  buildRoom(); save(); render(); sfx('move'); syncChart(true);
   const prev = it ? `<div class="dresser" style="width:100%">${bigArtist(Object.assign({}, S.equip, { [it.slot]: it.id }))}</div>` : '';
   openSheet(`<div class="welcome"><h2>Album #${S.albums} is out</h2><span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
     <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive worth +${Math.round(it.bonus * 100)}% income while worn.` : ''} +${GEMS_PER_ALBUM} gems.${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p>${prev}</div>
@@ -1302,7 +1322,7 @@ function grant(id) {
   if (o.skip) { const v = skipValue(o.skip); earn(v); toast('+' + fmt(v) + ' from the time skip'); }
   if (id === 'starter') { S.owned.flame = true; S.gems += 300; const v = skipValue(4 * 3600); earn(v); }
   if (!o.skip) toast(o.name + (o.gemsOut ? ' added' : ' unlocked'));
-  sfx(o.skip ? 'reward' : 'unlock'); save(); render();
+  sfx(o.gemsOut ? 'gems' : 'bling'); save(); render();
 }
 function closeSheet() {
   $('scrim').hidden = true; sheetKey = null;
@@ -1331,6 +1351,11 @@ $('scrim').addEventListener('click', e => {
     return;
   }
   if (e.target.closest('[data-claim]')) return claimDaily();
+  const ct = e.target.closest('[data-ctab]');
+  if (ct) { Charts.tab = ct.dataset.ctab; Charts.rows = []; Charts.rank = null; openTab('charts'); loadChart().then(() => { if (sheetKey === 'charts') openTab('charts'); }); return; }
+  if (e.target.closest('[data-chart-retry]')) { refreshCharts(); return; }
+  if (e.target.closest('[data-add-friend]')) { addFriend($('friendInput').value); return; }
+  if (e.target.closest('[data-copy-code]')) { const code = cloud().code; try { navigator.clipboard.writeText(code).then(() => toast('Code copied'), () => toast('Your code: ' + code)); } catch (err) { toast('Your code: ' + code); } return; }
   const hu = e.target.closest('[data-hup]');
   if (hu) { const key = hu.dataset.hup, lv = hypeLv(), costs = key === 'len' ? HYPE_LEN_COST : HYPE_CAP_COST, c = costs[lv[key]];
     if (c != null && S.gems >= c) { S.gems -= c; lv[key]++; S.hypeLv = lv; sfx('unlock'); toast(key === 'len' ? `Each ad now gives ${HYPE_LEN[lv.len]} minutes` : `Hype now stacks up to ${capText()}`); save(); render(); }
@@ -1360,11 +1385,13 @@ $('scrim').addEventListener('click', e => {
     if (S.owned[it.id]) { if (S.equip[it.slot] === it.id) { if (it.slot !== 'top') S.equip[it.slot] = null; } else S.equip[it.slot] = it.id; applyLook(); save(); render(); sfx('tap'); return openTab('style'); }
     if (it.album) { sfx('denied'); toast(`Unlocks when you drop album ${it.album}`); return; }
     if (S.gems < it.gems) { sfx('denied'); toast('Not enough gems'); return; }
-    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); return openTab('style'); }
-  if (e.target.closest('[data-rename]')) return openTab('rename');
-  if (e.target.closest('[data-save-name]')) { const v = ($('artistNameInput').value || '').trim().slice(0, 16); S.name = v || 'New Artist'; save(); toast('Name saved'); return openTab('style'); }
+    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); save(); render(); return openTab('style'); }
+  const rn = e.target.closest('[data-rename]');
+  if (rn) { renameFrom = rn.dataset.from || 'style'; return openTab('rename'); }
+  if (e.target.closest('[data-save-name]')) { const v = ($('artistNameInput').value || '').trim().slice(0, 16); const clean = cleanName(v); S.name = clean;
+    save(); toast(clean !== (v || 'New Artist') ? "That name isn't allowed" : 'Name saved'); syncChart(true); return openTab(renameFrom); }
   const bi = e.target.closest('[data-buy-item]');
-  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
+  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
   const bo = e.target.closest('[data-buy]');
   if (bo && !bo.disabled) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
@@ -1381,6 +1408,10 @@ $('scrim').addEventListener('click', e => {
   if (e.target.closest('[data-reset-ask]')) return openTab('reset');
   if (e.target.closest('[data-reset]')) { S = fresh(); S.tut = 0; tutShownAt = 0; applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
 });
+$('scrim').addEventListener('change', e => {
+  if (e.target.id === 'countrySel') { S.country = e.target.value || null; save(); syncChart(true).then(() => { if (Charts.tab === 'country') loadChart().then(() => openTab('charts')); }); toast('Country saved'); }
+});
+$('scrim').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'friendInput') addFriend(e.target.value); });
 $('scrim').addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.vol; if (!k) return;
   S.vol = Object.assign({ master: 80, music: 40, sfx: 80 }, S.vol, { [k]: +e.target.value }); S.volV = 2;
@@ -1516,7 +1547,7 @@ function itemArt(it, size = 70) {
   const vb = it.slot === 'top' ? '22 70 116 116' : it.slot === 'neck' ? '22 40 116 116' : '18 -4 124 124';
   return miniFigure(f, size, size, vb);
 }
-let styleSlot = 'top';
+let styleSlot = 'top', renameFrom = 'style';
 // popups that should change while open: refresh them when what they show changes
 const LIVE = {
   crew: () => LOC().stations.map(x => (lvl(x.id) ? 1 : 0) + (S.crew[x.id] ? 2 : 0) + (S.cash >= x.crewCost ? 4 : 0)).join(''),
@@ -1529,6 +1560,119 @@ function refreshLive() {
   const sig = LIVE[sheetKey]();
   if (sig !== liveSig) openTab(sheetKey);
 }
+
+// ---------- The Charts: online leaderboard (Supabase) ----------
+// The publishable key is meant to be public; database rules only let each player write their own row.
+const SUPA_URL = 'https://fvqlnovumnrlhzlibthr.supabase.co';
+const SUPA_KEY = 'sb_publishable_NEkxDKxzQ8ezKQf41HSrdA_Zd1WTHty';
+const COUNTRIES = [['US', 'United States'], ['CA', 'Canada'], ['MX', 'Mexico'], ['GB', 'United Kingdom'], ['AU', 'Australia'], ['NZ', 'New Zealand'], ['PH', 'Philippines'],
+  ['IN', 'India'], ['DE', 'Germany'], ['FR', 'France'], ['ES', 'Spain'], ['IT', 'Italy'], ['NL', 'Netherlands'], ['BR', 'Brazil'], ['JP', 'Japan'], ['KR', 'South Korea'],
+  ['NG', 'Nigeria'], ['ZA', 'South Africa'], ['SE', 'Sweden'], ['IE', 'Ireland']];
+const countryName = c => (COUNTRIES.find(x => x[0] === c) || [, 'Other'])[1];
+const BLOCKED = ['fuck', 'shit', 'bitch', 'cunt', 'dick', 'cock', 'pussy', 'nigg', 'fag', 'rape', 'nazi', 'hitler', 'whore', 'slut', 'retard', 'kkk'];
+const cleanName = n => { const t = (n || '').trim().slice(0, 16) || 'New Artist'; const flat = t.toLowerCase().replace(/[^a-z]/g, '');
+  return BLOCKED.some(w => flat.includes(w)) ? 'New Artist' : t; };
+const newCode = () => Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
+
+const Charts = { tab: 'global', rows: [], rank: null, total: null, status: 'idle', lastSync: 0, busy: false };
+function cloud() {   // fills in missing fields on the same object so every caller shares one session
+  if (!S.cloud) S.cloud = {};
+  const d = { uid: null, at: null, rt: null, exp: 0, code: null, synced: -1, created: false, friends: [] };
+  for (const k in d) if (S.cloud[k] === undefined) S.cloud[k] = d[k];
+  return S.cloud;
+}
+
+async function supa(path, { method = 'GET', body, auth = false, headers = {} } = {}) {
+  const h = Object.assign({ apikey: SUPA_KEY, 'Content-Type': 'application/json' }, headers);
+  if (auth) h.Authorization = 'Bearer ' + cloud().at;
+  const r = await fetch(SUPA_URL + path, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+  const text = await r.text(); let data = null; try { data = text ? JSON.parse(text) : null; } catch (e) {}
+  return { ok: r.ok, status: r.status, data, range: r.headers.get('content-range') };
+}
+// guest sign-in: every device gets its own private player id, no account needed
+async function ensureAuth() {
+  const c = cloud();
+  if (c.at && Date.now() < c.exp - 60000) return true;
+  if (c.rt) {
+    const r = await supa('/auth/v1/token?grant_type=refresh_token', { method: 'POST', body: { refresh_token: c.rt } });
+    if (r.ok && r.data && r.data.access_token) { setSession(r.data); return true; }
+  }
+  const r = await supa('/auth/v1/signup', { method: 'POST', body: {} });
+  if (r.ok && r.data && r.data.access_token) { setSession(r.data); c.created = false; c.synced = -1; return true; }
+  return false;
+}
+function setSession(d) { const c = cloud(); c.at = d.access_token; c.rt = d.refresh_token; c.exp = Date.now() + (d.expires_in || 3600) * 1000; if (d.user && d.user.id) c.uid = d.user.id; save(); }
+
+// push this player's row; the server only accepts +5 albums per save, so big jumps catch up over a few syncs
+async function syncChart(force) {
+  const c = cloud();
+  if (Charts.busy || (!force && Date.now() - Charts.lastSync < 20000)) return;
+  Charts.busy = true;
+  try {
+    if (!(await ensureAuth())) throw new Error('auth');
+    if (!c.code) c.code = newCode();
+    for (let step = 0; step < 40; step++) {
+      const albums = c.synced < 0 ? Math.min(S.albums || 0, 50) : Math.min(S.albums || 0, c.synced + 5);
+      const row = { name: cleanName(S.name), country: S.country || null, albums, lifetime: Math.floor(S.stats.lifetime) };
+      let r;
+      if (c.created) {
+        r = await supa(`/rest/v1/charts?id=eq.${c.uid}`, { method: 'PATCH', auth: true, body: row, headers: { Prefer: 'return=representation' } });
+        if (r.ok && Array.isArray(r.data) && !r.data.length) c.created = false;   // row was removed on the server; insert it again
+      }
+      if (!c.created) {
+        r = await supa('/rest/v1/charts', { method: 'POST', auth: true, body: Object.assign({ id: c.uid, friend_code: c.code }, row), headers: { Prefer: 'return=minimal' } });
+        if (r.status === 409 && r.data && /friend_code/.test(r.data.message || r.data.details || '')) { c.code = newCode(); continue; }
+        if (r.status === 409) { c.created = true; continue; }   // row already exists; update it instead
+        if (r.ok) c.created = true;
+      }
+      if (r.status === 401) { c.exp = 0; if (!(await ensureAuth())) throw new Error('auth'); continue; }
+      if (!r.ok) throw new Error('sync ' + r.status);
+      c.synced = albums;
+      if (albums >= (S.albums || 0)) break;
+    }
+    Charts.lastSync = Date.now(); Charts.status = 'ok'; save();
+  } catch (e) { Charts.status = 'offline'; }
+  Charts.busy = false;
+}
+
+async function loadChart() {
+  const c = cloud(), sel = 'select=name,country,albums,lifetime,friend_code';
+  let filter = '';
+  if (Charts.tab === 'country') filter = S.country ? `&country=eq.${S.country}` : null;
+  if (Charts.tab === 'friends') filter = `&friend_code=in.(${[c.code, ...c.friends].filter(Boolean).join(',') || 'NONE00'})`;
+  if (filter === null) { Charts.rows = []; Charts.rank = null; Charts.status = 'ok'; return; }
+  Charts.status = 'loading';
+  try {
+    const r = await supa(`/rest/v1/charts?${sel}${filter}&order=albums.desc,lifetime.desc&limit=50`);
+    if (!r.ok) throw new Error('load');
+    Charts.rows = r.data || [];
+    // my rank = players ahead of me + 1
+    const me = { a: c.synced < 0 ? 0 : c.synced, l: Math.floor(S.stats.lifetime) };
+    const ahead = await supa(`/rest/v1/charts?select=id${filter}&or=(albums.gt.${me.a},and(albums.eq.${me.a},lifetime.gt.${me.l}))`, { headers: { Prefer: 'count=exact', 'Range-Unit': 'items', Range: '0-0' } });
+    const m = /\/(\d+)$/.exec(ahead.range || '');
+    Charts.rank = ahead.ok && m ? +m[1] + 1 : null;
+    Charts.status = 'ok';
+  } catch (e) { Charts.status = 'offline'; }
+}
+async function refreshCharts() {
+  Charts.status = 'loading'; if (sheetKey === 'charts') openTab('charts');
+  await syncChart(true); await loadChart();
+  if (sheetKey === 'charts' && !$('scrim').hidden) openTab('charts');
+}
+async function addFriend(code) {
+  const c = cloud(); code = (code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (code.length !== 6) { toast('Friend codes are 6 letters and numbers'); return; }
+  if (code === c.code) { toast("That's your own code"); return; }
+  if (c.friends.includes(code)) { toast('Already on your list'); return; }
+  try {
+    const r = await supa(`/rest/v1/charts?select=name&friend_code=eq.${code}`);
+    if (!r.ok) throw new Error();
+    if (!r.data || !r.data.length) { toast('No artist with that code yet'); return; }
+    c.friends.push(code); save(); sfx('unlock'); toast(r.data[0].name + ' added');
+    Charts.tab = 'friends'; await loadChart(); openTab('charts');
+  } catch (e) { toast("Couldn't reach the charts. Check your connection."); }
+}
+
 function openTab(tab) {
   nextSheetKey = tab;
   liveSig = LIVE[tab] ? LIVE[tab]() : '';
@@ -1582,10 +1726,28 @@ function openTab(tab) {
         </div>
       </div>`);
   } else if (tab === 'charts') {
+    const c = cloud();
+    if (Charts.status === 'idle') setTimeout(refreshCharts, 0);
+    const tabs = [['friends', 'Friends'], ['country', S.country ? countryName(S.country) : 'Country'], ['global', 'Global']];
+    const list = Charts.rows.map((r, i) => { const me = r.friend_code === c.code;
+      return `<div class="crow ${me ? 'me' : ''}"><span class="cr">${i + 1}</span><span class="rt"><b>${esc(r.name)}${me ? ' (you)' : ''}</b><span>${r.country ? r.country + ' · ' : ''}${fmt(r.lifetime)} lifetime</span></span><span class="ca">${r.albums}<small>albums</small></span></div>`; }).join('');
+    let body;
+    if (Charts.status === 'offline') body = `<p class="cnote">Couldn't reach the charts. Check your connection, then try again.</p><button class="ghost" data-chart-retry>Try again</button>`;
+    else if (Charts.tab === 'country' && !S.country) body = `<p class="cnote">Pick your country below to see its chart.</p>`;
+    else if (Charts.status === 'loading' && !Charts.rows.length) body = `<p class="cnote">Loading the charts…</p>`;
+    else body = list || `<p class="cnote">${Charts.tab === 'friends' ? 'Add a friend with their code to start a friends chart.' : 'No artists here yet. Drop an album to get on the chart.'}</p>`;
     openSheet(`<div class="sheet-head"><h2>The Charts</h2>${closeBtn()}</div>
-      <div class="stabs charts-tabs"><button class="stab on">Friends</button><button class="stab">United States</button><button class="stab">Global</button></div>
-      <div class="row chartme"><span class="rank">#1</span><span class="rt"><b>${esc(S.name || 'New Artist')} (you)</b><span>${fmt(S.stats.lifetime)} lifetime</span></span><span class="xv">${S.albums || 0} <small>albums</small></span></div>
-      <p>Online charts arrive in the next update: rank by albums dropped against friends (with a friend code), your country, and the world.</p>`);
+      <div class="row chartme"><span class="rank">${Charts.rank ? '#' + Charts.rank : '–'}</span><span class="rt"><b>${esc(cleanName(S.name))}</b><span>${fmt(S.stats.lifetime)} lifetime</span></span><span class="xv">${S.albums || 0} <small>albums</small></span></div>
+      <div class="stabs charts-tabs">${tabs.map(([k, l]) => `<button class="stab ${Charts.tab === k ? 'on' : ''}" data-ctab="${k}">${esc(l)}</button>`).join('')}</div>
+      <div class="clist">${body}</div>
+      ${Charts.tab === 'friends' ? `<div class="sec"><h3>Friends</h3>
+        <div class="row"><span class="rt"><b>Your friend code</b><span>Share it so friends can add you</span></span><span class="fcode">${c.code || '······'}</span><button class="hire" data-copy-code ${c.code ? '' : 'disabled'}>Copy</button></div>
+        <div class="addf"><label class="lbl" for="friendInput">Add a friend's code</label><div class="addrow"><input id="friendInput" class="nameinput" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="ABC123"><button class="hire" data-add-friend>Add</button></div></div></div>` : ''}
+      <div class="sec"><h3>Your listing</h3>
+        <div class="row"><span class="rt"><b>Artist name</b><span>${esc(cleanName(S.name))}</span></span><button class="hire" data-rename data-from="charts">Edit</button></div>
+        <div class="row"><span class="rt"><label for="countrySel"><b>Country</b></label><span>Shown on the charts</span></span>
+          <select id="countrySel" class="csel"><option value="">Other / prefer not to say</option>${COUNTRIES.map(([k, n]) => `<option value="${k}" ${S.country === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
+        <p class="cnote">Only your artist name, country, albums and lifetime earnings are public. Ranked by albums dropped.</p></div>`);
   } else if (tab === 'boosts') {
     const h = hypeOn(), g = gearMult(), f = fame();
     const row = (on, ic, name, x, how) => `<div class="row mrow ${on ? '' : 'off'}"><span class="ric">${ic}</span>
@@ -1834,7 +1996,7 @@ function render() {
 const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
 // ---------- loop ----------
-let lastT = performance.now(), acc = 0, saveAcc = 0;
+let lastT = performance.now(), acc = 0, saveAcc = 0, chartAcc = 170;
 const floatGate = {};
 function tick(t) {
   const dt = Math.min(0.25, (t - lastT) / 1000); lastT = t;
@@ -1858,6 +2020,7 @@ function tick(t) {
   acc += dt; saveAcc += dt; S.stats.playSec += dt;
   if (acc > 0.1) { render(); acc = 0; }
   if (saveAcc > 5) { save(); saveAcc = 0; }
+  chartAcc += dt; if (chartAcc > 180) { chartAcc = 0; syncChart(); }
   requestAnimationFrame(tick);
 }
 
