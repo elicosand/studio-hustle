@@ -528,7 +528,7 @@ const ITEMS = [
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 5, CONTACT = 'elicosand@gmail.com';
+const BUILD = 6, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the green button to upgrade it. Hold it to buy faster.', target: () => $('upBtn'), done: () => S.stats.upgrades >= 1 },

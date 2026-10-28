@@ -1,5 +1,5 @@
 // Offline support. Change VERSION whenever you upload a new build so players get the update.
-const VERSION = 'studio-hustle-v5';
+const VERSION = 'studio-hustle-v6';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
   './music/beat1.mp3', './music/beat2.mp3', './music/beat3.mp3'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL))); self.skipWaiting(); });
@@ -9,9 +9,9 @@ self.addEventListener('activate', e => {
 });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  // pages: try the network first so updates show up, fall back to the saved copy offline
+  // pages: always ask the server for the newest copy (skipping the browser cache); use the saved copy only when offline
   if (e.request.mode === 'navigate') {
-    e.respondWith(fetch(e.request).then(r => { caches.open(VERSION).then(c => c.put('./index.html', r.clone())); return r; })
+    e.respondWith(fetch(e.request, { cache: 'no-store' }).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put('./index.html', copy)); return r; })
       .catch(() => caches.match('./index.html')));
     return;
   }
