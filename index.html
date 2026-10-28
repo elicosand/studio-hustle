@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14122A">
+<meta name="description" content="Studio Hustle: an idle music tycoon. Rise from a rundown apartment to the stadium.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Studio Hustle">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+html { box-sizing: border-box; height: 100%; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font: 14px system-ui, sans-serif; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Studio Hustle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one-screen phone game. HUD on top, scaled top-down room filling the middle, station bar + actions, tab bar. Single dark night look by choice; each location brings its own room palette. */
+:root {
+  --ink: #14122A;
+  --panel: #221F3A;
+  --panel-2: #2E2A4A;
+  --line: #3A3558;
+  --text: #F4F1EA;
+  --muted: #B9B3CF;
+  --cash: #8BF0A0;
+  --gem: #FFC94A;
+  --accent: #FF6FAE;
+  --floor: #4A3B33;
+  --go: #2FB653;
+  --skin: #C68A5C;
+  --phones: #FF6FAE;
+  --display: 'Bungee', 'Arial Black', Impact, sans-serif;
+  --body: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: var(--ink); color: var(--text); font-family: var(--body);
+  overflow: hidden; -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+button { font-family: var(--body); color: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
+.app { height: 100%; display: flex; flex-direction: column; max-width: 520px; margin: 0 auto; position: relative; }
+
+/* HUD */
+.hud { display: flex; align-items: center; gap: 8px; padding-block: 10px 8px;
+  padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
+.pill { height: 42px; border-radius: 999px; background: var(--panel); display: flex; align-items: center; gap: 8px; }
+.cash-pill { flex: 1; min-width: 0; padding: 0 14px 0 6px; }
+.coin { width: 30px; height: 30px; border-radius: 50%; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 16px; display: grid; place-items: center; flex: none; }
+.cash-col { display: flex; flex-direction: column; min-width: 0; line-height: 1; }
+.cash-num { font-family: var(--display); font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cash-rate { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+.gem-pill { padding: 0 4px 0 10px; }
+.gem-num { font-family: var(--display); font-size: 17px; }
+.round-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--gem); color: var(--ink); display: grid; place-items: center; }
+.icon-btn { width: 44px; height: 44px; display: grid; place-items: center; color: var(--text); }
+
+/* Room */
+.room-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; background: var(--floor); transition: background .4s; }
+.stage { position: absolute; left: 50%; top: 50%; width: 390px; height: 480px; transform-origin: center; }
+.abs { position: absolute; }
+.loc-chip { position: absolute; top: 8px; left: max(10px, env(safe-area-inset-left, 0px)); z-index: 5; display: flex; align-items: center; gap: 6px;
+  background: rgba(20,18,42,.82); border-radius: 999px; padding: 6px 12px 6px 8px; font-size: 12px; font-weight: 700; pointer-events: none; }
+.loc-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.fame-chip { position: absolute; top: 42px; left: max(10px, env(safe-area-inset-left, 0px)); z-index: 5; background: rgba(20,18,42,.82); color: var(--gem);
+  border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; pointer-events: none; }
+.daily-btn { position: absolute; top: 8px; right: max(10px, env(safe-area-inset-right, 0px)); z-index: 5; width: 48px; height: 48px; border-radius: 14px;
+  background: var(--text); color: var(--ink); display: grid; place-items: center; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.daily-btn .dot { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--text); }
+.mode-btn { width: 50px; height: 46px; border-radius: 14px; background: var(--panel-2); color: var(--text); font-family: var(--display); font-size: 13px; flex: none; }
+.days { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.day { background: var(--panel-2); border-radius: 14px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; border: 2px solid transparent; }
+.day b { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.day span { font-size: 13px; font-weight: 700; }
+.day.got { opacity: .55; } .day.got span { color: var(--cash); }
+.day.today { border-color: var(--accent); }
+.day.big { grid-column: span 2; }
+.vols { display: flex; flex-direction: column; gap: 6px; background: var(--panel-2); border-radius: 16px; padding: 8px 14px; }
+.vol { display: grid; grid-template-columns: 112px minmax(0, 1fr) 34px; align-items: center; gap: 10px; min-height: 48px; }
+.vol label { font-size: 15px; font-weight: 700; }
+.vol output { font-family: var(--display); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+.vol input[type=range] { width: 100%; height: 44px; margin: 0; accent-color: var(--accent); background: transparent; }
+.toggle { display: flex; align-items: center; justify-content: space-between; background: var(--panel-2); border-radius: 16px; padding: 0 8px 0 14px; height: 56px; font-size: 15px; font-weight: 700; }
+.toggle span.sw2 { width: 52px; height: 30px; border-radius: 999px; background: var(--line); position: relative; transition: background .2s; }
+.toggle span.sw2::after { content: ""; position: absolute; left: 4px; top: 4px; width: 22px; height: 22px; border-radius: 50%; background: var(--text); transition: left .2s; }
+.toggle[aria-pressed="true"] span.sw2 { background: var(--go); }
+.toggle[aria-pressed="true"] span.sw2::after { left: 26px; }
+
+.station { position: absolute; display: block; }
+.badge { position: absolute; display: flex; align-items: center; gap: 4px; background: var(--text); color: var(--ink);
+  border-radius: 999px; padding: 3px 9px 3px 3px; font-size: 13px; font-weight: 700; z-index: 3; white-space: nowrap; transition: background .2s; }
+.station.sel .badge { background: var(--accent); }
+.badge .ic { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
+.badge .up { width: 18px; height: 18px; border-radius: 50%; background: var(--go); display: grid; place-items: center; margin-left: 2px; }
+.prog { position: absolute; height: 7px; border-radius: 999px; background: rgba(20,18,42,.75); overflow: hidden; z-index: 3; }
+.prog i { display: block; height: 100%; width: 0; background: var(--cash); border-radius: 999px; }
+.sel-ring { position: absolute; inset: -6px; border-radius: 16px; border: 3px solid var(--accent); opacity: 0; transition: opacity .2s; pointer-events: none; }
+.station.sel .sel-ring { opacity: 1; }
+.tap-hint { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%;
+  border: 3px solid var(--text); opacity: 0; pointer-events: none; z-index: 4; }
+.station.idle .tap-hint { animation: ping 1.4s ease-out infinite; }
+@keyframes ping { 0% { transform: scale(.6); opacity: .9 } 100% { transform: scale(1.6); opacity: 0 } }
+
+.lockspot { position: absolute; inset: 0; border-radius: 16px; border: 3px dashed #8C86A6; background: rgba(20,18,42,.45);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; z-index: 2; }
+.lockspot .lk { width: 46px; height: 46px; border-radius: 50%; background: var(--panel-2); display: grid; place-items: center; }
+.lockspot b { font-size: 14px; font-weight: 700; text-align: center; padding: 0 6px; }
+.price { font-family: var(--display); font-size: 14px; color: var(--ink); background: #8C86A6; border-radius: 999px; padding: 3px 12px; }
+.lockspot.can .price { background: var(--cash); }
+.lockspot.can { border-color: var(--cash); }
+
+.crew { position: absolute; width: 62px; height: 83px; z-index: 5; pointer-events: none; }
+.crew svg { animation: bob .6s ease-in-out infinite alternate; }
+.artist { position: absolute; width: 70px; height: 96px; z-index: 6; transition: left .55s ease, top .55s ease; pointer-events: none; }
+.artist.working svg { animation: bob .45s ease-in-out infinite alternate; }
+@keyframes bob { from { transform: translateY(0) } to { transform: translateY(-4px) } }
+.skin { fill: var(--skin); } .phones { fill: var(--phones); }
+
+.floater { position: absolute; z-index: 8; font-family: var(--display); font-size: 17px; color: var(--cash); pointer-events: none;
+  text-shadow: 0 2px 0 rgba(0,0,0,.45); animation: rise 1s ease-out forwards; white-space: nowrap; }
+@keyframes rise { from { transform: translate(-50%, 0); opacity: 1 } to { transform: translate(-50%, -46px); opacity: 0 } }
+
+/* Bottom controls */
+.controls { display: flex; flex-direction: column; gap: 8px; padding-block: 10px 8px;
+  padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); background: var(--ink); }
+.sbar { height: 62px; box-sizing: border-box; background: var(--panel); border: 2px solid var(--accent); border-radius: 18px;
+  padding: 8px 8px 8px 14px; display: flex; align-items: center; gap: 10px; }
+.sbar-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.sbar-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sbar-name small { color: var(--muted); font-weight: 600; font-size: 13px; }
+.mile { height: 5px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
+.mile i { display: block; height: 100%; background: var(--gem); width: 0; }
+.mile-label { font-size: 11px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-btn { -webkit-touch-callout: none; touch-action: none; height: 46px; padding: 0 14px; border-radius: 14px; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 15px;
+  display: flex; align-items: center; gap: 6px; flex: none; box-shadow: 0 3px 0 #4FA864; transition: transform .08s; }
+.up-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #4FA864; }
+.up-btn:disabled { background: var(--panel-2); color: var(--muted); box-shadow: none; cursor: default; }
+.actions { display: flex; gap: 8px; }
+.act { flex: 1; height: 46px; border-radius: 14px; background: var(--panel); font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 7px; }
+.act.hype { flex: 1.25; background: var(--accent); color: var(--ink); }
+.act:disabled { opacity: .55; cursor: default; }
+.act.ready { animation: glow 1.6s ease-in-out infinite; }
+@keyframes glow { 50% { box-shadow: 0 0 0 4px rgba(255,201,74,.35) } }
+
+.tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: #1B1834; border-top: 1px solid var(--panel-2);
+  padding-block: 6px 6px; padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+.tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
+.tab.on { color: var(--accent); }
+.tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--ink); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
+.tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
+
+/* Sheets */
+.scrim { position: absolute; inset: 0; background: rgba(8,7,20,.6); z-index: 20; display: flex; align-items: flex-end; }
+.sheet { width: 100%; max-height: 84%; overflow-y: auto; background: var(--panel); border-radius: 24px 24px 0 0; box-sizing: border-box;
+  padding-block: 18px 22px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 14px; animation: up .22s ease-out; }
+@keyframes up { from { transform: translateY(40px); opacity: 0 } }
+.sheet > * { flex-shrink: 0; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; }
+.sheet h2 { font-family: var(--display); font-size: 20px; margin: 0; font-weight: 400; }
+.close { width: 44px; height: 44px; border-radius: 12px; background: var(--panel-2); display: grid; place-items: center; }
+.sheet p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+.row { display: flex; align-items: center; gap: 12px; background: var(--panel-2); border-radius: 16px; padding: 10px 10px 10px 12px; }
+.row .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.row .rt b { font-size: 15px; } .row .rt span { font-size: 12px; color: var(--muted); }
+.row .ric { width: 40px; height: 40px; border-radius: 12px; background: var(--ink); display: grid; place-items: center; flex: none; }
+.hire { height: 42px; padding: 0 14px; border-radius: 12px; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 13px; flex: none; }
+.hire.money { background: var(--gem); }
+.hire.on { background: var(--panel); color: var(--cash); box-shadow: inset 0 0 0 2px var(--cash); }
+.row.locked .rt b { color: var(--muted); }
+.hire:disabled { background: var(--line); color: var(--muted); cursor: default; }
+.hired { font-size: 13px; font-weight: 700; color: var(--cash); padding: 0 8px; }
+.big-bar { height: 14px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
+.big-bar i { display: block; height: 100%; background: var(--accent); }
+.loc { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.loc.now { color: var(--text); } .loc.done { color: var(--cash); }
+.loc .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); flex: none; }
+.loc.now .dot { background: var(--accent); } .loc.done .dot { background: var(--cash); }
+.dresser { display: flex; justify-content: center; align-items: flex-end; background: #2B2645; border-radius: 18px; padding-block: 18px 6px; overflow: hidden; position: relative; min-height: 236px; }
+.dresser::before { content: ""; position: absolute; left: 50%; bottom: 8px; width: 190px; height: 34px; margin-left: -95px; border-radius: 50%; background: #3A3460; }
+.dresser svg { position: relative; transform-origin: 50% 100%; animation: idle 1.8s ease-in-out infinite alternate; }
+@keyframes idle { from { transform: translateY(0) scaleY(1) } to { transform: translateY(-2px) scaleY(1.01) } }
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.sw { width: 44px; height: 44px; border-radius: 50%; border: 3px solid transparent; box-shadow: inset 0 0 0 3px var(--panel); }
+.sw.on { border-color: var(--text); }
+.lbl { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.cta { height: 52px; border-radius: 16px; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 17px; box-shadow: 0 3px 0 #4FA864; flex: none; }
+.cta:disabled { background: var(--line); color: var(--muted); box-shadow: none; cursor: default; }
+.cta.pink { background: var(--accent); box-shadow: 0 3px 0 #B84778; }
+.ghost { height: 50px; border-radius: 16px; background: var(--panel-2); font-size: 15px; font-weight: 700; flex: none; }
+.welcome { display: flex; flex-direction: column; gap: 8px; text-align: center; align-items: center; }
+.welcome .amt { font-family: var(--display); font-size: 36px; color: var(--cash); }
+.sec { display: flex; flex-direction: column; gap: 10px; }
+.sec + .sec { border-top: 1px solid var(--line); padding-top: 14px; }
+.sec h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.soon { font-size: 12px; font-weight: 700; color: var(--muted); background: var(--line); border-radius: 999px; padding: 6px 10px; flex: none; }
+.keeps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.keeps div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.keeps b { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
+
+.toast { position: absolute; left: 50%; top: 70px; transform: translateX(-50%); background: var(--text); color: var(--ink);
+  font-size: 14px; font-weight: 700; padding: 10px 16px; border-radius: 999px; z-index: 30; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis;
+  animation: up .2s ease-out; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+
+@media (prefers-reduced-motion: reduce) {
+  .artist { transition: none; } .artist.working svg, .crew svg, .dresser svg, .station.idle .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .floater { animation-duration: .01s; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="app" id="app">
+  <header class="hud">
+    <div class="pill cash-pill">
+      <div class="coin" aria-hidden="true">$</div>
+      <div class="cash-col">
+        <span class="cash-num" id="cash">$0</span>
+        <span class="cash-rate" id="rate">+$0 / sec</span>
+      </div>
+    </div>
+    <div class="pill gem-pill">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC94A" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg>
+      <span class="gem-num" id="gems">25</span>
+      <button class="round-btn" id="buyGems" aria-label="Open the shop">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      </button>
+    </div>
+    <button class="icon-btn" id="settings" aria-label="Settings">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </button>
+  </header>
+
+  <div class="room-wrap" id="roomWrap">
+    <div class="loc-chip"><i></i><span id="locName">Rundown Apartment</span></div>
+    <div class="fame-chip" id="fameChip" hidden></div>
+    <button class="daily-btn" id="goalsBtn" aria-label="Goals" style="top:64px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
+      <span class="dot" id="goalsDot" hidden></span>
+    </button>
+    <button class="daily-btn" id="dailyBtn" aria-label="Daily reward">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"></rect><path d="M3 13h18M12 9v12"></path><path d="M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-1.5S14 5 12 9z"></path></svg>
+      <span class="dot" id="dailyDot" hidden></span>
+    </button>
+    <div class="stage" id="stage">
+      <div id="roomArt"></div>
+      <div class="artist" id="artist" style="left:160px;top:214px">
+        <svg width="70" height="96" viewBox="0 0 70 96" aria-hidden="true">
+          <ellipse cx="35" cy="88" rx="24" ry="7" fill="#000" opacity="0.25"></ellipse>
+          <ellipse cx="13" cy="62" rx="7" ry="9" fill="#E8E2F4"></ellipse>
+          <ellipse cx="57" cy="62" rx="7" ry="9" fill="#E8E2F4"></ellipse>
+          <circle class="skin" cx="12" cy="71" r="5"></circle>
+          <circle class="skin" cx="58" cy="71" r="5"></circle>
+          <ellipse cx="35" cy="66" rx="20" ry="20" fill="#E8E2F4"></ellipse>
+          <circle class="skin" cx="35" cy="32" r="24"></circle>
+          <path d="M11 30 A24 24 0 0 1 59 30 Q47 20 35 21 Q23 20 11 30 Z" fill="#231A17"></path>
+          <path d="M12 28 Q35 0 58 28" fill="none" stroke="#1E1B33" stroke-width="5" stroke-linecap="round"></path>
+          <ellipse class="phones" cx="11" cy="32" rx="6" ry="9"></ellipse>
+          <ellipse class="phones" cx="59" cy="32" rx="6" ry="9"></ellipse>
+          <ellipse cx="27" cy="38" rx="3" ry="5" fill="#14122A"></ellipse>
+          <ellipse cx="43" cy="38" rx="3" ry="5" fill="#14122A"></ellipse>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="sbar" id="sbar">
+      <div class="sbar-info">
+        <div class="sbar-name" id="sbName">Laptop Beats</div>
+        <div class="mile"><i id="sbMile"></i></div>
+        <div class="mile-label" id="sbMileLabel"></div>
+      </div>
+      <button class="mode-btn" id="modeBtn" aria-label="Change how many levels to buy">x1</button>
+      <button class="up-btn" id="upBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+        <span id="upCost">$5</span>
+      </button>
+    </div>
+    <div class="actions">
+      <button class="act hype" id="hypeBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>
+        <span id="hypeLbl">2x Hype</span>
+      </button>
+      <button class="act" id="crateBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFC94A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"></rect><path d="M3 13h18M12 9v12M7 9a3 3 0 0 1 5-3 3 3 0 0 1 5 3"></path></svg>
+        <span id="crateLbl">Free Crate</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="tabs" aria-label="Main">
+    <button class="tab on" data-tab="studio">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Studio</button>
+    <button class="tab" data-tab="crew">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg>Crew</button>
+    <button class="tab" data-tab="style">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg>Style</button>
+    <button class="tab" data-tab="shop">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>Shop</button>
+    <button class="tab" data-tab="career">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>Career<span class="tab-pct" id="movePct">0%</span></button>
+  </nav>
+
+  <div class="scrim" id="scrim" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+// ---------- room art ----------
+const planks = (color, from, step) => Array.from({ length: 13 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
+
+const APARTMENT_DECOR = `
+  ${planks('#42342D', 128, 40)}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#2B2645"></div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#1F1B36"></div>
+  <div class="abs" style="left:140px;top:12px;width:110px;height:60px;border-radius:6px;background:#0E0D1F;border:5px solid #4A4466;box-sizing:border-box;overflow:hidden">
+    <svg width="100" height="50" viewBox="0 0 100 50" aria-hidden="true">
+      <circle cx="80" cy="12" r="6" fill="#F4E7B8"></circle>
+      <rect x="2" y="26" width="18" height="24" fill="#26234A"></rect><rect x="22" y="18" width="14" height="32" fill="#2F2B58"></rect>
+      <rect x="38" y="30" width="20" height="20" fill="#26234A"></rect><rect x="60" y="22" width="16" height="28" fill="#2F2B58"></rect>
+      <rect x="78" y="32" width="20" height="18" fill="#26234A"></rect>
+      <rect x="7" y="32" width="3" height="3" fill="#FFC94A"></rect><rect x="27" y="24" width="3" height="3" fill="#FFC94A"></rect>
+      <rect x="44" y="36" width="3" height="3" fill="#FFC94A"></rect><rect x="65" y="28" width="3" height="3" fill="#FFC94A"></rect>
+      <rect x="84" y="38" width="3" height="3" fill="#FFC94A"></rect>
+    </svg>
+    <div class="abs" style="left:47px;top:0;width:5px;height:50px;background:#4A4466"></div>
+  </div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#221E3A"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#221E3A"></div>
+  <div class="abs" style="right:0;top:304px;width:12px;height:84px;background:#6B5246"></div>
+  <div class="abs" style="left:118px;top:232px;width:154px;height:96px;border-radius:50%;background:#5B3F66"></div>`;
+
+const STUDIO_DECOR = `
+  ${planks('#7B5D47', 128, 40)}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#4B3F6B"></div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#352C52"></div>
+  <div class="abs" style="left:28px;top:14px;width:52px;height:56px;border-radius:6px;background:#5E5085"></div>
+  <div class="abs" style="left:88px;top:14px;width:52px;height:56px;border-radius:6px;background:#5E5085"></div>
+  <div class="abs" style="left:250px;top:14px;width:52px;height:56px;border-radius:6px;background:#5E5085"></div>
+  <div class="abs" style="left:310px;top:14px;width:52px;height:56px;border-radius:6px;background:#5E5085"></div>
+  <div class="abs" style="left:166px;top:12px;width:58px;height:58px;border-radius:50%;background:#1A1530;border:5px solid #FFC94A;box-sizing:border-box;display:grid;place-items:center">
+    <div style="width:12px;height:12px;border-radius:50%;background:#FFC94A"></div>
+  </div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#3A3058"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#3A3058"></div>
+  <div class="abs" style="left:0;top:304px;width:12px;height:84px;background:#A07A5C"></div>
+  <div class="abs" style="left:112px;top:226px;width:166px;height:108px;border-radius:50%;background:#3D6B78"></div>
+  <div class="abs" style="left:140px;top:244px;width:110px;height:72px;border-radius:50%;background:#467A88"></div>`;
+
+const bricks = Array.from({ length: 4 }, (_, r) => Array.from({ length: 9 }, (_, c) =>
+  `<div class="abs" style="left:${c * 46 - (r % 2 ? 23 : 0)}px;top:${r * 21}px;width:42px;height:17px;border-radius:2px;background:${(r + c) % 3 ? '#8B4A3C' : '#7D4134'}"></div>`).join('')).join('');
+const LOFT_DECOR = `
+  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:388px;background:#57535E"></div>`).join('')}
+  ${Array.from({ length: 8 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#57535E"></div>`).join('')}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5E3027;overflow:hidden">${bricks}</div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#3E2019"></div>
+  <div class="abs" style="left:96px;top:6px;width:198px;height:72px;border-radius:4px;background:#2B1F3D;border:5px solid #26222E;box-sizing:border-box;overflow:hidden">
+    <svg width="188" height="62" viewBox="0 0 188 62" aria-hidden="true">
+      <rect width="188" height="62" fill="#3B2752"></rect><circle cx="150" cy="44" r="16" fill="#FF9E57"></circle>
+      <rect x="4" y="30" width="22" height="32" fill="#1E1630"></rect><rect x="28" y="18" width="18" height="44" fill="#251B3A"></rect>
+      <rect x="48" y="36" width="26" height="26" fill="#1E1630"></rect><rect x="76" y="12" width="20" height="50" fill="#251B3A"></rect>
+      <rect x="98" y="28" width="24" height="34" fill="#1E1630"></rect><rect x="124" y="40" width="18" height="22" fill="#251B3A"></rect>
+      <rect x="160" y="24" width="24" height="38" fill="#1E1630"></rect>
+      <rect x="34" y="26" width="3" height="3" fill="#FFC94A"></rect><rect x="82" y="22" width="3" height="3" fill="#FFC94A"></rect>
+      <rect x="104" y="36" width="3" height="3" fill="#FFC94A"></rect><rect x="166" y="32" width="3" height="3" fill="#FFC94A"></rect>
+    </svg>
+    <div class="abs" style="left:61px;top:0;width:4px;height:62px;background:#26222E"></div>
+    <div class="abs" style="left:126px;top:0;width:4px;height:62px;background:#26222E"></div>
+    <div class="abs" style="left:0;top:29px;width:188px;height:4px;background:#26222E"></div>
+  </div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#4A2620"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#4A2620"></div>
+  <div class="abs" style="left:20px;top:96px;width:350px;height:6px;border-radius:3px;background:#8C8794"></div>
+  <div class="abs" style="right:0;top:304px;width:12px;height:84px;background:#3A3A44"></div>
+  <div class="abs" style="left:110px;top:224px;width:170px;height:112px;border-radius:18px;background:#C2683A"></div>
+  <div class="abs" style="left:122px;top:236px;width:146px;height:88px;border-radius:12px;border:3px solid #E08A5A;box-sizing:border-box"></div>`;
+
+const LOCATIONS = [
+  {
+    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#4A3B33', goal: 150000, decor: APARTMENT_DECOR, home: [160, 214],
+    stations: [
+      { id: 'beats', name: 'Laptop Beats', icon: 'note', unlock: 0, base: 1, cycle: 1.2, cost: 6, growth: 1.13, crew: 'Producer', crewCost: 90, spot: [214, 176],
+        pos: [226, 112, 140, 128], ring: 90, hint: 36,
+        furn: `<span class="abs" style="left:0;top:0;width:140px;height:70px;border-radius:10px;background:#7A5E50"></span>
+          <span class="abs" style="left:3px;top:67px;width:134px;height:14px;border-radius:0 0 9px 9px;background:#5E473C"></span>
+          <span class="abs" style="left:40px;top:12px;width:60px;height:40px;border-radius:6px;background:#C9C3DE;display:flex;align-items:center;justify-content:center"><span style="width:48px;height:6px;border-radius:3px;background:var(--accent)"></span></span>
+          <span class="abs" style="left:50px;top:88px;width:40px;height:40px;border-radius:50%;background:#2E2A4A;border:4px solid #3A3558;box-sizing:border-box"></span>` },
+      { id: 'booth', name: 'Vocal Booth', icon: 'mic', unlock: 80, base: 6, cycle: 3, cost: 55, growth: 1.14, crew: 'Engineer', crewCost: 900, spot: [132, 150],
+        pos: [24, 112, 112, 106],
+        furn: `<span class="abs" style="left:0;top:0;width:112px;height:92px;border-radius:12px;background:#5E4B43;padding:10px;box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px">
+            <span style="border-radius:4px;background:#4A3A34"></span><span style="border-radius:4px;background:#4A3A34"></span><span style="border-radius:4px;background:#4A3A34"></span>
+            <span style="border-radius:4px;background:#4A3A34"></span><span style="border-radius:4px;background:#4A3A34"></span><span style="border-radius:4px;background:#4A3A34"></span></span>
+          <span class="abs" style="left:0;top:88px;width:112px;height:14px;border-radius:0 0 10px 10px;background:#3F312C"></span>
+          <span class="abs" style="left:45px;top:35px;width:22px;height:22px;border-radius:50%;background:#C9C3DE;border:4px solid #8C86A6;box-sizing:border-box"></span>` },
+      { id: 'socials', name: 'Socials', icon: 'phone', unlock: 600, base: 32, cycle: 6, cost: 400, growth: 1.15, crew: 'Manager', crewCost: 5000, spot: [140, 300],
+        pos: [24, 290, 112, 162],
+        furn: `<span class="abs" style="left:0;top:0;width:112px;height:150px;border-radius:14px;background:#9A94B4;overflow:hidden">
+            <span class="abs" style="left:18px;top:12px;width:76px;height:28px;border-radius:10px;background:#E8E2F4"></span>
+            <span class="abs" style="left:0;top:70px;width:112px;height:80px;background:#5A5480"></span>
+            <span class="abs" style="left:66px;top:52px;width:18px;height:28px;border-radius:4px;background:#1E1B33;border:2px solid var(--accent);box-sizing:border-box"></span></span>
+          <span class="abs" style="left:0;top:146px;width:112px;height:12px;border-radius:0 0 12px 12px;background:#6F6990"></span>` },
+      { id: 'busk', name: 'Street Busk', icon: 'guitar', unlock: 3500, base: 150, cycle: 10, cost: 2200, growth: 1.16, crew: 'Hype Man', crewCost: 25000, spot: [178, 314],
+        pos: [236, 290, 130, 150],
+        furn: `<span class="abs" style="left:10px;top:40px;width:70px;height:96px;border-radius:30px 30px 14px 14px;background:#2A2236;border:4px solid #6B5246;box-sizing:border-box">
+            <span class="abs" style="left:18px;top:50px;width:9px;height:9px;border-radius:50%;background:#FFC94A"></span>
+            <span class="abs" style="left:32px;top:62px;width:9px;height:9px;border-radius:50%;background:#FFC94A"></span>
+            <span class="abs" style="left:24px;top:72px;width:9px;height:9px;border-radius:50%;background:#FFC94A"></span></span>
+          <span class="abs" style="left:88px;top:52px;width:34px;height:34px;border-radius:8px;background:#26223A;border:3px solid #4A4466;box-sizing:border-box">
+            <span class="abs" style="left:7px;top:7px;width:14px;height:14px;border-radius:50%;background:#4A4466"></span></span>` },
+    ],
+  },
+  {
+    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#8A6A52', goal: 50000000, decor: STUDIO_DECOR, home: [160, 222],
+    stations: [
+      { id: 'pads', name: 'Beat Pads', icon: 'grid', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Beatmaker', crewCost: 4500, spot: [132, 160],
+        pos: [24, 112, 118, 100],
+        furn: `<span class="abs" style="left:0;top:0;width:118px;height:84px;border-radius:10px;background:#B08C6E"></span>
+          <span class="abs" style="left:3px;top:81px;width:112px;height:13px;border-radius:0 0 9px 9px;background:#8E6E55"></span>
+          <span class="abs" style="left:24px;top:10px;width:70px;height:64px;border-radius:8px;background:#1E1B33;padding:7px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px">
+            <span style="border-radius:3px;background:#FF6FAE"></span><span style="border-radius:3px;background:#6FD3FF"></span><span style="border-radius:3px;background:#6FD3FF"></span><span style="border-radius:3px;background:#FFC94A"></span>
+            <span style="border-radius:3px;background:#6FD3FF"></span><span style="border-radius:3px;background:#FF6FAE"></span><span style="border-radius:3px;background:#8BF0A0"></span><span style="border-radius:3px;background:#6FD3FF"></span>
+            <span style="border-radius:3px;background:#FFC94A"></span><span style="border-radius:3px;background:#6FD3FF"></span><span style="border-radius:3px;background:#FF6FAE"></span><span style="border-radius:3px;background:#6FD3FF"></span></span>` },
+      { id: 'mixer', name: 'Mixing Desk', icon: 'sliders', unlock: 4000, base: 300, cycle: 3, cost: 2750, growth: 1.14, crew: 'Mix Engineer', crewCost: 45000, spot: [214, 180],
+        pos: [212, 112, 154, 132], ring: 96, hint: 40,
+        furn: `<span class="abs" style="left:0;top:0;width:154px;height:78px;border-radius:12px;background:#2A2440"></span>
+          <span class="abs" style="left:3px;top:75px;width:148px;height:13px;border-radius:0 0 10px 10px;background:#1C1830"></span>
+          <span class="abs" style="left:12px;top:12px;width:130px;height:54px;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px">
+            ${[18, 30, 12, 26, 34, 20, 28, 14].map(t => `<span style="position:relative;border-radius:3px;background:#3E3760"><span style="position:absolute;left:-3px;right:-3px;top:${t}px;height:8px;border-radius:2px;background:#E8E2F4"></span></span>`).join('')}</span>
+          <span class="abs" style="left:56px;top:92px;width:42px;height:40px;border-radius:50%;background:#2E2A4A;border:4px solid #3A3558;box-sizing:border-box"></span>` },
+      { id: 'vocalpro', name: 'Pro Vocal Booth', icon: 'mic', unlock: 30000, base: 1600, cycle: 6, cost: 20000, growth: 1.15, crew: 'Vocal Coach', crewCost: 250000, spot: [140, 304],
+        pos: [24, 290, 124, 150],
+        furn: `<span class="abs" style="left:0;top:0;width:124px;height:138px;border-radius:14px;background:rgba(111,211,255,.18);border:6px solid #C9C3DE;box-sizing:border-box"></span>
+          <span class="abs" style="left:3px;top:134px;width:118px;height:12px;border-radius:0 0 11px 11px;background:#9A94B4"></span>
+          <span class="abs" style="left:46px;top:44px;width:32px;height:32px;border-radius:50%;background:rgba(20,18,42,.35);border:3px solid #8C86A6;box-sizing:border-box"></span>
+          <span class="abs" style="left:52px;top:78px;width:20px;height:20px;border-radius:50%;background:#E8E2F4;border:4px solid #8C86A6;box-sizing:border-box"></span>` },
+      { id: 'video', name: 'Music Video', icon: 'camera', unlock: 175000, base: 8000, cycle: 10, cost: 110000, growth: 1.16, crew: 'Director', crewCost: 1250000, spot: [178, 314],
+        pos: [236, 290, 130, 150],
+        furn: `<span class="abs" style="left:14px;top:26px;width:62px;height:62px;border-radius:50%;border:8px solid #FFF4D6;box-sizing:border-box;box-shadow:0 0 18px rgba(255,244,214,.55)"></span>
+          <span class="abs" style="left:41px;top:88px;width:8px;height:44px;background:#1E1B33"></span>
+          <span class="abs" style="left:78px;top:76px;width:44px;height:30px;border-radius:6px;background:#1E1B33;border:3px solid #4A4466;box-sizing:border-box"></span>
+          <span class="abs" style="left:66px;top:84px;width:14px;height:14px;border-radius:50%;background:#4A4466"></span>
+          <span class="abs" style="left:96px;top:106px;width:6px;height:30px;background:#4A4466"></span>` },
+    ],
+  },
+  {
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#64606B', goal: 15000000000, decor: LOFT_DECOR, home: [160, 222],
+    stations: [
+      { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
+        pos: [24, 112, 128, 100],
+        furn: `<span class="abs" style="left:0;top:0;width:128px;height:84px;border-radius:10px;background:#26222E"></span>
+          <span class="abs" style="left:3px;top:81px;width:122px;height:13px;border-radius:0 0 9px 9px;background:#17141D"></span>
+          <span class="abs" style="left:8px;top:14px;width:52px;height:52px;border-radius:50%;background:#3A3A44;border:4px solid #57535E;box-sizing:border-box;display:grid;place-items:center"><span style="width:12px;height:12px;border-radius:50%;background:var(--accent)"></span></span>
+          <span class="abs" style="left:68px;top:14px;width:52px;height:52px;border-radius:50%;background:#3A3A44;border:4px solid #57535E;box-sizing:border-box;display:grid;place-items:center"><span style="width:12px;height:12px;border-radius:50%;background:#6FD3FF"></span></span>` },
+      { id: 'merch', name: 'Merch Table', icon: 'shirt', unlock: 200000, base: 15000, cycle: 3.2, cost: 137500, growth: 1.14, crew: 'Merch Manager', crewCost: 2250000, spot: [214, 180],
+        pos: [218, 112, 148, 104],
+        furn: `<span class="abs" style="left:0;top:0;width:148px;height:80px;border-radius:10px;background:#9C7A5E"></span>
+          <span class="abs" style="left:3px;top:77px;width:142px;height:13px;border-radius:0 0 9px 9px;background:#7A5D46"></span>
+          ${[['#FF6FAE', 10], ['#E8E2F4', 44], ['#6FD3FF', 78], ['#FFC94A', 112]].map(([c, l]) => `<span class="abs" style="left:${l}px;top:14px;width:28px;height:24px;border-radius:5px;background:${c}"></span><span class="abs" style="left:${l}px;top:44px;width:28px;height:24px;border-radius:5px;background:${c};opacity:.75"></span>`).join('')}` },
+      { id: 'stream', name: 'Livestream Rig', icon: 'monitor', unlock: 1500000, base: 80000, cycle: 6.5, cost: 1000000, growth: 1.15, crew: 'Stream Mod', crewCost: 12500000, spot: [140, 304],
+        pos: [24, 290, 128, 150],
+        furn: `<span class="abs" style="left:0;top:0;width:128px;height:70px;border-radius:10px;background:#26222E"></span>
+          <span class="abs" style="left:3px;top:67px;width:122px;height:12px;border-radius:0 0 9px 9px;background:#17141D"></span>
+          <span class="abs" style="left:8px;top:10px;width:34px;height:24px;border-radius:4px;background:#1A1530;border:2px solid #B18CFF;box-sizing:border-box"></span>
+          <span class="abs" style="left:46px;top:6px;width:36px;height:28px;border-radius:4px;background:#1A1530;border:2px solid var(--accent);box-sizing:border-box"></span>
+          <span class="abs" style="left:86px;top:10px;width:34px;height:24px;border-radius:4px;background:#1A1530;border:2px solid #6FD3FF;box-sizing:border-box"></span>
+          <span class="abs" style="left:30px;top:42px;width:68px;height:18px;border-radius:4px;background:#3A3A44"></span>
+          <span class="abs" style="left:38px;top:88px;width:52px;height:52px;border-radius:14px;background:#C2384F;border:5px solid #8E2639;box-sizing:border-box"></span>` },
+      { id: 'rooftop', name: 'Rooftop Show', icon: 'star', unlock: 8750000, base: 400000, cycle: 11, cost: 5500000, growth: 1.16, crew: 'Promoter', crewCost: 62500000, spot: [178, 314],
+        pos: [236, 290, 130, 150],
+        furn: `<span class="abs" style="left:6px;top:30px;width:118px;height:100px;border-radius:10px;background:#2E2A36;border:4px solid #57535E;box-sizing:border-box"></span>
+          <span class="abs" style="left:6px;top:126px;width:118px;height:12px;border-radius:0 0 9px 9px;background:#1C1A22"></span>
+          <span class="abs" style="left:14px;top:36px;width:16px;height:16px;border-radius:50%;background:#FFC94A;box-shadow:0 0 12px #FFC94A"></span>
+          <span class="abs" style="left:100px;top:36px;width:16px;height:16px;border-radius:50%;background:#FF6FAE;box-shadow:0 0 12px #FF6FAE"></span>
+          <span class="abs" style="left:56px;top:66px;width:18px;height:18px;border-radius:50%;background:#E8E2F4;border:4px solid #8C86A6;box-sizing:border-box"></span>
+          <span class="abs" style="left:63px;top:84px;width:4px;height:30px;background:#8C86A6"></span>` },
+    ],
+  },
+];
+const FUTURE = ['Pro Studio', 'Hillside Mansion', 'Stadium Tour'];
+const ALBUM_REQ = 5000000, FAME_PER_ALBUM = 0.25;
+const albumReq = () => ALBUM_REQ * Math.pow(50, Math.max(0, S.loc - 1));
+const DAILY = [
+  { min: 2, gems: 0 }, { min: 3, gems: 0 }, { min: 0, gems: 10 }, { min: 5, gems: 0 },
+  { min: 0, gems: 15 }, { min: 8, gems: 0 }, { min: 15, gems: 50 },
+];
+const MILES = [10, 25, 50, 100, 200];
+const CRATE_CD = 600, OFFLINE_BASE = 2 * 3600, OFFLINE_OWL = 8 * 3600;
+const HYPE_PER_AD = 20 * 60, HYPE_CAP = 2 * 3600, AD_SECONDS = 5;
+const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Chains'], ['face', 'Shades']];
+// album: unlocked by dropping that album number. gems: bought in the shop. bonus: income while worn.
+const ITEMS = [
+  { id: 'basic', slot: 'top', name: 'Plain Hoodie', bonus: 0, look: { body: '#E8E2F4', trim: '#B9B3CF', style: 'hoodie' } },
+  { id: 'debut', slot: 'top', name: 'Debut Hoodie', album: 1, bonus: 0.05, look: { body: '#2A2733', trim: '#FF6FAE', style: 'hoodie' } },
+  { id: 'goldchain', slot: 'neck', name: 'Gold Chain', album: 2, bonus: 0.05, look: { color: '#FFC94A' } },
+  { id: 'platinum', slot: 'top', name: 'Platinum Jacket', album: 3, bonus: 0.08, look: { body: '#CDD3DE', trim: '#7D8499', style: 'jacket' } },
+  { id: 'bucket', slot: 'hat', name: 'Bucket Hat', album: 4, bonus: 0.05, look: { color: '#E2D3B0', style: 'bucket' } },
+  { id: 'starshades', slot: 'face', name: 'Star Shades', album: 5, bonus: 0.05, look: { color: '#FF6FAE', style: 'star' } },
+  { id: 'crown', slot: 'hat', name: 'Diamond Crown', album: 6, bonus: 0.10, look: { color: '#FFC94A', style: 'crown' } },
+  { id: 'flame', slot: 'top', name: 'Flame Hoodie', gems: 120, bonus: 0.03, look: { body: '#FF7A3D', trim: '#FFC94A', style: 'hoodie' } },
+  { id: 'neon', slot: 'top', name: 'Neon Tour Jacket', gems: 220, bonus: 0.05, look: { body: '#3DDC84', trim: '#14122A', style: 'jacket' } },
+  { id: 'beanie', slot: 'hat', name: 'Pink Beanie', gems: 80, bonus: 0.02, look: { color: '#FF6FAE', style: 'beanie' } },
+  { id: 'icedchain', slot: 'neck', name: 'Iced Chain', gems: 160, bonus: 0.04, look: { color: '#BDEBFF' } },
+  { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
+];
+const itemById = id => ITEMS.find(i => i.id === id);
+const GOALS = [
+  { id: 'up10', text: 'Upgrade stations 10 times', target: 10, val: () => S.stats.upgrades, gems: 5 },
+  { id: 'unlock2', text: 'Unlock 2 stations', target: 2, val: () => S.stats.unlocks, gems: 5 },
+  { id: 'hire1', text: 'Hire your first crew member', target: 1, val: () => S.stats.hires, gems: 10 },
+  { id: 'crate1', text: 'Open a crate', target: 1, val: () => S.stats.crates, gems: 5 },
+  { id: 'lv25', text: 'Get any station to Lv 25', target: 25, val: () => S.stats.maxLevel, gems: 10 },
+  { id: 'hype1', text: 'Turn on 2x Hype', target: 1, val: () => S.stats.hypes, gems: 5 },
+  { id: 'hire4', text: 'Hire 4 crew members', target: 4, val: () => S.stats.hires, gems: 15 },
+  { id: 'earn100k', text: 'Earn $100K in total', target: 1e5, val: () => S.stats.lifetime, gems: 10, money: true },
+  { id: 'move1', text: 'Move into the Home Studio', target: 1, val: () => S.maxLoc || 0, gems: 20 },
+  { id: 'lv50', text: 'Get any station to Lv 50', target: 50, val: () => S.stats.maxLevel, gems: 15 },
+  { id: 'earn10m', text: 'Earn $10M in total', target: 1e7, val: () => S.stats.lifetime, gems: 20, money: true },
+  { id: 'album1', text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
+  { id: 'move2', text: 'Move into the Downtown Loft', target: 2, val: () => S.maxLoc || 0, gems: 30 },
+  { id: 'lv100', text: 'Get any station to Lv 100', target: 100, val: () => S.stats.maxLevel, gems: 30 },
+  { id: 'album3', text: 'Drop 3 albums', target: 3, val: () => S.albums || 0, gems: 50 },
+];
+const activeGoals = () => GOALS.filter(g => !S.goalsDone[g.id]).slice(0, 3);
+const goalReady = g => g.val() >= g.target;
+// money: real-money price shown (test purchase in this build). gems: gem price.
+const OFFERS = {
+  goldenMic: { name: 'Golden Mic', sub: 'Permanent 2x income on everything', money: '$4.99', once: true },
+  starter: { name: 'Starter Pack', sub: 'Flame Hoodie + 300 gems + 4h time skip', money: '$2.99', once: true },
+  adFree: { name: 'Ad-Free Rewards', sub: 'Get every ad reward instantly, forever', money: '$6.99', once: true },
+  monitors: { name: 'Pro Monitors', sub: 'Permanent +50% income', gems: 300, once: true },
+  nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
+  skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
+  skip4: { name: 'Time Skip · 4 hours', sub: 'Instant cash', gems: 100, skip: 4 * 3600 },
+  gems100: { name: 'Handful of Gems', sub: '100 gems', money: '$0.99', gemsOut: 100 },
+  gems550: { name: 'Bag of Gems', sub: '550 gems · 10% bonus', money: '$4.99', gemsOut: 550 },
+  gems1200: { name: 'Chest of Gems', sub: '1,200 gems · 20% bonus', money: '$9.99', gemsOut: 1200 },
+  gems2600: { name: 'Vault of Gems', sub: '2,600 gems · 30% bonus', money: '$19.99', gemsOut: 2600 },
+};
+const SKINS = ['#F1CBA8', '#C68A5C', '#8D5A36', '#5A3820'];
+const PHONES = ['#FF6FAE', '#6FD3FF', '#B18CFF', '#FF9E57'];
+const ICONS = {
+  note: '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>',
+  mic: '<rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v4"></path>',
+  phone: '<rect x="6" y="2" width="12" height="20" rx="3"></rect><path d="M11 18h2"></path>',
+  guitar: '<path d="M14 10 21 3M18 3l3 3"></path><path d="M10.5 9.5a4 4 0 0 0-5.7 0 3 3 0 0 0 0 4.2l-1 1a3.5 3.5 0 0 0 5 5l1-1a3 3 0 0 0 4.2 0 4 4 0 0 0 0-5.7z"></path><circle cx="9" cy="15" r="1.2"></circle>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect>',
+  sliders: '<path d="M6 3v18M12 3v18M18 3v18"></path><path d="M3 8h6M9 15h6M15 10h6"></path>',
+  camera: '<rect x="2" y="7" width="14" height="11" rx="2"></rect><path d="m16 11 6-3v9l-6-3"></path>',
+  disc: '<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.5"></circle>',
+  shirt: '<path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path>',
+  monitor: '<rect x="2" y="4" width="20" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path>',
+  star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path>',
+};
+const svgIc = (k, color = '#F4F1EA', size = 14) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
+const LOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F1EA" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
+const UP = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>';
+
+// ---------- state ----------
+function runState(locIdx) {
+  const loc = LOCATIONS[locIdx];
+  const levels = {}; loc.stations.forEach((s, i) => levels[s.id] = i === 0 ? 1 : 0);
+  return { loc: locIdx, cash: 0, earned: 0, levels, crew: {}, prog: {}, running: {}, selected: loc.stations[0].id };
+}
+function fresh() {
+  return Object.assign(runState(0), { gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[1], phones: PHONES[0],
+    buyMode: 1, vol: { master: 80, music: 70, sfx: 80 }, daily: { last: '', streak: 0 }, last: Date.now() });
+}
+
+// ---------- sound (synthesized, no files) ----------
+let actx = null, lastDing = 0, lastUp = 0;
+let busMaster = null, busMusic = null, busSfx = null;
+const volOf = k => Math.max(0, Math.min(100, (S && S.vol && S.vol[k] != null) ? S.vol[k] : 80)) / 100;
+// perceptual curve so the low end of each slider isn't all "loud"
+const curve = v => v * v;
+function applyVolumes() {
+  if (!actx) return;
+  const t = actx.currentTime;
+  busMaster.gain.setTargetAtTime(curve(volOf('master')), t, 0.03);
+  busMusic.gain.setTargetAtTime(curve(volOf('music')), t, 0.03);
+  busSfx.gain.setTargetAtTime(curve(volOf('sfx')), t, 0.03);
+}
+function ac() {
+  if (!actx) {
+    try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+    busMaster = actx.createGain(); busMaster.connect(actx.destination);
+    busMusic = actx.createGain(); busMusic.connect(busMaster);
+    busSfx = actx.createGain(); busSfx.connect(busMaster);
+    applyVolumes();
+  }
+  if (actx.state === 'suspended') actx.resume().catch(() => {});
+  return actx;
+}
+function tone(freq, dur, type, vol, when = 0, slideTo = 0) {
+  const a = ac(); if (!a) return;
+  const t0 = a.currentTime + when;
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t0);
+  if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g).connect(busSfx); o.start(t0); o.stop(t0 + dur + 0.02);
+}
+const SFX = {
+  cash: () => { tone(1568, 0.07, 'triangle', 0.035); tone(2093, 0.09, 'triangle', 0.025, 0.04); },
+  upgrade: () => { tone(523, 0.08, 'square', 0.03); tone(784, 0.12, 'square', 0.03, 0.06); },
+  milestone: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.14, 'square', 0.03, i * 0.06)),
+  unlock: () => { tone(392, 0.12, 'triangle', 0.06); tone(523, 0.12, 'triangle', 0.06, 0.08); tone(784, 0.25, 'triangle', 0.06, 0.16); },
+  reward: () => [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, 0.18, 'sine', 0.05, i * 0.07)),
+  hype: () => tone(220, 0.35, 'sawtooth', 0.04, 0, 880),
+  move: () => [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, i === 4 ? 0.5 : 0.16, 'square', 0.035, i * 0.11)),
+  tap: () => tone(660, 0.04, 'sine', 0.03),
+  denied: () => tone(180, 0.12, 'square', 0.025),
+};
+function sfx(name) {
+  if (!S || volOf('sfx') === 0 || volOf('master') === 0) return;
+  if (name === 'cash') { const n = performance.now(); if (n - lastDing < 160) return; lastDing = n; }
+  if (name === 'upgrade') { const n = performance.now(); if (n - lastUp < 90) return; lastUp = n; }
+  try { SFX[name](); } catch (e) {}
+}
+// ---------- music: one looping beat per location ----------
+const buffers = {};
+let musicSrc = null, musicGain = null, musicTrack = null;
+function getBuf(url) {
+  if (!buffers[url]) buffers[url] = fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+    .then(b => new Promise((res, rej) => ac().decodeAudioData(b, res, rej)));
+  return buffers[url];
+}
+// skip encoder silence at the edges (max 0.2s each side) so the loop is seamless
+function loopPoints(buf) {
+  const d = buf.getChannelData(0), sr = buf.sampleRate, th = 0.002, cap = Math.floor(sr * 0.2);
+  let s = 0; while (s < cap && Math.abs(d[s]) < th) s++;
+  let e = d.length - 1; while (e > d.length - cap && Math.abs(d[e]) < th) e--;
+  return [s / sr, (e + 1) / sr];
+}
+function stopMusic() {
+  if (!musicSrc) return;
+  const s = musicSrc, g = musicGain, a = actx;
+  musicSrc = null; musicGain = null;
+  try { g.gain.setTargetAtTime(0.0001, a.currentTime, 0.25); s.stop(a.currentTime + 1.2); } catch (e) {}
+}
+async function playMusic() {
+  if (!S || volOf('music') === 0 || volOf('master') === 0 || !actx) { stopMusic(); musicTrack = null; return; }
+  const url = LOC().track;
+  if (musicTrack === url && musicSrc) return;
+  musicTrack = url;
+  let buf; try { buf = await getBuf(url); } catch (e) { musicTrack = null; return; }
+  if (musicTrack !== url || volOf('music') === 0 || volOf('master') === 0) return;
+  stopMusic();
+  const a = actx, g = a.createGain(), src = a.createBufferSource();
+  const [ls, le] = loopPoints(buf);
+  src.buffer = buf; src.loop = true; src.loopStart = ls; src.loopEnd = le;
+  g.gain.setValueAtTime(0.0001, a.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.5, a.currentTime + 1.5);
+  src.connect(g).connect(busMusic); src.start(0, ls);
+  musicSrc = src; musicGain = g;
+}
+document.addEventListener('pointerdown', () => { if (S && volOf('master') > 0) { ac(); playMusic(); } }, { once: true });
+document.addEventListener('visibilitychange', () => {
+  if (!actx) return;
+  if (document.hidden) actx.suspend().catch(() => {}); else actx.resume().catch(() => {});
+});
+
+// ---------- daily reward ----------
+const dayKey = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const yesterdayKey = () => { const d = new Date(); d.setDate(d.getDate() - 1); return dayKey(d); };
+const dailyReady = () => S.daily.last !== dayKey();
+const nextStreak = () => S.daily.last === yesterdayKey() ? (S.daily.streak % 7) + 1 : 1;
+function dailyCash(minutes) {
+  const first = LOC().stations[0];
+  const best = LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), first.base * fame() / first.cycle);
+  return Math.round(Math.max(perSec(), best) * 60 * minutes);
+}
+const KEY = 'artist-tycoon-v1';   // save key kept so existing progress carries over
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const s = Object.assign(fresh(), JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }
+  } catch (e) {}
+  return null;
+}
+function save() { S.last = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+let S;
+
+// ---------- economy ----------
+const LOC = () => LOCATIONS[S.loc];
+const def = id => LOC().stations.find(s => s.id === id);
+const lvl = id => S.levels[id] || 0;
+const milesHit = L => MILES.filter(m => L >= m).length;
+const cycleTime = st => st.cycle / Math.pow(2, milesHit(lvl(st.id)));
+const fame = () => 1 + FAME_PER_ALBUM * (S.albums || 0);
+const gearMult = () => 1 + SLOTS.reduce((a, [sl]) => { const it = itemById(S.equip && S.equip[sl]); return a + (it ? it.bonus : 0); }, 0);
+const boostMult = () => (S.perks.goldenMic ? 2 : 1) * (S.perks.monitors ? 1.5 : 1);
+const payout = st => st.base * lvl(st.id) * fame() * gearMult() * boostMult();
+const bestRate = () => LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), 0);
+const skipValue = secs => Math.round(Math.max(perSec(), bestRate()) * secs);
+const upCost = st => Math.ceil(st.cost * Math.pow(st.growth, lvl(st.id) - 1));
+// cost of buying n levels at once: geometric series from the current level's price
+const bulkCost = (st, n) => Math.ceil(upCost(st) * (Math.pow(st.growth, n) - 1) / (st.growth - 1));
+function buyPlan(st) {
+  if (S.buyMode === 'max') {
+    const c0 = upCost(st), g = st.growth;
+    let n = Math.floor(Math.log(1 + S.cash * (g - 1) / c0) / Math.log(g));
+    n = Math.max(1, n);
+    while (n > 1 && bulkCost(st, n) > S.cash) n--;   // guard against float rounding
+    return { n, cost: bulkCost(st, n) };
+  }
+  const n = S.buyMode === 10 ? 10 : 1;
+  return { n, cost: bulkCost(st, n) };
+}
+const hypeOn = () => Date.now() < S.hypeUntil;
+const mult = () => hypeOn() ? 2 : 1;
+const perSec = () => LOC().stations.reduce((a, st) => a + (lvl(st.id) && S.crew[st.id] ? payout(st) / cycleTime(st) : 0), 0);
+const movePct = () => Math.min(100, S.earned / LOC().goal * 100);
+
+function fmt(n) {
+  if (n < 1000) return '$' + (n < 10 && n % 1 ? n.toFixed(1) : Math.floor(n));
+  const u = ['K', 'M', 'B', 'T', 'Qa', 'Qi'];
+  let i = -1; while (n >= 1000 && i < u.length - 1) { n /= 1000; i++; }
+  return '$' + (n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2)) + u[i];
+}
+function earn(v) { S.cash += v; S.earned += v; S.stats.lifetime += v; }
+
+// ---------- DOM ----------
+const $ = id => document.getElementById(id);
+const stage = $('stage'), wrap = $('roomWrap'), artist = $('artist');
+let els = {};
+
+function buildRoom() {
+  const loc = LOC();
+  wrap.style.setProperty('--floor', loc.floor);
+  $('locName').textContent = loc.name;
+  $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
+    const [l, t, w, h] = st.pos;
+    return `<button class="station" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
+      <span class="sel-ring"${st.ring ? ` style="bottom:auto;height:${st.ring}px"` : ''}></span>
+      <span class="furn">${st.furn}</span>
+      <span class="tap-hint"${st.hint ? ` style="top:${st.hint}px"` : ''}></span>
+      <span class="badge" style="left:8px;top:-16px"><span class="ic">${svgIc(st.icon)}</span><span class="lv">1</span><span class="up" hidden>${UP}</span></span>
+      <span class="prog" style="left:8px;width:${w - 16}px;top:${h - 4}px"><i></i></span>
+      <span class="lockspot"><span class="lk">${LOCK}</span><b>${st.name}</b><span class="price">${fmt(st.unlock)}</span></span>
+    </button>`;
+  }).join('') + loc.stations.map(st => {
+    const [l, t, w, h] = st.pos;
+    return `<div class="crew" id="crew-${st.id}" style="left:${l + w / 2 - 31 + (l > 180 ? 16 : 0)}px;top:${t + h - 58}px" hidden>${crewFigure(loc.id + st.id)}</div>`;
+  }).join('');
+  els = {};
+  loc.stations.forEach(st => {
+    const b = $('st-' + st.id);
+    els[st.id] = { b, badge: b.querySelector('.badge'), lv: b.querySelector('.lv'), up: b.querySelector('.up'), bar: b.querySelector('.prog i'),
+      prog: b.querySelector('.prog'), lock: b.querySelector('.lockspot'), furn: b.querySelector('.furn'), crew: $('crew-' + st.id) };
+    b.addEventListener('click', () => tapStation(st));
+  });
+  moveArtist(def(S.selected));
+  if (actx) playMusic();
+}
+
+function fit() {
+  const r = wrap.getBoundingClientRect();
+  const s = Math.min(r.width / 390, (r.height - 4) / 480);
+  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+}
+new ResizeObserver(fit).observe(wrap);
+
+function moveArtist(st) {
+  const [x, y] = st ? st.spot : LOC().home;
+  artist.style.left = x + 'px'; artist.style.top = y + 'px';
+}
+function floater(st, text) {
+  const b = els[st.id].b;
+  const f = document.createElement('span');
+  f.className = 'floater'; f.textContent = text;
+  f.style.left = (b.offsetLeft + b.offsetWidth / 2) + 'px';
+  f.style.top = (b.offsetTop + 8) + 'px';
+  stage.appendChild(f);
+  setTimeout(() => f.remove(), 1000);
+}
+let toastT;
+function toast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  $('app').appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 1800);
+}
+
+// ---------- actions ----------
+function tapStation(st) {
+  if (!lvl(st.id)) {
+    if (S.cash >= st.unlock) {
+      S.cash -= st.unlock; S.levels[st.id] = 1; S.selected = st.id; S.stats.unlocks++;
+      sfx('unlock'); toast(st.name + ' unlocked'); moveArtist(st); save();
+    } else { sfx('denied'); toast('Need ' + fmt(st.unlock) + ' to unlock ' + st.name); }
+    render(); return;
+  }
+  S.selected = st.id;
+  if (!S.crew[st.id] && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); }
+  moveArtist(st);
+  render();
+}
+function buyOnce(quiet) {
+  const st = def(S.selected); const { n, cost } = buyPlan(st);
+  if (S.cash < cost) { if (!quiet) sfx('denied'); return false; }
+  const before = milesHit(lvl(st.id));
+  S.cash -= cost; S.levels[st.id] += n; S.stats.upgrades += n; S.stats.maxLevel = Math.max(S.stats.maxLevel, lvl(st.id));
+  if (milesHit(lvl(st.id)) > before) { sfx('milestone'); toast(st.name + ' hit Lv ' + lvl(st.id) + ': 2x speed'); }
+  else sfx('upgrade');
+  render();
+  return true;
+}
+// press and hold: buy once, then keep buying faster until released or out of cash
+let holdT = null;
+function stopHold() { clearTimeout(holdT); holdT = null; }
+$('upBtn').addEventListener('pointerdown', e => {
+  if (e.button > 0) return;
+  e.preventDefault();
+  stopHold();
+  if (!buyOnce()) return;
+  let delay = 380;
+  const step = () => { if (!buyOnce(true)) return stopHold(); delay = Math.max(55, delay * 0.82); holdT = setTimeout(step, delay); };
+  holdT = setTimeout(step, delay);
+});
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => $('upBtn').addEventListener(ev, stopHold));
+window.addEventListener('blur', stopHold);
+$('upBtn').addEventListener('click', e => { if (e.detail === 0) buyOnce(); });   // keyboard Enter/Space
+$('upBtn').addEventListener('contextmenu', e => e.preventDefault());
+$('modeBtn').addEventListener('click', () => {
+  S.buyMode = S.buyMode === 1 ? 10 : S.buyMode === 10 ? 'max' : 1;
+  sfx('tap'); render();
+});
+$('hypeBtn').addEventListener('click', () => openTab('hype'));
+function addHype() {
+  const now = Date.now(), base = Math.max(now, S.hypeUntil);
+  const add = Math.min(HYPE_PER_AD * 1000, now + HYPE_CAP * 1000 - base);
+  if (add <= 0) { toast('Hype is maxed at 2 hours'); return; }
+  S.hypeUntil = base + add; S.stats.hypes++; sfx('hype'); save(); render();
+  toast('+' + Math.round(add / 60000) + ' min of 2x Hype');
+}
+let adTimer = null;
+function watchAd(onDone) {
+  clearInterval(adTimer);
+  if (S.perks.adFree) { onDone(); return; }
+  let left = AD_SECONDS;
+  openSheet(`<div class="welcome"><span class="lbl">Ad plays here</span><span class="amt" id="adCount">${left}</span>
+    <p>Test mode. In the real game a short video ad plays, then you get the reward.</p></div>
+    <button class="ghost" data-close>Skip reward</button>`);
+  adTimer = setInterval(() => {
+    const c = $('adCount');
+    if (!c || $('scrim').hidden) { clearInterval(adTimer); return; }
+    left--;
+    if (left <= 0) { clearInterval(adTimer); onDone(); } else c.textContent = left;
+  }, 1000);
+}
+$('dailyBtn').addEventListener('click', () => openTab('daily'));
+$('goalsBtn').addEventListener('click', () => openTab('goals'));
+$('crateBtn').addEventListener('click', () => {
+  if (Date.now() < S.crateReady) return;
+  const v = Math.max(25, skipValue(45));
+  earn(v); S.gems += 3; S.stats.crates++; S.crateReady = Date.now() + CRATE_CD * 1000; sfx('reward');
+  pendingBonus = v;
+  openSheet(`<div class="sheet-head"><h2>Crate opened</h2>${closeBtn()}</div>
+    <div class="welcome"><span class="amt">+${fmt(v)}</span><p>Plus 3 gems. Next crate in 10 minutes.</p></div>
+    <button class="cta pink" data-ad="bonus">${S.perks.adFree ? 'Double it' : 'Watch ad: double it'}</button>
+    <button class="ghost" data-close>Keep ${fmt(v)}</button>`);
+  save(); render();
+});
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openTab(t.dataset.tab)));
+$('buyGems').addEventListener('click', () => openTab('shop'));
+$('settings').addEventListener('click', () => openTab('settings'));
+
+function moveUp() {
+  const next = S.loc + 1;
+  if (!LOCATIONS[next] || movePct() < 100) return;
+  Object.assign(S, runState(next));
+  S.maxLoc = Math.max(S.maxLoc || 0, next);
+  S.stats.lifetime = Math.max(S.stats.lifetime, 0);
+  buildRoom(); save(); render(); sfx('move');
+  const loc = LOC();
+  openSheet(`<div class="welcome"><h2>Welcome to the ${loc.name}</h2>
+    <p>New space, bigger money. Your ${loc.stations[0].name} is ready. Tap it to start earning, then unlock the rest.</p></div>
+    <button class="cta" data-close>Let's go</button>`);
+}
+function dropAlbum() {
+  if (S.loc < 1 || S.earned < albumReq()) return;
+  S.albums = (S.albums || 0) + 1;
+  Object.assign(S, runState(0));
+  const it = ITEMS.find(i => i.album === S.albums);
+  if (it) S.owned[it.id] = true; else S.gems += 50;
+  buildRoom(); save(); render(); sfx('move');
+  const prev = it ? `<div class="dresser" style="width:100%">${bigArtist(Object.assign({}, S.equip, { [it.slot]: it.id }))}</div>` : '';
+  openSheet(`<div class="welcome"><h2>Album #${S.albums} is out</h2><span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
+    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive worth +${Math.round(it.bonus * 100)}% income while worn.` : ' You also got 50 gems.'}</p>${prev}</div>
+    ${it ? `<button class="cta" data-equip="${it.id}" data-then="close">Wear it</button>` : ''}
+    <button class="ghost" data-close>Start the next run</button>`);
+}
+
+// ---------- sheets ----------
+const closeBtn = () => '<button class="close" data-close aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>';
+function openSheet(html) {
+  $('sheet').innerHTML = html; $('scrim').hidden = false;
+  const c = $('sheet').querySelector('[data-close]'); if (c) c.focus();
+}
+let pendingDaily = false, pendingBonus = 0;
+function grant(id) {
+  const o = OFFERS[id]; if (!o) return;
+  if (o.once) S.perks[id] = true;
+  if (o.gemsOut) S.gems += o.gemsOut;
+  if (o.skip) { const v = skipValue(o.skip); earn(v); toast('+' + fmt(v) + ' from the time skip'); }
+  if (id === 'starter') { S.owned.flame = true; S.gems += 300; const v = skipValue(4 * 3600); earn(v); }
+  if (!o.skip) toast(o.name + (o.gemsOut ? ' added' : ' unlocked'));
+  sfx(o.skip ? 'reward' : 'unlock'); save(); render();
+}
+function closeSheet() {
+  $('scrim').hidden = true;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === 'studio'));
+  if (pendingDaily) { pendingDaily = false; if (dailyReady()) openTab('daily'); }
+}
+function claimDaily() {
+  if (!dailyReady()) return;
+  const day = nextStreak(), r = DAILY[day - 1];
+  const cash = r.min ? dailyCash(r.min) : 0;
+  if (cash) earn(cash);
+  S.gems += r.gems;
+  S.daily = { last: dayKey(), streak: day };
+  sfx('reward'); save(); render();
+  openSheet(`<div class="welcome"><h2>Day ${day} claimed</h2>
+    <span class="amt">${[cash ? '+' + fmt(cash) : '', r.gems ? '+' + r.gems + ' gems' : ''].filter(Boolean).join(' · ')}</span>
+    <p>${day === 7 ? 'You finished the week. The streak starts over tomorrow.' : 'Come back tomorrow for day ' + (day + 1) + '. Miss a day and the streak resets.'}</p></div>
+    <button class="cta" data-close>Nice</button>`);
+}
+$('scrim').addEventListener('click', e => {
+  if (e.target === $('scrim') || e.target.closest('[data-close]')) return closeSheet();
+  const hire = e.target.closest('[data-hire]');
+  if (hire) {
+    const st = def(hire.dataset.hire);
+    if (st && S.cash >= st.crewCost && lvl(st.id)) { S.cash -= st.crewCost; S.crew[st.id] = true; S.running[st.id] = true; S.stats.hires++; sfx('unlock'); toast(st.crew + ' hired'); save(); render(); openTab('crew'); }
+    return;
+  }
+  if (e.target.closest('[data-claim]')) return claimDaily();
+  const gc = e.target.closest('[data-goal]');
+  if (gc) { const g = GOALS.find(x => x.id === gc.dataset.goal); if (g && goalReady(g) && !S.goalsDone[g.id]) { S.goalsDone[g.id] = true; S.gems += g.gems; sfx('reward'); toast('+' + g.gems + ' gems'); save(); render(); } return openTab('goals'); }
+  const adb = e.target.closest('[data-ad]');
+  if (adb) {
+    const kind = adb.dataset.ad;
+    if (kind === 'hype') return watchAd(() => { addHype(); openTab('hype'); });
+    if (kind === 'bonus') { const v = pendingBonus; pendingBonus = 0; return watchAd(() => { if (v) { earn(v); sfx('reward'); } openSheet(`<div class="welcome"><h2>Doubled</h2><span class="amt">+${fmt(v)}</span></div><button class="cta" data-close>Nice</button>`); render(); save(); }); }
+  }
+  const eq = e.target.closest('[data-equip]');
+  if (eq) { const it = itemById(eq.dataset.equip); if (it && S.owned[it.id]) { S.equip[it.slot] = it.id; applyLook(); save(); render(); sfx('tap'); } return eq.dataset.then === 'close' ? closeSheet() : openTab('style'); }
+  const uq = e.target.closest('[data-unequip]');
+  if (uq) { const it = itemById(uq.dataset.unequip); if (it && it.slot !== 'top') { S.equip[it.slot] = null; applyLook(); save(); render(); } return openTab('style'); }
+  const bi = e.target.closest('[data-buy-item]');
+  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= it.gems) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
+  const bo = e.target.closest('[data-buy]');
+  if (bo) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
+    if (o.money) return openTab('pay:' + id);
+    if (S.gems < o.gems) { sfx('denied'); toast('Not enough gems'); return; }
+    S.gems -= o.gems; grant(id); return openTab('shop'); }
+  const pay = e.target.closest('[data-pay]');
+  if (pay) { grant(pay.dataset.pay); return openTab('shop'); }
+  const sw = e.target.closest('[data-skin],[data-phones]');
+  if (sw) { if (sw.dataset.skin) S.skin = sw.dataset.skin; if (sw.dataset.phones) S.phones = sw.dataset.phones; applyLook(); save(); openTab('style'); return; }
+  if (e.target.closest('[data-move-ask]')) return openTab('move-confirm');
+  if (e.target.closest('[data-move]')) return moveUp();
+  if (e.target.closest('[data-album-ask]')) return openTab('album-confirm');
+  if (e.target.closest('[data-album]')) return dropAlbum();
+  if (e.target.closest('[data-reset-ask]')) return openTab('reset');
+  if (e.target.closest('[data-reset]')) { S = fresh(); applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
+});
+$('scrim').addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.vol; if (!k) return;
+  S.vol = Object.assign({ master: 80, music: 70, sfx: 80 }, S.vol, { [k]: +e.target.value });
+  $('out-' + k).textContent = e.target.value;
+  if (volOf('master') > 0) ac();
+  applyVolumes(); playMusic();
+});
+$('scrim').addEventListener('change', e => {
+  if (e.target.dataset && e.target.dataset.vol) { save(); if (e.target.dataset.vol !== 'music') sfx('tap'); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('scrim').hidden) closeSheet(); });
+
+const starPts = (cx, cy, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; return (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); }).join(' ');
+const lookOf = (eq, slot) => { const it = itemById(eq[slot]); return it ? it.look : null; };
+// Simple front-facing figure shared by the in-room artist and the crew.
+// f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
+function miniFigure(f, w, h) {
+  const K = '#1B1830', ln = `stroke="${K}" stroke-width="6" stroke-linejoin="round"`;
+  const sk = f.skin ? `fill="${f.skin}"` : 'class="skin"';
+  let o = `<svg width="${w}" height="${h}" viewBox="0 0 160 214" aria-hidden="true">
+    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>
+    <rect x="62" y="150" width="17" height="46" rx="8" fill="#2C2F48" ${ln}></rect><rect x="81" y="150" width="17" height="46" rx="8" fill="#2C2F48" ${ln}></rect>
+    <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
+    <rect x="41" y="104" width="17" height="46" rx="8.5" fill="${f.body}" ${ln} transform="rotate(9 50 104)"></rect>
+    <rect x="102" y="104" width="17" height="46" rx="8.5" fill="${f.body}" ${ln} transform="rotate(-9 110 104)"></rect>
+    <circle ${sk} cx="43" cy="152" r="9" ${ln}></circle><circle ${sk} cx="117" cy="152" r="9" ${ln}></circle>
+    <path d="M55 113 Q55 98 80 98 Q105 98 105 113 L104 158 Q80 164 56 158 Z" fill="${f.body}" ${ln}></path>`;
+  o += f.style === 'jacket'
+    ? `<path d="M80 104 V158" stroke="${f.trim}" stroke-width="5"></path><path d="M64 99 L80 114 L72 98 Z M96 99 L80 114 L88 98 Z" fill="${f.trim}"></path>`
+    : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${f.trim}" stroke-width="9" stroke-linecap="round"></path>`;
+  o += `<ellipse ${sk} cx="80" cy="60" rx="35" ry="36" ${ln}></ellipse>
+    <path d="M45 60 Q41 22 80 21 Q119 22 115 60 Q109 43 96 40 Q89 49 77 44 Q61 41 45 60 Z" fill="${f.hair || '#231A17'}" ${ln}></path>`;
+  if (f.neck) o += `<path d="M66 99 Q80 124 94 99" fill="none" stroke="${f.neck.color}" stroke-width="6" stroke-linecap="round"></path>`;
+  if (f.cap) o += `<path d="M46 46 Q46 18 80 18 Q114 18 114 46 Z" fill="${f.cap}" ${ln}></path><path d="M46 44 H124" stroke="${f.cap}" stroke-width="9" stroke-linecap="round"></path>`;
+  const hat = f.hat;
+  if (hat && hat.style === 'beanie') o += `<path d="M46 50 Q46 18 80 18 Q114 18 114 50 Z" fill="${hat.color}" ${ln}></path><circle cx="80" cy="14" r="10" fill="${hat.color}" ${ln}></circle>`;
+  if (hat && hat.style === 'bucket') o += `<ellipse cx="80" cy="42" rx="44" ry="10" fill="${hat.color}" ${ln}></ellipse><path d="M54 41 Q55 16 80 16 Q105 16 106 41 Z" fill="${hat.color}" ${ln}></path>`;
+  if (hat && hat.style === 'crown') o += `<polygon points="54,34 59,8 70,24 80,3 90,24 101,8 106,34" fill="${hat.color}" ${ln}></polygon>`;
+  if (f.phones) o += `<path d="M43 66 Q43 14 80 14 Q117 14 117 66" fill="none" stroke="${K}" stroke-width="9" stroke-linecap="round"></path>
+    <ellipse class="phones" cx="45" cy="68" rx="11" ry="15" ${ln}></ellipse><ellipse class="phones" cx="115" cy="68" rx="11" ry="15" ${ln}></ellipse>`;
+  const face = f.face;
+  if (face && face.style === 'plain') o += `<rect x="56" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect><rect x="81" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect>`;
+  else if (face && face.style === 'star') o += `<polygon points="${starPts(68, 66, 13)}" fill="${face.color}" ${ln}></polygon><polygon points="${starPts(92, 66, 13)}" fill="${face.color}" ${ln}></polygon>`;
+  else o += `<ellipse cx="69" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse>`;
+  return o + '</svg>';
+}
+function smallArtist(eq = S.equip) {
+  const t = lookOf(eq, 'top') || itemById('basic').look;
+  return miniFigure({ body: t.body, trim: t.trim, style: t.style, phones: true, hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
+}
+// crew look is random per station but stable (seeded by the station id)
+const CREW_SHIRTS = ['#6FD3FF', '#FFC94A', '#8BF0A0', '#B18CFF', '#FF9E57', '#F4F1EA', '#FF6FAE', '#4F7CFF'];
+const CREW_HAIR = ['#231A17', '#5A3A22', '#C9A15A', '#1B1830', '#8A3B2A'];
+function crewFigure(id) {
+  let h = 7; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const pick = (arr, k) => arr[Math.floor(h / Math.pow(7, k)) % arr.length];
+  const shirt = pick(CREW_SHIRTS, 0);
+  return miniFigure({ body: shirt, trim: 'rgba(0,0,0,.2)', style: 'tee', skin: pick(SKINS, 1), hair: pick(CREW_HAIR, 2), cap: h % 3 === 0 ? pick(CREW_SHIRTS, 3) : null }, 62, 83);
+}
+function bigArtist(eq = S.equip) {
+  const t = lookOf(eq, 'top') || itemById('basic').look, hat = lookOf(eq, 'hat'), neck = lookOf(eq, 'neck'), face = lookOf(eq, 'face');
+  const K = '#1B1830', ln = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
+  let o = `<svg width="170" height="228" viewBox="0 0 160 214" role="img" aria-label="Your artist, front view">
+    <ellipse cx="80" cy="206" rx="34" ry="5" fill="#000" opacity="0.3"></ellipse>
+    <rect x="63" y="150" width="15" height="50" rx="7" fill="#2C2F48" ${ln}></rect>
+    <rect x="82" y="150" width="15" height="50" rx="7" fill="#2C2F48" ${ln}></rect>
+    <path d="M55 203 Q55 192 66 192 H74 Q79 192 79 198 V203 Z" fill="#F4F1EA" ${ln}></path>
+    <path d="M105 203 Q105 192 94 192 H86 Q81 192 81 198 V203 Z" fill="#F4F1EA" ${ln}></path>
+    <rect x="58" y="196" width="12" height="3" rx="1.5" fill="var(--phones)"></rect><rect x="90" y="196" width="12" height="3" rx="1.5" fill="var(--phones)"></rect>
+    <rect x="44" y="104" width="14" height="48" rx="7" fill="${t.body}" ${ln} transform="rotate(9 51 104)"></rect>
+    <rect x="102" y="104" width="14" height="48" rx="7" fill="${t.body}" ${ln} transform="rotate(-9 109 104)"></rect>
+    <circle class="skin" cx="44" cy="153" r="7" ${ln}></circle><circle class="skin" cx="116" cy="153" r="7" ${ln}></circle>
+    <path d="M56 113 Q56 99 80 99 Q104 99 104 113 L103 157 Q80 163 57 157 Z" fill="${t.body}" ${ln}></path>
+    <path d="M95 104 Q103 110 102 155 Q98 157 94 157 Z" fill="#000" opacity="0.12"></path>`;
+  o += t.style === 'jacket'
+    ? `<path d="M80 104 V158" stroke="${t.trim}" stroke-width="3"></path><path d="M65 99 L80 113 L73 98 Z M95 99 L80 113 L87 98 Z" fill="${t.trim}" ${ln}></path><rect x="62" y="124" width="11" height="3.5" rx="1.75" fill="${t.trim}"></rect><rect x="87" y="124" width="11" height="3.5" rx="1.75" fill="${t.trim}"></rect>`
+    : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${t.trim}" stroke-width="7" stroke-linecap="round"></path><path d="M74 104 V121 M86 104 V121" stroke="${t.trim}" stroke-width="2.5" stroke-linecap="round"></path><circle cx="74" cy="122" r="2" fill="${t.trim}"></circle><circle cx="86" cy="122" r="2" fill="${t.trim}"></circle><path d="M66 134 H94 L91 147 H69 Z" fill="#000" opacity="0.1"></path>`;
+  o += `<rect class="skin" x="73" y="84" width="14" height="16" ${ln}></rect>
+    <ellipse class="skin" cx="80" cy="60" rx="33" ry="34" ${ln}></ellipse>
+    <ellipse cx="62" cy="76" rx="6" ry="3.5" fill="#FF8FA3" opacity="0.35"></ellipse><ellipse cx="98" cy="76" rx="6" ry="3.5" fill="#FF8FA3" opacity="0.35"></ellipse>
+    <path d="M47 60 Q43 24 80 23 Q117 24 113 60 Q108 44 96 41 Q90 49 78 45 Q62 42 47 60 Z" fill="#231A17" ${ln}></path>
+    <path d="M62 33 Q72 28 84 29" fill="none" stroke="#4A3A33" stroke-width="3" stroke-linecap="round"></path>`;
+  if (neck) o += `<path d="M68 99 Q80 122 92 99" fill="none" stroke="${neck.color}" stroke-width="3.5" stroke-linecap="round"></path><circle cx="80" cy="119" r="5" fill="${neck.color}" ${ln}></circle>`;
+  if (hat && hat.style === 'beanie') o += `<path d="M48 50 Q48 20 80 20 Q112 20 112 50 Z" fill="${hat.color}" ${ln}></path><rect x="46" y="43" width="68" height="12" rx="6" fill="${hat.color}" ${ln}></rect><path d="M56 46 V52 M64 46 V52 M72 46 V52 M80 46 V52 M88 46 V52 M96 46 V52 M104 46 V52" stroke="#000" stroke-opacity=".15" stroke-width="2"></path><circle cx="80" cy="16" r="8" fill="${hat.color}" ${ln}></circle>`;
+  if (hat && hat.style === 'bucket') o += `<ellipse cx="80" cy="42" rx="41" ry="8" fill="${hat.color}" ${ln}></ellipse><path d="M55 41 Q56 18 80 18 Q104 18 105 41 Z" fill="${hat.color}" ${ln}></path><path d="M57 34 H103" stroke="#000" stroke-opacity=".15" stroke-width="4"></path>`;
+  if (hat && hat.style === 'crown') o += `<polygon points="55,34 60,10 70,25 80,5 90,25 100,10 105,34" fill="${hat.color}" ${ln}></polygon><circle cx="80" cy="22" r="4" fill="#6FD3FF" ${ln}></circle><circle cx="64" cy="27" r="3" fill="#FF6FAE"></circle><circle cx="96" cy="27" r="3" fill="#FF6FAE"></circle>`;
+  o += `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>
+    <ellipse class="phones" cx="47" cy="68" rx="9" ry="13" ${ln}></ellipse><ellipse class="phones" cx="113" cy="68" rx="9" ry="13" ${ln}></ellipse>
+    <ellipse cx="44" cy="68" rx="3" ry="6" fill="#fff" opacity="0.25"></ellipse>`;
+  if (face && face.style === 'plain') o += `<rect x="58" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><rect x="81" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><path d="M62 63 L66 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path><path d="M85 63 L89 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path>`;
+  else if (face && face.style === 'star') o += `<polygon points="${starPts(69, 67, 11)}" fill="${face.color}" ${ln}></polygon><polygon points="${starPts(91, 67, 11)}" fill="${face.color}" ${ln}></polygon>`;
+  else o += `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse>
+    <circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>`;
+  return o + '</svg>';
+}
+
+function openTab(tab) {
+  const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') ? 'shop' : tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tabName));
+  const loc = LOC(), next = LOCATIONS[S.loc + 1];
+  if (tab === 'studio') return closeSheet();
+  if (tab === 'crew') {
+    const rows = loc.stations.map(st => {
+      const unlocked = lvl(st.id) > 0, hired = S.crew[st.id];
+      const right = hired ? '<span class="hired">Working</span>'
+        : `<button class="hire" data-hire="${st.id}" ${!unlocked || S.cash < st.crewCost ? 'disabled' : ''}>${fmt(st.crewCost)}</button>`;
+      return `<div class="row"><span class="ric">${svgIc(st.icon, '#F4F1EA', 20)}</span><span class="rt"><b>${st.crew}</b><span>${unlocked ? 'Runs ' + st.name + ' for you, even offline' : 'Unlock ' + st.name + ' first'}</span></span>${right}</div>`;
+    }).join('');
+    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div><p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}`);
+  } else if (tab === 'career') {
+    const pct = movePct();
+    const allLocs = [...LOCATIONS.map(l => l.name), ...FUTURE];
+    const canAlbum = S.loc >= 1 && S.earned >= albumReq();
+    const moveBtn = next
+      ? `<button class="cta" ${pct < 100 ? 'disabled' : ''} data-move-ask>${pct < 100 ? 'Keep grinding' : 'Move to ' + next.name}</button>`
+      : `<button class="cta" ${pct < 100 ? 'disabled' : ''} data-close>${pct < 100 ? 'Keep grinding' : FUTURE[0] + ' arrives next build'}</button>`;
+    openSheet(`<div class="sheet-head"><h2>Career</h2>${closeBtn()}</div>
+      <div class="sec">
+        <h3>Move Up</h3>
+        <p>Earn ${fmt(loc.goal)} here to move into the ${next ? next.name : FUTURE[0]}.</p>
+        <div class="big-bar"><i style="width:${pct}%"></i></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${fmt(S.earned)} earned</span><span>${Math.floor(pct)}%</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px">${allLocs.map((l, i) => `<div class="loc ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}"><span class="dot"></span>${l}${i === S.loc ? ' · you are here' : ''}</div>`).join('')}</div>
+        ${moveBtn}
+      </div>
+      <div class="sec">
+        <h3>Drop Album</h3>
+        <p>Restart from the apartment with permanent fame (+25% income per album, forever) and unlock an album-exclusive outfit. ${S.loc < 1 ? 'Unlocks in the Home Studio.' : canAlbum ? 'Ready to drop.' : `Earn ${fmt(albumReq())} in the ${loc.name} first.`}</p>
+        <div class="row"><span class="ric">${svgIc('note', '#FFC94A', 20)}</span><span class="rt"><b>Albums dropped: ${S.albums || 0}</b><span>Fame bonus x${fame().toFixed(2)}</span></span></div>
+        <button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Locked'}</button>
+      </div>`);
+  } else if (tab === 'move-confirm') {
+    openSheet(`<div class="sheet-head"><h2>Move to the ${next.name}?</h2>${closeBtn()}</div>
+      <div class="keeps"><div><b>You keep</b>Your style, gems and fame</div><div><b>You start fresh</b>Cash, stations and crew</div></div>
+      <p>The ${next.name} earns about 50 times more per tap, so you'll be past your old income within a few minutes.</p>
+      <button class="cta" data-move>Move in</button><button class="ghost" data-close>Not yet</button>`);
+  } else if (tab === 'album-confirm') {
+    openSheet(`<div class="sheet-head"><h2>Drop album #${(S.albums || 0) + 1}?</h2>${closeBtn()}</div>
+      <div class="keeps"><div><b>You gain</b>Fame x${(fame() + FAME_PER_ALBUM).toFixed(2)} on every station, forever</div><div><b>You restart</b>Back in the apartment with $0</div></div>
+      <button class="cta pink" data-album>Drop it</button><button class="ghost" data-close>Not yet</button>`);
+  } else if (tab === 'shop') {
+    const gemIc = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC94A" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg>';
+    const ic = { goldenMic: svgIc('mic', '#FFC94A', 20), starter: svgIc('star', '#FF6FAE', 20), adFree: svgIc('monitor', '#6FD3FF', 20), monitors: svgIc('sliders', '#8BF0A0', 20),
+      nightOwl: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B18CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"></path></svg>',
+      skip: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>' };
+    const row = id => { const o = OFFERS[id], owned = o.once && S.perks[id];
+      const sub = o.skip ? `About ${fmt(skipValue(o.skip))} right now` : o.sub;
+      const right = owned ? '<span class="hired">Owned</span>'
+        : o.money ? `<button class="hire money" data-buy="${id}">${o.money}</button>`
+        : `<button class="hire" data-buy="${id}" ${S.gems < o.gems ? 'disabled' : ''}>${o.gems} gems</button>`;
+      return `<div class="row"><span class="ric">${o.gemsOut ? gemIc : ic[id] || ic.skip}</span><span class="rt"><b>${o.name}</b><span>${sub}</span></span>${right}</div>`; };
+    const outfits = ITEMS.filter(i => i.gems).map(it => `<div class="row"><span class="ric">${swatch(it)}</span><span class="rt"><b>${it.name}</b><span>+${Math.round(it.bonus * 100)}% income while worn</span></span>${S.owned[it.id] ? '<span class="hired">Owned</span>' : `<button class="hire" data-buy-item="${it.id}" data-from="shop" ${S.gems < it.gems ? 'disabled' : ''}>${it.gems} gems</button>`}</div>`).join('');
+    openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
+      <p>Test mode: real-money items are free in this build so you can try them.</p>
+      <div class="sec"><h3>Best value</h3>${row('goldenMic')}${S.perks.starter ? '' : row('starter')}${row('adFree')}</div>
+      <div class="sec"><h3>Time skips</h3>${row('skip1')}${row('skip4')}</div>
+      <div class="sec"><h3>Permanent boosts</h3>${row('monitors')}${row('nightOwl')}</div>
+      <div class="sec"><h3>Outfits</h3>${outfits}<p>Album exclusives can't be bought. Drop albums to unlock them.</p></div>
+      <div class="sec"><h3>Gems</h3>${row('gems100')}${row('gems550')}${row('gems1200')}${row('gems2600')}</div>`);
+  } else if (tab.startsWith('pay:')) {
+    const id = tab.slice(4), o = OFFERS[id];
+    openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
+      <p>${o.sub}.</p>
+      <div class="keeps"><div><b>Real game</b>Opens the App Store or Google Play checkout for ${o.money}</div><div><b>This build</b>Test purchase. No money is charged.</div></div>
+      <button class="cta" data-pay="${id}">Get it (test)</button><button class="ghost" data-close>Cancel</button>`);
+  } else if (tab === 'hype') {
+    const left = Math.max(0, S.hypeUntil - Date.now());
+    const full = left >= HYPE_CAP * 1000 - 1000;
+    openSheet(`<div class="sheet-head"><h2>2x Hype</h2>${closeBtn()}</div>
+      <div class="welcome"><span class="amt" style="color:var(--accent)">${left ? hms(left) : 'Off'}</span>
+      <p>Each ad adds 20 minutes of double income, up to 2 hours. Hype keeps counting while you're away, and it doubles offline earnings too.</p></div>
+      <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at 2 hours' : (S.perks.adFree ? 'Add 20 minutes' : 'Watch ad: +20 minutes')}</button>
+      ${S.perks.goldenMic ? '<p>Golden Mic stacks with Hype for 4x income.</p>' : ''}`);
+  } else if (tab === 'style') {
+    const g = Math.round((gearMult() - 1) * 100);
+    const slots = SLOTS.map(([sl, label]) => {
+      const rows = ITEMS.filter(i => i.slot === sl).map(it => {
+        const own = S.owned[it.id], on = S.equip[sl] === it.id;
+        const src = it.album ? 'Album exclusive' : it.gems ? 'Shop' : 'Starter';
+        const right = own ? (on ? (sl === 'top' ? '<span class="hired">Wearing</span>' : `<button class="hire on" data-unequip="${it.id}">Wearing</button>`) : `<button class="hire" data-equip="${it.id}">Wear</button>`)
+          : it.album ? `<span class="soon">Album ${it.album}</span>` : `<button class="hire" data-buy-item="${it.id}" ${S.gems < it.gems ? 'disabled' : ''}>${it.gems} gems</button>`;
+        return `<div class="row ${own ? '' : 'locked'}"><span class="ric">${swatch(it)}</span><span class="rt"><b>${it.name}</b><span>${it.bonus ? '+' + Math.round(it.bonus * 100) + '% income · ' : ''}${src}</span></span>${right}</div>`;
+      }).join('');
+      return `<div class="sec"><h3>${label}</h3>${rows}</div>`;
+    }).join('');
+    openSheet(`<div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
+      <div class="dresser">${bigArtist()}</div>
+      <p style="text-align:center">Outfit bonus: <b style="color:var(--cash)">+${g}% income</b></p>
+      ${slots}
+      <div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
+      <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>`);
+  } else if (tab === 'goals') {
+    const list = activeGoals(), done = GOALS.filter(g => S.goalsDone[g.id]).length;
+    const rows = list.map(g => { const v = Math.min(g.val(), g.target), ok = goalReady(g);
+      const prog = g.money ? `${fmt(v)} / ${fmt(g.target)}` : `${Math.floor(v)} / ${g.target}`;
+      return `<div class="row"><span class="rt"><b>${g.text}</b><span>${prog} · ${g.gems} gems</span>
+        <span class="mile" style="margin-top:6px"><i style="width:${v / g.target * 100}%;background:${ok ? 'var(--cash)' : 'var(--gem)'}"></i></span></span>
+        <button class="hire" data-goal="${g.id}" ${ok ? '' : 'disabled'}>${ok ? 'Claim' : 'Working'}</button></div>`; }).join('');
+    openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>
+      <p>${done} of ${GOALS.length} done. Finish goals to earn gems.</p>
+      ${rows || '<p>You finished every goal. More arrive in future updates.</p>'}`);
+  } else if (tab === 'daily') {
+    const ready = dailyReady(), today = ready ? nextStreak() : S.daily.streak;
+    const cells = DAILY.map((r, i) => {
+      const d = i + 1, got = ready ? d < today : d <= today;
+      const what = [r.min ? r.min + ' min cash' : '', r.gems ? r.gems + ' gems' : ''].filter(Boolean).join(' + ');
+      return `<div class="day ${got ? 'got' : ''} ${ready && d === today ? 'today' : ''} ${d === 7 ? 'big' : ''}"><b>Day ${d}</b><span>${got ? 'Claimed' : what}</span></div>`;
+    }).join('');
+    openSheet(`<div class="sheet-head"><h2>Daily Reward</h2>${closeBtn()}</div>
+      <p>Log in every day to climb the streak. Cash rewards are worth that many minutes of your best income.</p>
+      <div class="days">${cells}</div>
+      <button class="cta" ${ready ? 'data-claim' : 'disabled'}>${ready ? 'Claim day ' + today : 'Come back tomorrow'}</button>`);
+  } else if (tab === 'settings') {
+    openSheet(`<div class="sheet-head"><h2>Settings</h2>${closeBtn()}</div>
+      <div class="vols">${[['master', 'Master'], ['music', 'Music'], ['sfx', 'Sound effects']].map(([k, l]) => `
+        <div class="vol"><label for="vol-${k}">${l}</label><input type="range" id="vol-${k}" data-vol="${k}" min="0" max="100" step="1" value="${Math.round(volOf(k) * 100)}"><output id="out-${k}">${Math.round(volOf(k) * 100)}</output></div>`).join('')}
+      </div>
+      <p>Studio Hustle · Music by Elijah Gray. Each location has its own beat.</p>
+      <p>Progress saves in this browser. Starting over wipes everything, including albums and fame.</p>
+      <button class="ghost" data-reset-ask>Start a new career</button>`);
+  } else if (tab === 'reset') {
+    openSheet(`<div class="sheet-head"><h2>Start over?</h2>${closeBtn()}</div>
+      <p>This erases all progress in this browser and can't be undone.</p>
+      <button class="cta pink" data-reset>Yes, start over</button>
+      <button class="ghost" data-close>Keep my progress</button>`);
+  }
+}
+
+const swatch = it => { const c = it.look.body || it.look.color; const tr = it.look.trim || 'transparent';
+  return `<span style="width:24px;height:24px;border-radius:50%;background:${c};box-shadow:inset 0 0 0 4px ${tr};outline:2px solid rgba(255,255,255,.15)"></span>`; };
+const hms = ms => { const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); };
+function applyLook() {
+  document.documentElement.style.setProperty('--skin', S.skin);
+  document.documentElement.style.setProperty('--phones', S.phones);
+  artist.innerHTML = smallArtist();
+}
+
+// ---------- render ----------
+function render() {
+  $('cash').textContent = fmt(S.cash);
+  const ps = perSec() * mult();
+  $('rate').textContent = ps > 0 ? '+' + fmt(ps) + ' / sec' + (hypeOn() ? ' · 2x' : '') : 'Tap a station to work';
+  $('gems').textContent = S.gems;
+  const mp = Math.floor(movePct());
+  $('movePct').textContent = mp + '%';
+  $('movePct').classList.toggle('full', mp >= 100);
+  $('fameChip').hidden = !(S.albums > 0);
+  $('fameChip').textContent = 'Fame x' + fame().toFixed(2);
+
+  LOC().stations.forEach(st => {
+    const e = els[st.id]; if (!e) return;
+    const L = lvl(st.id), unlocked = L > 0;
+    e.crew.hidden = !(unlocked && S.crew[st.id]);
+    e.furn.hidden = !unlocked; e.badge.hidden = !unlocked; e.prog.hidden = !unlocked; e.lock.hidden = unlocked;
+    e.lock.classList.toggle('can', !unlocked && S.cash >= st.unlock);
+    e.b.classList.toggle('sel', unlocked && S.selected === st.id);
+    e.b.classList.toggle('idle', unlocked && !S.crew[st.id] && !S.running[st.id]);
+    e.b.setAttribute('aria-label', unlocked ? `${st.name}, level ${L}` : `Unlock ${st.name} for ${fmt(st.unlock)}`);
+    if (unlocked) { e.lv.textContent = L; e.up.hidden = S.cash < upCost(st); }
+  });
+
+  const st = def(S.selected), L = lvl(st.id);
+  const next = MILES.find(m => L < m), prev = [0, ...MILES].filter(m => L >= m).pop();
+  const ct = cycleTime(st);
+  $('sbName').innerHTML = `${st.name} <small>Lv ${L} · ${fmt(payout(st) * mult())} / ${ct < 1 ? ct.toFixed(2) : ct.toFixed(1)}s</small>`;
+  $('sbMile').style.width = next ? ((L - prev) / (next - prev) * 100) + '%' : '100%';
+  $('sbMileLabel').textContent = next ? `Lv ${next}: 2x speed` : 'Max speed reached';
+  const plan = buyPlan(st);
+  $('modeBtn').textContent = S.buyMode === 'max' ? 'MAX' : 'x' + S.buyMode;
+  $('upCost').textContent = (S.buyMode === 1 ? '' : '+' + plan.n + ' ') + fmt(plan.cost);
+  $('upBtn').disabled = S.cash < plan.cost;
+  $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
+  $('dailyDot').hidden = !dailyReady();
+  $('goalsDot').hidden = !activeGoals().some(goalReady);
+
+  const now = Date.now();
+  const hb = $('hypeBtn');
+  if (hypeOn()) { $('hypeLbl').textContent = '2x · ' + hms(S.hypeUntil - now); hb.classList.remove('ready'); }
+  else { $('hypeLbl').textContent = '2x Hype'; hb.classList.add('ready'); }
+  const cb = $('crateBtn');
+  if (now < S.crateReady) { $('crateLbl').textContent = 'Crate in ' + mmss(S.crateReady - now); cb.disabled = true; cb.classList.remove('ready'); }
+  else { $('crateLbl').textContent = 'Free Crate'; cb.disabled = false; cb.classList.add('ready'); }
+
+  artist.classList.toggle('working', !!(S.running[S.selected] || S.crew[S.selected]));
+}
+const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+
+// ---------- loop ----------
+let lastT = performance.now(), acc = 0, saveAcc = 0;
+const floatGate = {};
+function tick(t) {
+  const dt = Math.min(0.25, (t - lastT) / 1000); lastT = t;
+  LOC().stations.forEach(st => {
+    if (!lvl(st.id) || !els[st.id]) return;
+    const auto = !!S.crew[st.id];
+    if (!auto && !S.running[st.id]) { els[st.id].bar.style.width = '0%'; return; }
+    S.prog[st.id] = (S.prog[st.id] || 0) + dt / cycleTime(st);
+    if (S.prog[st.id] >= 1) {
+      const n = auto ? Math.floor(S.prog[st.id]) : 1;
+      const v = payout(st) * n * mult();
+      earn(v);
+      if (!auto || st.id === S.selected) sfx('cash');
+      if (!floatGate[st.id] || t - floatGate[st.id] > 450) { floater(st, '+' + fmt(v)); floatGate[st.id] = t; }
+      if (auto) S.prog[st.id] -= n; else { S.prog[st.id] = 0; S.running[st.id] = false; }
+    }
+    els[st.id].bar.style.width = (Math.min(1, S.prog[st.id]) * 100) + '%';
+  });
+  acc += dt; saveAcc += dt;
+  if (acc > 0.1) { render(); acc = 0; }
+  if (saveAcc > 5) { save(); saveAcc = 0; }
+  requestAnimationFrame(tick);
+}
+
+function offline() {
+  const now = Date.now(), last = S.last || now;
+  const away = (now - last) / 1000, secs = Math.min(S.perks.nightOwl ? OFFLINE_OWL : OFFLINE_BASE, away);
+  if (secs < 30) return;
+  // hype time that overlapped the counted part of the time away pays double
+  const hyped = Math.max(0, Math.min(secs, (Math.min(S.hypeUntil, last + secs * 1000) - last) / 1000));
+  const v = Math.round(perSec() * (secs + hyped));
+  if (v < 1) return;
+  earn(v); pendingBonus = v;
+  const h = Math.floor(secs / 3600), m = Math.floor(secs % 3600 / 60);
+  openSheet(`<div class="welcome"><h2>Welcome back</h2><p>Your crew kept working for ${h ? h + 'h ' : ''}${m}m${away > secs ? ' (the most offline time you can earn)' : ''}.</p><span class="amt">+${fmt(v)}</span></div>
+    <button class="cta pink" data-ad="bonus">${S.perks.adFree ? 'Double it' : 'Watch ad: double it'}</button>
+    <button class="ghost" data-close>Collect ${fmt(v)}</button>`);
+}
+
+function start(data) {
+  S = (data && data.state) ? Object.assign(fresh(), data.state) : (load() || fresh());
+  if (!LOCATIONS[S.loc]) S.loc = 0;
+  if (!S.vol) S.vol = { master: 80, music: S.music === false ? 0 : 70, sfx: S.sound === false ? 0 : 80 };
+  delete S.music; delete S.sound; delete S.hypeReady;
+  S.owned = Object.assign({ basic: true }, S.owned); S.perks = S.perks || {};
+  S.equip = Object.assign({ top: 'basic', hat: null, neck: null, face: null }, S.equip);
+  S.stats = Object.assign({ upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0 }, S.stats);
+  S.goalsDone = S.goalsDone || {};
+  S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
+  applyLook(); buildRoom(); fit();
+  if (!(data && data.state)) {
+    offline();
+    if (dailyReady()) { if ($('scrim').hidden) openTab('daily'); else pendingDaily = true; }
+  }
+  render(); save();
+  requestAnimationFrame(t => { lastT = t; requestAnimationFrame(tick); });
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+window.addEventListener('pagehide', save);
+window.claude?.hot?.snapshot?.(() => ({ state: S }));
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "Studio Hustle",
+  "short_name": "Studio Hustle",
+  "description": "An idle music tycoon. Rise from a rundown apartment to the stadium.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14122A",
+  "theme_color": "#14122A",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
