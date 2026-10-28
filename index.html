@@ -315,8 +315,14 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .item .glow::before { width: 70px; height: 70px; margin: -35px 0 0 -35px; }
 .item.epic:not(.locked) { border-color: #B79CFF; }
 .item.legendary:not(.locked) { border-color: #FF9A4A; box-shadow: 0 0 12px rgba(255,122,47,.5); }
-.item.exclusive:not(.locked) { border-color: #FFC94A; box-shadow: 0 0 14px rgba(255,201,74,.55); isolation: isolate; }
-.item.exclusive:not(.locked)::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.8) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4s ease-in-out infinite; }
+.item.mythic:not(.locked), .card.mythic { border-color: #FF4F9A; animation: mythicglow 2.6s ease-in-out infinite; }
+@keyframes mythicglow { 0%, 100% { box-shadow: 0 0 14px rgba(255,79,154,.65); border-color: #FF4F9A; } 50% { box-shadow: 0 0 22px rgba(159,230,255,.85); border-color: #9FE6FF; } }
+.item .bestb { position: absolute; top: 4px; right: 4px; z-index: 1; background: var(--cash); color: var(--deep); font-size: 10px; font-weight: 800; border-radius: 999px; padding: 2px 7px; }
+.bonusline small { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+.artist.mythic::before { content: ""; position: absolute; left: 50%; top: 52%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: radial-gradient(circle, rgba(255,79,154,.45) 0%, rgba(159,230,255,.25) 45%, rgba(159,230,255,0) 70%); animation: pulseglow 2.4s ease-in-out infinite; pointer-events: none; z-index: -1; }
+.item.album:not(.locked) { isolation: isolate; }
+.item.album.epic:not(.locked), .item.album:not(.locked):not(.legendary):not(.mythic) { border-color: #FFC94A; box-shadow: 0 0 14px rgba(255,201,74,.55); }
+.item.album:not(.locked)::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.8) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4s ease-in-out infinite; }
 .sw.on { box-shadow: inset 0 0 0 3px var(--panel), 0 0 12px 2px rgba(255,201,74,.75); border-color: var(--gem); }
 .tab-hype { position: relative; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; color: var(--accent); font-size: 11px; font-weight: 700; }
 .tab-hype .orb { position: absolute; top: -34px; width: 58px; height: 58px; z-index: 0; border-radius: 50%; background: var(--accent); color: var(--deep); border: 4px solid var(--ink);
@@ -347,6 +353,9 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .ttl-pill { font: 400 14px var(--display); border: 2px solid; border-radius: 999px; padding: 4px 12px; }
 .prof-art { min-height: 0; padding-block: 14px 4px; }
 .plaques { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.plq-art { position: relative; display: inline-block; line-height: 0; }
+.plq-art.shine svg { filter: drop-shadow(0 0 6px rgba(159,230,255,.6)); }
+.plq-n { position: absolute; top: -6px; right: -7px; min-width: 20px; height: 20px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #14122A; border: 2px solid #FFC94A; color: #FFC94A; font: 400 11px/1 var(--display); display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
 .plq { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
 .plq span { font-size: 9.5px; font-weight: 700; line-height: 1.15; color: var(--muted); }
 .plq.won span { color: var(--text); }
@@ -451,7 +460,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .burst, .dresser .spot, .item.exclusive::after, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .burst, .dresser .spot, .item.album::after, .item.mythic, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -679,6 +688,40 @@ const LOFT_DECOR = `
   <div class="abs" style="left:246px;top:548px;width:42px;height:34px;border-radius:50%;background:#FF6FAE;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
 
+const PRO_DECOR = `
+  ${planks('#363A48', 128, 40)}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#232838"></div>
+  ${[14, 52, 300, 338].map(l => [10, 46].map(t => `<div class="abs" style="left:${l}px;top:${t}px;width:32px;height:30px;border-radius:4px;background:${(l + t) % 3 ? '#2E3550' : '#38416A'};box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)"></div>`).join('')).join('')}
+  <div class="abs" style="left:98px;top:8px;width:194px;height:68px;border-radius:6px;background:#2B1F3D;border:5px solid #11141E;box-sizing:border-box;overflow:hidden">
+    <svg width="184" height="58" viewBox="0 0 184 58" aria-hidden="true">
+      <rect width="184" height="58" fill="#F7A86B"></rect><rect y="0" width="184" height="22" fill="#F08A7A"></rect>
+      <circle cx="92" cy="40" r="15" fill="#FFE08A"></circle>
+      <ellipse cx="30" cy="62" rx="70" ry="20" fill="#7A4A6E"></ellipse><ellipse cx="150" cy="64" rx="80" ry="22" fill="#6A3E62"></ellipse>
+      <rect x="28" y="22" width="3" height="30" fill="#3A2238"></rect><path d="M29.5 22 q-10 -2 -14 4 M29.5 22 q10 -2 14 4 M29.5 22 q-6 -8 -12 -6 M29.5 22 q6 -8 12 -6" stroke="#3A2238" stroke-width="2.6" fill="none" stroke-linecap="round"></path>
+      <rect x="154" y="16" width="3" height="36" fill="#3A2238"></rect><path d="M155.5 16 q-10 -2 -14 4 M155.5 16 q10 -2 14 4 M155.5 16 q-6 -8 -12 -6 M155.5 16 q6 -8 12 -6" stroke="#3A2238" stroke-width="2.6" fill="none" stroke-linecap="round"></path>
+    </svg>
+    <svg class="birds" width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M1 5 Q4 1 7 5 Q10 1 13 5 M12 8 Q14 5 16 8 Q18 5 20 8" fill="none" stroke="#5A2E4E" stroke-width="1.6" stroke-linecap="round"></path></svg>
+    <div class="abs" style="left:90px;top:0;width:4px;height:58px;background:#11141E"></div>
+  </div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#161A26"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#2A2F42"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#2A2F42"></div>
+  <div class="abs" style="left:0;top:420px;width:12px;height:84px;background:#5A4636"></div>
+  <div class="abs" style="left:108px;top:290px;width:174px;height:114px;border-radius:20px;background:#7A2E3A"></div>
+  <div class="abs" style="left:120px;top:302px;width:150px;height:90px;border-radius:14px;border:3px solid #C9A15A;box-sizing:border-box"></div>
+  <!-- vintage synth, guitar stands, leather couch, plants -->
+  <div class="abs" style="left:30px;top:262px;width:78px;height:40px;border-radius:6px;background:#8A5A3A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:36px;top:280px;width:66px;height:16px;border-radius:2px;background:repeating-linear-gradient(90deg,#F4F1EA 0 7px,#1B1830 7px 9px)"></div>
+  <div class="abs" style="left:40px;top:267px;width:8px;height:8px;border-radius:50%;background:#FF9E57"></div><div class="abs" style="left:54px;top:267px;width:8px;height:8px;border-radius:50%;background:#6FD3FF"></div><div class="abs" style="left:68px;top:267px;width:8px;height:8px;border-radius:50%;background:#FFC94A"></div>
+  <div class="abs" style="left:50px;top:302px;width:6px;height:28px;background:#1B1830"></div><div class="abs" style="left:82px;top:302px;width:6px;height:28px;background:#1B1830"></div>
+  <div class="abs" style="left:296px;top:292px;width:30px;height:52px;border-radius:50% 50% 45% 45%;background:#C2384F;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:308px;top:260px;width:6px;height:36px;background:#3A2A22"></div>
+  <div class="abs" style="left:332px;top:298px;width:30px;height:50px;border-radius:50% 50% 45% 45%;background:#E8D2A0;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:344px;top:266px;width:6px;height:36px;background:#3A2A22"></div>
+  <div class="abs" style="left:112px;top:540px;width:166px;height:50px;border-radius:14px;background:#7A4A2E;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:124px;top:528px;width:142px;height:24px;border-radius:12px;background:#9A6040;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:150px;top:552px;width:38px;height:22px;border-radius:8px;background:#C9A15A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:202px;top:552px;width:38px;height:22px;border-radius:8px;background:#C2384F;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#14122A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#14122A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
+
 const LOCATIONS = [
   {
     id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', plank: '#94683F', wall: '#5D4F92', goal: 600000, decor: APARTMENT_DECOR, home: [160, 278],
@@ -714,7 +757,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', wall: '#9C89D4', goal: 1000000000, decor: STUDIO_DECOR, home: [160, 284],
+    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', wall: '#9C89D4', goal: 300000000, decor: STUDIO_DECOR, home: [160, 284],
     stations: [
       { id: 'pads', name: 'Beat Pads', icon: 'grid', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Beatmaker', crewCost: 4500, spot: [132, 160],
         pos: [24, 112, 118, 100],
@@ -747,7 +790,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', wall: '#5E3027', goal: 100000000000, decor: LOFT_DECOR, home: [160, 284],
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', wall: '#5E3027', goal: 25000000000, decor: LOFT_DECOR, home: [160, 284],
     stations: [
       { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -779,9 +822,42 @@ const LOCATIONS = [
           <span class="abs" style="left:63px;top:84px;width:4px;height:30px;background:#8C86A6"></span>` },
     ],
   },
+  {
+    id: 'pro', name: 'Pro Studio', track: 'music/beat2.mp3', floor: '#454A5C', plank: '#363A48', wall: '#232838', goal: 2000000000000, decor: PRO_DECOR, home: [160, 284],
+    stations: [
+      { id: 'console', name: 'Studio Console', icon: 'sliders', unlock: 0, base: 125000, cycle: 1.8, cost: 750000, growth: 1.13, crew: 'Head Engineer', crewCost: 11250000, spot: [140, 160],
+        pos: [24, 112, 128, 100],
+        furn: `<span class="abs" style="left:0;top:0;width:128px;height:84px;border-radius:10px;background:#6B4A32"></span>
+          <span class="abs" style="left:3px;top:81px;width:122px;height:13px;border-radius:0 0 9px 9px;background:#4E3524"></span>
+          <span class="abs" style="left:8px;top:8px;width:112px;height:68px;border-radius:6px;background:#1E1B26;padding:6px;box-sizing:border-box;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+            ${[8, 20, 4, 14, 24, 10, 18].map((t, i) => `<span style="position:relative;border-radius:3px;background:#2E2B3A"><span style="position:absolute;left:1px;right:1px;top:3px;height:6px;border-radius:50%;background:${['#FF6FAE', '#FFC94A', '#6FD3FF', '#8BF0A0'][i % 4]}"></span><span style="position:absolute;left:-1px;right:-1px;top:${18 + t}px;height:7px;border-radius:2px;background:#E8E2F4"></span></span>`).join('')}</span>` },
+      { id: 'liveroom', name: 'Live Room', icon: 'guitar', unlock: 10000000, base: 750000, cycle: 3.4, cost: 6875000, growth: 1.14, crew: 'Session Band', crewCost: 112500000, spot: [214, 180],
+        pos: [212, 112, 154, 132], ring: 96, hint: 40,
+        furn: `<span class="abs" style="left:0;top:0;width:154px;height:84px;border-radius:12px;background:#4A3A5C"></span>
+          <span class="abs" style="left:3px;top:81px;width:148px;height:12px;border-radius:0 0 10px 10px;background:#33283F"></span>
+          <span class="abs" style="left:52px;top:22px;width:50px;height:50px;border-radius:50%;background:#F4F1EA;border:5px solid #C2384F;box-sizing:border-box;display:grid;place-items:center"><span style="width:16px;height:16px;border-radius:50%;background:#C2384F"></span></span>
+          <span class="abs" style="left:26px;top:14px;width:28px;height:28px;border-radius:50%;background:#F4F1EA;border:4px solid #C2384F;box-sizing:border-box"></span>
+          <span class="abs" style="left:100px;top:14px;width:28px;height:28px;border-radius:50%;background:#F4F1EA;border:4px solid #C2384F;box-sizing:border-box"></span>
+          <span class="abs" style="left:6px;top:8px;width:26px;height:8px;border-radius:50%;background:#FFC94A;border:2px solid #9A7420;transform:rotate(-12deg)"></span>
+          <span class="abs" style="left:122px;top:8px;width:26px;height:8px;border-radius:50%;background:#FFC94A;border:2px solid #9A7420;transform:rotate(12deg)"></span>
+          <span class="abs" style="left:56px;top:92px;width:42px;height:40px;border-radius:50%;background:#2E2A4A;border:4px solid #3A3558;box-sizing:border-box"></span>` },
+      { id: 'playlist', name: 'Playlist Push', icon: 'phone', unlock: 75000000, base: 4000000, cycle: 7, cost: 50000000, growth: 1.15, crew: 'Playlist Curator', crewCost: 625000000, spot: [140, 398],
+        pos: [24, 384, 128, 150],
+        furn: `<span class="abs" style="left:14px;top:0;width:100px;height:124px;border-radius:14px;background:#1E1B26;border:4px solid #3A3A44;box-sizing:border-box;padding:10px 9px;display:flex;flex-direction:column;gap:7px">
+            ${['#8BF0A0', '#FF6FAE', '#6FD3FF', '#FFC94A', '#B18CFF'].map((c, i) => `<span style="display:flex;gap:5px;align-items:center"><span style="width:14px;height:14px;border-radius:3px;background:${c}"></span><span style="flex:1;height:5px;border-radius:3px;background:#4A4658;max-width:${60 - i * 7}px"></span></span>`).join('')}</span>
+          <span class="abs" style="left:46px;top:110px;width:36px;height:36px;border-radius:50%;background:#3DBE5A;border:4px solid #1B1830;box-sizing:border-box;display:grid;place-items:center"><span style="width:0;height:0;border-left:10px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px"></span></span>` },
+      { id: 'labeldeal', name: 'Label Deal', icon: 'star', unlock: 437500000, base: 20000000, cycle: 12, cost: 275000000, growth: 1.16, crew: 'A&R Exec', crewCost: 3125000000, spot: [178, 408],
+        pos: [236, 384, 130, 150],
+        furn: `<span class="abs" style="left:22px;top:4px;width:86px;height:86px;border-radius:50%;background:#FFC94A;border:5px solid #1B1830;box-sizing:border-box;box-shadow:0 0 18px rgba(255,201,74,.45);display:grid;place-items:center">
+            <span style="width:56px;height:56px;border-radius:50%;border:3px solid rgba(0,0,0,.15);display:grid;place-items:center"><span style="width:16px;height:16px;border-radius:50%;background:#1B1830"></span></span></span>
+          <span class="abs" style="left:4px;top:96px;width:122px;height:40px;border-radius:8px;background:#6B4A32;border:3px solid #1B1830;box-sizing:border-box"></span>
+          <span class="abs" style="left:24px;top:86px;width:40px;height:26px;border-radius:2px;background:#F4F1EA;border:2px solid #1B1830;transform:rotate(-6deg)"></span>
+          <span class="abs" style="left:70px;top:88px;width:30px;height:6px;border-radius:3px;background:#1B1830;transform:rotate(-20deg)"></span>` },
+    ],
+  },
 ];
-const FUTURE = ['Pro Studio', 'Hillside Mansion', 'Stadium Tour'];
-// pacing: first album = the full tour, ~3.5 hours with 3 maps; each album makes the next tour clearly faster
+const FUTURE = ['Hillside Mansion', 'Stadium Tour'];
+// pacing (Hype on): apartment ~11m, studio ~35m, loft ~55m, pro ~75m; all 6 maps ~6 hours. Each album makes the next tour faster
 // an album drops only after the whole tour: you must reach the last map and hit its goal
 const GEMS_PER_ALBUM = 50;
 const lastLoc = () => LOCATIONS.length - 1;
@@ -801,28 +877,45 @@ const hypeLv = () => Object.assign({ len: 0, cap: 0 }, S.hypeLv);
 const hypePerAd = () => HYPE_LEN[hypeLv().len] * 60;
 const hypeCap = () => HYPE_CAPS[hypeLv().cap] * 3600;
 const capText = () => { const h = HYPE_CAPS[hypeLv().cap]; return h % 1 ? h + ' hours' : h + ' hours'; };
-const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Chains'], ['face', 'Shades']];
-// album: unlocked by dropping that album number. gems: bought in the shop. bonus: income while worn.
+const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Necklaces'], ['face', 'Glasses']];
+// rar: rarity (common, rare, epic, legendary, mythic) is separate from the source. album: reward for dropping that album. gems: bought in the shop.
+// bonus: added to your wardrobe bonus while owned (the best item in each slot counts, whatever you wear)
 const ITEMS = [
-  { id: 'basic', slot: 'top', name: 'Plain Hoodie', bonus: 0, look: { body: '#E8E2F4', trim: '#B9B3CF', style: 'hoodie' } },
+  { id: 'basic', rar: 'common', slot: 'top', name: 'Plain Hoodie', bonus: 0, look: { body: '#E8E2F4', trim: '#B9B3CF', style: 'hoodie' } },
   // album exclusives: free for finishing runs, so they match or beat the shop item of the same slot
-  { id: 'debut', slot: 'top', name: 'Debut Hoodie', album: 1, bonus: 0.15, look: { body: '#2A2733', trim: '#FF6FAE', style: 'hoodie' } },
-  { id: 'goldchain', slot: 'neck', name: 'Gold Chain', album: 3, bonus: 0.15, look: { color: '#FFC94A' } },
-  { id: 'platinum', slot: 'top', name: 'Platinum Jacket', album: 5, bonus: 0.30, look: { body: '#CDD3DE', trim: '#7D8499', style: 'jacket' } },
-  { id: 'bucket', slot: 'hat', name: 'Bucket Hat', album: 10, bonus: 0.15, look: { color: '#E2D3B0', style: 'bucket' } },
-  { id: 'starshades', slot: 'face', name: 'Star Shades', album: 20, bonus: 0.15, look: { color: '#FF6FAE', style: 'star' } },
-  { id: 'crown', slot: 'hat', name: 'Diamond Crown', album: 30, bonus: 0.40, look: { color: '#FFC94A', style: 'crown' } },
+  { id: 'debut', rar: 'epic', slot: 'top', name: 'Debut Hoodie', album: 1, bonus: 0.15, look: { body: '#2A2733', trim: '#FF6FAE', style: 'hoodie' } },
+  { id: 'goldchain', rar: 'epic', slot: 'neck', name: 'Gold Chain', album: 3, bonus: 0.15, look: { color: '#FFC94A' } },
+  { id: 'platinum', rar: 'legendary', slot: 'top', name: 'Platinum Jacket', album: 5, bonus: 0.30, look: { body: '#CDD3DE', trim: '#7D8499', style: 'jacket' } },
+  { id: 'bucket', rar: 'epic', slot: 'hat', name: 'Bucket Hat', album: 10, bonus: 0.15, look: { color: '#E2D3B0', style: 'bucket' } },
+  { id: 'starshades', rar: 'epic', slot: 'face', name: 'Star Shades', album: 20, bonus: 0.15, look: { color: '#FF6FAE', style: 'star' } },
+  { id: 'crown', rar: 'mythic', slot: 'hat', name: 'Diamond Crown', album: 30, bonus: 0.50, look: { color: '#FFC94A', style: 'crown' } },
+  { id: 'mixtape', rar: 'rare', slot: 'top', name: 'Mixtape Tee', album: 2, bonus: 0.08, look: { style: 'tee', body: '#F4F1EA', trim: '#C9C3DE', graphic: 'cassette' } },
+  { id: 'latenight', rar: 'epic', slot: 'top', name: 'Late Night Hoodie', album: 4, bonus: 0.15, look: { style: 'hoodie', body: '#2A3570', trim: '#FFC94A', emblem: 'moon' } },
+  { id: 'recordpend', rar: 'epic', slot: 'neck', name: 'Gold Record Pendant', album: 7, bonus: 0.18, look: { style: 'record', color: '#C9CED9', pend: '#FFC94A' } },
+  { id: 'headliner', rar: 'epic', slot: 'top', name: 'Headliner Jersey', album: 12, bonus: 0.20, look: { style: 'jersey', body: '#1E1B26', trim: '#D9DCE6', num: '1', star: true } },
+  { id: 'sigvarsity', rar: 'legendary', slot: 'top', name: 'Signature Varsity', album: 15, bonus: 0.30, look: { style: 'varsity', body: '#7A1F2E', sleeve: '#4E1420', trim: '#FFC94A' } },
+  { id: 'encore', rar: 'legendary', slot: 'top', name: 'Encore Jacket', album: 25, bonus: 0.35, look: { style: 'encore', body: '#14122A', trim: '#D9DCE6' } },
   // shop items: about 8 to 13 gems per 1% of income, the same band as Pro Monitors
-  { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.08, look: { color: '#14122A', style: 'plain' } },
-  { id: 'beanie', slot: 'hat', name: 'Pink Beanie', gems: 80, bonus: 0.10, look: { color: '#FF6FAE', style: 'beanie' } },
-  { id: 'flame', slot: 'top', name: 'Flame Hoodie', gems: 120, bonus: 0.12, look: { body: '#FF7A3D', trim: '#FFC94A', style: 'hoodie' } },
-  { id: 'icedchain', slot: 'neck', name: 'Iced Chain', gems: 160, bonus: 0.15, look: { color: '#BDEBFF' } },
-  { id: 'neon', slot: 'top', name: 'Neon Tour Jacket', gems: 220, bonus: 0.20, look: { body: '#3DDC84', trim: '#14122A', style: 'jacket' } },
-  { id: 'puffer', slot: 'top', name: 'Puffer Jacket', gems: 400, bonus: 0.35, legendary: true, look: { body: '#7C4FE0', trim: '#5A36B0', style: 'puffer' } },
-  { id: 'lucky', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, legendary: true, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
+  { id: 'shades', rar: 'rare', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.08, look: { color: '#14122A', style: 'plain' } },
+  { id: 'beanie', rar: 'rare', slot: 'hat', name: 'Pink Beanie', gems: 80, bonus: 0.10, look: { color: '#FF6FAE', style: 'beanie' } },
+  { id: 'flame', rar: 'epic', slot: 'top', name: 'Flame Hoodie', gems: 120, bonus: 0.12, look: { body: '#FF7A3D', trim: '#FFC94A', style: 'hoodie' } },
+  { id: 'icedchain', rar: 'epic', slot: 'neck', name: 'Iced Chain', gems: 160, bonus: 0.15, look: { color: '#BDEBFF' } },
+  { id: 'neon', rar: 'epic', slot: 'top', name: 'Neon Tour Jacket', gems: 220, bonus: 0.20, look: { body: '#3DDC84', trim: '#14122A', style: 'jacket' } },
+  { id: 'puffer', rar: 'legendary', slot: 'top', name: 'Puffer Jacket', gems: 400, bonus: 0.35, look: { body: '#7C4FE0', trim: '#5A36B0', style: 'puffer' } },
+  { id: 'clearframes', rar: 'common', slot: 'face', name: 'Clear Frames', gems: 35, bonus: 0.04, look: { style: 'clear', color: '#BFE3F0' } },
+  { id: 'tourtee', rar: 'rare', slot: 'top', name: 'Vintage Tour Tee', gems: 70, bonus: 0.07, look: { style: 'tee', body: '#4A4A55', trim: '#9A97A8', graphic: 'tour' } },
+  { id: 'fitted', rar: 'rare', slot: 'hat', name: 'Fitted Cap', gems: 70, bonus: 0.08, look: { style: 'cap', color: '#14122A', brim: '#26223A' } },
+  { id: 'aviators', rar: 'rare', slot: 'face', name: 'Gold Aviators', gems: 80, bonus: 0.08, look: { style: 'aviator', color: '#FFC94A', lens: '#8A5A3A' } },
+  { id: 'jersey', rar: 'rare', slot: 'top', name: 'Home Team Jersey', gems: 90, bonus: 0.09, look: { style: 'jersey', body: '#2F6FDE', trim: '#FFC94A', num: '23' } },
+  { id: 'whiteframes', rar: 'epic', slot: 'face', name: 'White Frames', gems: 150, bonus: 0.14, look: { style: 'thick', color: '#F4F1EA', lens: '#14122A' } },
+  { id: 'varsity', rar: 'epic', slot: 'top', name: 'Varsity Jacket', gems: 180, bonus: 0.16, look: { style: 'varsity', body: '#2E6B45', sleeve: '#F1E6CC', trim: '#F1E6CC' } },
+  { id: 'biker', rar: 'epic', slot: 'top', name: 'Leather Biker', gems: 220, bonus: 0.18, look: { style: 'biker', body: '#1E1B26', trim: '#2E2B38', zip: '#D9DCE6' } },
+  { id: 'cuban', rar: 'legendary', slot: 'neck', name: 'Diamond Cuban', gems: 350, bonus: 0.30, look: { style: 'cuban', color: '#E8F7FF' } },
+  { id: 'nameplate', rar: 'mythic', slot: 'neck', name: 'Artist Nameplate', gems: 900, bonus: 0.55, look: { style: 'nameplate', color: '#E8F7FF' } },
+  { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 38, CONTACT = 'elicosand@gmail.com';
+const BUILD = 42, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -873,6 +966,7 @@ const GOALS = [
   { id: 'lv50', text: 'Get any station to Lv 50', target: 50, val: () => S.stats.maxLevel, gems: 15 },
   { id: 'earn10m', text: 'Earn $10M in total', target: 1e7, val: () => S.stats.lifetime, gems: 20, money: true },
   { id: 'move2', text: 'Move into the Downtown Loft', target: 2, val: () => S.maxLoc || 0, gems: 30 },
+  { id: 'move3', text: 'Move into the Pro Studio', target: 3, val: () => S.maxLoc || 0, gems: 40 },
   { id: 'album1', text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
   { id: 'lv100', text: 'Get any station to Lv 100', target: 100, val: () => S.stats.maxLevel, gems: 30 },
   { id: 'album3', text: 'Drop 3 albums', target: 3, val: () => S.albums || 0, gems: 50 },
@@ -905,7 +999,10 @@ function dailyTasks() {
 const tasksClaimable = () => { const ts = dailyTasks(); return ts.some(t => t.ready && !t.got) || (ts.every(t => t.got) && !S.dt.bonus); };
 
 // first time you move out of a map: gems plus a plaque for that map
-const MAP_GEMS = [50, 100, 150, 200, 300];
+const MAP_GEMS = [10, 20, 30, 40, 50, 75];
+// plaque frames upgrade with clears, on the same ladder as albums
+const PLAQUE_TIERS = [[1, 'Wood', '#7A4A26'], [3, 'Silver', '#C9CED9'], [5, 'Gold', '#FFC94A'], [10, 'Platinum', '#E4E7F0'], [20, 'Diamond', '#9FE6FF']];
+const plaqueTier = n => PLAQUE_TIERS.filter(t => n >= t[0]).pop();
 // titles shown on the charts, earned by maps reached and albums dropped
 const TITLES = [[0, 0, 'Bedroom Producer', '#B7B0D4'], [0, 1, 'Local Act', '#6FD3FF'], [0, 2, 'Rising Star', '#8BF0A0'], [1, 0, 'Signed Artist', '#FF9E57'],
   [3, 0, 'Gold Artist', '#FFC94A'], [5, 0, 'Platinum Artist', '#E4E7F0'], [10, 0, 'Diamond Artist', '#9FE6FF'], [20, 0, 'Icon', '#FF6FAE'], [30, 0, 'Legend', '#C9A6FF']];
@@ -952,7 +1049,7 @@ function runState(locIdx) {
 }
 function fresh() {
   return Object.assign(runState(0), { gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[1], phones: PHONES[0],
-    buyMode: 1, vol: { master: 80, music: 40, sfx: 80 }, volV: 2, daily: { last: '', streak: 0 }, last: Date.now() });
+    buyMode: 1, vol: { master: 80, music: 20, sfx: 80 }, volV: 3, daily: { last: '', streak: 0 }, last: Date.now() });
 }
 
 // ---------- sound (synthesized, no files) ----------
@@ -1016,7 +1113,9 @@ function sfx(name) {
 }
 // ---------- music: one looping beat per location ----------
 const buffers = {};
-let musicSrc = null, musicGain = null, musicTrack = null;
+let musicSrc = null, musicGain = null, musicTrack = null, musicTimer = null;
+// each beat plays 3 times, fades out, then 40s of quiet before the next beat
+const MUSIC_REPS = 3, MUSIC_GAP = 40000, MUSIC_PEAK = 0.35;
 function getBuf(url) {
   if (!buffers[url]) buffers[url] = fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
     .then(b => new Promise((res, rej) => ac().decodeAudioData(b, res, rej)));
@@ -1035,21 +1134,31 @@ function stopMusic() {
   musicSrc = null; musicGain = null;
   try { g.gain.setTargetAtTime(0.0001, a.currentTime, 0.25); s.stop(a.currentTime + 1.2); } catch (e) {}
 }
+const musicOff = () => !S || volOf('music') === 0 || volOf('master') === 0 || !actx;
 async function playMusic() {
-  if (!S || volOf('music') === 0 || volOf('master') === 0 || !actx) { stopMusic(); musicTrack = null; return; }
+  if (musicOff()) { stopMusic(); clearTimeout(musicTimer); musicTimer = null; musicTrack = null; return; }
   const url = LOC().track;
-  if (musicTrack === url && musicSrc) return;
-  musicTrack = url;
+  if (musicTrack === url && (musicSrc || musicTimer)) return;
+  musicTrack = url; clearTimeout(musicTimer); musicTimer = null;
+  startTrack(url, url);
+}
+async function startTrack(url, key) {
   let buf; try { buf = await getBuf(url); } catch (e) { musicTrack = null; return; }
-  if (musicTrack !== url || volOf('music') === 0 || volOf('master') === 0) return;
+  if (musicTrack !== key || musicOff()) return;
   stopMusic();
   const a = actx, g = a.createGain(), src = a.createBufferSource();
   const [ls, le] = loopPoints(buf);
   src.buffer = buf; src.loop = true; src.loopStart = ls; src.loopEnd = le;
   g.gain.setValueAtTime(0.0001, a.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.5, a.currentTime + 1.5);
+  g.gain.exponentialRampToValueAtTime(MUSIC_PEAK, a.currentTime + 1.5);
   src.connect(g).connect(busMusic); src.start(0, ls);
   musicSrc = src; musicGain = g;
+  const tracks = [...new Set(LOCATIONS.map(l => l.track))];
+  musicTimer = setTimeout(() => {
+    if (musicTrack !== key) return;
+    stopMusic();
+    musicTimer = setTimeout(() => { musicTimer = null; if (musicTrack === key) startTrack(tracks[(tracks.indexOf(url) + 1) % tracks.length], key); }, MUSIC_GAP);
+  }, (le - ls) * MUSIC_REPS * 1000);
 }
 document.addEventListener('pointerdown', () => { if (S && volOf('master') > 0) { ac(); playMusic(); } }, { once: true });
 document.addEventListener('visibilitychange', () => {
@@ -1087,7 +1196,9 @@ const cycleTime = st => st.cycle / Math.pow(2, milesHit(lvl(st.id)));
 const fame = () => 1 + FAME_PER_ALBUM * (S.albums || 0);
 const nextExclusive = () => ITEMS.filter(i => i.album && i.album > (S.albums || 0)).sort((a, b) => a.album - b.album)[0];
 const pctTxt = x => Math.round(x * 100) + '%';
-const gearMult = () => 1 + SLOTS.reduce((a, [sl]) => { const it = itemById(S.equip && S.equip[sl]); return a + (it ? it.bonus : 0); }, 0);
+const bestInSlot = sl => ITEMS.filter(i => i.slot === sl && S.owned && S.owned[i.id]).sort((a, b) => b.bonus - a.bonus)[0];
+const gearMult = () => 1 + SLOTS.reduce((a, [sl]) => { const it = bestInSlot(sl); return a + (it ? it.bonus : 0); }, 0);
+const wearingMythic = () => SLOTS.some(([sl]) => { const it = itemById(S.equip && S.equip[sl]); return it && it.rar === 'mythic'; });
 const boostMult = () => (S.perks.goldenMic ? 2 : 1) * (S.perks.monitors ? 1.5 : 1);
 const payout = st => st.base * lvl(st.id) * fame() * gearMult() * boostMult();
 const bestRate = () => LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), 0);
@@ -1315,7 +1426,7 @@ $('tutSkip').addEventListener('click', () => { S.tut = TUT.length; save(); updat
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
-  const v = Math.max(25, skipValue(45)) * (S.equip.neck === 'lucky' ? 2 : 1);
+  const v = Math.max(25, skipValue(45)) * (S.owned.lucky ? 2 : 1);
   earn(v); S.gems += 3; S.stats.crates++; S.crateReady = Date.now() + CRATE_CD * 1000; sfx('reward');
   pendingBonus = v;
   openSheet(`<div class="sheet-head"><h2>Crate opened</h2>${closeBtn()}</div>
@@ -1336,7 +1447,8 @@ $('settings').addEventListener('click', () => openTab('settings'));
 function moveUp() {
   const next = S.loc + 1;
   if (!LOCATIONS[next] || movePct() < 100) return;
-  const cleared = S.loc, firstTime = (S.mapPaid || 0) < next;
+  const cleared = S.loc, firstTime = (S.mapPaid || 0) <= cleared;
+  S.clears = clearsOf(); S.clears[cleared]++;
   Object.assign(S, runState(next));
   S.maxLoc = Math.max(S.maxLoc || 0, next);
   S.stats.lifetime = Math.max(S.stats.lifetime, 0);
@@ -1345,13 +1457,16 @@ function moveUp() {
   buildRoom(); save(); render(); sfx(firstTime ? 'bling' : 'move'); syncChart(true);
   const loc = LOC();
   openSheet(`<div class="welcome"><h2>Welcome to the ${loc.name}</h2>
-    ${firstTime ? `<div class="plaque-win">${plaqueArt(cleared, true, 92)}<span><b>${LOCATIONS[cleared].name} cleared</b><em>Plaque earned · +${gems} gems</em></span></div>` : ''}
+    ${firstTime ? `<div class="plaque-win">${plaqueArt(cleared, 1, 92)}<span><b>${LOCATIONS[cleared].name} cleared</b><em>Plaque earned · +${gems} gems</em></span></div>` : `<p>${LOCATIONS[cleared].name} cleared ${S.clears[cleared]} times.${[3, 5, 10, 20].includes(S.clears[cleared]) ? ` Its plaque is now <b style="color:${plaqueTier(S.clears[cleared])[2]}">${plaqueTier(S.clears[cleared])[1]}</b>!` : ''}</p>`}
     <p>New space, bigger money. Your ${loc.stations[0].name} is ready. Tap it to start earning, then unlock the rest.</p></div>
     <button class="cta" data-close>Let's go</button>`);
 }
 function dropAlbum() {
   if (!albumReady()) return;
   S.albums = (S.albums || 0) + 1;
+  S.clears = clearsOf(); S.clears[lastLoc()]++;
+  const plaqueGems = (S.mapPaid || 0) <= lastLoc() ? (MAP_GEMS[lastLoc()] || 0) : 0;
+  if (plaqueGems) { S.gems += plaqueGems; S.mapPaid = lastLoc() + 1; }
   // fastest album = active play time from the start of a run to its album drop
   const runTime = S.stats.playSec - (S.runPlay || 0);
   if (runTime > 0 && (!S.stats.fastestAlbum || runTime < S.stats.fastestAlbum)) S.stats.fastestAlbum = runTime;
@@ -1363,7 +1478,7 @@ function dropAlbum() {
   buildRoom(); save(); render(); sfx('move'); syncChart(true);
   const prev = it ? `<div class="dresser" style="width:100%">${bigArtist(Object.assign({}, S.equip, { [it.slot]: it.id }))}</div>` : '';
   openSheet(`<div class="welcome"><h2>Album #${S.albums} is out</h2><span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
-    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive worth +${Math.round(it.bonus * 100)}% income while worn.` : ''} +${GEMS_PER_ALBUM} gems.${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p>${prev}</div>
+    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive that adds +${Math.round(it.bonus * 100)}% income to your wardrobe.` : ''} +${GEMS_PER_ALBUM + plaqueGems} gems${plaqueGems ? ` (including the ${LOCATIONS[lastLoc()].name} plaque)` : ''}.${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p>${prev}</div>
     ${it ? `<button class="cta" data-equip="${it.id}" data-then="close">Wear it</button>` : ''}
     <button class="ghost" data-close>Start the next run</button>`);
 }
@@ -1504,7 +1619,7 @@ $('scrim').addEventListener('change', e => {
 $('scrim').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'friendInput') addFriend(e.target.value); });
 $('scrim').addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.vol; if (!k) return;
-  S.vol = Object.assign({ master: 80, music: 40, sfx: 80 }, S.vol, { [k]: +e.target.value }); S.volV = 2;
+  S.vol = Object.assign({ master: 80, music: 20, sfx: 80 }, S.vol, { [k]: +e.target.value }); S.volV = 3;
   $('out-' + k).textContent = e.target.value;
   if (volOf('master') > 0) ac();
   applyVolumes(); playMusic();
@@ -1517,6 +1632,56 @@ $('scrim').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.
 
 const starPts = (cx, cy, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; return (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); }).join(' ');
 const lookOf = (eq, slot) => { const it = itemById(eq[slot]); return it ? it.look : null; };
+
+// ---------- clothing shapes shared by the small and big figures ----------
+const FONT = 'font-family="Arial Black, Arial, sans-serif" font-weight="900" text-anchor="middle"';
+// arms: tees show forearms, jerseys show whole arms, varsity has its own sleeve color
+function armPair(t, ln, sk, xl, xr, w, h, y) {
+  const one = (x, rot) => { const tf = `transform="rotate(${rot} ${x + w / 2} ${y})"`;
+    if (t.style === 'jersey') return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 2}" ${sk} ${ln} ${tf}></rect>`;
+    if (t.style === 'tee') return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 2}" ${sk} ${ln} ${tf}></rect><rect x="${x - 1}" y="${y - 2}" width="${w + 2}" height="${h * .42}" rx="${w / 2}" fill="${t.body}" ${ln} ${tf}></rect>`;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 2}" fill="${t.sleeve || t.body}" ${ln} ${tf}></rect>`; };
+  return one(xl, 9) + one(xr, -9);
+}
+// details drawn over the body; null means the figure's own hoodie/jacket/puffer drawing is used
+function topExtra(t, ln, sk, big) {
+  const K = '#1B1830';
+  if (t.style === 'tee') return `<path d="M68 100 Q80 110 92 100" fill="none" stroke="${t.trim}" stroke-width="${big ? 4 : 6}" stroke-linecap="round"></path>` + (t.graphic === 'cassette'
+    ? `<rect x="63" y="118" width="34" height="22" rx="3" fill="#FF6FAE" stroke="${K}" stroke-width="2.5"></rect><rect x="68" y="122" width="24" height="7" rx="2" fill="#F4F1EA"></rect><circle cx="72" cy="134" r="3" fill="${K}"></circle><circle cx="88" cy="134" r="3" fill="${K}"></circle><path d="M75 134 H85" stroke="${K}" stroke-width="2"></path>`
+    : t.graphic !== 'tour' ? '' : `<g opacity=".8"><circle cx="80" cy="129" r="14" fill="none" stroke="${t.trim}" stroke-width="3"></circle><polygon points="${starPts(80, 129, 8)}" fill="${t.trim}"></polygon><rect x="65" y="146" width="30" height="4" rx="2" fill="${t.trim}"></rect></g>`);
+  if (t.style === 'jersey') return `<path d="M69 99 L80 113 L91 99 Z" ${sk} stroke="${t.trim}" stroke-width="3" stroke-linejoin="round"></path>
+    <path d="M57 104 Q64 117 58 130 M103 104 Q96 117 102 130" fill="none" stroke="${t.trim}" stroke-width="3" stroke-linecap="round"></path>`
+    + (t.star ? `<polygon points="${starPts(80, 136, 17)}" fill="${t.trim}" stroke="${K}" stroke-width="2"></polygon><text x="80" y="144" ${FONT} font-size="17" fill="${t.body}">${t.num}</text>`
+      : `<text x="80" y="149" ${FONT} font-size="24" fill="${t.trim}" stroke="${K}" stroke-width="1.2">${t.num}</text>`);
+  if (t.style === 'varsity') return `<path d="M64 101 Q80 113 96 101" fill="none" stroke="${t.trim}" stroke-width="5" stroke-linecap="round"></path>
+    ${[116, 127, 138, 149].map(y => `<circle cx="80" cy="${y}" r="2" fill="${t.trim}"></circle>`).join('')}
+    <polygon points="${starPts(68, 131, 8)}" fill="${t.trim}" stroke="${K}" stroke-width="1.6" stroke-linejoin="round"></polygon>
+    <path d="M57 153 Q80 159 103 153" fill="none" stroke="${t.trim}" stroke-width="4"></path>`;
+  if (t.style === 'biker') return `<path d="M66 100 L77 117 L70 121 L61 104 Z M94 100 L83 117 L90 121 L99 104 Z" fill="${t.trim}" stroke="${K}" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M89 106 L73 156" stroke="${t.zip}" stroke-width="3" stroke-dasharray="3 2"></path><ellipse cx="66" cy="112" rx="5" ry="3" fill="#fff" opacity=".25"></ellipse>
+    <path d="M57 150 H103" stroke="${t.trim}" stroke-width="5"></path><rect x="75" y="146" width="9" height="8" rx="1.5" fill="none" stroke="${t.zip}" stroke-width="2"></rect>`;
+  if (t.style === 'encore') return `<rect x="45" y="95" width="26" height="15" rx="7" fill="${t.body}" ${ln}></rect><rect x="89" y="95" width="26" height="15" rx="7" fill="${t.body}" ${ln}></rect>
+    ${[51, 58, 65, 95, 102, 109].map(x => `<circle cx="${x}" cy="102.5" r="2.2" fill="${t.trim}"></circle>`).join('')}
+    ${[118, 130, 142].map(y => `<circle cx="71" cy="${y}" r="2" fill="${t.trim}"></circle><circle cx="89" cy="${y}" r="2" fill="${t.trim}"></circle>`).join('')}
+    <path d="M80 110 V152" stroke="${t.trim}" stroke-width="2.5"></path><path d="M58 150 Q80 155 102 150" fill="none" stroke="${t.trim}" stroke-width="3"></path>`;
+  return null;
+}
+const topEmblem = t => t.emblem === 'moon' ? `<path d="M66 124 a9 9 0 1 0 7 15 a7 7 0 1 1 -7 -15z" fill="${t.trim}"></path><polygon points="${starPts(95, 140, 3.5)}" fill="${t.trim}"></polygon><polygon points="${starPts(90, 148, 2.5)}" fill="${t.trim}"></polygon>` : '';
+function neckExtra(n, big) {
+  const K = '#1B1830', p = big ? 'M68 99 Q80 120 92 99' : 'M66 99 Q80 122 94 99', py = big ? 120 : 123;
+  if (n.style === 'cuban') return `<path d="${p}" fill="none" stroke="${K}" stroke-width="${big ? 9 : 11}" stroke-linecap="round"></path><path d="${p}" fill="none" stroke="${n.color}" stroke-width="${big ? 6 : 8}" stroke-linecap="round"></path><path d="${p}" fill="none" stroke="#7FA6BE" stroke-width="${big ? 6 : 8}" stroke-dasharray="2 4"></path><circle cx="${big ? 72 : 71}" cy="${big ? 108 : 110}" r="1.6" fill="#fff"></circle>`;
+  if (n.style === 'record') return `<path d="${p}" fill="none" stroke="${n.color}" stroke-width="2.5" stroke-linecap="round"></path><circle cx="80" cy="${py}" r="9.5" fill="${n.pend}" stroke="${K}" stroke-width="2"></circle><circle cx="80" cy="${py}" r="6" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1.2"></circle><circle cx="80" cy="${py}" r="3" fill="${K}"></circle>`;
+  if (n.style === 'nameplate') return `<path d="${p}" fill="none" stroke="${n.color}" stroke-width="3.5" stroke-linecap="round"></path><rect x="60" y="${py - 7}" width="40" height="18" rx="5" fill="#E8F7FF" stroke="${K}" stroke-width="2"></rect>${[67, 75, 85, 93].map(x => `<circle cx="${x}" cy="${py + 2}" r="3.2" fill="#9FE6FF" stroke="#2E9CD6" stroke-width="1.2"></circle>`).join('')}<circle cx="80" cy="${py + 2}" r="1.6" fill="#2E9CD6"></circle><polygon points="${starPts(96, py - 6, 4)}" fill="#fff"></polygon>`;
+  return null;
+}
+const capHat = (h, ln) => `<path d="M44 52 Q44 15 80 15 Q116 15 116 52 Z" fill="${h.color}" ${ln}></path><path d="M38 50 Q80 41 122 50 L122 58 Q80 50 38 58 Z" fill="${h.brim || h.color}" ${ln}></path>`;
+function faceExtra(fc, eyes) {
+  const K = '#1B1830';
+  if (fc.style === 'thick') return [56, 82].map(x => `<rect x="${x}" y="57" width="22" height="17" rx="6" fill="${fc.lens}" stroke="${K}" stroke-width="9"></rect><rect x="${x}" y="57" width="22" height="17" rx="6" fill="${fc.lens}" stroke="${fc.color}" stroke-width="5"></rect>`).join('') + `<path d="M78 62 H82" stroke="${fc.color}" stroke-width="3"></path>`;
+  if (fc.style === 'clear') return eyes + [55, 81].map(x => `<rect x="${x}" y="56" width="24" height="21" rx="5" fill="#fff" fill-opacity=".22" stroke="${fc.color}" stroke-width="3"></rect>`).join('') + `<path d="M79 62 H81" stroke="${fc.color}" stroke-width="3"></path>`;
+  if (fc.style === 'aviator') return `<path d="M55 60 H78 Q78 79 66.5 79 Q55 79 55 60 Z M82 60 H105 Q105 79 93.5 79 Q82 79 82 60 Z" fill="${fc.lens}" fill-opacity=".9" stroke="${fc.color}" stroke-width="2.5" stroke-linejoin="round"></path><path d="M78 62 Q80 58 82 62" fill="none" stroke="${fc.color}" stroke-width="2.5"></path><path d="M59 64 L64 64 M86 64 L91 64" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path>`;
+  return null;
+}
 // Simple front-facing figure shared by the in-room artist and the crew.
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
 function miniFigure(f, w, h, vb = '0 0 160 214') {
@@ -1528,17 +1693,20 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
     <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
     ${f.style === 'puffer'
       ? `<rect x="35" y="102" width="23" height="48" rx="11.5" fill="${f.body}" ${ln} transform="rotate(9 46 102)"></rect><rect x="102" y="102" width="23" height="48" rx="11.5" fill="${f.body}" ${ln} transform="rotate(-9 114 102)"></rect>`
-      : `<rect x="41" y="104" width="17" height="46" rx="8.5" fill="${f.body}" ${ln} transform="rotate(9 50 104)"></rect><rect x="102" y="104" width="17" height="46" rx="8.5" fill="${f.body}" ${ln} transform="rotate(-9 110 104)"></rect>`}
+      : armPair(f, ln, sk, 41, 102, 17, 46, 104)}
     <circle ${sk} cx="43" cy="152" r="9" ${ln}></circle><circle ${sk} cx="117" cy="152" r="9" ${ln}></circle>
     <path d="${f.style === 'puffer' ? 'M48 112 Q48 95 80 95 Q112 95 112 112 L110 160 Q80 168 50 160 Z' : 'M55 113 Q55 98 80 98 Q105 98 105 113 L104 158 Q80 164 56 158 Z'}" fill="${f.body}" ${ln}></path>`;
-  o += f.style === 'puffer'
+  const fx = topExtra(f, ln, sk, false);
+  o += fx !== null ? fx : f.style === 'puffer'
     ? `<rect x="60" y="90" width="40" height="17" rx="8.5" fill="${f.body}" ${ln}></rect><ellipse cx="64" cy="116" rx="8" ry="4" fill="#fff" opacity=".3"></ellipse>`
     : f.style === 'jacket'
     ? `<path d="M80 104 V158" stroke="${f.trim}" stroke-width="5"></path><path d="M64 99 L80 114 L72 98 Z M96 99 L80 114 L88 98 Z" fill="${f.trim}"></path>`
     : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${f.trim}" stroke-width="9" stroke-linecap="round"></path>`;
+  o += topEmblem(f);
   o += `<ellipse ${sk} cx="80" cy="60" rx="35" ry="36" ${ln}></ellipse>
     <path d="M45 60 Q41 22 80 21 Q119 22 115 60 Q109 43 96 40 Q89 49 77 44 Q61 41 45 60 Z" fill="${f.hair || '#231A17'}" ${ln}></path>`;
-  if (f.neck) o += `<path d="M66 99 Q80 124 94 99" fill="none" stroke="${f.neck.color}" stroke-width="6" stroke-linecap="round"></path>` + (f.neck.charm ? `<circle cx="80" cy="124" r="8" fill="${f.neck.charm}" ${ln}></circle>` : '');
+  if (f.neck && neckExtra(f.neck, false) !== null) o += neckExtra(f.neck, false);
+  else if (f.neck) o += `<path d="M66 99 Q80 124 94 99" fill="none" stroke="${f.neck.color}" stroke-width="6" stroke-linecap="round"></path>` + (f.neck.charm ? `<circle cx="80" cy="124" r="8" fill="${f.neck.charm}" ${ln}></circle>` : '');
   const beanie = c => `<path d="M41 58 Q41 12 80 12 Q119 12 119 58 Z" fill="${c}" ${ln}></path><rect x="38" y="46" width="84" height="17" rx="8.5" fill="${c}" ${ln}></rect>
     <path d="M52 49 V60 M64 49 V60 M76 49 V60 M88 49 V60 M100 49 V60 M110 49 V60" stroke="#000" stroke-opacity=".18" stroke-width="3"></path><circle cx="80" cy="10" r="10" fill="${c}" ${ln}></circle>`;
   if (f.beanie) o += beanie(f.beanie);
@@ -1546,17 +1714,19 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
   if (hat && hat.style === 'beanie') o += beanie(hat.color);
   if (hat && hat.style === 'bucket') o += `<ellipse cx="80" cy="42" rx="44" ry="10" fill="${hat.color}" ${ln}></ellipse><path d="M54 41 Q55 16 80 16 Q105 16 106 41 Z" fill="${hat.color}" ${ln}></path>`;
   if (hat && hat.style === 'crown') o += `<polygon points="54,34 59,8 70,24 80,3 90,24 101,8 106,34" fill="${hat.color}" ${ln}></polygon>`;
+  if (hat && hat.style === 'cap') o += capHat(hat, ln);
   if (f.phones) o += `<path d="M43 66 Q43 14 80 14 Q117 14 117 66" fill="none" stroke="${K}" stroke-width="9" stroke-linecap="round"></path>
     <ellipse class="phones" cx="45" cy="68" rx="11" ry="15" ${ln}></ellipse><ellipse class="phones" cx="115" cy="68" rx="11" ry="15" ${ln}></ellipse>`;
-  const face = f.face;
-  if (face && face.style === 'plain') o += `<rect x="56" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect><rect x="81" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect>`;
+  const face = f.face, miniEyes = `<ellipse cx="69" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse>`;
+  if (face && faceExtra(face, miniEyes) !== null) o += faceExtra(face, miniEyes);
+  else if (face && face.style === 'plain') o += `<rect x="56" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect><rect x="81" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect>`;
   else if (face && face.style === 'star') o += `<polygon points="${starPts(68, 66, 13)}" fill="${face.color}" ${ln}></polygon><polygon points="${starPts(92, 66, 13)}" fill="${face.color}" ${ln}></polygon>`;
   else o += `<ellipse cx="69" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse>`;
   return o + '</svg>';
 }
 function smallArtist(eq = S.equip) {
   const t = lookOf(eq, 'top') || itemById('basic').look;
-  return miniFigure({ body: t.body, trim: t.trim, style: t.style, phones: true, hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
+  return miniFigure({ ...t, phones: true, hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
 }
 // crew look is random per station but stable (seeded by the station id)
 const CREW_SHIRTS = ['#6FD3FF', '#FFC94A', '#8BF0A0', '#B18CFF', '#FF9E57', '#F4F1EA', '#FF6FAE', '#4F7CFF'];
@@ -1583,31 +1753,37 @@ function bigArtist(eq = S.equip) {
     <rect x="58" y="196" width="12" height="3" rx="1.5" fill="var(--phones)"></rect><rect x="90" y="196" width="12" height="3" rx="1.5" fill="var(--phones)"></rect>
     ${t.style === 'puffer'
       ? `<rect x="38" y="102" width="20" height="50" rx="10" fill="${t.body}" ${ln} transform="rotate(9 48 102)"></rect><rect x="102" y="102" width="20" height="50" rx="10" fill="${t.body}" ${ln} transform="rotate(-9 112 102)"></rect>`
-      : `<rect x="44" y="104" width="14" height="48" rx="7" fill="${t.body}" ${ln} transform="rotate(9 51 104)"></rect><rect x="102" y="104" width="14" height="48" rx="7" fill="${t.body}" ${ln} transform="rotate(-9 109 104)"></rect>`}
+      : armPair(t, ln, 'class="skin"', 44, 102, 14, 48, 104)}
     <circle class="skin" cx="44" cy="153" r="7" ${ln}></circle><circle class="skin" cx="116" cy="153" r="7" ${ln}></circle>
     <path d="${t.style === 'puffer' ? 'M50 112 Q50 96 80 96 Q110 96 110 112 L108 159 Q80 166 52 159 Z' : 'M56 113 Q56 99 80 99 Q104 99 104 113 L103 157 Q80 163 57 157 Z'}" fill="${t.body}" ${ln}></path>
     <path d="${t.style === 'puffer' ? 'M99 104 Q108 110 107 157 Q102 159 98 159 Z' : 'M95 104 Q103 110 102 155 Q98 157 94 157 Z'}" fill="#000" opacity="0.12"></path>`;
-  o += t.style === 'puffer'
+  const tx = topExtra(t, ln, 'class="skin"', true);
+  o += tx !== null ? tx : t.style === 'puffer'
     ? `<path d="M80 108 V159" stroke="${t.trim}" stroke-width="2.5"></path><rect x="61" y="89" width="38" height="16" rx="8" fill="${t.body}" ${ln}></rect>
        <ellipse cx="66" cy="116" rx="8" ry="4" fill="#fff" opacity=".35"></ellipse><ellipse cx="43" cy="118" rx="3" ry="7" fill="#fff" opacity=".3"></ellipse>`
     : t.style === 'jacket'
     ? `<path d="M80 104 V158" stroke="${t.trim}" stroke-width="3"></path><path d="M65 99 L80 113 L73 98 Z M95 99 L80 113 L87 98 Z" fill="${t.trim}" ${ln}></path><rect x="62" y="124" width="11" height="3.5" rx="1.75" fill="${t.trim}"></rect><rect x="87" y="124" width="11" height="3.5" rx="1.75" fill="${t.trim}"></rect>`
     : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${t.trim}" stroke-width="7" stroke-linecap="round"></path><path d="M74 104 V121 M86 104 V121" stroke="${t.trim}" stroke-width="2.5" stroke-linecap="round"></path><circle cx="74" cy="122" r="2" fill="${t.trim}"></circle><circle cx="86" cy="122" r="2" fill="${t.trim}"></circle><path d="M66 134 H94 L91 147 H69 Z" fill="#000" opacity="0.1"></path>`;
+  o += topEmblem(t);
   o += `<rect class="skin" x="73" y="84" width="14" height="16" ${ln}></rect>
     <ellipse class="skin" cx="80" cy="60" rx="33" ry="34" ${ln}></ellipse>
     <ellipse cx="62" cy="76" rx="6" ry="3.5" fill="#FF8FA3" opacity="0.35"></ellipse><ellipse cx="98" cy="76" rx="6" ry="3.5" fill="#FF8FA3" opacity="0.35"></ellipse>
     <path d="M47 60 Q43 24 80 23 Q117 24 113 60 Q108 44 96 41 Q90 49 78 45 Q62 42 47 60 Z" fill="#231A17" ${ln}></path>
     <path d="M62 33 Q72 28 84 29" fill="none" stroke="#4A3A33" stroke-width="3" stroke-linecap="round"></path>`;
-  if (neck) o += `<path d="M68 99 Q80 122 92 99" fill="none" stroke="${neck.color}" stroke-width="3.5" stroke-linecap="round"></path>` + (neck.charm
+  if (neck && neckExtra(neck, true) !== null) o += neckExtra(neck, true);
+  else if (neck) o += `<path d="M68 99 Q80 122 92 99" fill="none" stroke="${neck.color}" stroke-width="3.5" stroke-linecap="round"></path>` + (neck.charm
     ? `<g transform="translate(80 121)">${[[-4, -4], [4, -4], [-4, 4], [4, 4]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4.6" fill="${neck.charm}" stroke="#1B1830" stroke-width="2"></circle>`).join('')}<circle r="2" fill="#2E8B45"></circle></g>`
     : `<circle cx="80" cy="119" r="5" fill="${neck.color}" ${ln}></circle>`);
   if (hat && hat.style === 'beanie') o += `<path d="M48 50 Q48 20 80 20 Q112 20 112 50 Z" fill="${hat.color}" ${ln}></path><rect x="46" y="43" width="68" height="12" rx="6" fill="${hat.color}" ${ln}></rect><path d="M56 46 V52 M64 46 V52 M72 46 V52 M80 46 V52 M88 46 V52 M96 46 V52 M104 46 V52" stroke="#000" stroke-opacity=".15" stroke-width="2"></path><circle cx="80" cy="16" r="8" fill="${hat.color}" ${ln}></circle>`;
   if (hat && hat.style === 'bucket') o += `<ellipse cx="80" cy="42" rx="41" ry="8" fill="${hat.color}" ${ln}></ellipse><path d="M55 41 Q56 18 80 18 Q104 18 105 41 Z" fill="${hat.color}" ${ln}></path><path d="M57 34 H103" stroke="#000" stroke-opacity=".15" stroke-width="4"></path>`;
   if (hat && hat.style === 'crown') o += `<polygon points="55,34 60,10 70,25 80,5 90,25 100,10 105,34" fill="${hat.color}" ${ln}></polygon><circle cx="80" cy="22" r="4" fill="#6FD3FF" ${ln}></circle><circle cx="64" cy="27" r="3" fill="#FF6FAE"></circle><circle cx="96" cy="27" r="3" fill="#FF6FAE"></circle>`;
+  if (hat && hat.style === 'cap') o += capHat(hat, ln);
   o += `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>
     <ellipse class="phones" cx="47" cy="68" rx="9" ry="13" ${ln}></ellipse><ellipse class="phones" cx="113" cy="68" rx="9" ry="13" ${ln}></ellipse>
     <ellipse cx="44" cy="68" rx="3" ry="6" fill="#fff" opacity="0.25"></ellipse>`;
-  if (face && face.style === 'plain') o += `<rect x="58" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><rect x="81" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><path d="M62 63 L66 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path><path d="M85 63 L89 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path>`;
+  const bigEyes = `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>`;
+  if (face && faceExtra(face, bigEyes) !== null) o += faceExtra(face, bigEyes);
+  else if (face && face.style === 'plain') o += `<rect x="58" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><rect x="81" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><path d="M62 63 L66 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path><path d="M85 63 L89 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path>`;
   else if (face && face.style === 'star') o += `<polygon points="${starPts(69, 67, 11)}" fill="${face.color}" ${ln}></polygon><polygon points="${starPts(91, 67, 11)}" fill="${face.color}" ${ln}></polygon>`;
   else o += `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse>
     <circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>`;
@@ -1629,20 +1805,28 @@ const ART = {
 };
 // a framed record for each map you've cleared; one color per map
 const PLAQUE = ['#C9CED9', '#FFC94A', '#9FE6FF', '#FF6FAE', '#8BF0A0', '#C9A6FF'];
-function plaqueArt(i, won, size = 46) {
+function plaqueArt(i, n, size = 46) {
+  n = n === true ? 1 : (+n || 0);
   const c = PLAQUE[i] || '#FFC94A';
-  if (!won) return `<svg width="${size}" height="${size * 1.2}" viewBox="0 0 50 60" aria-hidden="true"><rect x="3" y="3" width="44" height="54" rx="6" fill="none" stroke="#5C5680" stroke-width="3" stroke-dasharray="5 4"></rect><circle cx="25" cy="27" r="11" fill="none" stroke="#5C5680" stroke-width="3"></circle></svg>`;
-  return `<svg width="${size}" height="${size * 1.2}" viewBox="0 0 50 60" aria-hidden="true"><rect x="2" y="2" width="46" height="56" rx="6" fill="#7A4A26" stroke="#14122A" stroke-width="3"></rect><rect x="7" y="7" width="36" height="42" rx="3" fill="#1E1B33"></rect>
+  if (!n) return `<span class="plq-art"><svg width="${size}" height="${size * 1.2}" viewBox="0 0 50 60" aria-hidden="true"><rect x="3" y="3" width="44" height="54" rx="6" fill="none" stroke="#5C5680" stroke-width="3" stroke-dasharray="5 4"></rect><circle cx="25" cy="27" r="11" fill="none" stroke="#5C5680" stroke-width="3"></circle></svg></span>`;
+  const t = plaqueTier(n), shine = n >= 10;
+  return `<span class="plq-art ${shine ? 'shine' : ''}" title="${t[1]} plaque · cleared ${n} time${n === 1 ? '' : 's'}"><svg width="${size}" height="${size * 1.2}" viewBox="0 0 50 60" aria-hidden="true"><rect x="2" y="2" width="46" height="56" rx="6" fill="${t[2]}" stroke="#14122A" stroke-width="3"></rect><rect x="7" y="7" width="36" height="42" rx="3" fill="#1E1B33"></rect>
     <circle cx="25" cy="27" r="14" fill="${c}" stroke="#14122A" stroke-width="2"></circle><circle cx="25" cy="27" r="9" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="1.5"></circle><circle cx="25" cy="27" r="4" fill="#1E1B33"></circle>
-    <path d="M15 20 Q19 15 25 14" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.4" stroke-linecap="round"></path><rect x="14" y="51" width="22" height="4" rx="2" fill="#FFC94A"></rect></svg>`;
+    <path d="M15 20 Q19 15 25 14" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.4" stroke-linecap="round"></path><rect x="14" y="51" width="22" height="4" rx="2" fill="${n >= 3 ? '#14122A' : '#FFC94A'}"></rect></svg>${n >= 2 ? `<span class="plq-n">${n}</span>` : ''}</span>`;
+}
+const clearsOf = () => LOCATIONS.map((_, i) => (S.clears && S.clears[i]) || 0);
+function plaqueRow(cl) {
+  const maps = [...LOCATIONS.map(l => l.name), ...FUTURE];
+  return `<div class="plaques">${maps.map((m, i) => `<div class="plq ${cl[i] ? 'won' : ''}">${plaqueArt(i, cl[i] || 0)}<span>${esc(m)}</span></div>`).join('')}</div>`;
 }
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-// Rare up to +10% · Epic +12% to +20% · Legendary +25% and up or a special perk · Exclusive = earned from albums
-const rarity = it => it.album ? ['Exclusive', '#D4880F'] : (it.legendary || it.bonus >= 0.25) ? ['Legendary', '#E5650F'] : it.gems ? (it.bonus >= 0.12 ? ['Epic', '#7C4FE0'] : ['Rare', '#2F7FE8']) : ['Starter', '#6F6990'];
+// Common ~+4% · Rare +6–10% · Epic +12–20% · Legendary +25–35% · Mythic +50% and up
+const RARITY = { common: ['Common', '#7F7A99'], rare: ['Rare', '#2F7FE8'], epic: ['Epic', '#7C4FE0'], legendary: ['Legendary', '#E5650F'], mythic: ['Mythic', '#E0307A'] };
+const rarity = it => RARITY[it.rar] || RARITY.common;
 // a figure wearing just this item, zoomed on the part it changes
 function itemArt(it, size = 70) {
   const base = itemById('basic').look, f = { body: base.body, trim: base.trim, style: base.style, phones: true };
-  if (it.slot === 'top') Object.assign(f, { body: it.look.body, trim: it.look.trim, style: it.look.style });
+  if (it.slot === 'top') Object.assign(f, it.look);
   else f[it.slot === 'hat' ? 'hat' : it.slot] = it.look;
   const vb = it.slot === 'top' ? '22 70 116 116' : it.slot === 'neck' ? '22 40 116 116' : '18 -4 124 124';
   return miniFigure(f, size, size, vb);
@@ -1771,7 +1955,7 @@ const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.id !== 'basic').sor
 function myProfile() {
   const b = bestItem(S.owned);
   return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, fast: Math.round(S.stats.fastestAlbum || 0),
-    play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
+    clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
 }
 // data from other players is untrusted: keep only known items, colors and plain numbers
 function cleanProfile(p) {
@@ -1780,7 +1964,7 @@ function cleanProfile(p) {
   for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
   const best = itemById(p.best);
   return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[1], ph: PHONES.includes(p.ph) ? p.ph : PHONES[0],
-    fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
+    clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 async function refreshCharts() {
   Charts.status = 'loading'; if (sheetKey === 'charts') openTab('charts');
@@ -1834,13 +2018,14 @@ function openTab(tab) {
       </div>
       <div class="sec">
         <h3>Drop Album</h3>
-        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(FAME_PER_ALBUM)} income per album, forever, plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and earn ${fmt(last.goal)} there.` : `Earn ${fmt(last.goal)} in the ${last.name} first.`}</p>
+        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(FAME_PER_ALBUM)} income per album, forever, plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and earn ${fmt(last.goal)} there.` : `Earn ${fmt(last.goal)} in the ${last.name} first.`}</p>
         <div class="row"><span class="ric">${svgIc('note', '#FFC94A', 20)}</span><span class="rt"><b>Albums dropped: ${S.albums || 0}</b><span>Fame bonus x${fmtX(fame())}${nextExclusive() ? ` · next exclusive at album ${nextExclusive().album}` : ''}</span></span></div>
         <button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Locked'}</button>
       </div>
-      <div class="sec"><h3>Plaques <small class="h3note">${S.maxLoc || 0} of ${allLocs.length} maps cleared</small></h3>
-        <div class="plaques">${allLocs.map((m, i) => `<div class="plq ${i < (S.maxLoc || 0) ? 'won' : ''}">${plaqueArt(i, i < (S.maxLoc || 0))}<span>${m}</span></div>`).join('')}</div>
-        <p class="cnote">${MAP_GEMS[S.mapPaid || 0] && LOCATIONS[(S.mapPaid || 0) + 1] ? `Move out of the ${allLocs[S.mapPaid || 0]} to earn its plaque and ${MAP_GEMS[S.mapPaid || 0]} gems.` : 'More plaques arrive with the next maps.'}</p></div>
+      <div class="sec"><h3>Plaques <small class="h3note">${clearsOf().filter(Boolean).length} of ${allLocs.length} maps cleared</small></h3>
+        ${plaqueRow(clearsOf())}
+        <p class="cnote">Every time you clear a map its plaque counts it. Frames upgrade to Silver, Gold, Platinum and Diamond at 3, 5, 10 and 20 clears.</p>
+        ${MAP_GEMS[S.mapPaid || 0] && LOCATIONS[S.mapPaid || 0] ? `<p class="cnote">Next first clear: the ${allLocs[S.mapPaid || 0]} pays ${MAP_GEMS[S.mapPaid || 0]} gems.</p>` : ''}</div>
       <div class="sec">
         <h3>Career stats <small class="h3note">all-time</small></h3>
         <div class="statgrid">
@@ -1897,12 +2082,11 @@ function openTab(tab) {
     const p = me ? cleanProfile(myProfile()) : r.profile;
     const name = me ? cleanName(S.name) : r.name, albums = me ? (S.albums || 0) : r.albums, life = me ? S.stats.lifetime : r.lifetime, country = me ? S.country : r.country;
     const maps = [...LOCATIONS.map(l => l.name), ...FUTURE], loc = p ? p.loc : 0, best = p && itemById(p.best);
-    const t = titleOf(albums, loc);
+    const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
     openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
       <div class="prof-top"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
       ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq)}</div>` : `<p class="cnote">This artist hasn't updated the game yet, so their outfit and stats aren't on the charts.</p>`}
-      <div class="sec"><h3>Plaques <small class="h3note">${loc} of ${maps.length} maps cleared</small></h3>
-        <div class="plaques">${maps.map((m, i) => `<div class="plq ${i < loc ? 'won' : ''}">${plaqueArt(i, i < loc)}<span>${esc(m)}</span></div>`).join('')}</div></div>
+      <div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>
       <div class="sec"><h3>Career</h3><div class="statgrid">
         <div><b>${albums}</b><span>Albums dropped</span></div>
         <div><b>${fmt(life)}</b><span>Lifetime earnings</span></div>
@@ -1923,7 +2107,7 @@ function openTab(tab) {
       <div class="welcome"><span class="amt" style="color:var(--gem)">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others.</p>${perSec() > 0 ? `<p>Your crew earns <b style="color:var(--cash)">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
       ${row(h, bolt, '2x Hype', h ? 2 : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
       ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each, forever`)}
-      ${row(g > 1, svgIc('shirt', '#B18CFF', 20), 'Outfit', g, g > 1 ? `+${Math.round((g - 1) * 100)}% from what you're wearing${S.equip.neck === 'lucky' ? ' · crates pay 2x' : ''}` : 'Wear items in Style for a bonus')}
+      ${row(g > 1, svgIc('shirt', '#B18CFF', 20), 'Wardrobe', g, g > 1 ? `+${Math.round((g - 1) * 100)}% from your best item in each slot${S.owned.lucky ? ' · crates pay 2x' : ''}` : 'Collect items in Style for a bonus')}
       ${row(!!S.perks.goldenMic, svgIc('mic', '#FFC94A', 20), 'Golden Mic', S.perks.goldenMic ? 2 : 1, S.perks.goldenMic ? 'Owned · forever' : 'Available in the Shop')}
       ${row(!!S.perks.monitors, svgIc('sliders', '#8BF0A0', 20), 'Pro Monitors', S.perks.monitors ? 1.5 : 1, S.perks.monitors ? 'Owned · forever' : 'Available in the Shop')}
       <p class="mathline">${[h ? 2 : 1, f, g, S.perks.goldenMic ? 2 : 1, S.perks.monitors ? 1.5 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>`);
@@ -1957,9 +2141,9 @@ function openTab(tab) {
         ${ribbon ? `<span class="rib small">${ribbon}</span>` : ''}
         <span class="art glow ${bonus ? 'has-burst' : ''}">${sparks(sp, n * 7)}${ART.gems(n)}${bonus ? `<span class="burst"><span class="burst-in">${bonus}<small>bonus</small></span></span>` : ''}</span>
         <span class="amount">${amount}</span><span class="price">${o.money}</span></button>`; };
-    const slotName = { top: 'Top', hat: 'Hat', neck: 'Chain', face: 'Shades' };
+    const slotName = { top: 'Top', hat: 'Hat', neck: 'Necklace', face: 'Glasses' };
     const outfit = it => { const [rn, rc] = rarity(it);
-      return `<button class="card outfit" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
+      return `<button class="card outfit ${it.rar === 'mythic' ? 'mythic' : ''}" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
         <span class="tag" style="background:${rc}">${rn}</span>
         <span class="art glow">${sparks(2, it.gems)}${itemArt(it, 76)}<span class="qty">+${Math.round(it.bonus * 100)}% income</span></span>
         <span class="ttl">${it.name}<small>${slotName[it.slot]}${it.perk ? ' · ' + it.perk : ''}</small></span>
@@ -1978,7 +2162,7 @@ function openTab(tab) {
         ${card('nightOwl', ART.moon(), '8h offline<br>earnings', '', 'gold')}
       </div>
       <div class="banner">Outfits</div>
-      <div class="cards">${ITEMS.filter(i => i.gems).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot)).map(outfit).join('')}</div>
+      <div class="cards">${ITEMS.filter(i => i.gems).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot) || a.gems - b.gems).map(outfit).join('')}</div>
       <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
       <div class="banner">Gems</div>
       <div class="cards two">
@@ -2029,12 +2213,13 @@ function openTab(tab) {
       grid = `<div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
         <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>`;
     } else {
-      grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot).map(it => {
+      const rank = i => i.id === 'basic' ? -1 : i.album ? 1000 + i.album : i.gems;
+      grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot).sort((a, b) => rank(a) - rank(b)).map(it => {
         const own = S.owned[it.id], on = S.equip[it.slot] === it.id, [rn, rc] = rarity(it);
         const bar = own ? rn : it.album ? `Album ${it.album}` : `<i class="g"></i>${it.gems}`;
-        const tier = ({ Exclusive: 'exclusive', Legendary: 'legendary', Epic: 'epic' })[rarity(it)[0]] || '';
-        return `<button class="item ${own ? '' : 'locked'} ${tier}" data-item="${it.id}" aria-label="${it.name}${own ? (on ? ', wearing' : '') : it.album ? ', unlocks with album ' + it.album : ', ' + it.gems + ' gems'}">
-          ${on ? '<span class="eq">Wearing</span>' : ''}<span class="art ${own ? 'glow' : ''}">${own && tier ? '<i class="spk" style="left:14%;top:12%"></i><i class="spk" style="left:78%;top:30%;animation-delay:-1.2s;--k:.7"></i>' : ''}${itemArt(it, 78)}</span>
+        const tier = ['epic', 'legendary', 'mythic'].includes(it.rar) ? it.rar : '', best = own && it.bonus && bestInSlot(it.slot) === it;
+        return `<button class="item ${own ? '' : 'locked'} ${tier} ${it.album ? 'album' : ''}" data-item="${it.id}" aria-label="${it.name}${own ? (on ? ', wearing' : '') : it.album ? ', unlocks with album ' + it.album : ', ' + it.gems + ' gems'}">
+          ${on ? '<span class="eq">Wearing</span>' : ''}${best ? '<span class="bestb" title="This item gives your bonus for this slot">Bonus</span>' : ''}<span class="art ${own ? 'glow' : ''}">${own && tier ? '<i class="spk" style="left:14%;top:12%"></i><i class="spk" style="left:78%;top:30%;animation-delay:-1.2s;--k:.7"></i>' : ''}${itemArt(it, 78)}</span>
           <span class="nm">${it.name}${it.bonus ? ` <em>+${Math.round(it.bonus * 100)}%</em>` : ''}${it.perk ? `<em class="perk">${it.perk}</em>` : ''}</span>
           <span class="bar" style="background:${own ? rc : '#8C86A6'}">${bar}</span></button>`;
       }).join('') + '</div>';
@@ -2042,7 +2227,7 @@ function openTab(tab) {
     openSheet(`<div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
       <div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div>
       <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="dresser"><span class="spot"></span>${dressSparks}${bigArtist()}</div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div>
-      <p class="bonusline">Outfit bonus <b>+${g}% income</b></p>
+      <p class="bonusline">Wardrobe bonus <b>+${g}% income</b><small>Your best item in each slot counts, so wear whatever you like.</small></p>
       <div class="stabs">${['top', 'hat', 'neck', 'face', 'colors'].map(k => `<button class="stab ${styleSlot === k ? 'on' : ''}" data-stab="${k}" aria-label="${k === 'colors' ? 'Colors' : SLOTS.find(x => x[0] === k)[1]}">${ic(slotIc[k], 24)}</button>`).join('')}</div>
       ${grid}`);
   } else if (tab === 'rename') {
@@ -2109,6 +2294,7 @@ function applyLook() {
   document.documentElement.style.setProperty('--skin', S.skin);
   document.documentElement.style.setProperty('--phones', S.phones);
   artist.innerHTML = smallArtist();
+  artist.classList.toggle('mythic', wearingMythic());
 }
 
 // ---------- render ----------
@@ -2222,7 +2408,7 @@ function start(data) {
   if (!LOCATIONS[S.loc]) S.loc = 0;
   if (!S.vol) S.vol = { master: 80, music: S.music === false ? 0 : 40, sfx: S.sound === false ? 0 : 80 };
   // players still on the old 70 default move to the new 40; anyone who set their own level keeps it
-  if (S.volV !== 2) { if (S.vol.music === 70) S.vol.music = 40; S.volV = 2; }
+  if (S.volV !== 3) { if ([70, 40].includes(S.vol.music)) S.vol.music = 20; S.volV = 3; }
   delete S.music; delete S.sound; delete S.hypeReady;
   S.owned = Object.assign({ basic: true }, S.owned); S.perks = S.perks || {};
   S.equip = Object.assign({ top: 'basic', hat: null, neck: null, face: null }, S.equip);
@@ -2230,6 +2416,7 @@ function start(data) {
   S.goalsDone = S.goalsDone || {};
   if (S.runPlay == null) S.runPlay = S.stats.playSec;
   ITEMS.forEach(i => { if (i.album && i.album <= (S.albums || 0)) S.owned[i.id] = true; });
+  if (!Array.isArray(S.clears)) S.clears = LOCATIONS.map((_, i) => i < (S.maxLoc || 0) ? Math.max(1, (S.albums || 0) + (i < S.loc ? 1 : 0)) : 0);
   // map-clear rewards arrived in build 36: pay players for the maps they had already cleared
   if (S.mapPaid == null) { S.mapPaid = S.maxLoc || 0; const g = MAP_GEMS.slice(0, S.mapPaid).reduce((a, b) => a + b, 0);
     if (g) { S.gems += g; setTimeout(() => toast(`+${g} gems for the maps you've already cleared`), 1500); } }
