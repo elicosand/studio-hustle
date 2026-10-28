@@ -13,8 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Studio Hustle">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-/* Phone edges: content starts below the status bar / notch; the tab bar runs to the bottom edge and pads itself above the home indicator. */
-html { box-sizing: border-box; height: 100%; padding-top: env(safe-area-inset-top, 0px); background: #14122A; }
+html { height: 100%; background: #14122A; }
 body { margin: 0; font: 14px system-ui, sans-serif; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
@@ -50,10 +49,11 @@ body {
 }
 button { font-family: var(--body); color: inherit; cursor: pointer; border: none; background: none; padding: 0; }
 button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
-.app { height: 100%; display: flex; flex-direction: column; max-width: 520px; margin: 0 auto; position: relative; }
+/* the game is pinned to the real screen edges and handles the notch and home bar itself */
+.app { position: fixed; top: 0; bottom: 0; left: 0; right: 0; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); background: var(--ink); }
 
 /* HUD */
-.hud { display: flex; align-items: center; gap: 8px; padding-block: 20px 8px;
+.hud { display: flex; align-items: center; gap: 8px; padding-block: 12px 8px;
   padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
 .pill { height: 42px; border-radius: 999px; background: var(--panel); display: flex; align-items: center; gap: 8px; }
 .cash-pill { flex: 1; min-width: 0; padding: 0 14px 0 6px; }
@@ -154,7 +154,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 @keyframes glow { 50% { box-shadow: 0 0 0 4px rgba(255,201,74,.35) } }
 
 .tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: var(--ink); border-top: 1px solid var(--panel-2);
-  padding-block: 6px 6px; padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+  padding-top: 6px; padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
 .tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
 .tab.on { color: var(--accent); }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--ink); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
@@ -163,7 +163,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 /* Sheets */
 .scrim { position: absolute; inset: 0; background: rgba(8,7,20,.6); z-index: 20; display: flex; align-items: flex-end; }
 .sheet { width: 100%; max-height: 84%; overflow-y: auto; background: var(--panel); border-radius: 24px 24px 0 0; box-sizing: border-box;
-  padding-block: 18px 22px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
+  padding-top: 18px; padding-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px)); padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
   display: flex; flex-direction: column; gap: 14px; animation: up .22s ease-out; }
 @keyframes up { from { transform: translateY(40px); opacity: 0 } }
 .sheet > * { flex-shrink: 0; }
@@ -209,19 +209,23 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .keeps div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; font-size: 13px; line-height: 1.4; color: var(--muted); }
 .keeps b { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
 
+.tut { position: absolute; left: 16px; right: 16px; z-index: 15; display: flex; align-items: center; gap: 10px; background: var(--text); color: var(--ink);
+  border-radius: 16px; padding: 10px 10px 10px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.4); animation: up .25s ease-out; }
+.tut p { flex: 1; min-width: 0; margin: 0; font-size: 14px; font-weight: 700; line-height: 1.35; }
+.tut button { flex: none; height: 36px; padding: 0 10px; border-radius: 10px; background: rgba(20,18,42,.08); font-size: 12px; font-weight: 700; color: var(--ink); }
+.tut-ptr { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; border: 4px solid var(--gem); z-index: 16; pointer-events: none;
+  box-shadow: 0 0 0 4px rgba(255,201,74,.25); animation: tutpulse 1.1s ease-in-out infinite; }
+@keyframes tutpulse { 50% { transform: scale(1.18); box-shadow: 0 0 0 10px rgba(255,201,74,0); } }
+.email { -webkit-user-select: text; user-select: text; font-family: var(--display); font-size: 15px; color: var(--text); word-break: break-all; }
 .toast { position: absolute; left: 50%; top: 70px; transform: translateX(-50%); background: var(--text); color: var(--ink);
   font-size: 14px; font-weight: 700; padding: 10px 16px; border-radius: 999px; z-index: 30; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis;
   animation: up .2s ease-out; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .artist.working svg, .crew svg, .dresser svg, .station.idle .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
-<style>
-.tabs { padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important; }
-</style>
-
 </head>
 <body>
 
@@ -318,6 +322,8 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>Career<span class="tab-pct" id="movePct">0%</span></button>
   </nav>
 
+  <div class="tut-ptr" id="tutPtr" hidden></div>
+  <div class="tut" id="tut" hidden><p id="tutText"></p><button id="tutSkip">Skip tips</button></div>
   <div class="scrim" id="scrim" hidden>
     <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
   </div>
@@ -522,6 +528,33 @@ const ITEMS = [
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
+const BUILD = 4, CONTACT = 'elicosand@gmail.com';
+const TUT = [
+  { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
+  { text: 'Nice! Tap the green button to upgrade it. Hold it to buy faster.', target: () => $('upBtn'), done: () => S.stats.upgrades >= 1 },
+  { text: 'Keep making beats. Save $80 and tap the Vocal Booth to unlock it.', target: () => els.booth && els.booth.b, done: () => S.stats.unlocks >= 1 },
+  { text: 'Hire crew so stations keep earning without you. Open the Crew tab.', target: () => document.querySelector('[data-tab="crew"]'), done: () => S.stats.hires >= 1 },
+  { text: "Your crew works even while you're away. Earn $150K to move up, and track it in Career.", target: () => document.querySelector('[data-tab="career"]'), done: () => false, timeout: 8000 },
+];
+let tutShownAt = 0;
+function updateTut() {
+  const tip = $('tut'), ptr = $('tutPtr');
+  const hide = () => { tip.hidden = true; ptr.hidden = true; };
+  if (S.tut == null || S.tut >= TUT.length || S.loc !== 0) return hide();
+  const step = TUT[S.tut];
+  if (step.done() || (step.timeout && tutShownAt && Date.now() - tutShownAt > step.timeout)) { S.tut++; tutShownAt = 0; save(); return updateTut(); }
+  if (!$('scrim').hidden) return hide();
+  if (!tutShownAt) tutShownAt = Date.now();
+  const el = step.target(); if (!el) return hide();
+  const app = $('app').getBoundingClientRect(), r = el.getBoundingClientRect(), room = $('roomWrap').getBoundingClientRect();
+  if ($('tutText').textContent !== step.text) $('tutText').textContent = step.text;
+  tip.hidden = false; ptr.hidden = false;
+  const cy = r.top + r.height / 2;
+  // keep the tip away from what it points at
+  tip.style.top = (cy < room.top + room.height * 0.55 ? room.bottom - tip.offsetHeight - 12 : room.top + 56) - app.top + 'px';
+  ptr.style.left = (r.left + r.width / 2 - app.left) + 'px';
+  ptr.style.top = (cy - app.top) + 'px';
+}
 const GOALS = [
   { id: 'up10', text: 'Upgrade stations 10 times', target: 10, val: () => S.stats.upgrades, gems: 5 },
   { id: 'unlock2', text: 'Unlock 2 stations', target: 2, val: () => S.stats.unlocks, gems: 5 },
@@ -869,6 +902,7 @@ function watchAd(onDone) {
   }, 1000);
 }
 $('dailyBtn').addEventListener('click', () => openTab('daily'));
+$('tutSkip').addEventListener('click', () => { S.tut = TUT.length; save(); updateTut(); });
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
@@ -954,6 +988,11 @@ $('scrim').addEventListener('click', e => {
     return;
   }
   if (e.target.closest('[data-claim]')) return claimDaily();
+  if (e.target.closest('[data-copy-email]')) {
+    const sel = () => { const r = document.createRange(); r.selectNodeContents($('fbEmail')); const s2 = getSelection(); s2.removeAllRanges(); s2.addRange(r); toast('Email selected. Copy it from the menu'); };
+    try { navigator.clipboard.writeText(CONTACT).then(() => toast('Email copied'), sel); } catch (err) { sel(); }
+    return;
+  }
   const gc = e.target.closest('[data-goal]');
   if (gc) { const g = GOALS.find(x => x.id === gc.dataset.goal); if (g && goalReady(g) && !S.goalsDone[g.id]) { S.goalsDone[g.id] = true; S.gems += g.gems; sfx('reward'); toast('+' + g.gems + ' gems'); save(); render(); } return openTab('goals'); }
   const adb = e.target.closest('[data-ad]');
@@ -982,7 +1021,7 @@ $('scrim').addEventListener('click', e => {
   if (e.target.closest('[data-album-ask]')) return openTab('album-confirm');
   if (e.target.closest('[data-album]')) return dropAlbum();
   if (e.target.closest('[data-reset-ask]')) return openTab('reset');
-  if (e.target.closest('[data-reset]')) { S = fresh(); applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
+  if (e.target.closest('[data-reset]')) { S = fresh(); S.tut = 0; tutShownAt = 0; applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
 });
 $('scrim').addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.vol; if (!k) return;
@@ -1202,7 +1241,12 @@ function openTab(tab) {
       <div class="vols">${[['master', 'Master'], ['music', 'Music'], ['sfx', 'Sound effects']].map(([k, l]) => `
         <div class="vol"><label for="vol-${k}">${l}</label><input type="range" id="vol-${k}" data-vol="${k}" min="0" max="100" step="1" value="${Math.round(volOf(k) * 100)}"><output id="out-${k}">${Math.round(volOf(k) * 100)}</output></div>`).join('')}
       </div>
-      <p>Studio Hustle · Music by Elijah Gray. Each location has its own beat.</p>
+      <div class="sec"><h3>Send feedback</h3>
+        <p>Found a bug or have an idea? Email the developer:</p>
+        <div class="row"><span class="rt"><span class="email" id="fbEmail">${CONTACT}</span></span><button class="hire" data-copy-email>Copy</button></div>
+        <a class="ghost" href="mailto:${CONTACT}?subject=Studio%20Hustle%20feedback%20(Build%20${BUILD})" style="display:grid;place-items:center;text-decoration:none;color:var(--text)">Open email app</a>
+      </div>
+      <p>Studio Hustle · Build ${BUILD} · Music by Elijah Gray</p>
       <p>Progress saves in this browser. Starting over wipes everything, including albums and fame.</p>
       <button class="ghost" data-reset-ask>Start a new career</button>`);
   } else if (tab === 'reset') {
@@ -1269,6 +1313,7 @@ function render() {
   else { $('crateLbl').textContent = 'Free Crate'; cb.disabled = false; cb.classList.add('ready'); }
 
   artist.classList.toggle('working', !!(S.running[S.selected] || S.crew[S.selected]));
+  updateTut();
 }
 const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
@@ -1322,6 +1367,7 @@ function start(data) {
   S.equip = Object.assign({ top: 'basic', hat: null, neck: null, face: null }, S.equip);
   S.stats = Object.assign({ upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0 }, S.stats);
   S.goalsDone = S.goalsDone || {};
+  if (S.tut == null) S.tut = (S.stats.hires > 0 || S.loc > 0 || S.albums > 0) ? TUT.length : 0;
   S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
   applyLook(); buildRoom(); fit();
   if (!(data && data.state)) {
