@@ -68,8 +68,8 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .icon-btn { width: 44px; height: 44px; display: grid; place-items: center; color: var(--text); }
 
 /* Room */
-.room-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; background: var(--floor); transition: background .4s; }
-.stage { position: absolute; left: 50%; top: 0; width: 390px; height: 480px; transform-origin: top center; }
+.room-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; background-color: var(--floor); background-repeat: repeat; transform: translateZ(0); }
+.stage { position: absolute; left: 50%; top: 0; width: 390px; height: 600px; transform-origin: top center; }
 .abs { position: absolute; }
 .loc-chip { position: absolute; top: 8px; left: max(10px, env(safe-area-inset-left, 0px)); z-index: 5; display: flex; align-items: center; gap: 6px;
   background: rgba(20,18,42,.82); border-radius: 999px; padding: 6px 12px 6px 8px; font-size: 12px; font-weight: 700; pointer-events: none; }
@@ -172,7 +172,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .sbtn { position: relative; width: 54px; height: 54px; border-radius: 16px; background: var(--text); color: var(--deep); display: grid; place-items: center;
   box-shadow: 0 4px 0 rgba(20,18,42,.35); }
 .sbtn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
-.sbtn.hype { background: var(--accent); }
+.sbtn.shop { background: #8FD8F5; }
 .sbtn.crate { background: var(--gem); }
 .sbtn:disabled { filter: saturate(.35) brightness(.92); }
 .sbtn .cap { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--deep); color: var(--text);
@@ -203,19 +203,21 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .pop .up-btn { min-width: 104px; justify-content: center; height: 44px; font-size: 16px; padding: 0 12px; }
 .pop .up-btn:disabled { background: #D9D4E8; color: #8C86A6; }
 .testnote { font-size: 12px !important; text-align: center; }
-.offer { position: relative; display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; align-items: center; border-radius: 18px; padding: 16px 12px 12px; color: var(--deep); box-shadow: 0 4px 0 rgba(20,18,42,.3); text-align: left; overflow: visible; isolation: isolate; }
+.offer { position: relative; display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 10px; align-items: center; border-radius: 18px; padding: 18px 12px 12px; color: var(--deep); box-shadow: 0 4px 0 rgba(20,18,42,.3); text-align: left; overflow: visible; isolation: isolate; }
 .offer:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.3); }
 .offer:disabled { opacity: .7; }
 .offer::after { content: ""; position: absolute; inset: 0; border-radius: 18px; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.55) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; }
 @keyframes sheen { 0%, 55% { background-position: 130% 0; } 100% { background-position: -130% 0; } }
 .offer .rib { position: absolute; top: -8px; left: -4px; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 8px 8px 8px 2px; transform: rotate(-4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
-.offer-art { position: relative; display: grid; place-items: center; height: 88px; }
+.offer-art { position: relative; display: grid; place-items: center; height: 72px; }
+.offer-art svg { width: 68px; height: 68px; }
 .offer-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.offer-body b { font: 400 18px var(--display); }
-.offer-body > span { font-size: 13px; font-weight: 600; color: rgba(20,18,42,.75); }
+.offer-body b { font: 400 19px/1.1 var(--display); }
+.offer-body > span { font-size: 14px; font-weight: 600; line-height: 1.3; color: rgba(20,18,42,.78); }
+
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
-.chips span { font-size: 11px; font-weight: 700; background: rgba(255,255,255,.6); border-radius: 999px; padding: 2px 8px; }
-.paybtn { align-self: flex-end; margin-top: 4px; height: 40px; line-height: 40px; padding: 0 18px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px var(--display); }
+.chips span { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.6); border-radius: 999px; padding: 2px 8px; }
+.paybtn { display: flex; align-items: center; justify-content: center; min-width: 78px; height: 44px; padding: 0 12px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px/1 var(--display); box-sizing: border-box; }
 .offer:disabled .paybtn { background: rgba(20,18,42,.35); }
 .banner { margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); padding: 9px 12px; background: var(--panel-2); text-align: center; font: 400 15px var(--display); letter-spacing: .02em; }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -238,7 +240,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 @keyframes pulseglow { 50% { transform: scale(1.12); opacity: .8; } }
 .card.green .art { background: radial-gradient(circle at 50% 45%, #B4F5BE 0%, transparent 65%); border-radius: 16px 16px 0 0; }
 .card .qty { z-index: 2; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; font: 400 12px var(--display); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
-.card .price { padding: 8px 4px; font: 400 15px var(--display); display: flex; align-items: center; justify-content: center; gap: 4px; }
+.card .price { min-height: 36px; padding: 0 4px; font: 400 15px/1 var(--display); display: flex; align-items: center; justify-content: center; gap: 4px; }
 .card.gold { background: #FFD866; } .card.gold .price { background: #F0A81E; color: var(--deep); }
 .card.green { background: #8BE39A; } .card.green .price { background: #1D7F35; color: #fff; }
 .card.outfit { background: #D9CCFF; } .card.outfit .price { background: #6A45C8; color: #fff; }
@@ -271,6 +273,33 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .loc-title b { font: 400 28px var(--display); color: #fff; text-shadow: 0 3px 0 var(--deep), 0 0 18px rgba(20,18,42,.6); }
 .loc-title span { font-size: 13px; font-weight: 700; color: #fff; background: rgba(20,18,42,.7); border-radius: 999px; padding: 3px 12px; }
 @keyframes loctitle { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.96); } 15%, 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -6px); } }
+.card .amount { font: 400 20px var(--display); color: var(--deep); text-align: center; padding-bottom: 6px; }
+.gemcard .art { height: 112px; }
+.burst { position: absolute; z-index: 3; top: 4px; left: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 50px; height: 50px;
+  background: #7C4FE0; color: #fff; font: 400 14px/1 var(--display); clip-path: polygon(50% 0, 61% 18%, 82% 10%, 80% 32%, 100% 40%, 86% 56%, 98% 76%, 76% 78%, 70% 100%, 50% 86%, 30% 100%, 24% 78%, 2% 76%, 14% 56%, 0 40%, 20% 32%, 18% 10%, 39% 18%);
+  transform: rotate(-10deg); animation: burstpop 1.8s ease-in-out infinite; }
+.burst small { font: 700 8px var(--body); text-transform: uppercase; letter-spacing: .04em; }
+@keyframes burstpop { 50% { transform: rotate(-10deg) scale(1.1); } }
+.dresser .spot { position: absolute; left: 50%; bottom: 0; width: 240px; height: 240px; margin-left: -120px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 65%); animation: pulseglow 3.2s ease-in-out infinite; }
+.dresser .spk { z-index: 1; }
+.item .art { position: relative; }
+.item .glow::before { width: 70px; height: 70px; margin: -35px 0 0 -35px; }
+.item.epic:not(.locked) { border-color: #B79CFF; }
+.item.exclusive:not(.locked) { border-color: #FFC94A; box-shadow: 0 0 14px rgba(255,201,74,.55); isolation: isolate; }
+.item.exclusive:not(.locked)::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.8) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4s ease-in-out infinite; }
+.sw.on { box-shadow: inset 0 0 0 3px var(--panel), 0 0 12px 2px rgba(255,201,74,.75); border-color: var(--gem); }
+.tab-hype { position: relative; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; color: var(--accent); font-size: 11px; font-weight: 700; }
+.tab-hype .orb { position: absolute; top: -34px; width: 58px; height: 58px; z-index: 0; border-radius: 50%; background: var(--accent); color: var(--deep); border: 4px solid var(--ink);
+  display: grid; place-items: center; box-shadow: 0 4px 0 #B84778, 0 0 0 0 rgba(255,111,174,.6); animation: hypecall 2.2s ease-in-out infinite; }
+.tab-hype:active .orb { transform: translateY(2px); box-shadow: 0 2px 0 #B84778; }
+.tab-hype.active .orb { background: var(--gem); box-shadow: 0 4px 0 #B8860B; animation: none; }
+.tab-hype.active { color: var(--gem); }
+.tab-hype .hl { position: relative; z-index: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+@keyframes hypecall { 50% { box-shadow: 0 4px 0 #B84778, 0 0 0 10px rgba(255,111,174,0); } }
+.pips { display: flex; gap: 4px; margin-top: 4px; }
+.pips i { width: 18px; height: 6px; border-radius: 3px; background: var(--line); }
+.pips i.on { background: var(--accent); }
+.adnote { text-align: center; font-size: 12px !important; font-weight: 700; color: var(--gem) !important; margin-top: -6px !important; }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
 
@@ -338,7 +367,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .tab-hype .orb, .burst, .dresser .spot, .item.exclusive::after, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -371,9 +400,9 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
   <div class="room-wrap" id="roomWrap">
     <div class="loc-title" id="locTitle" hidden><b id="locTitleName"></b><span id="locTitleSub"></span></div>
     <div class="side side-l">
-      <button class="sbtn hype" id="hypeBtn" aria-label="2x Hype">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>
-        <span class="cap" id="hypeLbl">2x</span>
+      <button class="sbtn shop" id="shopBtn" aria-label="Shop">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20" r="1.4"></circle><circle cx="17" cy="20" r="1.4"></circle></svg>
+        <span class="cap">Shop</span>
       </button>
       <button class="sbtn crate" id="crateBtn" aria-label="Free crate">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"></rect><path d="M3 13h18M12 9v12M7 9a3 3 0 0 1 5-3 3 3 0 0 1 5 3"></path></svg>
@@ -434,10 +463,13 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Studio</button>
     <button class="tab" data-tab="crew">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg>Crew<span class="bang" id="crewBang" hidden>!</span></button>
+    <button class="tab-hype" id="hypeBtn" aria-label="2x Hype">
+      <span class="orb"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
+      <span class="hl" id="hypeLbl">2x Hype</span>
+    </button>
     <button class="tab" data-tab="style">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg>Style<span class="bang" id="styleBang" hidden>!</span></button>
-    <button class="tab" data-tab="shop">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>Shop</button>
+
     <button class="tab" data-tab="career">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>Career<span class="tab-pct" id="movePct">0%</span></button>
   </nav>
@@ -452,7 +484,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 <script>
 (() => {
 // ---------- room art ----------
-const planks = (color, from, step) => Array.from({ length: 13 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
+const planks = (color, from, step) => Array.from({ length: 12 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
 
 const APARTMENT_DECOR = `
   ${planks('#94683F', 128, 40)}
@@ -471,11 +503,21 @@ const APARTMENT_DECOR = `
     <div class="cloud" style="top:6px;width:30px;height:9px;background:#3A3466;animation-duration:38s"></div>
     <div class="abs" style="left:47px;top:0;width:5px;height:50px;background:#4A4466"></div>
   </div>
-  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#4E4183"></div>
-  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#4E4183"></div>
-  <div class="abs" style="right:0;top:304px;width:12px;height:84px;background:#6B5246"></div>
-  <div class="abs" style="left:118px;top:232px;width:154px;height:96px;border-radius:50%;background:#8E5BB0"></div>
-  <div class="abs" style="left:136px;top:244px;width:118px;height:72px;border-radius:50%;border:3px dashed #B07DD0;box-sizing:border-box"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#4E4183"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#4E4183"></div>
+  <div class="abs" style="right:0;top:420px;width:12px;height:84px;background:#6B5246"></div>
+  <div class="abs" style="left:118px;top:300px;width:154px;height:96px;border-radius:50%;background:#8E5BB0"></div>
+  <div class="abs" style="left:136px;top:312px;width:118px;height:72px;border-radius:50%;border:3px dashed #B07DD0;box-sizing:border-box"></div>
+  <!-- beanbag, speakers, pizza boxes, record crate, plants -->
+  <div class="abs" style="left:30px;top:262px;width:86px;height:66px;border-radius:50% 50% 46% 46%;background:#E0716A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:46px;top:270px;width:52px;height:30px;border-radius:50%;background:#F09A8F"></div>
+  <div class="abs" style="left:290px;top:262px;width:32px;height:50px;border-radius:6px;background:#2C2F48;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:298px;top:284px;width:16px;height:16px;border-radius:50%;background:#6A6390"></div>
+  <div class="abs" style="left:328px;top:262px;width:32px;height:50px;border-radius:6px;background:#2C2F48;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:284px;width:16px;height:16px;border-radius:50%;background:#6A6390"></div>
+  <div class="abs" style="left:158px;top:552px;width:62px;height:16px;border-radius:3px;background:#E8C9A0;border:3px solid #1B1830;box-sizing:border-box;transform:rotate(-4deg)"></div>
+  <div class="abs" style="left:162px;top:540px;width:62px;height:16px;border-radius:3px;background:#F0D5AE;border:3px solid #1B1830;box-sizing:border-box;transform:rotate(3deg)"></div>
+  <div class="abs" style="left:236px;top:548px;width:52px;height:38px;border-radius:5px;background:#8A5A3A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:242px;top:540px;width:40px;height:14px;border-radius:7px 7px 0 0;background:#1E1B33"></div>
+  <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#C2683A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#4FB0C2;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:24px;top:96px;width:6px;height:22px;border-radius:3px;background:#3E8E47"></div><div class="abs" style="left:16px;top:88px;width:22px;height:16px;border-radius:50%;background:#58B060"></div>`;
 
 const STUDIO_DECOR = `
@@ -498,17 +540,23 @@ const STUDIO_DECOR = `
   <div class="abs" style="left:256px;top:13px;width:58px;height:58px;border-radius:50%;background:#1A1530;border:5px solid #FFC94A;box-sizing:border-box;display:grid;place-items:center">
     <div style="width:12px;height:12px;border-radius:50%;background:#FFC94A"></div>
   </div>
-  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#8573C2"></div>
-  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#8573C2"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#8573C2"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#8573C2"></div>
   <div class="abs" style="left:0;top:304px;width:12px;height:84px;background:#A07A5C"></div>
-  <div class="abs" style="left:112px;top:226px;width:166px;height:108px;border-radius:50%;background:#4FB0C2"></div>
-  <div class="abs" style="left:140px;top:244px;width:110px;height:72px;border-radius:50%;background:#66C3D3"></div>`;
+  <div class="abs" style="left:112px;top:294px;width:166px;height:108px;border-radius:50%;background:#4FB0C2"></div>
+  <div class="abs" style="left:140px;top:312px;width:110px;height:72px;border-radius:50%;background:#66C3D3"></div>
+  <!-- couch and plants -->
+  <div class="abs" style="left:112px;top:540px;width:166px;height:50px;border-radius:14px;background:#5E8BD8;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:124px;top:528px;width:142px;height:24px;border-radius:12px;background:#7BA4EA;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:140px;top:552px;width:40px;height:22px;border-radius:8px;background:#FFC94A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:210px;top:552px;width:40px;height:22px;border-radius:8px;background:#FF6FAE;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#F4F1EA;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#F4F1EA;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
 
 const bricks = Array.from({ length: 4 }, (_, r) => Array.from({ length: 9 }, (_, c) =>
   `<div class="abs" style="left:${c * 46 - (r % 2 ? 23 : 0)}px;top:${r * 21}px;width:42px;height:17px;border-radius:2px;background:${(r + c) % 3 ? '#8B4A3C' : '#7D4134'}"></div>`).join('')).join('');
 const LOFT_DECOR = `
-  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:388px;background:#A8A2B0"></div>`).join('')}
-  ${Array.from({ length: 8 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#A8A2B0"></div>`).join('')}
+  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:508px;background:#A8A2B0"></div>`).join('')}
+  ${Array.from({ length: 10 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#A8A2B0"></div>`).join('')}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5E3027;overflow:hidden">${bricks}</div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#3E2019"></div>
   <div class="abs" style="left:96px;top:6px;width:198px;height:72px;border-radius:4px;background:#2B1F3D;border:5px solid #26222E;box-sizing:border-box;overflow:hidden">
@@ -528,16 +576,26 @@ const LOFT_DECOR = `
     <div class="abs" style="left:126px;top:0;width:4px;height:62px;background:#26222E"></div>
     <div class="abs" style="left:0;top:29px;width:188px;height:4px;background:#26222E"></div>
   </div>
-  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#4A2620"></div>
-  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#4A2620"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#4A2620"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#4A2620"></div>
   <div class="abs" style="left:20px;top:96px;width:350px;height:6px;border-radius:3px;background:#8C8794"></div>
-  <div class="abs" style="right:0;top:304px;width:12px;height:84px;background:#3A3A44"></div>
-  <div class="abs" style="left:110px;top:224px;width:170px;height:112px;border-radius:18px;background:#C2683A"></div>
-  <div class="abs" style="left:122px;top:236px;width:146px;height:88px;border-radius:12px;border:3px solid #E08A5A;box-sizing:border-box"></div>`;
+  <div class="abs" style="right:0;top:420px;width:12px;height:84px;background:#3A3A44"></div>
+  <div class="abs" style="left:110px;top:292px;width:170px;height:112px;border-radius:18px;background:#C2683A"></div>
+  <div class="abs" style="left:122px;top:304px;width:146px;height:88px;border-radius:12px;border:3px solid #E08A5A;box-sizing:border-box"></div>
+  <!-- arcade cabinet, lounge chairs, coffee table with beanbags, plants -->
+  <div class="abs" style="left:40px;top:240px;width:58px;height:90px;border-radius:8px 8px 4px 4px;background:#7C4FE0;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:49px;top:252px;width:40px;height:30px;border-radius:4px;background:#14122A;box-shadow:inset 0 0 0 3px #6FD3FF"></div>
+  <div class="abs" style="left:52px;top:292px;width:10px;height:10px;border-radius:50%;background:#FF6FAE"></div><div class="abs" style="left:72px;top:292px;width:10px;height:10px;border-radius:50%;background:#FFC94A"></div>
+  <div class="abs" style="left:286px;top:258px;width:40px;height:40px;border-radius:50%;background:#FF9E57;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:322px;top:294px;width:40px;height:40px;border-radius:50%;background:#FF9E57;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:150px;top:546px;width:90px;height:34px;border-radius:8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:102px;top:548px;width:42px;height:34px;border-radius:50%;background:#6FD3FF;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:246px;top:548px;width:42px;height:34px;border-radius:50%;background:#FF6FAE;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
 
 const LOCATIONS = [
   {
-    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', plank: '#94683F', goal: 150000, decor: APARTMENT_DECOR, home: [160, 214],
+    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', plank: '#94683F', wall: '#5D4F92', goal: 150000, decor: APARTMENT_DECOR, home: [160, 278],
     stations: [
       { id: 'beats', name: 'Laptop Beats', icon: 'note', unlock: 0, base: 1, cycle: 1.2, cost: 6, growth: 1.13, crew: 'Producer', crewCost: 90, spot: [214, 176],
         pos: [226, 112, 140, 128], ring: 90, hint: 36,
@@ -552,15 +610,15 @@ const LOCATIONS = [
             <span style="border-radius:4px;background:#4A3A34"></span><span style="border-radius:4px;background:#4A3A34"></span><span style="border-radius:4px;background:#4A3A34"></span></span>
           <span class="abs" style="left:0;top:88px;width:112px;height:14px;border-radius:0 0 10px 10px;background:#3F312C"></span>
           <span class="abs" style="left:45px;top:35px;width:22px;height:22px;border-radius:50%;background:#C9C3DE;border:4px solid #8C86A6;box-sizing:border-box"></span>` },
-      { id: 'socials', name: 'Socials', icon: 'phone', unlock: 600, base: 32, cycle: 6, cost: 400, growth: 1.15, crew: 'Manager', crewCost: 5000, spot: [140, 300],
-        pos: [24, 290, 112, 162],
+      { id: 'socials', name: 'Socials', icon: 'phone', unlock: 600, base: 32, cycle: 6, cost: 400, growth: 1.15, crew: 'Manager', crewCost: 5000, spot: [140, 394],
+        pos: [24, 384, 112, 162],
         furn: `<span class="abs" style="left:0;top:0;width:112px;height:150px;border-radius:14px;background:#9A94B4;overflow:hidden">
             <span class="abs" style="left:18px;top:12px;width:76px;height:28px;border-radius:10px;background:#E8E2F4"></span>
             <span class="abs" style="left:0;top:70px;width:112px;height:80px;background:#5A5480"></span>
             <span class="abs" style="left:66px;top:52px;width:18px;height:28px;border-radius:4px;background:#1E1B33;border:2px solid var(--accent);box-sizing:border-box"></span></span>
           <span class="abs" style="left:0;top:146px;width:112px;height:12px;border-radius:0 0 12px 12px;background:#6F6990"></span>` },
-      { id: 'busk', name: 'Street Busk', icon: 'guitar', unlock: 3500, base: 150, cycle: 10, cost: 2200, growth: 1.16, crew: 'Hype Man', crewCost: 25000, spot: [178, 314],
-        pos: [236, 290, 130, 150],
+      { id: 'busk', name: 'Street Busk', icon: 'guitar', unlock: 3500, base: 150, cycle: 10, cost: 2200, growth: 1.16, crew: 'Hype Man', crewCost: 25000, spot: [178, 408],
+        pos: [236, 384, 130, 150],
         furn: `<span class="abs" style="left:10px;top:40px;width:70px;height:96px;border-radius:30px 30px 14px 14px;background:#2A2236;border:4px solid #6B5246;box-sizing:border-box">
             <span class="abs" style="left:18px;top:50px;width:9px;height:9px;border-radius:50%;background:#FFC94A"></span>
             <span class="abs" style="left:32px;top:62px;width:9px;height:9px;border-radius:50%;background:#FFC94A"></span>
@@ -570,7 +628,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', goal: 50000000, decor: STUDIO_DECOR, home: [160, 222],
+    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', wall: '#9C89D4', goal: 50000000, decor: STUDIO_DECOR, home: [160, 284],
     stations: [
       { id: 'pads', name: 'Beat Pads', icon: 'grid', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Beatmaker', crewCost: 4500, spot: [132, 160],
         pos: [24, 112, 118, 100],
@@ -587,14 +645,14 @@ const LOCATIONS = [
           <span class="abs" style="left:12px;top:12px;width:130px;height:54px;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px">
             ${[18, 30, 12, 26, 34, 20, 28, 14].map(t => `<span style="position:relative;border-radius:3px;background:#3E3760"><span style="position:absolute;left:-3px;right:-3px;top:${t}px;height:8px;border-radius:2px;background:#E8E2F4"></span></span>`).join('')}</span>
           <span class="abs" style="left:56px;top:92px;width:42px;height:40px;border-radius:50%;background:#2E2A4A;border:4px solid #3A3558;box-sizing:border-box"></span>` },
-      { id: 'vocalpro', name: 'Pro Vocal Booth', icon: 'mic', unlock: 30000, base: 1600, cycle: 6, cost: 20000, growth: 1.15, crew: 'Vocal Coach', crewCost: 250000, spot: [140, 304],
-        pos: [24, 290, 124, 150],
+      { id: 'vocalpro', name: 'Pro Vocal Booth', icon: 'mic', unlock: 30000, base: 1600, cycle: 6, cost: 20000, growth: 1.15, crew: 'Vocal Coach', crewCost: 250000, spot: [140, 398],
+        pos: [24, 384, 124, 150],
         furn: `<span class="abs" style="left:0;top:0;width:124px;height:138px;border-radius:14px;background:rgba(111,211,255,.18);border:6px solid #C9C3DE;box-sizing:border-box"></span>
           <span class="abs" style="left:3px;top:134px;width:118px;height:12px;border-radius:0 0 11px 11px;background:#9A94B4"></span>
           <span class="abs" style="left:46px;top:44px;width:32px;height:32px;border-radius:50%;background:rgba(20,18,42,.35);border:3px solid #8C86A6;box-sizing:border-box"></span>
           <span class="abs" style="left:52px;top:78px;width:20px;height:20px;border-radius:50%;background:#E8E2F4;border:4px solid #8C86A6;box-sizing:border-box"></span>` },
-      { id: 'video', name: 'Music Video', icon: 'camera', unlock: 175000, base: 8000, cycle: 10, cost: 110000, growth: 1.16, crew: 'Director', crewCost: 1250000, spot: [178, 314],
-        pos: [236, 290, 130, 150],
+      { id: 'video', name: 'Music Video', icon: 'camera', unlock: 175000, base: 8000, cycle: 10, cost: 110000, growth: 1.16, crew: 'Director', crewCost: 1250000, spot: [178, 408],
+        pos: [236, 384, 130, 150],
         furn: `<span class="abs" style="left:14px;top:26px;width:62px;height:62px;border-radius:50%;border:8px solid #FFF4D6;box-sizing:border-box;box-shadow:0 0 18px rgba(255,244,214,.55)"></span>
           <span class="abs" style="left:41px;top:88px;width:8px;height:44px;background:#1E1B33"></span>
           <span class="abs" style="left:78px;top:76px;width:44px;height:30px;border-radius:6px;background:#1E1B33;border:3px solid #4A4466;box-sizing:border-box"></span>
@@ -603,7 +661,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', goal: 15000000000, decor: LOFT_DECOR, home: [160, 222],
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', wall: '#5E3027', goal: 15000000000, decor: LOFT_DECOR, home: [160, 284],
     stations: [
       { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -616,8 +674,8 @@ const LOCATIONS = [
         furn: `<span class="abs" style="left:0;top:0;width:148px;height:80px;border-radius:10px;background:#9C7A5E"></span>
           <span class="abs" style="left:3px;top:77px;width:142px;height:13px;border-radius:0 0 9px 9px;background:#7A5D46"></span>
           ${[['#FF6FAE', 10], ['#E8E2F4', 44], ['#6FD3FF', 78], ['#FFC94A', 112]].map(([c, l]) => `<span class="abs" style="left:${l}px;top:14px;width:28px;height:24px;border-radius:5px;background:${c}"></span><span class="abs" style="left:${l}px;top:44px;width:28px;height:24px;border-radius:5px;background:${c};opacity:.75"></span>`).join('')}` },
-      { id: 'stream', name: 'Livestream Rig', icon: 'monitor', unlock: 1500000, base: 80000, cycle: 6.5, cost: 1000000, growth: 1.15, crew: 'Stream Mod', crewCost: 12500000, spot: [140, 304],
-        pos: [24, 290, 128, 150],
+      { id: 'stream', name: 'Livestream Rig', icon: 'monitor', unlock: 1500000, base: 80000, cycle: 6.5, cost: 1000000, growth: 1.15, crew: 'Stream Mod', crewCost: 12500000, spot: [140, 398],
+        pos: [24, 384, 128, 150],
         furn: `<span class="abs" style="left:0;top:0;width:128px;height:70px;border-radius:10px;background:#26222E"></span>
           <span class="abs" style="left:3px;top:67px;width:122px;height:12px;border-radius:0 0 9px 9px;background:#17141D"></span>
           <span class="abs" style="left:8px;top:10px;width:34px;height:24px;border-radius:4px;background:#1A1530;border:2px solid #B18CFF;box-sizing:border-box"></span>
@@ -625,8 +683,8 @@ const LOCATIONS = [
           <span class="abs" style="left:86px;top:10px;width:34px;height:24px;border-radius:4px;background:#1A1530;border:2px solid #6FD3FF;box-sizing:border-box"></span>
           <span class="abs" style="left:30px;top:42px;width:68px;height:18px;border-radius:4px;background:#3A3A44"></span>
           <span class="abs" style="left:38px;top:88px;width:52px;height:52px;border-radius:14px;background:#C2384F;border:5px solid #8E2639;box-sizing:border-box"></span>` },
-      { id: 'rooftop', name: 'Rooftop Show', icon: 'star', unlock: 8750000, base: 400000, cycle: 11, cost: 5500000, growth: 1.16, crew: 'Promoter', crewCost: 62500000, spot: [178, 314],
-        pos: [236, 290, 130, 150],
+      { id: 'rooftop', name: 'Rooftop Show', icon: 'star', unlock: 8750000, base: 400000, cycle: 11, cost: 5500000, growth: 1.16, crew: 'Promoter', crewCost: 62500000, spot: [178, 408],
+        pos: [236, 384, 130, 150],
         furn: `<span class="abs" style="left:6px;top:30px;width:118px;height:100px;border-radius:10px;background:#2E2A36;border:4px solid #57535E;box-sizing:border-box"></span>
           <span class="abs" style="left:6px;top:126px;width:118px;height:12px;border-radius:0 0 9px 9px;background:#1C1A22"></span>
           <span class="abs" style="left:14px;top:36px;width:16px;height:16px;border-radius:50%;background:#FFC94A;box-shadow:0 0 12px #FFC94A"></span>
@@ -645,7 +703,13 @@ const DAILY = [
 ];
 const MILES = [10, 25, 50, 100, 200];
 const CRATE_CD = 600, OFFLINE_BASE = 2 * 3600, OFFLINE_OWL = 8 * 3600;
-const HYPE_PER_AD = 20 * 60, HYPE_CAP = 2 * 3600, AD_SECONDS = 5;
+const AD_SECONDS = 5;
+const HYPE_LEN = [20, 24, 28, 32], HYPE_LEN_COST = [50, 120, 250];     // minutes per ad, gems for the next level
+const HYPE_CAPS = [2, 2.5, 3, 4], HYPE_CAP_COST = [80, 200, 400];      // hours of stacked Hype
+const hypeLv = () => Object.assign({ len: 0, cap: 0 }, S.hypeLv);
+const hypePerAd = () => HYPE_LEN[hypeLv().len] * 60;
+const hypeCap = () => HYPE_CAPS[hypeLv().cap] * 3600;
+const capText = () => { const h = HYPE_CAPS[hypeLv().cap]; return h % 1 ? h + ' hours' : h + ' hours'; };
 const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Chains'], ['face', 'Shades']];
 // album: unlocked by dropping that album number. gems: bought in the shop. bonus: income while worn.
 const ITEMS = [
@@ -663,7 +727,7 @@ const ITEMS = [
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 10, CONTACT = 'elicosand@gmail.com';
+const BUILD = 16, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -718,7 +782,7 @@ const goalReady = g => g.val() >= g.target;
 // money: real-money price shown (test purchase in this build). gems: gem price.
 const OFFERS = {
   goldenMic: { name: 'Golden Mic', sub: 'Permanent 2x income on everything', money: '$4.99', once: true },
-  starter: { name: 'Starter Pack', sub: 'Flame Hoodie + 300 gems + 4h time skip', money: '$2.99', once: true },
+  starter: { name: 'Starter Pack', sub: 'A one-time deal for new artists', money: '$2.99', once: true },
   adFree: { name: 'Ad-Free Rewards', sub: 'Get every ad reward instantly, forever', money: '$6.99', once: true },
   monitors: { name: 'Pro Monitors', sub: 'Permanent +50% income', gems: 300, once: true },
   nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
@@ -729,8 +793,8 @@ const OFFERS = {
   gems1200: { name: 'Chest of Gems', sub: '1,200 gems · 20% bonus', money: '$9.99', gemsOut: 1200 },
   gems2600: { name: 'Vault of Gems', sub: '2,600 gems · 30% bonus', money: '$19.99', gemsOut: 2600 },
 };
-const SKINS = ['#F1CBA8', '#C68A5C', '#8D5A36', '#5A3820'];
-const PHONES = ['#FF6FAE', '#6FD3FF', '#B18CFF', '#FF9E57'];
+const SKINS = ['#FFE0C4', '#F1CBA8', '#DDA77A', '#C68A5C', '#8D5A36', '#5A3820'];
+const PHONES = ['#FF6FAE', '#6FD3FF', '#B18CFF', '#FF9E57', '#8BF0A0', '#F4F1EA'];
 const ICONS = {
   note: '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>',
   mic: '<rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v4"></path>',
@@ -760,7 +824,7 @@ function fresh() {
 }
 
 // ---------- sound (synthesized, no files) ----------
-let actx = null, lastDing = 0, lastUp = 0;
+let actx = null, lastDing = 0, lastUp = 0, cashGap = 400;
 let busMaster = null, busMusic = null, busSfx = null;
 const volOf = k => Math.max(0, Math.min(100, (S && S.vol && S.vol[k] != null) ? S.vol[k] : 80)) / 100;
 // perceptual curve so the low end of each slider isn't all "loud"
@@ -795,7 +859,7 @@ function tone(freq, dur, type, vol, when = 0, slideTo = 0) {
   o.connect(g).connect(busSfx); o.start(t0); o.stop(t0 + dur + 0.02);
 }
 const SFX = {
-  cash: () => { tone(1568, 0.07, 'triangle', 0.035); tone(2093, 0.09, 'triangle', 0.025, 0.04); },
+  cash: () => { tone(1175, 0.06, 'sine', 0.03); tone(1568, 0.08, 'sine', 0.02, 0.035); },
   upgrade: () => { tone(523, 0.08, 'square', 0.03); tone(784, 0.12, 'square', 0.03, 0.06); },
   milestone: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.14, 'square', 0.03, i * 0.06)),
   unlock: () => { tone(392, 0.12, 'triangle', 0.06); tone(523, 0.12, 'triangle', 0.06, 0.08); tone(784, 0.25, 'triangle', 0.06, 0.16); },
@@ -808,7 +872,7 @@ const SFX = {
 };
 function sfx(name) {
   if (!S || volOf('sfx') === 0 || volOf('master') === 0) return;
-  if (name === 'cash') { const n = performance.now(); if (n - lastDing < 160) return; lastDing = n; }
+  if (name === 'cash') { const n = performance.now(); if (n - lastDing < cashGap) return; lastDing = n; }
   if (name === 'upgrade') { const n = performance.now(); if (n - lastUp < 90) return; lastUp = n; }
   try { SFX[name](); } catch (e) {}
 }
@@ -931,7 +995,7 @@ function showLocTitle() {
 function buildRoom() {
   const loc = LOC();
   wrap.style.setProperty('--floor', loc.floor);
-  wrap.dataset.plank = loc.plank; fit();
+  wrap.dataset.plank = loc.plank; wrap.dataset.wall = loc.wall; fit();
   if (shownLoc !== S.loc) { shownLoc = S.loc; showLocTitle(); }
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
@@ -960,12 +1024,15 @@ function buildRoom() {
 
 function fit() {
   const r = wrap.getBoundingClientRect();
-  const s = Math.min(r.width / 390, r.height / 480);
+  const s = Math.min(r.width / 390, r.height / 600);
   stage.style.transform = `translate(-50%, 0) scale(${s})`;
   // the floor keeps its planks below the room when the screen is taller than the room
-  const pl = wrap.dataset.plank || 'rgba(0,0,0,.1)';
-  wrap.style.backgroundImage = `repeating-linear-gradient(to bottom, transparent 0, transparent ${38 * s}px, ${pl} ${38 * s}px, ${pl} ${40 * s}px)`;
-  wrap.style.backgroundPosition = `0 ${10 * s}px`;
+  const wall = wrap.dataset.wall || 'transparent', pl = wrap.dataset.plank || 'rgba(0,0,0,.1)', tile = Math.max(8, Math.round(40 * s)), line = Math.max(1, Math.round(2 * s));
+  const wh = Math.round(92 * s);
+  wrap.style.backgroundImage = `linear-gradient(to bottom, ${wall} ${wh}px, transparent ${wh}px), linear-gradient(to bottom, transparent ${tile - line}px, ${pl} ${tile - line}px)`;
+  wrap.style.backgroundSize = `100% ${wh}px, 100% ${tile}px`;
+  wrap.style.backgroundRepeat = 'no-repeat, repeat';
+  wrap.style.backgroundPosition = `0 0, 0 ${Math.round(10 * s)}px`;
 }
 new ResizeObserver(fit).observe(wrap);
 
@@ -1057,15 +1124,26 @@ $('modeBtn').addEventListener('click', () => {
 $('hypeBtn').addEventListener('click', () => openTab('hype'));
 function addHype() {
   const now = Date.now(), base = Math.max(now, S.hypeUntil);
-  const add = Math.min(HYPE_PER_AD * 1000, now + HYPE_CAP * 1000 - base);
-  if (add <= 0) { toast('Hype is maxed at 2 hours'); return; }
+  const add = Math.min(hypePerAd() * 1000, now + hypeCap() * 1000 - base);
+  if (add <= 0) { toast('Hype is maxed at ' + capText()); return; }
   S.hypeUntil = base + add; S.stats.hypes++; sfx('hype'); save(); render();
   toast('+' + Math.round(add / 60000) + ' min of 2x Hype');
 }
 let adTimer = null;
+const AD_GEMS = 5, AD_GEM_LIMIT = 10;   // 50 gems a day from ads; ads past the limit still give their normal reward
+const adGemsLeft = () => (S.adGems && S.adGems.day === dayKey()) ? AD_GEM_LIMIT - S.adGems.n : AD_GEM_LIMIT;
+function payAdGems() {
+  if (adGemsLeft() <= 0) return '';
+  const today = dayKey();
+  S.adGems = (S.adGems && S.adGems.day === today) ? { day: today, n: S.adGems.n + 1 } : { day: today, n: 1 };
+  S.gems += AD_GEMS; save(); render();
+  return ` · +${AD_GEMS} gems`;
+}
+const adGemNote = () => adGemsLeft() > 0 ? `+${AD_GEMS} gems per ad · ${adGemsLeft()} left today` : 'Ad gems are maxed for today';
 function watchAd(onDone) {
   clearInterval(adTimer);
-  if (S.perks.adFree) { onDone(); return; }
+  const done = () => { const g = payAdGems(); onDone(); if (g) setTimeout(() => toast('Ad reward' + g), 50); };
+  if (S.perks.adFree) { done(); return; }
   let left = AD_SECONDS;
   openSheet(`<div class="welcome"><span class="lbl">Ad plays here</span><span class="amt" id="adCount">${left}</span>
     <p>Test mode. In the real game a short video ad plays, then you get the reward.</p></div>
@@ -1074,7 +1152,7 @@ function watchAd(onDone) {
     const c = $('adCount');
     if (!c || $('scrim').hidden) { clearInterval(adTimer); return; }
     left--;
-    if (left <= 0) { clearInterval(adTimer); onDone(); } else c.textContent = left;
+    if (left <= 0) { clearInterval(adTimer); done(); } else c.textContent = left;
   }, 1000);
 }
 $('dailyBtn').addEventListener('click', () => openTab('daily'));
@@ -1088,13 +1166,15 @@ $('crateBtn').addEventListener('click', () => {
   openSheet(`<div class="sheet-head"><h2>Crate opened</h2>${closeBtn()}</div>
     <div class="welcome"><span class="amt">+${fmt(v)}</span><p>Plus 3 gems. Next crate in 10 minutes.</p></div>
     <button class="cta pink" data-ad="bonus">${S.perks.adFree ? 'Double it' : 'Watch ad: double it'}</button>
+    <p class="adnote">${adGemNote()}</p>
     <button class="ghost" data-close>Keep ${fmt(v)}</button>`);
   save(); render();
 });
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openTab(t.dataset.tab)));
 // soft click for navigation buttons (money actions have their own sounds)
-document.addEventListener('click', e => { if (e.target.closest('.tab, .close, .sbtn, #settings, #buyGems, .ghost, #tutSkip, .sw, .stab, .slot, #popClose, #modeBtn')) sfx('click'); }, true);
+document.addEventListener('click', e => { if (e.target.closest('.tab, .tab-hype, .close, .sbtn, #settings, #buyGems, .ghost, #tutSkip, .sw, .stab, .slot, #popClose, #modeBtn')) sfx('click'); }, true);
 $('buyGems').addEventListener('click', () => openTab('shop'));
+$('shopBtn').addEventListener('click', () => openTab('shop'));
 $('settings').addEventListener('click', () => openTab('settings'));
 
 function moveUp() {
@@ -1171,6 +1251,10 @@ $('scrim').addEventListener('click', e => {
     return;
   }
   if (e.target.closest('[data-claim]')) return claimDaily();
+  const hu = e.target.closest('[data-hup]');
+  if (hu) { const key = hu.dataset.hup, lv = hypeLv(), costs = key === 'len' ? HYPE_LEN_COST : HYPE_CAP_COST, c = costs[lv[key]];
+    if (c != null && S.gems >= c) { S.gems -= c; lv[key]++; S.hypeLv = lv; sfx('unlock'); toast(key === 'len' ? `Each ad now gives ${HYPE_LEN[lv.len]} minutes` : `Hype now stacks up to ${capText()}`); save(); render(); }
+    return openTab('hype'); }
   if (e.target.closest('[data-copy-email]')) {
     const sel = () => { const r = document.createRange(); r.selectNodeContents($('fbEmail')); const s2 = getSelection(); s2.removeAllRanges(); s2.addRange(r); toast('Email selected. Copy it from the menu'); };
     try { navigator.clipboard.writeText(CONTACT).then(() => toast('Email copied'), sel); } catch (err) { sel(); }
@@ -1320,9 +1404,10 @@ function bigArtist(eq = S.equip) {
 
 
 // ---------- shop and wardrobe artwork ----------
-const gemPath = (x, y, k) => `<g transform="translate(${x},${y}) scale(${k})"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M0 8h24M6 0l6 8 6-8M12 24 6 8M12 24l6-16" stroke="#C8901A" stroke-width="1.3" fill="none"></path><path d="M7 3h4l-2 4z" fill="#fff" opacity=".7"></path></g>`;
+const gemPath = (x, y, k) => `<g transform="translate(${x},${y}) scale(${k})"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M0 8h24l-12 16z" fill="#F0A81E"></path><path d="M6 0h12l6 8H0z" fill="#FFE08A"></path><path d="M6 0h12l6 8-12 16L0 8z" fill="none" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M8 2.5h4l-2 4z" fill="#fff" opacity=".85"></path></g>`;
 const ART = {
-  gems: n => { const spots = [[20, 16, 1.2], [6, 24, 1], [36, 24, 1], [21, 32, 1.1]]; return `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">${spots.slice(0, n).map(([x, y, k]) => gemPath(x, y, k)).join('')}</svg>`; },
+  gems: n => { const spots = { 1: [[14, 10, 1.5]], 2: [[4, 16, 1.25], [26, 8, 1.4]], 3: [[16, 2, 1.3], [2, 20, 1.2], [32, 20, 1.2]], 4: [[6, 0, 1.15], [28, 0, 1.15], [0, 22, 1.2], [32, 22, 1.2], [17, 26, 1.25]] }[n];
+    return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">${spots.map(([x, y, k]) => gemPath(x, y, k)).join('')}</svg>`; },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
   moon: () => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 42A20 20 0 1 1 26 12a15 15 0 0 0 18 30z" fill="#FFE08A" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><circle cx="48" cy="16" r="2.5" fill="#fff"></circle><circle cx="54" cy="28" r="1.8" fill="#fff"></circle></svg>`,
@@ -1394,14 +1479,19 @@ function openTab(tab) {
     const offer = (id, art, color, ribbon, perks) => { const o = OFFERS[id], own = owned(id);
       return `<button class="offer" data-buy="${id}" ${own ? 'disabled' : ''} style="background:${color}" aria-label="${o.name}, ${own ? 'owned' : o.money}"><span class="rib">${ribbon}</span>
         <span class="offer-art glow">${sparks(5, id.length)}${art}</span>
-        <span class="offer-body"><b>${o.name}</b><span>${o.sub}</span>${perks ? `<span class="chips">${perks}</span>` : ''}
-          <span class="paybtn">${own ? 'Owned' : o.money}</span></span></button>`; };
+        <span class="offer-body"><b>${o.name}</b><span>${o.sub}</span>${perks ? `<span class="chips">${perks}</span>` : ''}</span>
+        <span class="paybtn">${own ? 'Owned' : o.money}</span></button>`; };
     const card = (id, art, title, pill, theme, ribbon, n = 3) => { const o = OFFERS[id], own = owned(id);
       const price = own ? 'Owned' : o.money ? o.money : `<i class="g"></i>${o.gems}`;
-      return `<button class="card ${theme}" data-buy="${id}" ${own ? 'disabled' : ''} aria-label="${title}, ${own ? 'owned' : o.money || o.gems + ' gems'}">
+      return `<button class="card ${theme}" data-buy="${id}" ${own ? 'disabled' : ''} aria-label="${title.replace('<br>', ' ')}, ${own ? 'owned' : o.money || o.gems + ' gems'}">
         ${ribbon ? `<span class="rib small">${ribbon}</span>` : ''}
         <span class="art glow">${sparks(n, id.length + n)}${art}${pill ? `<span class="qty">${pill}</span>` : ''}</span>
         <span class="ttl">${title}</span><span class="price">${price}</span></button>`; };
+    const gemCard = (id, n, amount, bonus, ribbon, sp) => { const o = OFFERS[id];
+      return `<button class="card green gemcard" data-buy="${id}" aria-label="${amount} gems${bonus ? ', ' + bonus + ' bonus' : ''}, ${o.money}">
+        ${ribbon ? `<span class="rib small">${ribbon}</span>` : ''}
+        <span class="art glow">${sparks(sp, n * 7)}${ART.gems(n)}${bonus ? `<span class="burst">${bonus}<small>bonus</small></span>` : ''}</span>
+        <span class="amount">${amount}</span><span class="price">${o.money}</span></button>`; };
     const slotName = { top: 'Top', hat: 'Hat', neck: 'Chain', face: 'Shades' };
     const outfit = it => { const [rn, rc] = rarity(it);
       return `<button class="card outfit" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
@@ -1413,24 +1503,24 @@ function openTab(tab) {
     openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
       <p class="testnote">Test mode: real-money items are free in this build.</p>
       ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
-      ${S.perks.starter ? '' : offer('starter', ART.gift(), '#FF9CC8', 'x10 value', '<span>Flame Hoodie</span><span>300 gems</span><span>4h of cash</span>')}
+      ${offer('starter', ART.gift(), '#FF9CC8', 'x10 value', '<span>Flame Hoodie</span><span>300 gems</span><span>4h of cash</span>')}
       ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
       <div class="banner">Time skips & boosts</div>
       <div class="cards">
         ${card('skip1', ART.clock(1), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold')}
         ${card('skip4', ART.clock(4), 'Skip 4 hours', '+' + fmt(skipValue(4 * 3600)), 'gold', 'Best deal')}
-        ${card('monitors', ART.monitors(), '+50% income forever', '', 'gold')}
-        ${card('nightOwl', ART.moon(), '8h offline earnings', '', 'gold')}
+        ${card('monitors', ART.monitors(), '+50% income<br>forever', '', 'gold')}
+        ${card('nightOwl', ART.moon(), '8h offline<br>earnings', '', 'gold')}
       </div>
       <div class="banner">Outfits</div>
       <div class="cards">${ITEMS.filter(i => i.gems).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot)).map(outfit).join('')}</div>
       <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
       <div class="banner">Gems</div>
       <div class="cards two">
-        ${card('gems100', ART.gems(1), 'Handful', '100', 'green', '', 3)}
-        ${card('gems550', ART.gems(2), 'Bag · +10% bonus', '550', 'green', 'Popular', 5)}
-        ${card('gems1200', ART.gems(3), 'Chest · +20% bonus', '1,200', 'green', '', 7)}
-        ${card('gems2600', ART.gems(4), 'Vault · +30% bonus', '2,600', 'green', 'Best value', 10)}
+        ${gemCard('gems100', 1, '100', '', '', 3)}
+        ${gemCard('gems550', 2, '550', '+10%', 'Popular', 5)}
+        ${gemCard('gems1200', 3, '1,200', '+20%', '', 7)}
+        ${gemCard('gems2600', 4, '2,600', '+30%', 'Best value', 10)}
       </div>`);
   } else if (tab.startsWith('pay:')) {
     const id = tab.slice(4), o = OFFERS[id];
@@ -1440,15 +1530,25 @@ function openTab(tab) {
       <button class="cta" data-pay="${id}">Get it (test)</button><button class="ghost" data-close>Cancel</button>`);
   } else if (tab === 'hype') {
     const left = Math.max(0, S.hypeUntil - Date.now());
-    const full = left >= HYPE_CAP * 1000 - 1000;
+    const full = left >= hypeCap() * 1000 - 1000, lv = hypeLv(), mins = HYPE_LEN[lv.len];
+    const up = (key, label, vals, costs, unit) => { const i = lv[key], max = i >= costs.length;
+      return `<div class="row"><span class="ric">${svgIc(key === 'len' ? 'star' : 'monitor', '#FF6FAE', 20)}</span>
+        <span class="rt"><b>${label}</b><span>${max ? vals[i] + unit + ' · maxed' : vals[i] + unit + ' → ' + vals[i + 1] + unit}</span>
+        <span class="pips">${vals.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</span></span>
+        ${max ? '<span class="hired">Max</span>' : `<button class="hire" data-hup="${key}" ${S.gems < costs[i] ? 'disabled' : ''}><i class="g"></i> ${costs[i]}</button>`}</div>`; };
     openSheet(`<div class="sheet-head"><h2>2x Hype</h2>${closeBtn()}</div>
       <div class="welcome"><span class="amt" style="color:var(--accent)">${left ? hms(left) : 'Off'}</span>
-      <p>Each ad adds 20 minutes of double income, up to 2 hours. Hype keeps counting while you're away, and it doubles offline earnings too.</p></div>
-      <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at 2 hours' : (S.perks.adFree ? 'Add 20 minutes' : 'Watch ad: +20 minutes')}</button>
-      ${S.perks.goldenMic ? '<p>Golden Mic stacks with Hype for 4x income.</p>' : ''}`);
+      <p>Each ad adds ${mins} minutes of double income, up to ${capText()}. Hype keeps counting while you're away, and it doubles offline earnings too.</p></div>
+      <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : (S.perks.adFree ? `Add ${mins} minutes` : `Watch ad: +${mins} minutes`)}</button>
+      <p class="adnote">${adGemNote()}</p>
+      ${S.perks.goldenMic ? '<p>Golden Mic stacks with Hype for 4x income.</p>' : ''}
+      <div class="sec"><h3>Hype upgrades</h3>
+        ${up('len', 'Longer Hype', HYPE_LEN, HYPE_LEN_COST, ' min per ad')}
+        ${up('cap', 'Bigger Hype cap', HYPE_CAPS, HYPE_CAP_COST, 'h max')}</div>`);
   } else if (tab === 'style') {
     S.newItems = [];
     const g = Math.round((gearMult() - 1) * 100);
+    const dressSparks = Array.from({ length: 7 }, (_, i) => `<i class="spk" style="left:${10 + (i * 37) % 80}%;top:${8 + (i * 53) % 60}%;animation-delay:-${(i * .55).toFixed(2)}s;--k:${(.6 + (i % 3) * .25).toFixed(2)}"></i>`).join('');
     const slotIc = { top: 'shirt', hat: 'beanie', neck: 'chain', face: 'shades', colors: 'palette' };
     const SIC = {
       shirt: '<path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path>',
@@ -1467,15 +1567,16 @@ function openTab(tab) {
       grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot).map(it => {
         const own = S.owned[it.id], on = S.equip[it.slot] === it.id, [rn, rc] = rarity(it);
         const bar = own ? rn : it.album ? `Album ${it.album}` : `<i class="g"></i>${it.gems}`;
-        return `<button class="item ${own ? '' : 'locked'}" data-item="${it.id}" aria-label="${it.name}${own ? (on ? ', wearing' : '') : it.album ? ', unlocks with album ' + it.album : ', ' + it.gems + ' gems'}">
-          ${on ? '<span class="eq">Wearing</span>' : ''}<span class="art">${itemArt(it, 78)}</span>
+        const tier = it.album ? 'exclusive' : it.gems && it.bonus >= 0.04 ? 'epic' : '';
+        return `<button class="item ${own ? '' : 'locked'} ${tier}" data-item="${it.id}" aria-label="${it.name}${own ? (on ? ', wearing' : '') : it.album ? ', unlocks with album ' + it.album : ', ' + it.gems + ' gems'}">
+          ${on ? '<span class="eq">Wearing</span>' : ''}<span class="art ${own ? 'glow' : ''}">${own && tier ? '<i class="spk" style="left:14%;top:12%"></i><i class="spk" style="left:78%;top:30%;animation-delay:-1.2s;--k:.7"></i>' : ''}${itemArt(it, 78)}</span>
           <span class="nm">${it.name}${it.bonus ? ` <em>+${Math.round(it.bonus * 100)}%</em>` : ''}</span>
           <span class="bar" style="background:${own ? rc : '#8C86A6'}">${bar}</span></button>`;
       }).join('') + '</div>';
     }
     openSheet(`<div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
       <div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div>
-      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="dresser">${bigArtist()}</div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div>
+      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="dresser"><span class="spot"></span>${dressSparks}${bigArtist()}</div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div>
       <p class="bonusline">Outfit bonus <b>+${g}% income</b></p>
       <div class="stabs">${['top', 'hat', 'neck', 'face', 'colors'].map(k => `<button class="stab ${styleSlot === k ? 'on' : ''}" data-stab="${k}" aria-label="${k === 'colors' ? 'Colors' : SLOTS.find(x => x[0] === k)[1]}">${ic(slotIc[k], 24)}</button>`).join('')}</div>
       ${grid}`);
@@ -1581,7 +1682,8 @@ function render() {
 
   const now = Date.now();
   const hb = $('hypeBtn');
-  $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x';
+  $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x Hype';
+  $('hypeBtn').classList.toggle('active', hypeOn());
   const cb = $('crateBtn'), crateWait = now < S.crateReady;
   $('crateLbl').textContent = crateWait ? mmss(S.crateReady - now) : 'Free';
   cb.disabled = crateWait; $('crateBang').hidden = crateWait;
@@ -1606,7 +1708,8 @@ function tick(t) {
       const n = auto ? Math.floor(S.prog[st.id]) : 1;
       const v = payout(st) * n * mult();
       earn(v);
-      if (!auto || st.id === S.selected) sfx('cash');
+      // fast stations ding at most about once a second so it never turns into a buzz
+      if (!auto || st.id === S.selected) { cashGap = cycleTime(st) < 0.9 ? 1100 : 400; sfx('cash'); }
       if (!floatGate[st.id] || t - floatGate[st.id] > 450) { floater(st, '+' + fmt(v)); floatGate[st.id] = t; }
       if (auto) S.prog[st.id] -= n; else { S.prog[st.id] = 0; S.running[st.id] = false; }
     }
@@ -1630,6 +1733,7 @@ function offline() {
   const h = Math.floor(secs / 3600), m = Math.floor(secs % 3600 / 60);
   openSheet(`<div class="welcome"><h2>Welcome back</h2><p>Your crew kept working for ${h ? h + 'h ' : ''}${m}m${away > secs ? ' (the most offline time you can earn)' : ''}.</p><span class="amt">+${fmt(v)}</span></div>
     <button class="cta pink" data-ad="bonus">${S.perks.adFree ? 'Double it' : 'Watch ad: double it'}</button>
+    <p class="adnote">${adGemNote()}</p>
     <button class="ghost" data-close>Collect ${fmt(v)}</button>`);
 }
 
