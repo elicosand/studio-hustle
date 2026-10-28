@@ -13,7 +13,8 @@
 <meta name="apple-mobile-web-app-title" content="Studio Hustle">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-html { box-sizing: border-box; height: 100%; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+/* Phone edges: content starts below the status bar / notch; the tab bar runs to the bottom edge and pads itself above the home indicator. */
+html { box-sizing: border-box; height: 100%; padding-top: env(safe-area-inset-top, 0px); background: #14122A; }
 body { margin: 0; font: 14px system-ui, sans-serif; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
@@ -52,7 +53,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .app { height: 100%; display: flex; flex-direction: column; max-width: 520px; margin: 0 auto; position: relative; }
 
 /* HUD */
-.hud { display: flex; align-items: center; gap: 8px; padding-block: 10px 8px;
+.hud { display: flex; align-items: center; gap: 8px; padding-block: 20px 8px;
   padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
 .pill { height: 42px; border-radius: 999px; background: var(--panel); display: flex; align-items: center; gap: 8px; }
 .cash-pill { flex: 1; min-width: 0; padding: 0 14px 0 6px; }
@@ -152,7 +153,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .act.ready { animation: glow 1.6s ease-in-out infinite; }
 @keyframes glow { 50% { box-shadow: 0 0 0 4px rgba(255,201,74,.35) } }
 
-.tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: #1B1834; border-top: 1px solid var(--panel-2);
+.tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: var(--ink); border-top: 1px solid var(--panel-2);
   padding-block: 6px 6px; padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
 .tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
 .tab.on { color: var(--accent); }
@@ -217,6 +218,10 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
   .floater { animation-duration: .01s; }
 }
 </style>
+<style>
+.tabs { padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important; }
+</style>
+
 </head>
 <body>
 
@@ -1000,7 +1005,7 @@ function miniFigure(f, w, h) {
   const sk = f.skin ? `fill="${f.skin}"` : 'class="skin"';
   let o = `<svg width="${w}" height="${h}" viewBox="0 0 160 214" aria-hidden="true">
     <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>
-    <rect x="62" y="150" width="17" height="46" rx="8" fill="#2C2F48" ${ln}></rect><rect x="81" y="150" width="17" height="46" rx="8" fill="#2C2F48" ${ln}></rect>
+    <path d="M58 146 H80 V193 H51 Q50 168 58 146 Z" fill="#2C2F48" ${ln}></path><path d="M80 146 H102 Q110 168 109 193 H80 Z" fill="#2C2F48" ${ln}></path>
     <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
     <rect x="41" y="104" width="17" height="46" rx="8.5" fill="${f.body}" ${ln} transform="rotate(9 50 104)"></rect>
     <rect x="102" y="104" width="17" height="46" rx="8.5" fill="${f.body}" ${ln} transform="rotate(-9 110 104)"></rect>
@@ -1043,8 +1048,9 @@ function bigArtist(eq = S.equip) {
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   let o = `<svg width="170" height="228" viewBox="0 0 160 214" role="img" aria-label="Your artist, front view">
     <ellipse cx="80" cy="206" rx="34" ry="5" fill="#000" opacity="0.3"></ellipse>
-    <rect x="63" y="150" width="15" height="50" rx="7" fill="#2C2F48" ${ln}></rect>
-    <rect x="82" y="150" width="15" height="50" rx="7" fill="#2C2F48" ${ln}></rect>
+    <path d="M60 148 H80 V197 H54 Q53 172 60 148 Z" fill="#2C2F48" ${ln}></path>
+    <path d="M80 148 H100 Q107 172 106 197 H80 Z" fill="#2C2F48" ${ln}></path>
+    <path d="M70 170 Q69 182 68 194 M90 170 Q91 182 92 194" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2"></path>
     <path d="M55 203 Q55 192 66 192 H74 Q79 192 79 198 V203 Z" fill="#F4F1EA" ${ln}></path>
     <path d="M105 203 Q105 192 94 192 H86 Q81 192 81 198 V203 Z" fill="#F4F1EA" ${ln}></path>
     <rect x="58" y="196" width="12" height="3" rx="1.5" fill="var(--phones)"></rect><rect x="90" y="196" width="12" height="3" rx="1.5" fill="var(--phones)"></rect>
