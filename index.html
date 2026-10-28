@@ -61,7 +61,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .coin { width: 30px; height: 30px; border-radius: 50%; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 16px; display: grid; place-items: center; flex: none; }
 .cash-col { display: flex; flex-direction: column; min-width: 0; line-height: 1; }
 .cash-num { font-family: var(--display); font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.cash-rate { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+.cash-rate { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gem-pill { padding: 0 4px 0 10px; }
 .gem-num { font-family: var(--display); font-size: 17px; }
 .round-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--gem); color: var(--deep); display: grid; place-items: center; }
@@ -69,7 +69,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 
 /* Room */
 .room-wrap { flex: 1; min-height: 0; position: relative; overflow: hidden; background: var(--floor); transition: background .4s; }
-.stage { position: absolute; left: 50%; top: 50%; width: 390px; height: 480px; transform-origin: center; }
+.stage { position: absolute; left: 50%; top: 0; width: 390px; height: 480px; transform-origin: top center; }
 .abs { position: absolute; }
 .loc-chip { position: absolute; top: 8px; left: max(10px, env(safe-area-inset-left, 0px)); z-index: 5; display: flex; align-items: center; gap: 6px;
   background: rgba(20,18,42,.82); border-radius: 999px; padding: 6px 12px 6px 8px; font-size: 12px; font-weight: 700; pointer-events: none; }
@@ -166,9 +166,9 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
 .tab.on { color: var(--accent); }
 .mult { flex: none; font-family: var(--display); font-size: 13px; color: var(--deep); background: var(--gem); border-radius: 999px; padding: 2px 8px; margin-left: auto; }
-.side { position: absolute; top: 56px; z-index: 5; display: flex; flex-direction: column; gap: 16px; }
+.side { position: absolute; top: 10px; z-index: 5; display: flex; flex-direction: column; gap: 16px; }
 .side-l { left: max(10px, env(safe-area-inset-left, 0px)); }
-.side-r { right: max(10px, env(safe-area-inset-right, 0px)); top: 10px; }
+.side-r { right: max(10px, env(safe-area-inset-right, 0px)); }
 .sbtn { position: relative; width: 54px; height: 54px; border-radius: 16px; background: var(--text); color: var(--deep); display: grid; place-items: center;
   box-shadow: 0 4px 0 rgba(20,18,42,.35); }
 .sbtn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
@@ -180,45 +180,64 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .bang { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #F0453A; color: #fff; border: 2px solid var(--text);
   font: 700 13px/16px var(--body); text-align: center; box-sizing: border-box; }
 .tab .bang { top: 0; right: 50%; margin-right: -24px; }
-.pop { position: absolute; z-index: 12; left: 12px; width: 300px; max-width: calc(100% - 24px); box-sizing: border-box; background: var(--text); color: var(--deep);
-  border-radius: 20px; padding: 12px 14px 14px; box-shadow: 0 10px 30px rgba(10,8,30,.45); display: flex; flex-direction: column; gap: 8px; animation: popin .16s ease-out; }
+.pop { position: absolute; z-index: 12; left: 12px; width: 280px; max-width: calc(100% - 24px); box-sizing: border-box; background: var(--text); color: var(--deep);
+  border-radius: 18px; padding: 10px 12px 12px; box-shadow: 0 10px 30px rgba(10,8,30,.45); display: flex; flex-direction: column; gap: 7px; animation: popin .16s ease-out; }
 @keyframes popin { from { transform: scale(.94); opacity: 0; } }
 .pop-arrow { position: absolute; width: 18px; height: 18px; background: var(--text); transform: rotate(45deg); left: 50%; margin-left: -9px; }
 .pop-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .pop-title { display: flex; flex-direction: column; line-height: 1.1; }
-.pop-title b { font-family: var(--display); font-size: 18px; font-weight: 400; }
-.pop-title span { font-size: 14px; font-weight: 700; color: #6A6390; }
-.pop-x { width: 36px; height: 36px; margin: -4px -6px 0 0; border-radius: 10px; color: #6A6390; display: grid; place-items: center; }
+.pop-title b { font-family: var(--display); font-size: 16px; font-weight: 400; }
+.pop-title span { font-size: 13px; font-weight: 700; color: #6A6390; }
+.pop-x { width: 32px; height: 32px; margin: -4px -6px 0 0; border-radius: 10px; color: #6A6390; display: grid; place-items: center; }
 .pop-mile { display: flex; align-items: center; gap: 6px; }
-.pop-mile .mile { flex: 1; height: 10px; background: #E4DFF2; }
+.pop-mile .mile { flex: 1; height: 8px; background: #E4DFF2; }
+.pop-next { font-size: 11px; font-weight: 700; color: #6A6390; white-space: nowrap; }
+.pop-row { display: flex; align-items: center; gap: 6px; }
 .pop-star { color: var(--gem); font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #B8860B; }
-.pop .mile-label { color: #6A6390; margin-top: -4px; }
-.pop-stats { display: flex; justify-content: space-between; font-size: 15px; }
+.pop-stats { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; font-size: 13px; }
 .pop-stats span { display: flex; align-items: center; gap: 6px; }
 .pop-stats b { font-family: var(--display); font-weight: 400; }
 .coin-s { width: 18px; height: 18px; border-radius: 50%; background: var(--cash); color: var(--deep); font: 400 11px/18px var(--display); text-align: center; font-style: normal; }
-.pop-actions { display: flex; gap: 8px; }
 .pop .mode-btn { background: #E4DFF2; color: var(--deep); }
-.pop .up-btn { flex: 1; justify-content: center; height: 52px; font-size: 18px; }
+.pop .mode-btn { width: 44px; height: 44px; font-size: 12px; }
+.pop .up-btn { min-width: 104px; justify-content: center; height: 44px; font-size: 16px; padding: 0 12px; }
 .pop .up-btn:disabled { background: #D9D4E8; color: #8C86A6; }
 .testnote { font-size: 12px !important; text-align: center; }
-.offer { position: relative; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 10px; align-items: center; border-radius: 18px; padding: 16px 12px 12px; color: var(--deep); box-shadow: 0 4px 0 rgba(20,18,42,.3); }
+.offer { position: relative; display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; align-items: center; border-radius: 18px; padding: 16px 12px 12px; color: var(--deep); box-shadow: 0 4px 0 rgba(20,18,42,.3); text-align: left; overflow: visible; isolation: isolate; }
+.offer:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.3); }
+.offer:disabled { opacity: .7; }
+.offer::after { content: ""; position: absolute; inset: 0; border-radius: 18px; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.55) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; }
+@keyframes sheen { 0%, 55% { background-position: 130% 0; } 100% { background-position: -130% 0; } }
 .offer .rib { position: absolute; top: -8px; left: -4px; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 8px 8px 8px 2px; transform: rotate(-4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
-.offer-art { display: grid; place-items: center; }
+.offer-art { position: relative; display: grid; place-items: center; height: 88px; }
 .offer-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .offer-body b { font: 400 18px var(--display); }
 .offer-body > span { font-size: 13px; font-weight: 600; color: rgba(20,18,42,.75); }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chips span { font-size: 11px; font-weight: 700; background: rgba(255,255,255,.6); border-radius: 999px; padding: 2px 8px; }
-.paybtn { align-self: flex-end; margin-top: 4px; height: 40px; padding: 0 18px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px var(--display); }
-.paybtn:disabled { background: rgba(20,18,42,.35); }
+.paybtn { align-self: flex-end; margin-top: 4px; height: 40px; line-height: 40px; padding: 0 18px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px var(--display); }
+.offer:disabled .paybtn { background: rgba(20,18,42,.35); }
 .banner { margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); padding: 9px 12px; background: var(--panel-2); text-align: center; font: 400 15px var(--display); letter-spacing: .02em; }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.card { display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 0 rgba(20,18,42,.35); }
+.card { position: relative; display: flex; flex-direction: column; border-radius: 16px; overflow: visible; box-shadow: 0 4px 0 rgba(20,18,42,.35); }
+.card .price { border-radius: 0 0 16px 16px; }
 .card:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
-.card .art { position: relative; height: 98px; display: grid; place-items: center; }
-.card .qty { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; font: 400 12px var(--display); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.card .art { position: relative; height: 96px; display: grid; place-items: center; }
+.card .ttl { padding: 0 6px 6px; font-size: 12px; font-weight: 700; line-height: 1.2; color: var(--deep); min-height: 30px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.card .ttl small { font-size: 10px; font-weight: 700; opacity: .65; text-transform: uppercase; letter-spacing: .06em; }
+.card .tag { position: absolute; top: 6px; left: 6px; z-index: 2; color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
+.rib.small { position: absolute; top: -8px; right: -4px; left: auto; z-index: 3; font-size: 10px; padding: 2px 8px; background: #F0453A; color: #fff; font-family: var(--display); border-radius: 8px 8px 2px 8px; transform: rotate(4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+/* glow, sparkle and float so the shop feels like treasure */
+.glow::before { content: ""; position: absolute; left: 50%; top: 48%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,0) 70%); animation: pulseglow 2.6s ease-in-out infinite; }
+.glow > svg { position: relative; animation: floaty 3s ease-in-out infinite; filter: drop-shadow(0 4px 0 rgba(20,18,42,.18)); }
+.spk { position: absolute; z-index: 1; width: 12px; height: 12px; background: #fff; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); transform: scale(var(--k, 1)); animation: sparkle 2.4s ease-in-out infinite; pointer-events: none; }
+.card.green .spk { background: #FFF7C2; }
+@keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(calc(var(--k, 1) * .3)) rotate(0); } 50% { opacity: 1; transform: scale(var(--k, 1)) rotate(45deg); } }
+@keyframes floaty { 50% { transform: translateY(-4px); } }
+@keyframes pulseglow { 50% { transform: scale(1.12); opacity: .8; } }
+.card.green .art { background: radial-gradient(circle at 50% 45%, #B4F5BE 0%, transparent 65%); border-radius: 16px 16px 0 0; }
+.card .qty { z-index: 2; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; font: 400 12px var(--display); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
 .card .price { padding: 8px 4px; font: 400 15px var(--display); display: flex; align-items: center; justify-content: center; gap: 4px; }
 .card.gold { background: #FFD866; } .card.gold .price { background: #F0A81E; color: var(--deep); }
 .card.green { background: #8BE39A; } .card.green .price { background: #1D7F35; color: #fff; }
@@ -247,6 +266,11 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .item .eq { position: absolute; top: 4px; left: 4px; z-index: 1; background: var(--deep); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
 .nameinput { height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
 .nameinput:focus { outline: none; border-color: var(--gem); }
+.loc-title { position: absolute; left: 50%; top: 34%; z-index: 9; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px;
+  pointer-events: none; white-space: nowrap; animation: loctitle 2.8s ease-in-out forwards; }
+.loc-title b { font: 400 28px var(--display); color: #fff; text-shadow: 0 3px 0 var(--deep), 0 0 18px rgba(20,18,42,.6); }
+.loc-title span { font-size: 13px; font-weight: 700; color: #fff; background: rgba(20,18,42,.7); border-radius: 999px; padding: 3px 12px; }
+@keyframes loctitle { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.96); } 15%, 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -6px); } }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
 
@@ -314,7 +338,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -345,7 +369,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
   </header>
 
   <div class="room-wrap" id="roomWrap">
-    <div class="loc-chip"><i></i><span id="locName">Rundown Apartment</span></div>
+    <div class="loc-title" id="locTitle" hidden><b id="locTitleName"></b><span id="locTitleSub"></span></div>
     <div class="side side-l">
       <button class="sbtn hype" id="hypeBtn" aria-label="2x Hype">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>
@@ -392,15 +416,14 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
     <span class="pop-arrow" id="popArrow"></span>
     <div class="pop-head">
       <div class="pop-title"><b id="popLv">Level 1</b><span id="sbName">Laptop Beats</span></div>
-      <button class="pop-x" id="popClose" aria-label="Close upgrade card"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      <button class="pop-x" id="popClose" aria-label="Close upgrade card"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
     </div>
-    <div class="pop-mile"><div class="mile"><i id="sbMile"></i></div><span class="pop-star" aria-hidden="true">★</span></div>
-    <div class="mile-label" id="sbMileLabel"></div>
-    <div class="pop-stats"><span><i class="coin-s">$</i><b id="popPay">$1</b></span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><b id="popTime">1.2s</b></span></div>
-    <div class="pop-actions">
+    <div class="pop-mile"><div class="mile"><i id="sbMile"></i></div><span class="pop-star" aria-hidden="true">★</span><span class="pop-next" id="sbMileLabel"></span></div>
+    <div class="pop-row">
+      <div class="pop-stats"><span><i class="coin-s">$</i><b id="popPay">$1</b></span><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><b id="popTime">1.2s</b></span></div>
       <button class="mode-btn" id="modeBtn" aria-label="Change how many levels to buy">x1</button>
       <button class="up-btn" id="upBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
         <span id="upCost">$5</span>
       </button>
     </div>
@@ -514,7 +537,7 @@ const LOFT_DECOR = `
 
 const LOCATIONS = [
   {
-    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', goal: 150000, decor: APARTMENT_DECOR, home: [160, 214],
+    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', plank: '#94683F', goal: 150000, decor: APARTMENT_DECOR, home: [160, 214],
     stations: [
       { id: 'beats', name: 'Laptop Beats', icon: 'note', unlock: 0, base: 1, cycle: 1.2, cost: 6, growth: 1.13, crew: 'Producer', crewCost: 90, spot: [214, 176],
         pos: [226, 112, 140, 128], ring: 90, hint: 36,
@@ -547,7 +570,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', goal: 50000000, decor: STUDIO_DECOR, home: [160, 222],
+    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', goal: 50000000, decor: STUDIO_DECOR, home: [160, 222],
     stations: [
       { id: 'pads', name: 'Beat Pads', icon: 'grid', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Beatmaker', crewCost: 4500, spot: [132, 160],
         pos: [24, 112, 118, 100],
@@ -580,7 +603,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', goal: 15000000000, decor: LOFT_DECOR, home: [160, 222],
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', goal: 15000000000, decor: LOFT_DECOR, home: [160, 222],
     stations: [
       { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -640,7 +663,7 @@ const ITEMS = [
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 9, CONTACT = 'elicosand@gmail.com';
+const BUILD = 10, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -897,10 +920,19 @@ const $ = id => document.getElementById(id);
 const stage = $('stage'), wrap = $('roomWrap'), artist = $('artist');
 let els = {};
 
+let shownLoc = null, locTitleT;
+function showLocTitle() {
+  const t = $('locTitle');
+  $('locTitleName').textContent = LOC().name;
+  $('locTitleSub').textContent = `Stop ${S.loc + 1} of ${LOCATIONS.length + FUTURE.length}` + (S.albums > 0 ? ` · Fame x${fame().toFixed(2)}` : '');
+  t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = '';
+  clearTimeout(locTitleT); locTitleT = setTimeout(() => { t.hidden = true; }, 2800);
+}
 function buildRoom() {
   const loc = LOC();
   wrap.style.setProperty('--floor', loc.floor);
-  $('locName').innerHTML = loc.name + (S.albums > 0 ? ` <b style="color:var(--gem)">★ x${fame().toFixed(2)}</b>` : '');
+  wrap.dataset.plank = loc.plank; fit();
+  if (shownLoc !== S.loc) { shownLoc = S.loc; showLocTitle(); }
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
     return `<button class="station" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
@@ -928,8 +960,12 @@ function buildRoom() {
 
 function fit() {
   const r = wrap.getBoundingClientRect();
-  const s = Math.min(r.width / 390, (r.height - 4) / 480);
-  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+  const s = Math.min(r.width / 390, r.height / 480);
+  stage.style.transform = `translate(-50%, 0) scale(${s})`;
+  // the floor keeps its planks below the room when the screen is taller than the room
+  const pl = wrap.dataset.plank || 'rgba(0,0,0,.1)';
+  wrap.style.backgroundImage = `repeating-linear-gradient(to bottom, transparent 0, transparent ${38 * s}px, ${pl} ${38 * s}px, ${pl} ${40 * s}px)`;
+  wrap.style.backgroundPosition = `0 ${10 * s}px`;
 }
 new ResizeObserver(fit).observe(wrap);
 
@@ -1165,7 +1201,7 @@ $('scrim').addEventListener('click', e => {
   const bi = e.target.closest('[data-buy-item]');
   if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
   const bo = e.target.closest('[data-buy]');
-  if (bo) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
+  if (bo && !bo.disabled) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
     if (S.gems < o.gems) { sfx('denied'); toast('Not enough gems'); return; }
     S.gems -= o.gems; grant(id); return openTab('shop'); }
@@ -1352,29 +1388,50 @@ function openTab(tab) {
       <button class="cta pink" data-album>Drop it</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'shop') {
     const owned = id => OFFERS[id].once && S.perks[id];
-    const offer = (id, art, color, ribbon, perks) => { const o = OFFERS[id];
-      return `<div class="offer" style="background:${color}"><span class="rib">${ribbon}</span>
-        <div class="offer-art">${art}</div>
-        <div class="offer-body"><b>${o.name}</b><span>${o.sub}</span>${perks ? `<div class="chips">${perks}</div>` : ''}
-          <button class="paybtn" data-buy="${id}" ${owned(id) ? 'disabled' : ''}>${owned(id) ? 'Owned' : o.money}</button></div></div>`; };
-    const card = (id, art, qty, theme) => { const o = OFFERS[id], own = owned(id);
+    // deterministic sparkle positions so they don't jump around on every refresh
+    const sparks = (n, seed = 1) => Array.from({ length: n }, (_, i) => { const a = (i * 137 + seed * 53) % 100, b = (i * 71 + seed * 29) % 100;
+      return `<i class="spk" style="left:${8 + a * .84}%;top:${6 + b * .7}%;animation-delay:-${((i * .63 + seed * .37) % 2.4).toFixed(2)}s;--k:${(.6 + (i % 3) * .25).toFixed(2)}"></i>`; }).join('');
+    const offer = (id, art, color, ribbon, perks) => { const o = OFFERS[id], own = owned(id);
+      return `<button class="offer" data-buy="${id}" ${own ? 'disabled' : ''} style="background:${color}" aria-label="${o.name}, ${own ? 'owned' : o.money}"><span class="rib">${ribbon}</span>
+        <span class="offer-art glow">${sparks(5, id.length)}${art}</span>
+        <span class="offer-body"><b>${o.name}</b><span>${o.sub}</span>${perks ? `<span class="chips">${perks}</span>` : ''}
+          <span class="paybtn">${own ? 'Owned' : o.money}</span></span></button>`; };
+    const card = (id, art, title, pill, theme, ribbon, n = 3) => { const o = OFFERS[id], own = owned(id);
       const price = own ? 'Owned' : o.money ? o.money : `<i class="g"></i>${o.gems}`;
-      return `<button class="card ${theme}" data-buy="${id}" ${own ? 'disabled' : ''} aria-label="${o.name}, ${own ? 'owned' : o.money || o.gems + ' gems'}">
-        <span class="art">${art}${qty ? `<span class="qty">${qty}</span>` : ''}</span><span class="price">${price}</span></button>`; };
-    const outfit = it => `<button class="card outfit" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
-        <span class="art">${itemArt(it, 76)}<span class="qty">+${Math.round(it.bonus * 100)}%</span></span><span class="price">${S.owned[it.id] ? 'Owned' : `<i class="g"></i>${it.gems}`}</span></button>`;
+      return `<button class="card ${theme}" data-buy="${id}" ${own ? 'disabled' : ''} aria-label="${title}, ${own ? 'owned' : o.money || o.gems + ' gems'}">
+        ${ribbon ? `<span class="rib small">${ribbon}</span>` : ''}
+        <span class="art glow">${sparks(n, id.length + n)}${art}${pill ? `<span class="qty">${pill}</span>` : ''}</span>
+        <span class="ttl">${title}</span><span class="price">${price}</span></button>`; };
+    const slotName = { top: 'Top', hat: 'Hat', neck: 'Chain', face: 'Shades' };
+    const outfit = it => { const [rn, rc] = rarity(it);
+      return `<button class="card outfit" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
+        <span class="tag" style="background:${rc}">${rn}</span>
+        <span class="art glow">${sparks(2, it.gems)}${itemArt(it, 76)}<span class="qty">+${Math.round(it.bonus * 100)}% income</span></span>
+        <span class="ttl">${it.name}<small>${slotName[it.slot]}</small></span>
+        <span class="price">${S.owned[it.id] ? 'Owned' : `<i class="g"></i>${it.gems}`}</span></button>`; };
+    const order = ['top', 'hat', 'neck', 'face'];
     openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
       <p class="testnote">Test mode: real-money items are free in this build.</p>
-      ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span>')}
-      ${S.perks.starter ? '' : offer('starter', ART.gift(), '#FF9CC8', 'x10 value', '<span>Flame Hoodie</span><span>300 gems</span><span>4h skip</span>')}
-      ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Instant rewards</span>')}
+      ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
+      ${S.perks.starter ? '' : offer('starter', ART.gift(), '#FF9CC8', 'x10 value', '<span>Flame Hoodie</span><span>300 gems</span><span>4h of cash</span>')}
+      ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
       <div class="banner">Time skips & boosts</div>
-      <div class="cards">${card('skip1', ART.clock(1), '1h', 'gold')}${card('skip4', ART.clock(4), '4h', 'gold')}${card('monitors', ART.monitors(), '+50%', 'gold')}${card('nightOwl', ART.moon(), '8h away', 'gold')}</div>
+      <div class="cards">
+        ${card('skip1', ART.clock(1), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold')}
+        ${card('skip4', ART.clock(4), 'Skip 4 hours', '+' + fmt(skipValue(4 * 3600)), 'gold', 'Best deal')}
+        ${card('monitors', ART.monitors(), '+50% income forever', '', 'gold')}
+        ${card('nightOwl', ART.moon(), '8h offline earnings', '', 'gold')}
+      </div>
       <div class="banner">Outfits</div>
-      <div class="cards">${ITEMS.filter(i => i.gems).map(outfit).join('')}</div>
+      <div class="cards">${ITEMS.filter(i => i.gems).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot)).map(outfit).join('')}</div>
       <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
       <div class="banner">Gems</div>
-      <div class="cards two">${card('gems100', ART.gems(1), '100', 'green')}${card('gems550', ART.gems(2), '550', 'green')}${card('gems1200', ART.gems(3), '1,200', 'green')}${card('gems2600', ART.gems(4), '2,600', 'green')}</div>`);
+      <div class="cards two">
+        ${card('gems100', ART.gems(1), 'Handful', '100', 'green', '', 3)}
+        ${card('gems550', ART.gems(2), 'Bag · +10% bonus', '550', 'green', 'Popular', 5)}
+        ${card('gems1200', ART.gems(3), 'Chest · +20% bonus', '1,200', 'green', '', 7)}
+        ${card('gems2600', ART.gems(4), 'Vault · +30% bonus', '2,600', 'green', 'Best value', 10)}
+      </div>`);
   } else if (tab.startsWith('pay:')) {
     const id = tab.slice(4), o = OFFERS[id];
     openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
@@ -1509,7 +1566,7 @@ function render() {
   $('popPay').textContent = fmt(payout(st) * mult());
   $('popTime').textContent = (ct < 1 ? ct.toFixed(2) : ct.toFixed(1)) + 's';
   $('sbMile').style.width = next ? ((L - prev) / (next - prev) * 100) + '%' : '100%';
-  $('sbMileLabel').textContent = next ? `Lv ${next}: 2x speed` : 'Max speed reached';
+  $('sbMileLabel').textContent = next ? `2x at Lv ${next}` : 'Max speed';
   const plan = buyPlan(st);
   $('modeBtn').textContent = S.buyMode === 'max' ? 'MAX' : 'x' + S.buyMode;
   $('upCost').textContent = (S.buyMode === 1 ? '' : '+' + plan.n + ' ') + fmt(plan.cost);
