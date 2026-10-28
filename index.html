@@ -338,6 +338,23 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .statgrid div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .statgrid b { font: 400 17px var(--display); overflow-wrap: anywhere; }
 .statgrid span { font-size: 12px; color: var(--muted); font-weight: 600; }
+.statgrid .wide { grid-column: 1 / -1; }
+.statgrid .best { flex-direction: row; align-items: center; gap: 10px; }
+.best .bi { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #9FD8F2; overflow: hidden; display: grid; place-items: center; }
+.best .bt { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .best em { font-style: normal; font-weight: 800; }
+.ttl { font-weight: 800; } .statgrid .ttl { font: 400 17px var(--display); }
+.prof-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: -4px; }
+.ttl-pill { font: 400 14px var(--display); border: 2px solid; border-radius: 999px; padding: 4px 12px; }
+.prof-art { min-height: 0; padding-block: 14px 4px; }
+.plaques { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.plq { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.plq span { font-size: 9.5px; font-weight: 700; line-height: 1.15; color: var(--muted); }
+.plq.won span { color: var(--text); }
+.plaque-win { display: flex; align-items: center; gap: 14px; background: var(--panel-2); border-radius: 18px; padding: 10px 16px; text-align: left; }
+.plaque-win span { display: flex; flex-direction: column; gap: 4px; } .plaque-win b { font: 400 18px var(--display); } .plaque-win em { font-style: normal; font-weight: 700; color: var(--gem); }
+.row.done { opacity: .6; }
+.crow[data-prof], .chartme[data-prof] { cursor: pointer; transition: transform .1s; }
+.crow[data-prof]:active, .chartme[data-prof]:active { transform: scale(.98); }
 .h3note { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-left: 6px; }
 .charts-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .charts-tabs .stab { font-size: 12px; font-weight: 700; }
@@ -764,9 +781,13 @@ const LOCATIONS = [
   },
 ];
 const FUTURE = ['Pro Studio', 'Hillside Mansion', 'Stadium Tour'];
-// pacing: first album ~1 hour for a free player using ads (see the pacing simulator)
-const ALBUM_REQ = 500000000, FAME_PER_ALBUM = 0.10, GEMS_PER_ALBUM = 10;
-const albumReq = () => ALBUM_REQ * Math.pow(50, Math.max(0, S.loc - 1));
+// pacing: first album = the full tour, ~3.5 hours with 3 maps; each album makes the next tour clearly faster
+// an album drops only after the whole tour: you must reach the last map and hit its goal
+const GEMS_PER_ALBUM = 50;
+const lastLoc = () => LOCATIONS.length - 1;
+// album boost grows with the length of the tour: +25% with 3 maps, +50% once all 6 are in
+const FAME_PER_ALBUM = Math.round(LOCATIONS.length / 3 * 25) / 100;
+const albumReady = () => S.loc === lastLoc() && S.earned >= LOCATIONS[lastLoc()].goal;
 const DAILY = [
   { min: 2, gems: 0 }, { min: 3, gems: 0 }, { min: 0, gems: 10 }, { min: 5, gems: 0 },
   { min: 0, gems: 15 }, { min: 8, gems: 0 }, { min: 15, gems: 50 },
@@ -786,11 +807,11 @@ const ITEMS = [
   { id: 'basic', slot: 'top', name: 'Plain Hoodie', bonus: 0, look: { body: '#E8E2F4', trim: '#B9B3CF', style: 'hoodie' } },
   // album exclusives: free for finishing runs, so they match or beat the shop item of the same slot
   { id: 'debut', slot: 'top', name: 'Debut Hoodie', album: 1, bonus: 0.15, look: { body: '#2A2733', trim: '#FF6FAE', style: 'hoodie' } },
-  { id: 'goldchain', slot: 'neck', name: 'Gold Chain', album: 5, bonus: 0.15, look: { color: '#FFC94A' } },
-  { id: 'platinum', slot: 'top', name: 'Platinum Jacket', album: 10, bonus: 0.30, look: { body: '#CDD3DE', trim: '#7D8499', style: 'jacket' } },
-  { id: 'bucket', slot: 'hat', name: 'Bucket Hat', album: 25, bonus: 0.15, look: { color: '#E2D3B0', style: 'bucket' } },
-  { id: 'starshades', slot: 'face', name: 'Star Shades', album: 50, bonus: 0.15, look: { color: '#FF6FAE', style: 'star' } },
-  { id: 'crown', slot: 'hat', name: 'Diamond Crown', album: 100, bonus: 0.40, look: { color: '#FFC94A', style: 'crown' } },
+  { id: 'goldchain', slot: 'neck', name: 'Gold Chain', album: 3, bonus: 0.15, look: { color: '#FFC94A' } },
+  { id: 'platinum', slot: 'top', name: 'Platinum Jacket', album: 5, bonus: 0.30, look: { body: '#CDD3DE', trim: '#7D8499', style: 'jacket' } },
+  { id: 'bucket', slot: 'hat', name: 'Bucket Hat', album: 10, bonus: 0.15, look: { color: '#E2D3B0', style: 'bucket' } },
+  { id: 'starshades', slot: 'face', name: 'Star Shades', album: 20, bonus: 0.15, look: { color: '#FF6FAE', style: 'star' } },
+  { id: 'crown', slot: 'hat', name: 'Diamond Crown', album: 30, bonus: 0.40, look: { color: '#FFC94A', style: 'crown' } },
   // shop items: about 8 to 13 gems per 1% of income, the same band as Pro Monitors
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.08, look: { color: '#14122A', style: 'plain' } },
   { id: 'beanie', slot: 'hat', name: 'Pink Beanie', gems: 80, bonus: 0.10, look: { color: '#FF6FAE', style: 'beanie' } },
@@ -801,7 +822,7 @@ const ITEMS = [
   { id: 'lucky', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, legendary: true, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 35, CONTACT = 'elicosand@gmail.com';
+const BUILD = 38, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -851,13 +872,45 @@ const GOALS = [
   { id: 'move1', text: 'Move into the Home Studio', target: 1, val: () => S.maxLoc || 0, gems: 20 },
   { id: 'lv50', text: 'Get any station to Lv 50', target: 50, val: () => S.stats.maxLevel, gems: 15 },
   { id: 'earn10m', text: 'Earn $10M in total', target: 1e7, val: () => S.stats.lifetime, gems: 20, money: true },
-  { id: 'album1', text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
   { id: 'move2', text: 'Move into the Downtown Loft', target: 2, val: () => S.maxLoc || 0, gems: 30 },
+  { id: 'album1', text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
   { id: 'lv100', text: 'Get any station to Lv 100', target: 100, val: () => S.stats.maxLevel, gems: 30 },
   { id: 'album3', text: 'Drop 3 albums', target: 3, val: () => S.albums || 0, gems: 50 },
 ];
 const activeGoals = () => GOALS.filter(g => !S.goalsDone[g.id]).slice(0, 3);
 const goalReady = g => g.val() >= g.target;
+
+// daily tasks: 3 picked from this pool each day, counted from where the stat stood when the day started
+const TASKS = [
+  { id: 'upgrades', text: 'Buy 30 upgrades', stat: 'upgrades', target: 30 },
+  { id: 'crates', text: 'Open 3 crates', stat: 'crates', target: 3 },
+  { id: 'payouts', text: 'Make 400 tracks', stat: 'payouts', target: 400 },
+  { id: 'hypes', text: 'Watch 2 Hype ads', stat: 'hypes', target: 2 },
+  { id: 'ads', text: 'Watch 3 ads of any kind', stat: 'ads', target: 3 },
+  { id: 'play', text: 'Play for 15 minutes', stat: 'playSec', target: 900, time: true },
+];
+const TASK_GEMS = 5, TASK_BONUS = 5;
+function dailyTasks() {
+  const today = dayKey();
+  if (!S.dt || S.dt.day !== today) {
+    let h = 0; for (const c of today) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const pool = TASKS.map(t => t.id), ids = [];
+    while (ids.length < 3) { h = (Math.imul(h, 1103515245) + 12345) >>> 0; ids.push(pool.splice((h >>> 8) % pool.length, 1)[0]); }
+    S.dt = { day: today, ids, base: Object.fromEntries(TASKS.map(t => [t.stat, S.stats[t.stat] || 0])), got: {}, bonus: false };
+  }
+  return S.dt.ids.map(id => { const t = TASKS.find(x => x.id === id);
+    const v = Math.min(t.target, Math.max(0, (S.stats[t.stat] || 0) - (S.dt.base[t.stat] || 0)));
+    return Object.assign({ v, ready: v >= t.target, got: !!S.dt.got[id] }, t); });
+}
+const tasksClaimable = () => { const ts = dailyTasks(); return ts.some(t => t.ready && !t.got) || (ts.every(t => t.got) && !S.dt.bonus); };
+
+// first time you move out of a map: gems plus a plaque for that map
+const MAP_GEMS = [50, 100, 150, 200, 300];
+// titles shown on the charts, earned by maps reached and albums dropped
+const TITLES = [[0, 0, 'Bedroom Producer', '#B7B0D4'], [0, 1, 'Local Act', '#6FD3FF'], [0, 2, 'Rising Star', '#8BF0A0'], [1, 0, 'Signed Artist', '#FF9E57'],
+  [3, 0, 'Gold Artist', '#FFC94A'], [5, 0, 'Platinum Artist', '#E4E7F0'], [10, 0, 'Diamond Artist', '#9FE6FF'], [20, 0, 'Icon', '#FF6FAE'], [30, 0, 'Legend', '#C9A6FF']];
+const titleOf = (albums, loc) => TITLES.filter(([a, l]) => (albums || 0) >= a && (loc || 0) >= l).pop();
+const titleTag = (albums, loc) => { const t = titleOf(albums, loc); return `<span class="ttl" style="color:${t[3]}">${t[2]}</span>`; };
 // money: real-money price shown (test purchase in this build). gems: gem price.
 const OFFERS = {
   goldenMic: { name: 'Golden Mic', sub: 'Permanent 2x income on everything', money: '$4.99', once: true },
@@ -1231,7 +1284,7 @@ function addHype() {
   toast('+' + Math.round(add / 60000) + ' min of 2x Hype');
 }
 let adTimer = null;
-const AD_GEMS = 5, AD_GEM_LIMIT = 10;   // 50 gems a day from ads; ads past the limit still give their normal reward
+const AD_GEMS = 5, AD_GEM_LIMIT = 8;   // 40 gems a day from ads (daily tasks add 20); ads past the limit still give their normal reward
 const adGemsLeft = () => (S.adGems && S.adGems.day === dayKey()) ? AD_GEM_LIMIT - S.adGems.n : AD_GEM_LIMIT;
 function payAdGems() {
   S.stats.ads++;
@@ -1283,17 +1336,21 @@ $('settings').addEventListener('click', () => openTab('settings'));
 function moveUp() {
   const next = S.loc + 1;
   if (!LOCATIONS[next] || movePct() < 100) return;
+  const cleared = S.loc, firstTime = (S.mapPaid || 0) < next;
   Object.assign(S, runState(next));
   S.maxLoc = Math.max(S.maxLoc || 0, next);
   S.stats.lifetime = Math.max(S.stats.lifetime, 0);
-  buildRoom(); save(); render(); sfx('move');
+  let gems = 0;
+  if (firstTime) { gems = MAP_GEMS[cleared] || 0; S.gems += gems; S.mapPaid = next; }
+  buildRoom(); save(); render(); sfx(firstTime ? 'bling' : 'move'); syncChart(true);
   const loc = LOC();
   openSheet(`<div class="welcome"><h2>Welcome to the ${loc.name}</h2>
+    ${firstTime ? `<div class="plaque-win">${plaqueArt(cleared, true, 92)}<span><b>${LOCATIONS[cleared].name} cleared</b><em>Plaque earned · +${gems} gems</em></span></div>` : ''}
     <p>New space, bigger money. Your ${loc.stations[0].name} is ready. Tap it to start earning, then unlock the rest.</p></div>
     <button class="cta" data-close>Let's go</button>`);
 }
 function dropAlbum() {
-  if (S.loc < 1 || S.earned < albumReq()) return;
+  if (!albumReady()) return;
   S.albums = (S.albums || 0) + 1;
   // fastest album = active play time from the start of a run to its album drop
   const runTime = S.stats.playSec - (S.runPlay || 0);
@@ -1392,6 +1449,14 @@ $('scrim').addEventListener('click', e => {
   }
   const gc = e.target.closest('[data-goal]');
   if (gc) { const g = GOALS.find(x => x.id === gc.dataset.goal); if (g && goalReady(g) && !S.goalsDone[g.id]) { S.goalsDone[g.id] = true; S.gems += g.gems; sfx('reward'); toast('+' + g.gems + ' gems'); save(); render(); } return openTab('goals'); }
+  const tk = e.target.closest('[data-task]');
+  if (tk) { const t = dailyTasks().find(x => x.id === tk.dataset.task); if (t && t.ready && !t.got) { S.dt.got[t.id] = true; S.gems += TASK_GEMS; sfx('reward'); toast('+' + TASK_GEMS + ' gems'); save(); render(); } return openTab('goals'); }
+  if (e.target.closest('[data-task-bonus]')) { if (dailyTasks().every(t => t.got) && !S.dt.bonus) { S.dt.bonus = true; S.gems += TASK_BONUS; sfx('bling'); toast('All done today! +' + TASK_BONUS + ' gems'); save(); render(); } return openTab('goals'); }
+  const pf = e.target.closest('[data-prof]');
+  if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
+  if (e.target.closest('[data-back-charts]')) return openTab('charts');
+  const tg = e.target.closest('[data-tab-go]');
+  if (tg) return openTab(tg.dataset.tabGo);
   const adb = e.target.closest('[data-ad]');
   if (adb) {
     const kind = adb.dataset.ad;
@@ -1562,6 +1627,15 @@ const ART = {
   gift: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="#FF6FAE" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="#FF8FC0" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="#FFC94A" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="#FFC94A" stroke="#14122A" stroke-width="2.5"></path></svg>`,
   noAds: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="8" fill="#fff" stroke="#14122A" stroke-width="3"></rect><path d="M27 24v16l13-8z" fill="#2E9CF0"></path><path d="M12 54 52 10" stroke="#F0453A" stroke-width="5" stroke-linecap="round"></path></svg>`,
 };
+// a framed record for each map you've cleared; one color per map
+const PLAQUE = ['#C9CED9', '#FFC94A', '#9FE6FF', '#FF6FAE', '#8BF0A0', '#C9A6FF'];
+function plaqueArt(i, won, size = 46) {
+  const c = PLAQUE[i] || '#FFC94A';
+  if (!won) return `<svg width="${size}" height="${size * 1.2}" viewBox="0 0 50 60" aria-hidden="true"><rect x="3" y="3" width="44" height="54" rx="6" fill="none" stroke="#5C5680" stroke-width="3" stroke-dasharray="5 4"></rect><circle cx="25" cy="27" r="11" fill="none" stroke="#5C5680" stroke-width="3"></circle></svg>`;
+  return `<svg width="${size}" height="${size * 1.2}" viewBox="0 0 50 60" aria-hidden="true"><rect x="2" y="2" width="46" height="56" rx="6" fill="#7A4A26" stroke="#14122A" stroke-width="3"></rect><rect x="7" y="7" width="36" height="42" rx="3" fill="#1E1B33"></rect>
+    <circle cx="25" cy="27" r="14" fill="${c}" stroke="#14122A" stroke-width="2"></circle><circle cx="25" cy="27" r="9" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="1.5"></circle><circle cx="25" cy="27" r="4" fill="#1E1B33"></circle>
+    <path d="M15 20 Q19 15 25 14" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.4" stroke-linecap="round"></path><rect x="14" y="51" width="22" height="4" rx="2" fill="#FFC94A"></rect></svg>`;
+}
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // Rare up to +10% · Epic +12% to +20% · Legendary +25% and up or a special perk · Exclusive = earned from albums
 const rarity = it => it.album ? ['Exclusive', '#D4880F'] : (it.legendary || it.bonus >= 0.25) ? ['Legendary', '#E5650F'] : it.gems ? (it.bonus >= 0.12 ? ['Epic', '#7C4FE0'] : ['Rare', '#2F7FE8']) : ['Starter', '#6F6990'];
@@ -1577,7 +1651,8 @@ let styleSlot = 'top', renameFrom = 'style';
 // popups that should change while open: refresh them when what they show changes
 const LIVE = {
   crew: () => LOC().stations.map(x => (lvl(x.id) ? 1 : 0) + (S.crew[x.id] ? 2 : 0) + (S.cash >= x.crewCost ? 4 : 0)).join(''),
-  goals: () => activeGoals().map(g => g.id + (goalReady(g) ? '!' : Math.floor(Math.min(g.val(), g.target) / g.target * 20))).join(','),
+  goals: () => activeGoals().map(g => g.id + (goalReady(g) ? '!' : Math.floor(Math.min(g.val(), g.target) / g.target * 20))).join(',')
+    + '|' + dailyTasks().map(t => t.id + (t.got ? 'x' : t.ready ? '!' : Math.floor(t.v / t.target * 20))).join(',') + (S.dt.bonus ? 'b' : '') + '|' + new Date().getMinutes(),
   hype: () => Math.ceil(Math.max(0, S.hypeUntil - Date.now()) / 1000) + '|' + S.gems,
 };
 let liveSig = '';
@@ -1603,6 +1678,8 @@ const STAGE_B = ['Nova', 'Wave', 'Beats', 'Vibe', 'Kid', 'Flow', 'Rhythm', 'Pris
 const randomStageName = () => STAGE_A[Math.floor(Math.random() * STAGE_A.length)] + ' ' + STAGE_B[Math.floor(Math.random() * STAGE_B.length)];
 const newCode = () => Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
 
+// inside the Claude preview, outside connections are blocked
+const inPreview = !!window.claude || /claude/i.test(location.hostname);
 const why = d => (d && (d.msg || d.message || d.error_description || d.error)) || '';
 const Charts = { syncError: '', tab: 'global', rows: [], rank: null, total: null, status: 'idle', lastSync: 0, busy: false };
 function cloud() {   // fills in missing fields on the same object so every caller shares one session
@@ -1645,6 +1722,7 @@ async function syncChart(force) {
     for (let step = 0; step < 40; step++) {
       const albums = c.synced < 0 ? Math.min(S.albums || 0, 50) : Math.min(S.albums || 0, c.synced + 5);
       const row = { name: cleanName(S.name), country: S.country || null, albums, lifetime: Math.floor(S.stats.lifetime) };
+      if (Charts.hasProfile !== false) row.profile = myProfile();
       let r;
       if (c.created) {
         r = await supa(`/rest/v1/charts?id=eq.${c.uid}`, { method: 'PATCH', auth: true, body: row, headers: { Prefer: 'return=representation' } });
@@ -1657,18 +1735,19 @@ async function syncChart(force) {
         if (r.ok) c.created = true;
       }
       if (r.status === 401 && step < 2) { c.exp = 0; c.at = null; await ensureAuth(); continue; }
+      if (r.status === 400 && row.profile && /profile/.test(JSON.stringify(r.data || ''))) { Charts.hasProfile = false; continue; }   // database has no profile column yet
       if (!r.ok) throw new Error(`Save failed (${r.status}) ${why(r.data)}`);
       c.synced = albums;
       if (albums >= (S.albums || 0)) break;
     }
     Charts.lastSync = Date.now(); Charts.status = 'ok'; Charts.syncError = ''; save();
-  } catch (e) { Charts.status = 'offline'; Charts.syncError = e.message === 'Failed to fetch' ? 'No connection' : e.message; }
+  } catch (e) { Charts.status = 'offline'; Charts.syncError = /Failed to fetch|Load failed|NetworkError/i.test(e.message) ? (inPreview ? 'the preview can\'t connect. Open the real game link to use The Charts.' : 'No connection') : e.message; }
   Charts.busy = false;
   if (Charts.again) { Charts.again = false; await syncChart(true); }
 }
 
 async function loadChart() {
-  const c = cloud(), sel = 'select=name,country,albums,lifetime,friend_code';
+  const c = cloud(), sel = 'select=name,country,albums,lifetime,friend_code' + (Charts.hasProfile !== false ? ',profile' : '');
   let filter = '';
   if (Charts.tab === 'country') filter = S.country ? `&country=eq.${S.country}` : null;
   if (Charts.tab === 'friends') filter = `&friend_code=in.(${[c.code, ...c.friends].filter(Boolean).join(',') || 'NONE00'})`;
@@ -1676,8 +1755,9 @@ async function loadChart() {
   Charts.status = 'loading';
   try {
     const r = await supa(`/rest/v1/charts?${sel}${filter}&order=albums.desc,lifetime.desc&limit=50`);
+    if (r.status === 400 && Charts.hasProfile !== false && /profile/.test(JSON.stringify(r.data || ''))) { Charts.hasProfile = false; return loadChart(); }
     if (!r.ok) throw new Error('load');
-    Charts.rows = r.data || [];
+    Charts.rows = (r.data || []).map(x => Object.assign(x, { profile: cleanProfile(x.profile) }));
     // my rank = players ahead of me + 1
     const me = { a: c.synced < 0 ? 0 : c.synced, l: Math.floor(S.stats.lifetime) };
     const ahead = await supa(`/rest/v1/charts?select=id${filter}&or=(albums.gt.${me.a},and(albums.eq.${me.a},lifetime.gt.${me.l}))`, { headers: { Prefer: 'count=exact', 'Range-Unit': 'items', Range: '0-0' } });
@@ -1685,6 +1765,22 @@ async function loadChart() {
     Charts.rank = ahead.ok && m ? +m[1] + 1 : null;
     Charts.status = 'ok';
   } catch (e) { Charts.status = 'offline'; }
+}
+// the public profile card: look, maps cleared and a few career stats
+const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.id !== 'basic').sort((a, b) => b.bonus - a.bonus || (b.album ? 1 : 0) - (a.album ? 1 : 0))[0];
+function myProfile() {
+  const b = bestItem(S.owned);
+  return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, fast: Math.round(S.stats.fastestAlbum || 0),
+    play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
+}
+// data from other players is untrusted: keep only known items, colors and plain numbers
+function cleanProfile(p) {
+  if (!p || typeof p !== 'object') return null;
+  const n = (x, max) => Math.max(0, Math.min(max, Math.floor(+x) || 0)), eq = {};
+  for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
+  const best = itemById(p.best);
+  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[1], ph: PHONES.includes(p.ph) ? p.ph : PHONES[0],
+    fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 async function refreshCharts() {
   Charts.status = 'loading'; if (sheetKey === 'charts') openTab('charts');
@@ -1723,14 +1819,14 @@ function openTab(tab) {
   } else if (tab === 'career') {
     const pct = movePct();
     const allLocs = [...LOCATIONS.map(l => l.name), ...FUTURE];
-    const canAlbum = S.loc >= 1 && S.earned >= albumReq();
+    const canAlbum = albumReady(), last = LOCATIONS[lastLoc()];
     const moveBtn = next
       ? `<button class="cta" ${pct < 100 ? 'disabled' : ''} data-move-ask>${pct < 100 ? 'Keep grinding' : 'Move to ' + next.name}</button>`
-      : `<button class="cta" ${pct < 100 ? 'disabled' : ''} data-close>${pct < 100 ? 'Keep grinding' : FUTURE[0] + ' arrives next build'}</button>`;
+      : `<button class="cta pink" ${pct < 100 ? 'disabled' : ''} data-album-ask>${pct < 100 ? 'Keep grinding' : 'Drop album #' + ((S.albums || 0) + 1)}</button>`;
     openSheet(`<div class="sheet-head"><h2>Career</h2>${closeBtn()}</div>
       <div class="sec">
         <h3>Move Up</h3>
-        <p>Earn ${fmt(loc.goal)} here to move into the ${next ? next.name : FUTURE[0]}.</p>
+        <p>${next ? `Earn ${fmt(loc.goal)} here to move into the ${next.name}.` : `This is the last stop on the tour. Earn ${fmt(loc.goal)} here to finish it and drop an album.`}</p>
         <div class="big-bar"><i style="width:${pct}%"></i></div>
         <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${fmt(S.earned)} earned</span><span>${Math.floor(pct)}%</span></div>
         <div style="display:flex;flex-direction:column;gap:10px">${allLocs.map((l, i) => `<div class="loc ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}"><span class="dot"></span>${l}${i === S.loc ? ' · you are here' : ''}</div>`).join('')}</div>
@@ -1738,13 +1834,17 @@ function openTab(tab) {
       </div>
       <div class="sec">
         <h3>Drop Album</h3>
-        <p>Restart from the apartment with permanent fame (+${pctTxt(FAME_PER_ALBUM)} income per album, forever) and ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums 1, 5, 10, 25, 50 and 100. ${S.loc < 1 ? 'Unlocks in the Home Studio.' : canAlbum ? 'Ready to drop.' : `Earn ${fmt(albumReq())} in the ${loc.name} first.`}</p>
+        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(FAME_PER_ALBUM)} income per album, forever, plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and earn ${fmt(last.goal)} there.` : `Earn ${fmt(last.goal)} in the ${last.name} first.`}</p>
         <div class="row"><span class="ric">${svgIc('note', '#FFC94A', 20)}</span><span class="rt"><b>Albums dropped: ${S.albums || 0}</b><span>Fame bonus x${fmtX(fame())}${nextExclusive() ? ` · next exclusive at album ${nextExclusive().album}` : ''}</span></span></div>
         <button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Locked'}</button>
       </div>
+      <div class="sec"><h3>Plaques <small class="h3note">${S.maxLoc || 0} of ${allLocs.length} maps cleared</small></h3>
+        <div class="plaques">${allLocs.map((m, i) => `<div class="plq ${i < (S.maxLoc || 0) ? 'won' : ''}">${plaqueArt(i, i < (S.maxLoc || 0))}<span>${m}</span></div>`).join('')}</div>
+        <p class="cnote">${MAP_GEMS[S.mapPaid || 0] && LOCATIONS[(S.mapPaid || 0) + 1] ? `Move out of the ${allLocs[S.mapPaid || 0]} to earn its plaque and ${MAP_GEMS[S.mapPaid || 0]} gems.` : 'More plaques arrive with the next maps.'}</p></div>
       <div class="sec">
         <h3>Career stats <small class="h3note">all-time</small></h3>
         <div class="statgrid">
+          <div class="wide"><b>${titleTag(S.albums, S.maxLoc)}</b><span>Your title on The Charts${(() => { const nx = TITLES[TITLES.indexOf(titleOf(S.albums, S.maxLoc)) + 1]; return nx ? ` · next: ${nx[2]} at ${nx[0] ? 'album ' + nx[0] : 'the ' + allLocs[nx[1]]}` : ''; })()}</span></div>
           <div><b>${S.albums || 0}</b><span>Albums dropped</span></div>
           <div><b>${fmt(S.stats.lifetime)}</b><span>Lifetime earnings</span></div>
           <div><b>${S.stats.fastestAlbum ? playTime(S.stats.fastestAlbum) : '—'}</b><span>Fastest album</span></div>
@@ -1771,14 +1871,16 @@ function openTab(tab) {
     const c = cloud();
     const tabs = [['friends', 'Friends'], ['country', S.country ? countryName(S.country) : 'Country'], ['global', 'Global']];
     const list = Charts.rows.map((r, i) => { const me = r.friend_code === c.code;
-      return `<div class="crow ${me ? 'me' : ''}"><span class="cr">${i + 1}</span><span class="rt"><b>${esc(r.name)}${me ? ' (you)' : ''}</b><span>${r.country ? r.country + ' · ' : ''}${fmt(r.lifetime)} lifetime</span></span><span class="ca">${r.albums}<small>albums</small></span></div>`; }).join('');
+      return `<div class="crow ${me ? 'me' : ''}" data-prof="${me ? 'me' : i}" role="button" tabindex="0" aria-label="See ${esc(r.name)}'s profile"><span class="cr">${i + 1}</span>
+        <span class="rt"><b>${esc(r.name)}${me ? ' (you)' : ''}</b><span>${titleTag(r.albums, r.profile ? r.profile.loc : 0)}${r.country ? ' · ' + r.country : ''} · ${fmt(r.lifetime)}</span></span>
+        <span class="ca">${r.albums}<small>albums</small></span></div>`; }).join('');
     let body;
-    if (Charts.status === 'offline') body = `<p class="cnote">Couldn't reach the charts. Check your connection, then try again.</p><button class="ghost" data-chart-retry>Try again</button>`;
+    if (Charts.status === 'offline') body = `<p class="cnote">${inPreview ? "The Charts can't load inside this preview. Open the real game link to see them." : "Couldn't reach the charts. Check your connection, then try again."}</p><button class="ghost" data-chart-retry>Try again</button>`;
     else if (Charts.tab === 'country' && !S.country) body = `<p class="cnote">Pick your country below to see its chart.</p>`;
     else if (Charts.status === 'loading' && !Charts.rows.length) body = `<p class="cnote">Loading the charts…</p>`;
     else body = list || `<p class="cnote">${Charts.tab === 'friends' ? 'Add a friend with their code to start a friends chart.' : 'No artists here yet. Drop an album to get on the chart.'}</p>`;
     openSheet(`<div class="sheet-head"><h2>The Charts</h2>${closeBtn()}</div>
-      <div class="row chartme"><span class="rank">${Charts.rank ? '#' + Charts.rank : '–'}</span><span class="rt"><b>${esc(cleanName(S.name))}</b><span>${fmt(S.stats.lifetime)} lifetime</span></span><span class="xv">${S.albums || 0} <small>albums</small></span></div>
+      <div class="row chartme" data-prof="me" role="button" tabindex="0" aria-label="See your profile"><span class="rank">${Charts.rank ? '#' + Charts.rank : '–'}</span><span class="rt"><b>${esc(cleanName(S.name))}</b><span>${titleTag(S.albums, S.maxLoc)} · ${fmt(S.stats.lifetime)}</span></span><span class="xv">${S.albums || 0} <small>albums</small></span></div>
       ${Charts.syncError ? `<p class="cerr">Not saved to the charts yet: ${esc(Charts.syncError)} <button class="hire" data-chart-retry>Retry</button></p>` : ''}
       <div class="stabs charts-tabs">${tabs.map(([k, l]) => `<button class="stab ${Charts.tab === k ? 'on' : ''}" data-ctab="${k}">${esc(l)}</button>`).join('')}</div>
       <div class="clist ${Charts.status === 'loading' && Charts.rows.length ? 'dim' : ''}">${body}</div>
@@ -1789,7 +1891,29 @@ function openTab(tab) {
         <div class="row"><span class="rt"><b>Artist name</b><span>${esc(cleanName(S.name))}</span></span><button class="hire" data-rename data-from="charts">Edit</button></div>
         <div class="row"><span class="rt"><label for="countrySel"><b>Country</b></label><span>Shown on the charts</span></span>
           <select id="countrySel" class="csel"><option value="">Other / prefer not to say</option>${COUNTRIES.map(([k, n]) => `<option value="${k}" ${S.country === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
-        <p class="cnote">Only your artist name, country, albums and lifetime earnings are public. Ranked by albums dropped.</p></div>`);
+        <p class="cnote">Tap any artist to see their profile. Your name, country, outfit and career stats are public. Ranked by albums dropped.</p></div>`);
+  } else if (tab === 'profile') {
+    const me = Charts.view === 'me', r = me ? null : Charts.view;
+    const p = me ? cleanProfile(myProfile()) : r.profile;
+    const name = me ? cleanName(S.name) : r.name, albums = me ? (S.albums || 0) : r.albums, life = me ? S.stats.lifetime : r.lifetime, country = me ? S.country : r.country;
+    const maps = [...LOCATIONS.map(l => l.name), ...FUTURE], loc = p ? p.loc : 0, best = p && itemById(p.best);
+    const t = titleOf(albums, loc);
+    openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
+      <div class="prof-top"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
+      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq)}</div>` : `<p class="cnote">This artist hasn't updated the game yet, so their outfit and stats aren't on the charts.</p>`}
+      <div class="sec"><h3>Plaques <small class="h3note">${loc} of ${maps.length} maps cleared</small></h3>
+        <div class="plaques">${maps.map((m, i) => `<div class="plq ${i < loc ? 'won' : ''}">${plaqueArt(i, i < loc)}<span>${esc(m)}</span></div>`).join('')}</div></div>
+      <div class="sec"><h3>Career</h3><div class="statgrid">
+        <div><b>${albums}</b><span>Albums dropped</span></div>
+        <div><b>${fmt(life)}</b><span>Lifetime earnings</span></div>
+        ${p ? `<div><b>${p.fast ? playTime(p.fast) : '—'}</b><span>Fastest album</span></div>
+        <div><b>${playTime(p.play)}</b><span>Time in the studio</span></div>
+        <div><b>${p.days}</b><span>Days played</span></div>
+        <div><b>${p.items}</b><span>Items collected</span></div>
+        <div class="wide best">${best ? `<span class="bi">${itemArt(best, 52)}</span>` : ''}<span class="bt"><b>${best ? esc(best.name) : 'None yet'}</b><span>Best item${best ? ` · <em style="color:${rarity(best)[1]}">${rarity(best)[0]}</em> · +${Math.round(best.bonus * 100)}% income` : ''}</span></span></div>` : ''}
+      </div></div>
+      ${me ? '<button class="cta" data-tab-go="style">Change my look</button>' : ''}
+      <button class="ghost" data-back-charts>Back to The Charts</button>`);
   } else if (tab === 'boosts') {
     const h = hypeOn(), g = gearMult(), f = fame();
     const row = (on, ic, name, x, how) => `<div class="row mrow ${on ? '' : 'off'}"><span class="ric">${ic}</span>
@@ -1934,9 +2058,18 @@ function openTab(tab) {
       return `<div class="row"><span class="rt"><b>${g.text}</b><span>${prog} · ${g.gems} gems</span>
         <span class="mile" style="margin-top:6px"><i style="width:${v / g.target * 100}%;background:${ok ? 'var(--cash)' : 'var(--gem)'}"></i></span></span>
         <button class="hire" data-goal="${g.id}" ${ok ? '' : 'disabled'}>${ok ? 'Claim' : 'Working'}</button></div>`; }).join('');
+    const ts = dailyTasks(), allGot = ts.every(t => t.got);
+    const left = (() => { const d = new Date(); d.setHours(24, 0, 0, 0); const m = Math.ceil((d - Date.now()) / 60000); return m >= 60 ? Math.floor(m / 60) + 'h ' + (m % 60) + 'm' : m + 'm'; })();
+    const tRows = ts.map(t => { const prog = t.time ? `${Math.floor(t.v / 60)} / ${t.target / 60} min` : `${Math.floor(t.v)} / ${t.target}`;
+      return `<div class="row ${t.got ? 'done' : ''}"><span class="rt"><b>${t.text}</b><span>${t.got ? 'Done' : prog} · ${TASK_GEMS} gems</span>
+        <span class="mile" style="margin-top:6px"><i style="width:${t.v / t.target * 100}%;background:${t.ready ? 'var(--cash)' : 'var(--gem)'}"></i></span></span>
+        ${t.got ? `<span class="hired">${svgIc('star', '#8BF0A0', 16)}</span>` : `<button class="hire" data-task="${t.id}" ${t.ready ? '' : 'disabled'}>${t.ready ? 'Claim' : 'Working'}</button>`}</div>`; }).join('');
+    const bonus = `<div class="row tbonus ${S.dt.bonus ? 'done' : ''}"><span class="ric">${ART.gems(1).replace('width="104" height="92"', 'width="30" height="27"')}</span><span class="rt"><b>Finish all 3</b><span>${S.dt.bonus ? 'Claimed. New tasks tomorrow' : `+${TASK_BONUS} bonus gems`}</span></span>
+      ${S.dt.bonus ? '' : `<button class="hire" data-task-bonus ${allGot ? '' : 'disabled'}>${allGot ? 'Claim' : ts.filter(t => t.got).length + ' / 3'}</button>`}</div>`;
     openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>
-      <p>${done} of ${GOALS.length} done. Finish goals to earn gems.</p>
-      ${rows || '<p>You finished every goal. More arrive in future updates.</p>'}`);
+      <div class="sec"><h3>Today <small class="h3note">new tasks in ${left}</small></h3>${tRows}${bonus}</div>
+      <div class="sec"><h3>Career goals <small class="h3note">${done} of ${GOALS.length} done</small></h3>
+      ${rows || '<p>You finished every goal. More arrive in future updates.</p>'}</div>`);
   } else if (tab === 'daily') {
     const ready = dailyReady(), today = ready ? nextStreak() : S.daily.streak;
     const cells = DAILY.map((r, i) => {
@@ -2016,7 +2149,8 @@ function render() {
   $('upBtn').disabled = S.cash < plan.cost;
   $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
   $('dailyDot').hidden = !dailyReady();
-  $('goalsDot').hidden = !activeGoals().some(goalReady);
+  if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; }
+  $('goalsDot').hidden = !(activeGoals().some(goalReady) || tasksClaimable());
   $('crewBang').hidden = !LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= x.crewCost);
   $('styleBang').hidden = !(S.newItems && S.newItems.length);
   const m = totalMult();
@@ -2095,6 +2229,10 @@ function start(data) {
   S.stats = Object.assign({ upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, S.stats);
   S.goalsDone = S.goalsDone || {};
   if (S.runPlay == null) S.runPlay = S.stats.playSec;
+  ITEMS.forEach(i => { if (i.album && i.album <= (S.albums || 0)) S.owned[i.id] = true; });
+  // map-clear rewards arrived in build 36: pay players for the maps they had already cleared
+  if (S.mapPaid == null) { S.mapPaid = S.maxLoc || 0; const g = MAP_GEMS.slice(0, S.mapPaid).reduce((a, b) => a + b, 0);
+    if (g) { S.gems += g; setTimeout(() => toast(`+${g} gems for the maps you've already cleared`), 1500); } }
   if (S.tut == null) S.tut = (S.stats.hires > 0 || S.loc > 0 || S.albums > 0) ? TUT.length : 0;
   S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
   applyLook(); buildRoom(); fit();
