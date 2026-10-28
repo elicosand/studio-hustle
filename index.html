@@ -235,7 +235,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .offer:disabled { opacity: .7; }
 .offer::after { content: ""; position: absolute; inset: 0; border-radius: 18px; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.55) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; }
 @keyframes sheen { 0%, 55% { background-position: 130% 0; } 100% { background-position: -130% 0; } }
-.offer .rib { position: absolute; top: -8px; left: -4px; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 8px 8px 8px 2px; transform: rotate(-4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.offer .rib { position: absolute; top: -8px; left: -4px; background: linear-gradient(135deg, #FF6B57, #F0303A); animation: ribglow 2s ease-in-out infinite; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 8px 8px 8px 2px; transform: rotate(-4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 .offer-art { position: relative; display: grid; place-items: center; height: 72px; }
 .offer-art svg { width: 68px; height: 68px; }
 .offer-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -256,7 +256,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .card .ttl { padding: 0 6px 6px; font-size: 12px; font-weight: 700; line-height: 1.2; color: var(--deep); min-height: 30px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
 .card .ttl small { font-size: 10px; font-weight: 700; opacity: .65; text-transform: uppercase; letter-spacing: .06em; }
 .card .tag { position: absolute; top: 6px; left: 6px; z-index: 2; color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
-.rib.small { position: absolute; top: -8px; right: -4px; left: auto; z-index: 3; font-size: 10px; padding: 2px 8px; background: #F0453A; color: #fff; font-family: var(--display); border-radius: 8px 8px 2px 8px; transform: rotate(4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.rib.small { position: absolute; top: -8px; right: -4px; left: auto; z-index: 3; font-size: 10px; padding: 2px 8px; background: linear-gradient(135deg, #FF6B57, #F0303A); animation: ribglow 2s ease-in-out infinite; color: #fff; font-family: var(--display); border-radius: 8px 8px 2px 8px; transform: rotate(4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 /* glow, sparkle and float so the shop feels like treasure */
 .glow::before { content: ""; position: absolute; left: 50%; top: 48%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,0) 70%); animation: pulseglow 2.6s ease-in-out infinite; }
 .glow > svg { position: relative; animation: floaty 3s ease-in-out infinite; filter: drop-shadow(0 4px 0 rgba(20,18,42,.18)); }
@@ -303,11 +303,18 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes loctitle { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.96); } 15%, 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -6px); } }
 .card .amount { font: 400 20px var(--display); color: var(--deep); text-align: center; padding-bottom: 6px; }
 .gemcard .art { height: 112px; }
+.gemcard { animation: gemglow 3s ease-in-out infinite; }
+@keyframes gemglow { 50% { box-shadow: 0 4px 0 rgba(20,18,42,.35), 0 0 20px rgba(139,240,160,.75); } }
+.gemcard .rays { position: absolute; left: 50%; top: 56%; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(rgba(255,255,255,.6) 0 9deg, rgba(255,255,255,0) 9deg 30deg);
+  -webkit-mask: radial-gradient(circle, #000 20%, transparent 66%); mask: radial-gradient(circle, #000 20%, transparent 66%); animation: spin 16s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .gemcard .art > svg { margin-top: 18px; }
-.burst { position: absolute; z-index: 3; top: -2px; left: -2px; width: 46px; height: 46px; filter: drop-shadow(0 3px 0 rgba(20,18,42,.45)); transform: rotate(-10deg); animation: burstpop 1.8s ease-in-out infinite; }
-.burst-in { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; background: #7C4FE0; color: #fff; font: 400 11px/1 var(--display);
+.burst { position: absolute; z-index: 3; top: -2px; left: -2px; width: 46px; height: 46px; filter: drop-shadow(0 3px 0 rgba(20,18,42,.45)) drop-shadow(0 0 7px rgba(200,150,255,.95)); transform: rotate(-10deg); animation: burstpop 1.8s ease-in-out infinite; }
+.burst-in { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; background: linear-gradient(135deg, #C29BFF, #8B4DFF); color: #fff; font: 400 11px/1 var(--display);
   clip-path: polygon(50.0% 0.0%, 61.1% 8.5%, 75.0% 6.7%, 80.4% 19.6%, 93.3% 25.0%, 91.5% 38.9%, 100.0% 50.0%, 91.5% 61.1%, 93.3% 75.0%, 80.4% 80.4%, 75.0% 93.3%, 61.1% 91.5%, 50.0% 100.0%, 38.9% 91.5%, 25.0% 93.3%, 19.6% 80.4%, 6.7% 75.0%, 8.5% 61.1%, 0.0% 50.0%, 8.5% 38.9%, 6.7% 25.0%, 19.6% 19.6%, 25.0% 6.7%, 38.9% 8.5%); }
 .burst-in small { font: 700 6px var(--body); text-transform: uppercase; letter-spacing: .04em; }
+@keyframes ribglow { 0%, 100% { box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 6px rgba(255,90,70,.55); } 50% { box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 14px rgba(255,120,90,1); } }
 @keyframes burstpop { 50% { transform: rotate(-10deg) scale(1.08); } }
 .dresser .spot { position: absolute; left: 50%; bottom: 0; width: 240px; height: 240px; margin-left: -120px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 65%); animation: pulseglow 3.2s ease-in-out infinite; }
 .dresser .spk { z-index: 1; }
@@ -426,8 +433,8 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .dresser::before { content: ""; position: absolute; left: 50%; bottom: 8px; width: 190px; height: 34px; margin-left: -95px; border-radius: 50%; background: #5FA9C8; box-shadow: inset 0 -6px 0 #4A93B2; }
 .dresser svg { position: relative; transform-origin: 50% 100%; animation: idle 1.8s ease-in-out infinite alternate; }
 @keyframes idle { from { transform: translateY(0) scaleY(1) } to { transform: translateY(-2px) scaleY(1.01) } }
-.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
-.sw { width: 44px; height: 44px; border-radius: 50%; border: 3px solid transparent; box-shadow: inset 0 0 0 3px var(--panel); }
+.swatches { display: flex; gap: 6px; flex-wrap: nowrap; }
+.sw { flex: 1 1 0; min-width: 0; max-width: 44px; aspect-ratio: 1; height: auto; border-radius: 50%; border: 3px solid transparent; box-shadow: inset 0 0 0 3px var(--panel); }
 .sw.on { border-color: var(--text); }
 .lbl { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .cta { height: 52px; border-radius: 16px; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 17px; box-shadow: 0 3px 0 #4FA864; flex: none; }
@@ -460,7 +467,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .burst, .dresser .spot, .item.album::after, .item.mythic, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -915,7 +922,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 42, CONTACT = 'elicosand@gmail.com';
+const BUILD = 43, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1022,8 +1029,8 @@ const OFFERS = {
   gems1200: { name: 'Chest of Gems', sub: '1,200 gems · 20% bonus', money: '$9.99', gemsOut: 1200 },
   gems2600: { name: 'Vault of Gems', sub: '2,600 gems · 30% bonus', money: '$19.99', gemsOut: 2600 },
 };
-const SKINS = ['#FFE0C4', '#F1CBA8', '#DDA77A', '#C68A5C', '#8D5A36', '#5A3820'];
-const PHONES = ['#FF6FAE', '#6FD3FF', '#B18CFF', '#FF9E57', '#8BF0A0', '#F4F1EA'];
+const SKINS = ['#FFE0C4', '#F1CBA8', '#DDA77A', '#C68A5C', '#A8724A', '#8D5A36', '#5A3820'];
+const PHONES = ['#FF6FAE', '#6FD3FF', '#B18CFF', '#FF9E57', '#8BF0A0', '#F4F1EA', '#2A2733'];
 const ICONS = {
   note: '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>',
   mic: '<rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v4"></path>',
@@ -1048,7 +1055,7 @@ function runState(locIdx) {
   return { loc: locIdx, cash: 0, earned: 0, levels, crew: {}, prog: {}, running: {}, selected: loc.stations[0].id };
 }
 function fresh() {
-  return Object.assign(runState(0), { gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[1], phones: PHONES[0],
+  return Object.assign(runState(0), { gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
     buyMode: 1, vol: { master: 80, music: 20, sfx: 80 }, volV: 3, daily: { last: '', streak: 0 }, last: Date.now() });
 }
 
@@ -1132,7 +1139,7 @@ function stopMusic() {
   if (!musicSrc) return;
   const s = musicSrc, g = musicGain, a = actx;
   musicSrc = null; musicGain = null;
-  try { g.gain.setTargetAtTime(0.0001, a.currentTime, 0.25); s.stop(a.currentTime + 1.2); } catch (e) {}
+  try { g.gain.cancelScheduledValues(a.currentTime); g.gain.setValueAtTime(g.gain.value, a.currentTime); g.gain.setTargetAtTime(0.0001, a.currentTime, 0.25); s.stop(a.currentTime + 1.2); } catch (e) {}
 }
 const musicOff = () => !S || volOf('music') === 0 || volOf('master') === 0 || !actx;
 async function playMusic() {
@@ -1153,12 +1160,18 @@ async function startTrack(url, key) {
   g.gain.exponentialRampToValueAtTime(MUSIC_PEAK, a.currentTime + 1.5);
   src.connect(g).connect(busMusic); src.start(0, ls);
   musicSrc = src; musicGain = g;
+  // fade out over the last 4 seconds of the final repeat, timed on the audio clock so it never cuts mid-loop
+  const t0 = a.currentTime, dur = (le - ls) * MUSIC_REPS;
+  g.gain.setValueAtTime(MUSIC_PEAK, t0 + dur - 4);
+  g.gain.linearRampToValueAtTime(0.0001, t0 + dur - 0.05);
+  src.stop(t0 + dur);
   const tracks = [...new Set(LOCATIONS.map(l => l.track))];
-  musicTimer = setTimeout(() => {
+  src.onended = () => {
+    if (musicSrc !== src) return;   // stopped early (muted, moved map)
+    musicSrc = null; musicGain = null;
     if (musicTrack !== key) return;
-    stopMusic();
     musicTimer = setTimeout(() => { musicTimer = null; if (musicTrack === key) startTrack(tracks[(tracks.indexOf(url) + 1) % tracks.length], key); }, MUSIC_GAP);
-  }, (le - ls) * MUSIC_REPS * 1000);
+  };
 }
 document.addEventListener('pointerdown', () => { if (S && volOf('master') > 0) { ac(); playMusic(); } }, { once: true });
 document.addEventListener('visibilitychange', () => {
@@ -1677,7 +1690,7 @@ function neckExtra(n, big) {
 const capHat = (h, ln) => `<path d="M44 52 Q44 15 80 15 Q116 15 116 52 Z" fill="${h.color}" ${ln}></path><path d="M38 50 Q80 41 122 50 L122 58 Q80 50 38 58 Z" fill="${h.brim || h.color}" ${ln}></path>`;
 function faceExtra(fc, eyes) {
   const K = '#1B1830';
-  if (fc.style === 'thick') return [56, 82].map(x => `<rect x="${x}" y="57" width="22" height="17" rx="6" fill="${fc.lens}" stroke="${K}" stroke-width="9"></rect><rect x="${x}" y="57" width="22" height="17" rx="6" fill="${fc.lens}" stroke="${fc.color}" stroke-width="5"></rect>`).join('') + `<path d="M78 62 H82" stroke="${fc.color}" stroke-width="3"></path>`;
+  if (fc.style === 'thick') return `<path d="M76 62 H84" stroke="${K}" stroke-width="6"></path>` + [56, 84].map(x => `<rect x="${x}" y="58" width="20" height="16" rx="6" fill="${fc.lens}" stroke="${K}" stroke-width="7"></rect><rect x="${x}" y="58" width="20" height="16" rx="6" fill="${fc.lens}" stroke="${fc.color}" stroke-width="4"></rect>`).join('') + `<path d="M77 62 H83" stroke="${fc.color}" stroke-width="3"></path>`;
   if (fc.style === 'clear') return eyes + [55, 81].map(x => `<rect x="${x}" y="56" width="24" height="21" rx="5" fill="#fff" fill-opacity=".22" stroke="${fc.color}" stroke-width="3"></rect>`).join('') + `<path d="M79 62 H81" stroke="${fc.color}" stroke-width="3"></path>`;
   if (fc.style === 'aviator') return `<path d="M55 60 H78 Q78 79 66.5 79 Q55 79 55 60 Z M82 60 H105 Q105 79 93.5 79 Q82 79 82 60 Z" fill="${fc.lens}" fill-opacity=".9" stroke="${fc.color}" stroke-width="2.5" stroke-linejoin="round"></path><path d="M78 62 Q80 58 82 62" fill="none" stroke="${fc.color}" stroke-width="2.5"></path><path d="M59 64 L64 64 M86 64 L91 64" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path>`;
   return null;
@@ -1823,6 +1836,7 @@ const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 // Common ~+4% · Rare +6–10% · Epic +12–20% · Legendary +25–35% · Mythic +50% and up
 const RARITY = { common: ['Common', '#7F7A99'], rare: ['Rare', '#2F7FE8'], epic: ['Epic', '#7C4FE0'], legendary: ['Legendary', '#E5650F'], mythic: ['Mythic', '#E0307A'] };
 const rarity = it => RARITY[it.rar] || RARITY.common;
+const RAR_ORDER = ['common', 'rare', 'epic', 'legendary', 'mythic'];
 // a figure wearing just this item, zoomed on the part it changes
 function itemArt(it, size = 70) {
   const base = itemById('basic').look, f = { body: base.body, trim: base.trim, style: base.style, phones: true };
@@ -1963,7 +1977,7 @@ function cleanProfile(p) {
   const n = (x, max) => Math.max(0, Math.min(max, Math.floor(+x) || 0)), eq = {};
   for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
   const best = itemById(p.best);
-  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[1], ph: PHONES.includes(p.ph) ? p.ph : PHONES[0],
+  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: PHONES.includes(p.ph) ? p.ph : PHONES[0],
     clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 async function refreshCharts() {
@@ -2139,7 +2153,7 @@ function openTab(tab) {
     const gemCard = (id, n, amount, bonus, ribbon, sp) => { const o = OFFERS[id];
       return `<button class="card green gemcard" data-buy="${id}" aria-label="${amount} gems${bonus ? ', ' + bonus + ' bonus' : ''}, ${o.money}">
         ${ribbon ? `<span class="rib small">${ribbon}</span>` : ''}
-        <span class="art glow ${bonus ? 'has-burst' : ''}">${sparks(sp, n * 7)}${ART.gems(n)}${bonus ? `<span class="burst"><span class="burst-in">${bonus}<small>bonus</small></span></span>` : ''}</span>
+        <span class="art glow ${bonus ? 'has-burst' : ''}"><span class="rays"></span>${sparks(sp, n * 7)}${ART.gems(n)}${bonus ? `<span class="burst"><span class="burst-in">${bonus}<small>bonus</small></span></span>` : ''}</span>
         <span class="amount">${amount}</span><span class="price">${o.money}</span></button>`; };
     const slotName = { top: 'Top', hat: 'Hat', neck: 'Necklace', face: 'Glasses' };
     const outfit = it => { const [rn, rc] = rarity(it);
@@ -2162,14 +2176,14 @@ function openTab(tab) {
         ${card('nightOwl', ART.moon(), '8h offline<br>earnings', '', 'gold')}
       </div>
       <div class="banner">Outfits</div>
-      <div class="cards">${ITEMS.filter(i => i.gems).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot) || a.gems - b.gems).map(outfit).join('')}</div>
+      <div class="cards">${ITEMS.filter(i => i.gems).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot) || RAR_ORDER.indexOf(b.rar) - RAR_ORDER.indexOf(a.rar) || b.gems - a.gems).map(outfit).join('')}</div>
       <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
       <div class="banner">Gems</div>
       <div class="cards two">
-        ${gemCard('gems100', 1, '100', '', '', 3)}
-        ${gemCard('gems550', 2, '550', '+10%', 'Popular', 5)}
-        ${gemCard('gems1200', 3, '1,200', '+20%', '', 7)}
-        ${gemCard('gems2600', 4, '2,600', '+30%', 'Best value', 10)}
+        ${gemCard('gems100', 1, '100', '', '', 5)}
+        ${gemCard('gems550', 2, '550', '+10%', 'Popular', 8)}
+        ${gemCard('gems1200', 3, '1,200', '+20%', '', 10)}
+        ${gemCard('gems2600', 4, '2,600', '+30%', 'Best value', 13)}
       </div>`);
   } else if (tab.startsWith('pay:')) {
     const id = tab.slice(4), o = OFFERS[id];
