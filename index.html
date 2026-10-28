@@ -22,14 +22,15 @@ img { max-width: 100%; }
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: one-screen phone game. HUD on top, scaled top-down room filling the middle, station bar + actions, tab bar. Single dark night look by choice; each location brings its own room palette. */
+/* Layout: one-screen phone game. HUD on top, the room fills the middle with floating side buttons, a tab bar at the bottom; tapping a station opens its upgrade card. Deliberately one look: a mid-purple UI around bright rooms. */
 :root {
-  --ink: #14122A;
-  --panel: #221F3A;
-  --panel-2: #2E2A4A;
-  --line: #3A3558;
-  --text: #F4F1EA;
-  --muted: #B9B3CF;
+  --ink: #2A2452;
+  --panel: #3A336F;
+  --panel-2: #4A4285;
+  --line: #5C5398;
+  --text: #FFFDF7;
+  --muted: #DAD4F2;
+  --deep: #14122A;
   --cash: #8BF0A0;
   --gem: #FFC94A;
   --accent: #FF6FAE;
@@ -57,13 +58,13 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
   padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
 .pill { height: 42px; border-radius: 999px; background: var(--panel); display: flex; align-items: center; gap: 8px; }
 .cash-pill { flex: 1; min-width: 0; padding: 0 14px 0 6px; }
-.coin { width: 30px; height: 30px; border-radius: 50%; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 16px; display: grid; place-items: center; flex: none; }
+.coin { width: 30px; height: 30px; border-radius: 50%; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 16px; display: grid; place-items: center; flex: none; }
 .cash-col { display: flex; flex-direction: column; min-width: 0; line-height: 1; }
 .cash-num { font-family: var(--display); font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cash-rate { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 2px; white-space: nowrap; }
 .gem-pill { padding: 0 4px 0 10px; }
 .gem-num { font-family: var(--display); font-size: 17px; }
-.round-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--gem); color: var(--ink); display: grid; place-items: center; }
+.round-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--gem); color: var(--deep); display: grid; place-items: center; }
 .icon-btn { width: 44px; height: 44px; display: grid; place-items: center; color: var(--text); }
 
 /* Room */
@@ -98,10 +99,10 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .toggle[aria-pressed="true"] span.sw2::after { left: 26px; }
 
 .station { position: absolute; display: block; }
-.badge { position: absolute; display: flex; align-items: center; gap: 4px; background: var(--text); color: var(--ink);
+.badge { position: absolute; display: flex; align-items: center; gap: 4px; background: var(--text); color: var(--deep);
   border-radius: 999px; padding: 3px 9px 3px 3px; font-size: 13px; font-weight: 700; z-index: 3; white-space: nowrap; transition: background .2s; }
 .station.sel .badge { background: var(--accent); }
-.badge .ic { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
+.badge .ic { width: 24px; height: 24px; border-radius: 50%; background: var(--deep); display: grid; place-items: center; }
 .badge .up { width: 18px; height: 18px; border-radius: 50%; background: var(--go); display: grid; place-items: center; margin-left: 2px; }
 .prog { position: absolute; height: 7px; border-radius: 999px; background: rgba(20,18,42,.75); overflow: hidden; z-index: 3; }
 .prog i { display: block; height: 100%; width: 0; background: var(--cash); border-radius: 999px; }
@@ -119,7 +120,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .tw { animation: twinkle 3.2s ease-in-out infinite; }
 @keyframes twinkle { 50% { opacity: .25; } }
 
-.lockspot { position: absolute; inset: 0; border-radius: 16px; border: 3px dashed #8C86A6; background: rgba(20,18,42,.45);
+.lockspot { position: absolute; inset: 0; border-radius: 16px; border: 3px dashed #E8E2F4; background: rgba(20,18,42,.55);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; z-index: 2; }
 .lockspot .lk { width: 46px; height: 46px; border-radius: 50%; background: var(--panel-2); display: grid; place-items: center; }
 .lockspot b { font-size: 14px; font-weight: 700; text-align: center; padding: 0 6px; }
@@ -149,13 +150,13 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .mile { height: 5px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
 .mile i { display: block; height: 100%; background: var(--gem); width: 0; }
 .mile-label { font-size: 11px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.up-btn { -webkit-touch-callout: none; touch-action: none; height: 46px; padding: 0 14px; border-radius: 14px; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 15px;
+.up-btn { -webkit-touch-callout: none; touch-action: none; height: 46px; padding: 0 14px; border-radius: 14px; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 15px;
   display: flex; align-items: center; gap: 6px; flex: none; box-shadow: 0 3px 0 #4FA864; transition: transform .08s; }
 .up-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #4FA864; }
 .up-btn:disabled { background: var(--panel-2); color: var(--muted); box-shadow: none; cursor: default; }
 .actions { display: flex; gap: 8px; }
 .act { flex: 1; height: 46px; border-radius: 14px; background: var(--panel); font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 7px; }
-.act.hype { flex: 1.25; background: var(--accent); color: var(--ink); }
+.act.hype { flex: 1.25; background: var(--accent); color: var(--deep); }
 .act:disabled { opacity: .55; cursor: default; }
 .act.ready { animation: glow 1.6s ease-in-out infinite; }
 @keyframes glow { 50% { box-shadow: 0 0 0 4px rgba(255,201,74,.35) } }
@@ -164,7 +165,89 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
   padding-top: 6px; padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
 .tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
 .tab.on { color: var(--accent); }
-.tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--ink); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
+.mult { flex: none; font-family: var(--display); font-size: 13px; color: var(--deep); background: var(--gem); border-radius: 999px; padding: 2px 8px; margin-left: auto; }
+.side { position: absolute; top: 56px; z-index: 5; display: flex; flex-direction: column; gap: 16px; }
+.side-l { left: max(10px, env(safe-area-inset-left, 0px)); }
+.side-r { right: max(10px, env(safe-area-inset-right, 0px)); top: 10px; }
+.sbtn { position: relative; width: 54px; height: 54px; border-radius: 16px; background: var(--text); color: var(--deep); display: grid; place-items: center;
+  box-shadow: 0 4px 0 rgba(20,18,42,.35); }
+.sbtn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
+.sbtn.hype { background: var(--accent); }
+.sbtn.crate { background: var(--gem); }
+.sbtn:disabled { filter: saturate(.35) brightness(.92); }
+.sbtn .cap { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--deep); color: var(--text);
+  font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; font-variant-numeric: tabular-nums; }
+.bang { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #F0453A; color: #fff; border: 2px solid var(--text);
+  font: 700 13px/16px var(--body); text-align: center; box-sizing: border-box; }
+.tab .bang { top: 0; right: 50%; margin-right: -24px; }
+.pop { position: absolute; z-index: 12; left: 12px; width: 300px; max-width: calc(100% - 24px); box-sizing: border-box; background: var(--text); color: var(--deep);
+  border-radius: 20px; padding: 12px 14px 14px; box-shadow: 0 10px 30px rgba(10,8,30,.45); display: flex; flex-direction: column; gap: 8px; animation: popin .16s ease-out; }
+@keyframes popin { from { transform: scale(.94); opacity: 0; } }
+.pop-arrow { position: absolute; width: 18px; height: 18px; background: var(--text); transform: rotate(45deg); left: 50%; margin-left: -9px; }
+.pop-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.pop-title { display: flex; flex-direction: column; line-height: 1.1; }
+.pop-title b { font-family: var(--display); font-size: 18px; font-weight: 400; }
+.pop-title span { font-size: 14px; font-weight: 700; color: #6A6390; }
+.pop-x { width: 36px; height: 36px; margin: -4px -6px 0 0; border-radius: 10px; color: #6A6390; display: grid; place-items: center; }
+.pop-mile { display: flex; align-items: center; gap: 6px; }
+.pop-mile .mile { flex: 1; height: 10px; background: #E4DFF2; }
+.pop-star { color: var(--gem); font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #B8860B; }
+.pop .mile-label { color: #6A6390; margin-top: -4px; }
+.pop-stats { display: flex; justify-content: space-between; font-size: 15px; }
+.pop-stats span { display: flex; align-items: center; gap: 6px; }
+.pop-stats b { font-family: var(--display); font-weight: 400; }
+.coin-s { width: 18px; height: 18px; border-radius: 50%; background: var(--cash); color: var(--deep); font: 400 11px/18px var(--display); text-align: center; font-style: normal; }
+.pop-actions { display: flex; gap: 8px; }
+.pop .mode-btn { background: #E4DFF2; color: var(--deep); }
+.pop .up-btn { flex: 1; justify-content: center; height: 52px; font-size: 18px; }
+.pop .up-btn:disabled { background: #D9D4E8; color: #8C86A6; }
+.testnote { font-size: 12px !important; text-align: center; }
+.offer { position: relative; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 10px; align-items: center; border-radius: 18px; padding: 16px 12px 12px; color: var(--deep); box-shadow: 0 4px 0 rgba(20,18,42,.3); }
+.offer .rib { position: absolute; top: -8px; left: -4px; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 8px 8px 8px 2px; transform: rotate(-4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.offer-art { display: grid; place-items: center; }
+.offer-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.offer-body b { font: 400 18px var(--display); }
+.offer-body > span { font-size: 13px; font-weight: 600; color: rgba(20,18,42,.75); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips span { font-size: 11px; font-weight: 700; background: rgba(255,255,255,.6); border-radius: 999px; padding: 2px 8px; }
+.paybtn { align-self: flex-end; margin-top: 4px; height: 40px; padding: 0 18px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px var(--display); }
+.paybtn:disabled { background: rgba(20,18,42,.35); }
+.banner { margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); padding: 9px 12px; background: var(--panel-2); text-align: center; font: 400 15px var(--display); letter-spacing: .02em; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.card { display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 0 rgba(20,18,42,.35); }
+.card:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
+.card .art { position: relative; height: 98px; display: grid; place-items: center; }
+.card .qty { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; font: 400 12px var(--display); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.card .price { padding: 8px 4px; font: 400 15px var(--display); display: flex; align-items: center; justify-content: center; gap: 4px; }
+.card.gold { background: #FFD866; } .card.gold .price { background: #F0A81E; color: var(--deep); }
+.card.green { background: #8BE39A; } .card.green .price { background: #1D7F35; color: #fff; }
+.card.outfit { background: #D9CCFF; } .card.outfit .price { background: #6A45C8; color: #fff; }
+.card:disabled { opacity: .65; }
+i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; clip-path: polygon(25% 0, 75% 0, 100% 35%, 50% 100%, 0 35%); border: none; }
+.namebar { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--panel-2); border-radius: 14px; min-height: 46px; font: 400 17px var(--display); }
+.namebar button { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--deep); display: grid; place-items: center; }
+.wardrobe { display: grid; grid-template-columns: 58px minmax(0, 1fr) 58px; gap: 8px; align-items: center; }
+.slots { display: flex; flex-direction: column; gap: 12px; }
+.slot { width: 58px; height: 58px; border-radius: 14px; background: #EEF7FC; display: grid; place-items: center; overflow: hidden; border: 3px solid transparent; box-sizing: border-box; color: var(--muted); }
+.slot.empty { background: transparent; border: 3px dashed var(--line); }
+.slot.on { border-color: var(--gem); }
+.bonusline { text-align: center; } .bonusline b { color: var(--cash); }
+.stabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.stab { height: 48px; border-radius: 12px; background: var(--panel-2); color: var(--muted); display: grid; place-items: center; }
+.stab.on { background: var(--text); color: var(--deep); }
+.items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.item { position: relative; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; background: #EEF7FC; color: var(--deep); border: 3px solid transparent; box-sizing: border-box; }
+.item .art { height: 82px; display: grid; place-items: center; }
+.item .nm { font-size: 11px; font-weight: 700; padding: 0 4px 4px; text-align: center; line-height: 1.2; min-height: 26px; }
+.item .nm em { font-style: normal; color: #1D7F35; }
+.item .bar { padding: 5px 4px; font: 400 12px var(--display); color: #fff; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.item.locked { border: 3px dashed #9C95BC; background: #DCD7EC; }
+.item.locked .art { opacity: .5; }
+.item .eq { position: absolute; top: 4px; left: 4px; z-index: 1; background: var(--deep); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
+.nameinput { height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
+.nameinput:focus { outline: none; border-color: var(--gem); }
+.tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
 
 /* Sheets */
@@ -182,7 +265,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .row .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .row .rt b { font-size: 15px; } .row .rt span { font-size: 12px; color: var(--muted); }
 .row .ric { width: 40px; height: 40px; border-radius: 12px; background: var(--ink); display: grid; place-items: center; flex: none; }
-.hire { height: 42px; padding: 0 14px; border-radius: 12px; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 13px; flex: none; }
+.hire { height: 42px; padding: 0 14px; border-radius: 12px; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 13px; flex: none; }
 .hire.money { background: var(--gem); }
 .hire.on { background: var(--panel); color: var(--cash); box-shadow: inset 0 0 0 2px var(--cash); }
 .row.locked .rt b { color: var(--muted); }
@@ -194,15 +277,15 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .loc.now { color: var(--text); } .loc.done { color: var(--cash); }
 .loc .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); flex: none; }
 .loc.now .dot { background: var(--accent); } .loc.done .dot { background: var(--cash); }
-.dresser { display: flex; justify-content: center; align-items: flex-end; background: #2B2645; border-radius: 18px; padding-block: 18px 6px; overflow: hidden; position: relative; min-height: 236px; }
-.dresser::before { content: ""; position: absolute; left: 50%; bottom: 8px; width: 190px; height: 34px; margin-left: -95px; border-radius: 50%; background: #3A3460; }
+.dresser { display: flex; justify-content: center; align-items: flex-end; background: #9FD8F2; border-radius: 18px; padding-block: 18px 6px; overflow: hidden; position: relative; min-height: 236px; }
+.dresser::before { content: ""; position: absolute; left: 50%; bottom: 8px; width: 190px; height: 34px; margin-left: -95px; border-radius: 50%; background: #5FA9C8; box-shadow: inset 0 -6px 0 #4A93B2; }
 .dresser svg { position: relative; transform-origin: 50% 100%; animation: idle 1.8s ease-in-out infinite alternate; }
 @keyframes idle { from { transform: translateY(0) scaleY(1) } to { transform: translateY(-2px) scaleY(1.01) } }
 .swatches { display: flex; gap: 10px; flex-wrap: wrap; }
 .sw { width: 44px; height: 44px; border-radius: 50%; border: 3px solid transparent; box-shadow: inset 0 0 0 3px var(--panel); }
 .sw.on { border-color: var(--text); }
 .lbl { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.cta { height: 52px; border-radius: 16px; background: var(--cash); color: var(--ink); font-family: var(--display); font-size: 17px; box-shadow: 0 3px 0 #4FA864; flex: none; }
+.cta { height: 52px; border-radius: 16px; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 17px; box-shadow: 0 3px 0 #4FA864; flex: none; }
 .cta:disabled { background: var(--line); color: var(--muted); box-shadow: none; cursor: default; }
 .cta.pink { background: var(--accent); box-shadow: 0 3px 0 #B84778; }
 .ghost { height: 50px; border-radius: 16px; background: var(--panel-2); font-size: 15px; font-weight: 700; flex: none; }
@@ -216,15 +299,15 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .keeps div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; font-size: 13px; line-height: 1.4; color: var(--muted); }
 .keeps b { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
 
-.tut { position: absolute; left: 16px; right: 16px; z-index: 15; display: flex; align-items: center; gap: 10px; background: var(--text); color: var(--ink);
+.tut { position: absolute; left: 16px; right: 16px; z-index: 15; display: flex; align-items: center; gap: 10px; background: var(--text); color: var(--deep);
   border-radius: 16px; padding: 10px 10px 10px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.4); animation: up .25s ease-out; }
 .tut p { flex: 1; min-width: 0; margin: 0; font-size: 14px; font-weight: 700; line-height: 1.35; }
-.tut button { flex: none; height: 36px; padding: 0 10px; border-radius: 10px; background: rgba(20,18,42,.08); font-size: 12px; font-weight: 700; color: var(--ink); }
+.tut button { flex: none; height: 36px; padding: 0 10px; border-radius: 10px; background: rgba(20,18,42,.08); font-size: 12px; font-weight: 700; color: var(--deep); }
 .tut-ptr { position: absolute; border-radius: 18px; z-index: 16; pointer-events: none; background: rgba(255,201,74,.14);
   box-shadow: 0 0 0 2px rgba(255,201,74,.85), 0 0 18px 6px rgba(255,201,74,.45); animation: tutglow 1.4s ease-in-out infinite; }
 @keyframes tutglow { 50% { background: rgba(255,201,74,.26); box-shadow: 0 0 0 3px rgba(255,201,74,1), 0 0 30px 12px rgba(255,201,74,.6); } }
 .email { -webkit-user-select: text; user-select: text; font-family: var(--display); font-size: 15px; color: var(--text); word-break: break-all; }
-.toast { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px); transform: translateX(-50%); background: var(--text); color: var(--ink);
+.toast { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px); transform: translateX(-50%); background: var(--text); color: var(--deep);
   font-size: 14px; font-weight: 700; padding: 10px 16px; border-radius: 999px; z-index: 30; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis;
   animation: toastin .2s ease-out, toastout .35s ease-in 1.45s forwards; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
 @keyframes toastin { from { opacity: 0; transform: translate(-50%, -8px); } }
@@ -247,6 +330,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
         <span class="cash-num" id="cash">$0</span>
         <span class="cash-rate" id="rate">+$0 / sec</span>
       </div>
+      <span class="mult" id="mult" hidden>x2</span>
     </div>
     <div class="pill gem-pill">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC94A" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg>
@@ -262,15 +346,26 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 
   <div class="room-wrap" id="roomWrap">
     <div class="loc-chip"><i></i><span id="locName">Rundown Apartment</span></div>
-    <div class="fame-chip" id="fameChip" hidden></div>
-    <button class="daily-btn" id="goalsBtn" aria-label="Goals" style="top:64px">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
-      <span class="dot" id="goalsDot" hidden></span>
-    </button>
-    <button class="daily-btn" id="dailyBtn" aria-label="Daily reward">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"></rect><path d="M3 13h18M12 9v12"></path><path d="M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-1.5S14 5 12 9z"></path></svg>
-      <span class="dot" id="dailyDot" hidden></span>
-    </button>
+    <div class="side side-l">
+      <button class="sbtn hype" id="hypeBtn" aria-label="2x Hype">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>
+        <span class="cap" id="hypeLbl">2x</span>
+      </button>
+      <button class="sbtn crate" id="crateBtn" aria-label="Free crate">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"></rect><path d="M3 13h18M12 9v12M7 9a3 3 0 0 1 5-3 3 3 0 0 1 5 3"></path></svg>
+        <span class="cap" id="crateLbl">Free</span><span class="bang" id="crateBang" hidden>!</span>
+      </button>
+    </div>
+    <div class="side side-r">
+      <button class="sbtn" id="dailyBtn" aria-label="Daily reward">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path><path d="m9 15 2 2 4-4"></path></svg>
+        <span class="cap">Daily</span><span class="bang" id="dailyDot" hidden>!</span>
+      </button>
+      <button class="sbtn" id="goalsBtn" aria-label="Goals">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"></path></svg>
+        <span class="cap">Goals</span><span class="bang" id="goalsDot" hidden>!</span>
+      </button>
+    </div>
     <div class="stage" id="stage">
       <div id="roomArt"></div>
       <div class="artist" id="artist" style="left:160px;top:214px">
@@ -293,27 +388,20 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
     </div>
   </div>
 
-  <div class="controls">
-    <div class="sbar" id="sbar">
-      <div class="sbar-info">
-        <div class="sbar-name" id="sbName">Laptop Beats</div>
-        <div class="mile"><i id="sbMile"></i></div>
-        <div class="mile-label" id="sbMileLabel"></div>
-      </div>
+  <div class="pop" id="pop" hidden>
+    <span class="pop-arrow" id="popArrow"></span>
+    <div class="pop-head">
+      <div class="pop-title"><b id="popLv">Level 1</b><span id="sbName">Laptop Beats</span></div>
+      <button class="pop-x" id="popClose" aria-label="Close upgrade card"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+    </div>
+    <div class="pop-mile"><div class="mile"><i id="sbMile"></i></div><span class="pop-star" aria-hidden="true">★</span></div>
+    <div class="mile-label" id="sbMileLabel"></div>
+    <div class="pop-stats"><span><i class="coin-s">$</i><b id="popPay">$1</b></span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><b id="popTime">1.2s</b></span></div>
+    <div class="pop-actions">
       <button class="mode-btn" id="modeBtn" aria-label="Change how many levels to buy">x1</button>
       <button class="up-btn" id="upBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
         <span id="upCost">$5</span>
-      </button>
-    </div>
-    <div class="actions">
-      <button class="act hype" id="hypeBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>
-        <span id="hypeLbl">2x Hype</span>
-      </button>
-      <button class="act" id="crateBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFC94A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"></rect><path d="M3 13h18M12 9v12M7 9a3 3 0 0 1 5-3 3 3 0 0 1 5 3"></path></svg>
-        <span id="crateLbl">Free Crate</span>
       </button>
     </div>
   </div>
@@ -322,9 +410,9 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
     <button class="tab on" data-tab="studio">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Studio</button>
     <button class="tab" data-tab="crew">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg>Crew</button>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg>Crew<span class="bang" id="crewBang" hidden>!</span></button>
     <button class="tab" data-tab="style">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg>Style</button>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg>Style<span class="bang" id="styleBang" hidden>!</span></button>
     <button class="tab" data-tab="shop">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>Shop</button>
     <button class="tab" data-tab="career">
@@ -344,9 +432,9 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 const planks = (color, from, step) => Array.from({ length: 13 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
 
 const APARTMENT_DECOR = `
-  ${planks('#42342D', 128, 40)}
-  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#2B2645"></div>
-  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#1F1B36"></div>
+  ${planks('#94683F', 128, 40)}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5D4F92"></div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#463A78"></div>
   <div class="abs" style="left:140px;top:12px;width:110px;height:60px;border-radius:6px;background:#0E0D1F;border:5px solid #4A4466;box-sizing:border-box;overflow:hidden">
     <svg width="100" height="50" viewBox="0 0 100 50" aria-hidden="true">
       <circle cx="80" cy="12" r="6" fill="#F4E7B8"></circle>
@@ -360,17 +448,19 @@ const APARTMENT_DECOR = `
     <div class="cloud" style="top:6px;width:30px;height:9px;background:#3A3466;animation-duration:38s"></div>
     <div class="abs" style="left:47px;top:0;width:5px;height:50px;background:#4A4466"></div>
   </div>
-  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#221E3A"></div>
-  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#221E3A"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#4E4183"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#4E4183"></div>
   <div class="abs" style="right:0;top:304px;width:12px;height:84px;background:#6B5246"></div>
-  <div class="abs" style="left:118px;top:232px;width:154px;height:96px;border-radius:50%;background:#5B3F66"></div>`;
+  <div class="abs" style="left:118px;top:232px;width:154px;height:96px;border-radius:50%;background:#8E5BB0"></div>
+  <div class="abs" style="left:136px;top:244px;width:118px;height:72px;border-radius:50%;border:3px dashed #B07DD0;box-sizing:border-box"></div>
+  <div class="abs" style="left:24px;top:96px;width:6px;height:22px;border-radius:3px;background:#3E8E47"></div><div class="abs" style="left:16px;top:88px;width:22px;height:16px;border-radius:50%;background:#58B060"></div>`;
 
 const STUDIO_DECOR = `
-  ${planks('#7B5D47', 128, 40)}
-  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#4B3F6B"></div>
-  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#352C52"></div>
-  <div class="abs" style="left:20px;top:14px;width:46px;height:56px;border-radius:6px;background:#5E5085"></div>
-  <div class="abs" style="left:324px;top:14px;width:46px;height:56px;border-radius:6px;background:#5E5085"></div>
+  ${planks('#CFA570', 128, 40)}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#9C89D4"></div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#7E6BB8"></div>
+  <div class="abs" style="left:20px;top:14px;width:46px;height:56px;border-radius:6px;background:#B3A3E3"></div>
+  <div class="abs" style="left:324px;top:14px;width:46px;height:56px;border-radius:6px;background:#B3A3E3"></div>
   <div class="abs" style="left:76px;top:10px;width:170px;height:64px;border-radius:6px;background:#8FD3F0;border:5px solid #E8DCC8;box-sizing:border-box;overflow:hidden">
     <svg width="160" height="54" viewBox="0 0 160 54" aria-hidden="true">
       <circle cx="128" cy="14" r="8" fill="#FFE08A"></circle>
@@ -385,17 +475,17 @@ const STUDIO_DECOR = `
   <div class="abs" style="left:256px;top:13px;width:58px;height:58px;border-radius:50%;background:#1A1530;border:5px solid #FFC94A;box-sizing:border-box;display:grid;place-items:center">
     <div style="width:12px;height:12px;border-radius:50%;background:#FFC94A"></div>
   </div>
-  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#3A3058"></div>
-  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#3A3058"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:396px;background:#8573C2"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:396px;background:#8573C2"></div>
   <div class="abs" style="left:0;top:304px;width:12px;height:84px;background:#A07A5C"></div>
-  <div class="abs" style="left:112px;top:226px;width:166px;height:108px;border-radius:50%;background:#3D6B78"></div>
-  <div class="abs" style="left:140px;top:244px;width:110px;height:72px;border-radius:50%;background:#467A88"></div>`;
+  <div class="abs" style="left:112px;top:226px;width:166px;height:108px;border-radius:50%;background:#4FB0C2"></div>
+  <div class="abs" style="left:140px;top:244px;width:110px;height:72px;border-radius:50%;background:#66C3D3"></div>`;
 
 const bricks = Array.from({ length: 4 }, (_, r) => Array.from({ length: 9 }, (_, c) =>
   `<div class="abs" style="left:${c * 46 - (r % 2 ? 23 : 0)}px;top:${r * 21}px;width:42px;height:17px;border-radius:2px;background:${(r + c) % 3 ? '#8B4A3C' : '#7D4134'}"></div>`).join('')).join('');
 const LOFT_DECOR = `
-  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:388px;background:#57535E"></div>`).join('')}
-  ${Array.from({ length: 8 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#57535E"></div>`).join('')}
+  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:388px;background:#A8A2B0"></div>`).join('')}
+  ${Array.from({ length: 8 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#A8A2B0"></div>`).join('')}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5E3027;overflow:hidden">${bricks}</div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#3E2019"></div>
   <div class="abs" style="left:96px;top:6px;width:198px;height:72px;border-radius:4px;background:#2B1F3D;border:5px solid #26222E;box-sizing:border-box;overflow:hidden">
@@ -424,7 +514,7 @@ const LOFT_DECOR = `
 
 const LOCATIONS = [
   {
-    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#4A3B33', goal: 150000, decor: APARTMENT_DECOR, home: [160, 214],
+    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', goal: 150000, decor: APARTMENT_DECOR, home: [160, 214],
     stations: [
       { id: 'beats', name: 'Laptop Beats', icon: 'note', unlock: 0, base: 1, cycle: 1.2, cost: 6, growth: 1.13, crew: 'Producer', crewCost: 90, spot: [214, 176],
         pos: [226, 112, 140, 128], ring: 90, hint: 36,
@@ -457,7 +547,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#8A6A52', goal: 50000000, decor: STUDIO_DECOR, home: [160, 222],
+    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', goal: 50000000, decor: STUDIO_DECOR, home: [160, 222],
     stations: [
       { id: 'pads', name: 'Beat Pads', icon: 'grid', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Beatmaker', crewCost: 4500, spot: [132, 160],
         pos: [24, 112, 118, 100],
@@ -490,7 +580,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#64606B', goal: 15000000000, decor: LOFT_DECOR, home: [160, 222],
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', goal: 15000000000, decor: LOFT_DECOR, home: [160, 222],
     stations: [
       { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -550,10 +640,10 @@ const ITEMS = [
   { id: 'shades', slot: 'face', name: 'Black Shades', gems: 60, bonus: 0.02, look: { color: '#14122A', style: 'plain' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 8, CONTACT = 'elicosand@gmail.com';
+const BUILD = 9, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
-  { text: 'Nice! Tap the green button to upgrade it. Hold it to buy faster.', target: () => $('upBtn'), done: () => S.stats.upgrades >= 1 },
+  { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
   { text: 'Keep making beats. Save $80 and tap the Vocal Booth to unlock it.', target: () => els.booth && els.booth.b, done: () => S.stats.unlocks >= 1 },
   { text: 'Hire crew so stations keep earning without you. Open the Crew tab.', target: () => document.querySelector('[data-tab="crew"]'), done: () => S.stats.hires >= 1 },
   { text: "Your crew works even while you're away. Earn $150K to move up, and track it in Career.", target: () => document.querySelector('[data-tab="career"]'), done: () => false, timeout: 8000 },
@@ -810,7 +900,7 @@ let els = {};
 function buildRoom() {
   const loc = LOC();
   wrap.style.setProperty('--floor', loc.floor);
-  $('locName').textContent = loc.name;
+  $('locName').innerHTML = loc.name + (S.albums > 0 ? ` <b style="color:var(--gem)">★ x${fame().toFixed(2)}</b>` : '');
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
     return `<button class="station" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
@@ -875,8 +965,28 @@ function tapStation(st) {
   }
   S.selected = st.id;
   if (!S.crew[st.id] && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); }
+  popOpen = true;
   moveArtist(st);
   render();
+}
+// upgrade card that pops out of the tapped station
+let popOpen = false;
+function closePop() { popOpen = false; $('pop').hidden = true; }
+$('popClose').addEventListener('click', closePop);
+$('roomWrap').addEventListener('click', e => { if (!e.target.closest('.station, .sbtn, .pop')) closePop(); });
+function placePop() {
+  const pop = $('pop'), e = els[S.selected];
+  if (!popOpen || !e || !lvl(S.selected) || !$('scrim').hidden) { pop.hidden = true; return; }
+  pop.hidden = false;
+  const app = $('app').getBoundingClientRect(), room = $('roomWrap').getBoundingClientRect(), r = e.b.getBoundingClientRect();
+  const w = pop.offsetWidth, h = pop.offsetHeight, cx = r.left + r.width / 2;
+  const left = Math.max(12, Math.min(app.width - w - 12, cx - app.left - w / 2));
+  const above = r.top - h - 14 > room.top + 4;
+  const top = above ? r.top - app.top - h - 14 : Math.min(r.bottom - app.top + 14, room.bottom - app.top - h - 6);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  const arrow = $('popArrow');
+  arrow.style.left = Math.max(22, Math.min(w - 22, cx - app.left - left)) + 'px';
+  arrow.style.top = above ? (h - 10) + 'px' : '-8px';
 }
 function buyOnce(quiet) {
   const st = def(S.selected); const { n, cost } = buyPlan(st);
@@ -906,7 +1016,7 @@ $('upBtn').addEventListener('click', e => { if (e.detail === 0) buyOnce(); });  
 $('upBtn').addEventListener('contextmenu', e => e.preventDefault());
 $('modeBtn').addEventListener('click', () => {
   S.buyMode = S.buyMode === 1 ? 10 : S.buyMode === 10 ? 'max' : 1;
-  sfx('tap'); render();
+  render();
 });
 $('hypeBtn').addEventListener('click', () => openTab('hype'));
 function addHype() {
@@ -947,7 +1057,7 @@ $('crateBtn').addEventListener('click', () => {
 });
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openTab(t.dataset.tab)));
 // soft click for navigation buttons (money actions have their own sounds)
-document.addEventListener('click', e => { if (e.target.closest('.tab, .close, .daily-btn, #settings, #buyGems, .ghost, #hypeBtn, #tutSkip, .sw')) sfx('click'); }, true);
+document.addEventListener('click', e => { if (e.target.closest('.tab, .close, .sbtn, #settings, #buyGems, .ghost, #tutSkip, .sw, .stab, .slot, #popClose, #modeBtn')) sfx('click'); }, true);
 $('buyGems').addEventListener('click', () => openTab('shop'));
 $('settings').addEventListener('click', () => openTab('settings'));
 
@@ -968,7 +1078,7 @@ function dropAlbum() {
   S.albums = (S.albums || 0) + 1;
   Object.assign(S, runState(0));
   const it = ITEMS.find(i => i.album === S.albums);
-  if (it) S.owned[it.id] = true; else S.gems += 50;
+  if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; } else S.gems += 50;
   buildRoom(); save(); render(); sfx('move');
   const prev = it ? `<div class="dresser" style="width:100%">${bigArtist(Object.assign({}, S.equip, { [it.slot]: it.id }))}</div>` : '';
   openSheet(`<div class="welcome"><h2>Album #${S.albums} is out</h2><span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
@@ -1042,8 +1152,18 @@ $('scrim').addEventListener('click', e => {
   if (eq) { const it = itemById(eq.dataset.equip); if (it && S.owned[it.id]) { S.equip[it.slot] = it.id; applyLook(); save(); render(); sfx('tap'); } return eq.dataset.then === 'close' ? closeSheet() : openTab('style'); }
   const uq = e.target.closest('[data-unequip]');
   if (uq) { const it = itemById(uq.dataset.unequip); if (it && it.slot !== 'top') { S.equip[it.slot] = null; applyLook(); save(); render(); } return openTab('style'); }
+  const stb = e.target.closest('[data-stab]');
+  if (stb) { styleSlot = stb.dataset.stab; return openTab('style'); }
+  const itb = e.target.closest('[data-item]');
+  if (itb) { const it = itemById(itb.dataset.item); if (!it) return;
+    if (S.owned[it.id]) { if (S.equip[it.slot] === it.id) { if (it.slot !== 'top') S.equip[it.slot] = null; } else S.equip[it.slot] = it.id; applyLook(); save(); render(); sfx('tap'); return openTab('style'); }
+    if (it.album) { sfx('denied'); toast(`Unlocks when you drop album ${it.album}`); return; }
+    if (S.gems < it.gems) { sfx('denied'); toast('Not enough gems'); return; }
+    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); return openTab('style'); }
+  if (e.target.closest('[data-rename]')) return openTab('rename');
+  if (e.target.closest('[data-save-name]')) { const v = ($('artistNameInput').value || '').trim().slice(0, 16); S.name = v || 'New Artist'; save(); toast('Name saved'); return openTab('style'); }
   const bi = e.target.closest('[data-buy-item]');
-  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= it.gems) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
+  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('unlock'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
   const bo = e.target.closest('[data-buy]');
   if (bo) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
@@ -1076,10 +1196,10 @@ const starPts = (cx, cy, r) => Array.from({ length: 10 }, (_, i) => { const a = 
 const lookOf = (eq, slot) => { const it = itemById(eq[slot]); return it ? it.look : null; };
 // Simple front-facing figure shared by the in-room artist and the crew.
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
-function miniFigure(f, w, h) {
+function miniFigure(f, w, h, vb = '0 0 160 214') {
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="6" stroke-linejoin="round"`;
   const sk = f.skin ? `fill="${f.skin}"` : 'class="skin"';
-  let o = `<svg width="${w}" height="${h}" viewBox="0 0 160 214" aria-hidden="true">
+  let o = `<svg width="${w}" height="${h}" viewBox="${vb}" aria-hidden="true">
     <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>
     <path d="M58 146 H80 V193 H51 Q50 168 58 146 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path><path d="M80 146 H102 Q110 168 109 193 H80 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path>
     <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
@@ -1162,6 +1282,29 @@ function bigArtist(eq = S.equip) {
   return o + '</svg>';
 }
 
+
+// ---------- shop and wardrobe artwork ----------
+const gemPath = (x, y, k) => `<g transform="translate(${x},${y}) scale(${k})"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M0 8h24M6 0l6 8 6-8M12 24 6 8M12 24l6-16" stroke="#C8901A" stroke-width="1.3" fill="none"></path><path d="M7 3h4l-2 4z" fill="#fff" opacity=".7"></path></g>`;
+const ART = {
+  gems: n => { const spots = [[20, 16, 1.2], [6, 24, 1], [36, 24, 1], [21, 32, 1.1]]; return `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">${spots.slice(0, n).map(([x, y, k]) => gemPath(x, y, k)).join('')}</svg>`; },
+  clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
+  monitors: () => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
+  moon: () => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 42A20 20 0 1 1 26 12a15 15 0 0 0 18 30z" fill="#FFE08A" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><circle cx="48" cy="16" r="2.5" fill="#fff"></circle><circle cx="54" cy="28" r="1.8" fill="#fff"></circle></svg>`,
+  mic: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="22" y="6" width="20" height="32" rx="10" fill="#FFC94A" stroke="#14122A" stroke-width="3"></rect><path d="M26 14h12M26 20h12M26 26h12" stroke="#C8901A" stroke-width="2.5" stroke-linecap="round"></path><path d="M14 30a18 18 0 0 0 36 0" fill="none" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M32 48v10M22 58h20" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M26 10v8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"></path></svg>`,
+  gift: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="#FF6FAE" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="#FF8FC0" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="#FFC94A" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="#FFC94A" stroke="#14122A" stroke-width="2.5"></path></svg>`,
+  noAds: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="8" fill="#fff" stroke="#14122A" stroke-width="3"></rect><path d="M27 24v16l13-8z" fill="#2E9CF0"></path><path d="M12 54 52 10" stroke="#F0453A" stroke-width="5" stroke-linecap="round"></path></svg>`,
+};
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const rarity = it => it.album ? ['Exclusive', '#D4880F'] : it.gems ? (it.bonus >= 0.04 ? ['Epic', '#7C4FE0'] : ['Rare', '#2F7FE8']) : ['Starter', '#6F6990'];
+// a figure wearing just this item, zoomed on the part it changes
+function itemArt(it, size = 70) {
+  const base = itemById('basic').look, f = { body: base.body, trim: base.trim, style: base.style, phones: true };
+  if (it.slot === 'top') Object.assign(f, { body: it.look.body, trim: it.look.trim, style: it.look.style });
+  else f[it.slot === 'hat' ? 'hat' : it.slot] = it.look;
+  const vb = it.slot === 'top' ? '22 70 116 116' : it.slot === 'neck' ? '22 40 116 116' : '18 -4 124 124';
+  return miniFigure(f, size, size, vb);
+}
+let styleSlot = 'top';
 function openTab(tab) {
   nextSheetKey = tab;
   const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') ? 'shop' : tab;
@@ -1208,24 +1351,30 @@ function openTab(tab) {
       <div class="keeps"><div><b>You gain</b>Fame x${(fame() + FAME_PER_ALBUM).toFixed(2)} on every station, forever</div><div><b>You restart</b>Back in the apartment with $0</div></div>
       <button class="cta pink" data-album>Drop it</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'shop') {
-    const gemIc = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#FFC94A" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg>';
-    const ic = { goldenMic: svgIc('mic', '#FFC94A', 20), starter: svgIc('star', '#FF6FAE', 20), adFree: svgIc('monitor', '#6FD3FF', 20), monitors: svgIc('sliders', '#8BF0A0', 20),
-      nightOwl: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B18CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"></path></svg>',
-      skip: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>' };
-    const row = id => { const o = OFFERS[id], owned = o.once && S.perks[id];
-      const sub = o.skip ? `About ${fmt(skipValue(o.skip))} right now` : o.sub;
-      const right = owned ? '<span class="hired">Owned</span>'
-        : o.money ? `<button class="hire money" data-buy="${id}">${o.money}</button>`
-        : `<button class="hire" data-buy="${id}" ${S.gems < o.gems ? 'disabled' : ''}>${o.gems} gems</button>`;
-      return `<div class="row"><span class="ric">${o.gemsOut ? gemIc : ic[id] || ic.skip}</span><span class="rt"><b>${o.name}</b><span>${sub}</span></span>${right}</div>`; };
-    const outfits = ITEMS.filter(i => i.gems).map(it => `<div class="row"><span class="ric">${swatch(it)}</span><span class="rt"><b>${it.name}</b><span>+${Math.round(it.bonus * 100)}% income while worn</span></span>${S.owned[it.id] ? '<span class="hired">Owned</span>' : `<button class="hire" data-buy-item="${it.id}" data-from="shop" ${S.gems < it.gems ? 'disabled' : ''}>${it.gems} gems</button>`}</div>`).join('');
+    const owned = id => OFFERS[id].once && S.perks[id];
+    const offer = (id, art, color, ribbon, perks) => { const o = OFFERS[id];
+      return `<div class="offer" style="background:${color}"><span class="rib">${ribbon}</span>
+        <div class="offer-art">${art}</div>
+        <div class="offer-body"><b>${o.name}</b><span>${o.sub}</span>${perks ? `<div class="chips">${perks}</div>` : ''}
+          <button class="paybtn" data-buy="${id}" ${owned(id) ? 'disabled' : ''}>${owned(id) ? 'Owned' : o.money}</button></div></div>`; };
+    const card = (id, art, qty, theme) => { const o = OFFERS[id], own = owned(id);
+      const price = own ? 'Owned' : o.money ? o.money : `<i class="g"></i>${o.gems}`;
+      return `<button class="card ${theme}" data-buy="${id}" ${own ? 'disabled' : ''} aria-label="${o.name}, ${own ? 'owned' : o.money || o.gems + ' gems'}">
+        <span class="art">${art}${qty ? `<span class="qty">${qty}</span>` : ''}</span><span class="price">${price}</span></button>`; };
+    const outfit = it => `<button class="card outfit" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
+        <span class="art">${itemArt(it, 76)}<span class="qty">+${Math.round(it.bonus * 100)}%</span></span><span class="price">${S.owned[it.id] ? 'Owned' : `<i class="g"></i>${it.gems}`}</span></button>`;
     openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
-      <p>Test mode: real-money items are free in this build so you can try them.</p>
-      <div class="sec"><h3>Best value</h3>${row('goldenMic')}${S.perks.starter ? '' : row('starter')}${row('adFree')}</div>
-      <div class="sec"><h3>Time skips</h3>${row('skip1')}${row('skip4')}</div>
-      <div class="sec"><h3>Permanent boosts</h3>${row('monitors')}${row('nightOwl')}</div>
-      <div class="sec"><h3>Outfits</h3>${outfits}<p>Album exclusives can't be bought. Drop albums to unlock them.</p></div>
-      <div class="sec"><h3>Gems</h3>${row('gems100')}${row('gems550')}${row('gems1200')}${row('gems2600')}</div>`);
+      <p class="testnote">Test mode: real-money items are free in this build.</p>
+      ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span>')}
+      ${S.perks.starter ? '' : offer('starter', ART.gift(), '#FF9CC8', 'x10 value', '<span>Flame Hoodie</span><span>300 gems</span><span>4h skip</span>')}
+      ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Instant rewards</span>')}
+      <div class="banner">Time skips & boosts</div>
+      <div class="cards">${card('skip1', ART.clock(1), '1h', 'gold')}${card('skip4', ART.clock(4), '4h', 'gold')}${card('monitors', ART.monitors(), '+50%', 'gold')}${card('nightOwl', ART.moon(), '8h away', 'gold')}</div>
+      <div class="banner">Outfits</div>
+      <div class="cards">${ITEMS.filter(i => i.gems).map(outfit).join('')}</div>
+      <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
+      <div class="banner">Gems</div>
+      <div class="cards two">${card('gems100', ART.gems(1), '100', 'green')}${card('gems550', ART.gems(2), '550', 'green')}${card('gems1200', ART.gems(3), '1,200', 'green')}${card('gems2600', ART.gems(4), '2,600', 'green')}</div>`);
   } else if (tab.startsWith('pay:')) {
     const id = tab.slice(4), o = OFFERS[id];
     openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
@@ -1241,23 +1390,44 @@ function openTab(tab) {
       <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at 2 hours' : (S.perks.adFree ? 'Add 20 minutes' : 'Watch ad: +20 minutes')}</button>
       ${S.perks.goldenMic ? '<p>Golden Mic stacks with Hype for 4x income.</p>' : ''}`);
   } else if (tab === 'style') {
+    S.newItems = [];
     const g = Math.round((gearMult() - 1) * 100);
-    const slots = SLOTS.map(([sl, label]) => {
-      const rows = ITEMS.filter(i => i.slot === sl).map(it => {
-        const own = S.owned[it.id], on = S.equip[sl] === it.id;
-        const src = it.album ? 'Album exclusive' : it.gems ? 'Shop' : 'Starter';
-        const right = own ? (on ? (sl === 'top' ? '<span class="hired">Wearing</span>' : `<button class="hire on" data-unequip="${it.id}">Wearing</button>`) : `<button class="hire" data-equip="${it.id}">Wear</button>`)
-          : it.album ? `<span class="soon">Album ${it.album}</span>` : `<button class="hire" data-buy-item="${it.id}" ${S.gems < it.gems ? 'disabled' : ''}>${it.gems} gems</button>`;
-        return `<div class="row ${own ? '' : 'locked'}"><span class="ric">${swatch(it)}</span><span class="rt"><b>${it.name}</b><span>${it.bonus ? '+' + Math.round(it.bonus * 100) + '% income · ' : ''}${src}</span></span>${right}</div>`;
-      }).join('');
-      return `<div class="sec"><h3>${label}</h3>${rows}</div>`;
-    }).join('');
+    const slotIc = { top: 'shirt', hat: 'beanie', neck: 'chain', face: 'shades', colors: 'palette' };
+    const SIC = {
+      shirt: '<path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path>',
+      beanie: '<path d="M4 16a8 8 0 0 1 16 0z"></path><rect x="3" y="15" width="18" height="4" rx="2"></rect><circle cx="12" cy="6" r="2"></circle>',
+      chain: '<path d="M6 4c0 8 3 12 6 12s6-4 6-12"></path><circle cx="12" cy="19" r="2.5"></circle>',
+      shades: '<rect x="2" y="9" width="8" height="6" rx="2"></rect><rect x="14" y="9" width="8" height="6" rx="2"></rect><path d="M10 11h4"></path>',
+      palette: '<path d="M12 3a9 9 0 1 0 0 18c1 0 2-1 1.5-2s.5-2 1.5-2H17a4 4 0 0 0 4-4c0-5.5-4-10-9-10z"></path><circle cx="7.5" cy="11" r="1.3"></circle><circle cx="10.5" cy="7" r="1.3"></circle><circle cx="15" cy="7.5" r="1.3"></circle>' };
+    const ic = (k, sz = 22) => `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SIC[k]}</svg>`;
+    const slotCard = sl => { const it = itemById(S.equip[sl]);
+      return `<button class="slot ${it ? '' : 'empty'} ${styleSlot === sl ? 'on' : ''}" data-stab="${sl}" aria-label="${SLOTS.find(x => x[0] === sl)[1]}">${it ? itemArt(it, 50) : ic(slotIc[sl])}</button>`; };
+    let grid;
+    if (styleSlot === 'colors') {
+      grid = `<div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
+        <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>`;
+    } else {
+      grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot).map(it => {
+        const own = S.owned[it.id], on = S.equip[it.slot] === it.id, [rn, rc] = rarity(it);
+        const bar = own ? rn : it.album ? `Album ${it.album}` : `<i class="g"></i>${it.gems}`;
+        return `<button class="item ${own ? '' : 'locked'}" data-item="${it.id}" aria-label="${it.name}${own ? (on ? ', wearing' : '') : it.album ? ', unlocks with album ' + it.album : ', ' + it.gems + ' gems'}">
+          ${on ? '<span class="eq">Wearing</span>' : ''}<span class="art">${itemArt(it, 78)}</span>
+          <span class="nm">${it.name}${it.bonus ? ` <em>+${Math.round(it.bonus * 100)}%</em>` : ''}</span>
+          <span class="bar" style="background:${own ? rc : '#8C86A6'}">${bar}</span></button>`;
+      }).join('') + '</div>';
+    }
     openSheet(`<div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
-      <div class="dresser">${bigArtist()}</div>
-      <p style="text-align:center">Outfit bonus: <b style="color:var(--cash)">+${g}% income</b></p>
-      ${slots}
-      <div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
-      <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>`);
+      <div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div>
+      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="dresser">${bigArtist()}</div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div>
+      <p class="bonusline">Outfit bonus <b>+${g}% income</b></p>
+      <div class="stabs">${['top', 'hat', 'neck', 'face', 'colors'].map(k => `<button class="stab ${styleSlot === k ? 'on' : ''}" data-stab="${k}" aria-label="${k === 'colors' ? 'Colors' : SLOTS.find(x => x[0] === k)[1]}">${ic(slotIc[k], 24)}</button>`).join('')}</div>
+      ${grid}`);
+  } else if (tab === 'rename') {
+    openSheet(`<div class="sheet-head"><h2>Name your artist</h2>${closeBtn()}</div>
+      <label class="lbl" for="artistNameInput">Artist name</label>
+      <input id="artistNameInput" class="nameinput" maxlength="16" value="${esc(S.name || '')}" placeholder="New Artist" autocomplete="off">
+      <button class="cta" data-save-name>Save</button>`);
+    setTimeout(() => { const i = $('artistNameInput'); if (i) i.focus(); }, 50);
   } else if (tab === 'goals') {
     const list = activeGoals(), done = GOALS.filter(g => S.goalsDone[g.id]).length;
     const rows = list.map(g => { const v = Math.min(g.val(), g.target), ok = goalReady(g);
@@ -1300,7 +1470,7 @@ function openTab(tab) {
   }
 }
 
-const swatch = it => { const c = it.look.body || it.look.color; const tr = it.look.trim || 'transparent';
+const _unusedSwatch = it => { const c = it.look.body || it.look.color; const tr = it.look.trim || 'transparent';
   return `<span style="width:24px;height:24px;border-radius:50%;background:${c};box-shadow:inset 0 0 0 4px ${tr};outline:2px solid rgba(255,255,255,.15)"></span>`; };
 const hms = ms => { const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); };
 function applyLook() {
@@ -1313,13 +1483,11 @@ function applyLook() {
 function render() {
   $('cash').textContent = fmt(S.cash);
   const ps = perSec() * mult();
-  $('rate').textContent = ps > 0 ? '+' + fmt(ps) + ' / sec' + (hypeOn() ? ' · 2x' : '') : 'Tap a station to work';
+  $('rate').textContent = ps > 0 ? '+' + fmt(ps) + ' / sec' : 'Tap a station to work';
   $('gems').textContent = S.gems;
   const mp = Math.floor(movePct());
   $('movePct').textContent = mp + '%';
   $('movePct').classList.toggle('full', mp >= 100);
-  $('fameChip').hidden = !(S.albums > 0);
-  $('fameChip').textContent = 'Fame x' + fame().toFixed(2);
 
   LOC().stations.forEach(st => {
     const e = els[st.id]; if (!e) return;
@@ -1336,7 +1504,10 @@ function render() {
   const st = def(S.selected), L = lvl(st.id);
   const next = MILES.find(m => L < m), prev = [0, ...MILES].filter(m => L >= m).pop();
   const ct = cycleTime(st);
-  $('sbName').innerHTML = `${st.name} <small>Lv ${L} · ${fmt(payout(st) * mult())} / ${ct < 1 ? ct.toFixed(2) : ct.toFixed(1)}s</small>`;
+  $('popLv').textContent = 'Level ' + L;
+  $('sbName').textContent = st.name;
+  $('popPay').textContent = fmt(payout(st) * mult());
+  $('popTime').textContent = (ct < 1 ? ct.toFixed(2) : ct.toFixed(1)) + 's';
   $('sbMile').style.width = next ? ((L - prev) / (next - prev) * 100) + '%' : '100%';
   $('sbMileLabel').textContent = next ? `Lv ${next}: 2x speed` : 'Max speed reached';
   const plan = buyPlan(st);
@@ -1346,16 +1517,20 @@ function render() {
   $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
   $('dailyDot').hidden = !dailyReady();
   $('goalsDot').hidden = !activeGoals().some(goalReady);
+  $('crewBang').hidden = !LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= x.crewCost);
+  $('styleBang').hidden = !(S.newItems && S.newItems.length);
+  const m = mult() * boostMult();
+  $('mult').hidden = m <= 1; $('mult').textContent = 'x' + (Math.round(m * 10) / 10);
 
   const now = Date.now();
   const hb = $('hypeBtn');
-  if (hypeOn()) { $('hypeLbl').textContent = '2x · ' + hms(S.hypeUntil - now); hb.classList.remove('ready'); }
-  else { $('hypeLbl').textContent = '2x Hype'; hb.classList.add('ready'); }
-  const cb = $('crateBtn');
-  if (now < S.crateReady) { $('crateLbl').textContent = 'Crate in ' + mmss(S.crateReady - now); cb.disabled = true; cb.classList.remove('ready'); }
-  else { $('crateLbl').textContent = 'Free Crate'; cb.disabled = false; cb.classList.add('ready'); }
+  $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x';
+  const cb = $('crateBtn'), crateWait = now < S.crateReady;
+  $('crateLbl').textContent = crateWait ? mmss(S.crateReady - now) : 'Free';
+  cb.disabled = crateWait; $('crateBang').hidden = crateWait;
 
   artist.classList.toggle('working', !!(S.running[S.selected] || S.crew[S.selected]));
+  placePop();
   updateTut();
 }
 const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
