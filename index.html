@@ -1026,6 +1026,7 @@ const DAILY = [
 ];
 const MILES = [10, 25, 50, 100, 200];
 const CRATE_CD = 600, OFFLINE_BASE = 2 * 3600, OFFLINE_OWL = 8 * 3600;
+const OFFLINE_RATE = 0.5;   // crew earn at half speed while you're away; the ad doubles it back to full, so playing stays the best way to earn
 const AD_SECONDS = 5;
 const HYPE_LEN = [20, 24, 28, 32], HYPE_LEN_COST = [50, 120, 250];     // minutes per ad, gems for the next level
 const HYPE_CAPS = [2, 2.5, 3, 4], HYPE_CAP_COST = [80, 200, 400];      // hours of stacked Hype
@@ -1072,7 +1073,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 61, CONTACT = 'elicosand@gmail.com';
+const BUILD = 63, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -2818,12 +2819,12 @@ function offline() {
   if (secs < 30) return;
   // hype time that overlapped the counted part of the time away pays double
   const hyped = Math.max(0, Math.min(secs, (Math.min(S.hypeUntil, last + secs * 1000) - last) / 1000));
-  const v = Math.round(perSec() * (secs + hyped));
+  const v = Math.round(perSec() * (secs + hyped) * OFFLINE_RATE);
   if (v < 1) return;
   earn(v); pendingBonus = v;
   const h = Math.floor(secs / 3600), m = Math.floor(secs % 3600 / 60);
-  openSheet(`<div class="welcome"><h2>Welcome back</h2><p>Your crew kept working for ${h ? h + 'h ' : ''}${m}m${away > secs ? ' (the most offline time you can earn)' : ''}.</p><span class="amt">+${fmt(v)}</span></div>
-    <button class="cta pink" data-ad="bonus">${S.perks.adFree ? 'Double it' : 'Watch ad: double it'}</button>
+  openSheet(`<div class="welcome"><h2>Welcome back</h2><p>Earnings while you were away</p><span class="amt">+${fmt(v)}</span></div>
+    <button class="cta pink" data-ad="bonus">${S.perks.adFree ? '2x earnings' : 'Watch ad: 2x earnings'}</button>
     <p class="adnote">${adGemNote()}</p>
     <button class="ghost" data-close>Collect ${fmt(v)}</button>`);
 }
