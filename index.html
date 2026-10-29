@@ -1072,7 +1072,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 60, CONTACT = 'elicosand@gmail.com';
+const BUILD = 61, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1562,8 +1562,12 @@ function tapStation(st) {
     } else { sfx('denied'); toast('Need ' + fmt(st.unlock) + ' to unlock ' + st.name); }
     render(); return;
   }
+  const wasOpen = popOpen && S.selected === st.id;
   S.selected = st.id;
-  if (!S.crew[st.id] && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); }
+  let started = false;
+  if (!S.crew[st.id] && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); started = true; }
+  // tapping the same station again closes its card, unless that tap just started a track (so tap-to-make-beats never hides the card)
+  if (wasOpen && !started) { closePop(); render(); return; }
   popOpen = true;
   moveArtist(st);
   render();
@@ -2337,7 +2341,7 @@ function openTab(tab) {
     const canAlbum = albumReady(), last = LOCATIONS[lastLoc()];
     const moveBtn = next
       ? `<button class="cta" ${pct < 100 ? 'disabled' : ''} data-move-ask>${pct < 100 ? 'Keep grinding' : 'Move to ' + next.name}</button>`
-      : `<button class="cta pink" ${pct < 100 ? 'disabled' : ''} data-album-ask>${pct < 100 ? 'Keep grinding' : 'Drop album #' + ((S.albums || 0) + 1)}</button>`;
+      : '';
     openSheet(`<div class="sheet-head"><h2>Career</h2>${closeBtn()}</div>
       <div class="sec">
         <h3>Move Up</h3>
