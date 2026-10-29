@@ -1168,7 +1168,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 87, CONTACT = 'elicosand@gmail.com';
+const BUILD = 88, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -2562,9 +2562,11 @@ const FB_QS = [
   { k: 'fun', q: 'How fun is it so far?', opts: ['1', '2', '3', '4', '5'] },
   { k: 'pace', q: 'How did the pace feel?', opts: ['Too slow', 'Just right', 'Too fast'] },
   { k: 'back', q: 'Would you play again tomorrow?', opts: ['Yes', 'Maybe', 'No'] },
+  { k: 'tomorrow', q: 'What would make you come back tomorrow?', text: 'A goal, a feature, a reward…' },
+  { k: 'look', q: 'Could you make an artist that feels like you?', opts: ['Yes', 'Mostly', 'No'] },
   { k: 'buy', q: 'Would you spend money on anything?', opts: ['Yes', 'Maybe', 'No'] },
-  { k: 'stuck', q: 'Where did you get bored, stuck or confused?', text: 'A map, a screen, a moment…' },
-  { k: 'best', q: 'What was your favorite part?', text: 'Anything that felt good' },
+  { k: 'best', q: 'What was the most satisfying moment?', text: 'Anything that felt good' },
+  { k: 'stuck', q: 'Was there a moment you got bored, stuck, confused or almost quit?', text: 'A map, a screen, a moment…' },
   { k: 'change', q: 'One thing you would change, or any bugs?', text: 'Be brutally honest' },
 ];
 function fbDraft() { if (!S.fb) S.fb = {}; return S.fb; }
@@ -2916,7 +2918,7 @@ function openTab(tab) {
       <div class="sec"><h3>Redeem a code</h3>
         <div class="addrow"><input id="codeInput" class="nameinput" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="Enter code"><button class="hire" data-redeem>Redeem</button></div></div>
       <div class="sec"><h3>Playtest feedback</h3>
-        <p>Help shape the game: 7 quick questions.</p>
+        <p>Help shape the game: ${FB_QS.length} quick questions.</p>
         <button class="cta" data-tab-go="feedback">Give feedback</button>
       </div>
       ${TEST ? `<div class="sec testsec"><h3>Test mode <small class="h3note">separate save</small></h3>
@@ -2931,7 +2933,7 @@ function openTab(tab) {
   } else if (tab === 'feedback') {
     const d = fbDraft();
     openSheet(`<div class="sheet-head"><h2>Playtest feedback</h2>${closeBtn()}</div>
-      <p>${S.fbPrompted && !S.fbSent ? 'Got a minute? ' : ''}7 quick questions. Skip any you like. Honest answers help most.</p>
+      <p>${S.fbPrompted && !S.fbSent ? 'Got a minute? ' : ''}${FB_QS.length} quick questions. Skip any you like. Honest answers help most.</p>
       ${FB_QS.map(x => `<div class="fbq"><label class="lbl" ${x.text ? `for="fb-${x.k}"` : ''}>${x.q}</label>${x.opts
         ? `<div class="fbopts">${x.opts.map(o => `<button class="fbo ${d[x.k] === o ? 'on' : ''}" data-fb="${x.k}" data-v="${o}">${o}</button>`).join('')}</div>`
         : `<textarea id="fb-${x.k}" class="fbtext" data-fbt="${x.k}" rows="2" maxlength="400" placeholder="${x.text}">${esc(d[x.k] || '')}</textarea>`}</div>`).join('')}
