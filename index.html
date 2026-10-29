@@ -1163,7 +1163,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 83, CONTACT = 'elicosand@gmail.com';
+const BUILD = 85, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -2134,12 +2134,18 @@ function faceExtra(fc, eyes) {
 // Simple front-facing figure shared by the in-room artist and the crew.
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
 // ---------- hair and face details (drawn in the big figure's coordinates; the small figure scales them to its head) ----------
-const HAIRS = ['short', 'curly', 'buzz', 'long', 'bun', 'braids'];      // first three lead for look 1, last three for look 2; anyone can pick any
+const HAIRS = ['buzz', 'curly', 'dreads', 'long', 'bun', 'braids'];      // first three lead for look 1, last three for look 2; anyone can pick any
 const HAIR_COLORS = ['#231A17', '#6E4A2E', '#E6C36A', '#A8442A', '#FF8FC0', '#6FD3FF', '#B18CFF', '#E8E2F4'];
 const FACES = ['stubble', 'beard', 'mustache', 'freckles', 'mark', 'blush'];
-const defaultHair = bt => bt === 'b' ? 'long' : 'short';
+const defaultHair = bt => bt === 'b' ? 'long' : 'buzz';
 const shine = `<path d="M62 33 Q72 28 84 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
+// one loc: a dark outline pass, then the hair color, both with round ends
+const loc = (d, c, big) => `<path d="${d}" fill="none" stroke="#1B1830" stroke-width="10" stroke-linecap="round"></path><path d="${d}" fill="none" stroke="${c}" stroke-width="6.5" stroke-linecap="round"></path>`;
+const LOCS_L = ['M53 52 Q49 70 50 86', 'M59 50 Q56 70 58 90', 'M48 58 Q44 70 45 82'];
+const LOCS_R = LOCS_L.map(d => d.replace(/(\d+(?:\.\d+)?) (\d+(?:\.\d+)?)/g, (m, x, y) => (160 - +x) + ' ' + y));
 function hairBack(hs, c, ln) {
+  if (hs === 'dreads') return [...LOCS_L, ...LOCS_R].map(d => loc(d, c)).join('')
+    + `<rect x="53.5" y="78" width="7" height="5" rx="1.5" fill="#FFC94A" stroke="#1B1830" stroke-width="1.6"></rect><rect x="106.5" y="74" width="7" height="5" rx="1.5" fill="#FFC94A" stroke="#1B1830" stroke-width="1.6"></rect>`;
   if (hs === 'long') return `<path d="M47 56 Q40 100 52 118 Q80 124 108 118 Q120 100 113 56 Z" fill="${c}" ${ln}></path>`;
   if (hs === 'braids') return [53, 107].map(x => [76, 86, 96, 106].map(y => `<ellipse cx="${x}" cy="${y}" rx="6.5" ry="5.6" fill="${c}" ${ln}></ellipse>`).join('')
     + `<rect x="${x - 4}" y="111" width="8" height="4" rx="2" fill="#FF6FAE" ${ln}></rect><path d="M${x - 3} 115 L${x} 122 L${x + 3} 115 Z" fill="${c}" ${ln}></path>`).join('');
@@ -2156,7 +2162,11 @@ const CURLY_D = (() => { const cx = 80, cy = 58, rx = 35, ry = 37, n = 7, bump =
 function hairTop(hs, c, ln, hat) {
   if (hs === 'curly') return `<path d="${CURLY_D}" fill="${c}" ${ln}></path>`
     + `<path d="M60 37 q3 -5 7 -2 M73 30 q3 -5 7 -2 M87 30 q3 -5 7 -2 M96 37 q3 -5 7 -2" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.2" stroke-linecap="round"></path>`;
-  if (hs === 'buzz') return `<path d="M48 59 Q46 27 80 26 Q114 27 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path>`;
+  if (hs === 'dreads') return `<path d="M47 60 Q45 24 80 23 Q115 24 113 60 Q104 45 80 44 Q56 45 47 60 Z" fill="${c}" ${ln}></path>`
+    + `<path d="M62 46 Q59 34 66 26 M73 44 Q71 32 75 24.5 M87 44 Q89 32 85 24.5 M98 46 Q101 34 94 26" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"></path>`
+    + `<path d="M66 30 Q70 27 74 27" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.5" stroke-linecap="round"></path>`;
+  if (hs === 'buzz') return `<path d="M48 59 Q46 27 80 26 Q114 27 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path>`
+    + `<path d="M56 46 Q66 38 80 37 Q94 38 104 46" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"></path><path d="M62 33 Q71 29 80 29 Q89 29 98 33" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3" stroke-linecap="round"></path>`;
   if (hs === 'bun') return (hat ? '' : `<circle cx="80" cy="15" r="12" fill="${c}" ${ln}></circle><path d="M70 22 Q80 27 90 22" fill="none" stroke="#FF6FAE" stroke-width="3.5" stroke-linecap="round"></path>`)
     + `<path d="M48 59 Q45 24 80 23 Q115 24 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path><path d="M66 31 Q80 26 94 31" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
   if (hs === 'braids') return `<path d="M48 59 Q44 24 80 23 Q116 24 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path>` + shine;
@@ -2183,7 +2193,7 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="6" stroke-linejoin="round"`;
   const sk = f.skin ? `fill="${f.skin}"` : 'class="skin"';
   let o = `<svg width="${w}" height="${h}" viewBox="${vb}" aria-hidden="true">
-    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>${MINI_HEAD(hairBack(f.hs || (f.long ? 'long' : 'short'), f.hair || '#231A17', ln))}
+    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>${MINI_HEAD(hairBack(f.hs || (f.long ? 'long' : 'buzz'), f.hair || '#231A17', ln))}
     <path d="M58 146 H80 V193 H51 Q50 168 58 146 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path><path d="M80 146 H102 Q110 168 109 193 H80 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path>
     <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
     ${f.style === 'puffer' || f.puffy
@@ -2199,7 +2209,7 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
     : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${f.trim}" stroke-width="9" stroke-linecap="round"></path>`;
   o += topEmblem(f);
   o += `${f.phones ? '' : ears(sk, ln, false)}<ellipse ${sk} cx="80" cy="60" rx="35" ry="36" ${ln}></ellipse>
-    ${MINI_HEAD(faceDetail(f.fd, f.hair || '#231A17') + hairTop(f.hs || (f.long ? 'long' : 'short'), f.hair || '#231A17', ln, !!(f.hat || f.beanie)))}`;
+    ${MINI_HEAD(faceDetail(f.fd, f.hair || '#231A17') + hairTop(f.hs || (f.long ? 'long' : 'buzz'), f.hair || '#231A17', ln, !!(f.hat || f.beanie)))}`;
   if (f.neck && neckExtra(f.neck, false) !== null) o += neckExtra(f.neck, false);
   else if (f.neck) o += `<path d="M66 99 Q80 124 94 99" fill="none" stroke="${f.neck.color}" stroke-width="6" stroke-linecap="round"></path>` + (f.neck.charm ? `<circle cx="80" cy="124" r="8" fill="${f.neck.charm}" ${ln}></circle>` : '');
   const beanie = c => `<path d="M41 53 Q41 9 80 9 Q119 9 119 53 Z" fill="${c}" ${ln}></path><rect x="38" y="41" width="84" height="15" rx="7.5" fill="${c}" ${ln}></rect>
@@ -2235,7 +2245,7 @@ function crewFigure(id) {
   const rnd = () => { h = (h + 0x6D2B79F5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   const pick = arr => arr[Math.floor(rnd() * arr.length)];
   const body = pick(CREW_SHIRTS), skin = pick(SKINS), hair = pick(CREW_HAIR), pants = pick(CREW_PANTS), hatRoll = rnd(), hatColor = pick(CREW_BEANIES), long = rnd() < 0.45;
-  const hs = pick(long ? ['long', 'bun', 'braids'] : ['short', 'curly', 'buzz']), fdRoll = rnd(), fd = fdRoll < 0.22 ? pick(long ? ['freckles', 'mark', 'blush'] : ['stubble', 'beard', 'mustache']) : null;
+  const hs = pick(long ? ['long', 'bun', 'braids'] : ['buzz', 'curly', 'dreads']), fdRoll = rnd(), fd = fdRoll < 0.22 ? pick(long ? ['freckles', 'mark', 'blush'] : ['stubble', 'beard', 'mustache']) : null;
   return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants, long, hs, fd,
     beanie: hatRoll >= 1 / 3 && hatRoll < 2 / 3 ? hatColor : null,
     hat: hatRoll >= 2 / 3 ? { style: 'cap', color: hatColor, brim: hatColor } : null }, 62, 83);
@@ -2949,12 +2959,13 @@ const _unusedSwatch = it => { const c = it.look.body || it.look.color; const tr 
 const hms = ms => { const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); };
 // the two looks, shown as head icons only (no labels): 'a' short hair, 'b' long hair with lashes
 const headIcon = (o, size = 52) => miniFigure({ ...itemById('basic').look, phones: S.phones !== 'none', long: S.bt === 'b', hs: (S.hs || defaultHair(S.bt)), hair: S.hc || HAIR_COLORS[0], fd: S.fd || null, ...o }, size, size, '26 4 108 108');
-const hairPick = () => { const mine = S.bt === 'b' ? ['long', 'bun', 'braids', 'short', 'curly', 'buzz'] : HAIRS, cur = S.hs || defaultHair(S.bt);
+const hairPick = () => { const mine = S.bt === 'b' ? ['long', 'bun', 'braids', 'buzz', 'curly', 'dreads'] : HAIRS, cur = S.hs || defaultHair(S.bt);
   return `<div class="picks" style="--n:6">${mine.map(h => `<button class="pk ${cur === h ? 'on' : ''}" data-hs="${h}" aria-label="Hair ${h}">${headIcon({ hs: h })}</button>`).join('')}</div>`; };
 const facePick = () => `<div class="picks" style="--n:7">${[null, ...FACES].map(fd => `<button class="pk ${(S.fd || null) === fd ? 'on' : ''}" data-fd="${fd || ''}" aria-label="Face ${fd || 'none'}">${headIcon({ fd })}</button>`).join('')}</div>`;
 const lookPick = () => `<div class="lookpick">${['a', 'b'].map(bt => `<button class="lp ${(S.bt || 'a') === bt ? 'on' : ''}" data-bt="${bt}" aria-label="Look ${bt === 'a' ? 1 : 2}">${headIcon({ long: bt === 'b', hs: defaultHair(bt), fd: null }, 80)}</button>`).join('')}</div>`;
 function applyLook() {
   const oldHair = { '#5A3A22': '#6E4A2E', '#C98F3E': '#E6C36A' }; if (oldHair[S.hc]) S.hc = oldHair[S.hc];
+  if (S.hs === 'short') S.hs = 'buzz';
   document.documentElement.style.setProperty('--skin', S.skin);
   document.documentElement.style.setProperty('--phones', S.phones === 'none' ? PHONES[0] : S.phones);
   artist.innerHTML = smallArtist();
