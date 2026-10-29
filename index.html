@@ -294,7 +294,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .item.locked { border: 3px dashed #9C95BC; background: #DCD7EC; }
 .item.locked .art { opacity: .5; }
 .item .eq { position: absolute; top: 4px; left: 4px; z-index: 1; background: var(--deep); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
-.nameinput { height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
+.nameinput { box-sizing: border-box; height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
 .nameinput:focus { outline: none; border-color: var(--gem); }
 .loc-title { position: absolute; left: 50%; top: 34%; z-index: 9; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px;
   pointer-events: none; white-space: nowrap; animation: loctitle 2.8s ease-in-out forwards; }
@@ -336,13 +336,19 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .item.album:not(.locked)::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.8) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4s ease-in-out infinite; }
 .sw.on { box-shadow: inset 0 0 0 3px var(--panel), 0 0 12px 2px rgba(255,201,74,.75); border-color: var(--gem); }
 .tab-hype { position: relative; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; color: var(--accent); font-size: 11px; font-weight: 700; }
-.tab-hype .orb { position: absolute; top: -34px; width: 58px; height: 58px; z-index: 0; border-radius: 50%; background: var(--accent); color: var(--deep); border: 4px solid var(--ink);
-  display: grid; place-items: center; overflow: hidden; box-shadow: 0 4px 0 #B84778, 0 0 0 0 rgba(255,111,174,.6); animation: hypecall 2.2s ease-in-out infinite; }
-.tab-hype:active .orb { transform: translateY(2px); box-shadow: 0 2px 0 #B84778; }
-.tab-hype.active .orb { background: var(--gem); box-shadow: 0 4px 0 #B8860B; animation: none; }
+.tab-hype .orb { position: absolute; top: -30px; width: 60px; height: 60px; z-index: 0; border-radius: 18px; color: var(--deep); border: 4px solid var(--ink); box-sizing: border-box; isolation: isolate;
+  background: linear-gradient(160deg, #FF9CCB 0%, #FF4F9A 100%); display: grid; place-items: center; box-shadow: 0 4px 0 #B84778; animation: hypewiggle 6s ease-in-out infinite; animation-delay: -3s; }
+.tab-hype .orb::before { content: ""; position: absolute; inset: -10px; border-radius: 26px; z-index: -1; background: radial-gradient(circle, rgba(255,111,174,.75) 0%, rgba(255,111,174,0) 70%); animation: pulseglow 2.4s ease-in-out infinite; }
+.tab-hype .orb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 0 rgba(20,18,42,.25)); }
+.tab-hype .orb .spk { width: 10px; height: 10px; top: -6px; right: -6px; z-index: 2; }
+.tab-hype .orb .spk + .spk { top: auto; bottom: -4px; left: -7px; right: auto; animation-delay: -1.2s; width: 8px; height: 8px; }
+@keyframes hypewiggle { 0%, 90%, 100% { transform: rotate(0); } 92.5% { transform: rotate(-5deg) scale(1.05); } 95% { transform: rotate(5deg) scale(1.05); } 97.5% { transform: rotate(-2deg); } }
+.tab-hype:active .orb { transform: translateY(2px); box-shadow: 0 2px 0 #B84778; animation: none; }
+.tab-hype.active .orb { background: linear-gradient(160deg, #FFE27A 0%, #FFB938 100%); box-shadow: 0 4px 0 #B8860B; animation: none; }
+.tab-hype.active .orb::before { background: radial-gradient(circle, rgba(255,226,122,.75) 0%, rgba(255,226,122,0) 70%); }
 .tab-hype.active { color: var(--gem); }
 .tab-hype .hl { position: relative; z-index: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
-@keyframes hypecall { 50% { box-shadow: 0 4px 0 #B84778, 0 0 0 10px rgba(255,111,174,0); } }
+
 .pips { display: flex; gap: 4px; margin-top: 4px; }
 .pips i { width: 18px; height: 6px; border-radius: 3px; background: var(--line); }
 .pips i.on { background: var(--accent); }
@@ -401,13 +407,14 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .crow .ca small { font: 700 10px var(--body); color: var(--muted); }
 .cnote { text-align: center; font-size: 13px !important; }
 .welcome-hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding-top: 4px; }
-.welcome-hero h2 { font-size: 22px !important; }
+.welcome-hero h2 { font-family: var(--display) !important; font-weight: 400 !important; font-size: 21px !important; line-height: 1.2; }
 .wh-ic { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle, rgba(255,201,74,.35) 0%, rgba(255,201,74,0) 70%); }
 .csel.wide { max-width: none; width: 100%; height: 50px; border-radius: 14px; font-size: 16px; padding: 0 12px; }
-.dice { width: 50px; padding: 0; display: grid; place-items: center; height: 50px; }
+.addrow .hire { height: 50px; border-radius: 14px; min-width: 64px; }
+.addrow .hire.dice { width: 50px; min-width: 50px; padding: 0; display: grid; place-items: center; }
 .cerr { display: flex; align-items: center; gap: 8px; justify-content: space-between; background: rgba(240,69,58,.18); border: 2px solid #F0453A; border-radius: 12px; padding: 8px 8px 8px 12px; font-size: 12px !important; color: var(--text) !important; }
 .fcode { font: 400 17px var(--display); letter-spacing: .08em; color: var(--gem); }
-.addrow { display: flex; gap: 8px; } .addrow .nameinput { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: .1em; }
+.addrow { display: flex; gap: 8px; align-items: center; } .addrow .nameinput { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: .1em; }
 .addf { display: flex; flex-direction: column; gap: 6px; }
 .csel { max-width: 50%; height: 40px; border-radius: 10px; background: var(--panel); color: var(--text); border: 2px solid var(--line); font: 600 14px var(--body); padding: 0 8px; }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
@@ -478,7 +485,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -578,7 +585,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
     <button class="tab" data-tab="style">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg>Style<span class="bang" id="styleBang" hidden>!</span></button>
     <button class="tab-hype" id="hypeBtn" aria-label="2x Hype">
-      <span class="orb"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
+      <span class="orb"><i class="spk"></i><i class="spk"></i><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
       <span class="hl" id="hypeLbl">2x Hype</span>
     </button>
     <button class="tab shop" data-tab="shop">
@@ -1060,13 +1067,13 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 49, CONTACT = 'elicosand@gmail.com';
+const BUILD = 51, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
   { text: 'Keep making beats. Save $80 and tap the Vocal Booth to unlock it.', target: () => els.booth && els.booth.b, done: () => S.stats.unlocks >= 1 },
   { text: 'Hire crew so stations keep earning without you. Open the Crew tab.', target: () => document.querySelector('[data-tab="crew"]'), done: () => S.stats.hires >= 1 },
-  { text: 'Tap 2x Hype and watch a quick ad to double everything you earn for 20 minutes.', target: () => $('hypeBtn'), done: () => S.stats.hypes >= 1 },
+  { text: 'Tap 2x Hype and watch a quick ad to double everything you earn for 20 minutes.', target: () => $('hypeBtn').querySelector('.orb'), done: () => S.stats.hypes >= 1 },
   { text: "Your crew works even while you're away. Earn $600K to move up, and track it in Career.", target: () => document.querySelector('[data-tab="career"]'), done: () => false, timeout: 8000 },
 ];
 let tutShownAt = 0;
@@ -1086,7 +1093,9 @@ function updateTut() {
   const cy = r.top + r.height / 2;
   // keep the tip away from what it points at: targets high in the room get the tip low, and vice versa
   const low = cy < room.top + room.height * 0.55 || cy > room.bottom;
-  tip.style.top = (low ? room.bottom - tip.offsetHeight - 12 : room.top + 56) - app.top + 'px';
+  // targets in the tab bar (like Hype, which pokes up into the room) keep the tip above them
+  const floor = cy > room.bottom - 60 ? Math.min(room.bottom, r.top - 10) : room.bottom;
+  tip.style.top = (low ? floor - tip.offsetHeight - 12 : room.top + 56) - app.top + 'px';
   // the glow takes the exact shape of the target, so it is always centered on it
   // glows on room stations live inside the room, under the corner buttons and clipped at its edges;
   // glows on tabs and the upgrade button sit on top of the app
@@ -1098,6 +1107,7 @@ function updateTut() {
   ptr.style.top = (r.top - base.top - pad) + 'px';
   ptr.style.width = (r.width + pad * 2) + 'px';
   ptr.style.height = (r.height + pad * 2) + 'px';
+  ptr.style.borderRadius = (Math.max(10, parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0) + pad) + 'px';
 }
 const GOALS = [
   { id: 'up10', text: 'Upgrade stations 10 times', target: 10, val: () => S.stats.upgrades, gems: 5 },
@@ -2536,11 +2546,6 @@ function openTab(tab) {
       <div class="sec"><h3>Playtest feedback</h3>
         <p>Help shape the game: 7 quick questions.</p>
         <button class="cta" data-tab-go="feedback">Give feedback</button>
-      </div>
-      <div class="sec"><h3>Email the developer</h3>
-        <p>Found a bug or have an idea? Email the developer:</p>
-        <div class="row"><span class="rt"><span class="email" id="fbEmail">${CONTACT}</span></span><button class="hire" data-copy-email>Copy</button></div>
-        <a class="ghost" href="mailto:${CONTACT}?subject=Studio%20Hustle%20feedback%20(Build%20${BUILD})" style="display:grid;place-items:center;text-decoration:none;color:var(--text)">Open email app</a>
       </div>
       ${TEST ? `<div class="sec testsec"><h3>Test mode <small class="h3note">separate save</small></h3>
         <p>Your real career is safe. Nothing here posts to The Charts or play tracking.</p>
