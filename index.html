@@ -133,6 +133,25 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .lockspot.can .price { background: var(--cash); }
 .lockspot.can { border-color: var(--cash); }
 
+/* fans / paparazzi who wander through the room: tap them for a bonus */
+.fan { position: absolute; width: 62px; height: 104px; z-index: 7; padding: 0; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.fan .fig { position: absolute; left: 0; bottom: 0; width: 62px; height: 83px; animation: fanstep .32s ease-in-out infinite alternate; }
+.fan.left .fig { transform: scaleX(-1); }
+.fan .cam { position: absolute; left: 38px; top: 14px; width: 22px; height: 18px; }
+.fan .flash { position: absolute; left: 44px; top: 4px; width: 30px; height: 30px; margin: -6px; border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, #fff 0%, rgba(255,255,255,.85) 25%, rgba(255,255,255,0) 70%); animation: camflash 1.3s linear infinite; animation-delay: var(--fd, 0s); }
+.fan .bub { position: absolute; left: 50%; top: 0; transform: translateX(-50%); display: grid; place-items: center; width: 30px; height: 26px; border-radius: 10px;
+  background: #fff; color: var(--deep); font-family: var(--display); font-size: 15px; box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(139,240,160,.95); animation: bubpulse 1s ease-in-out infinite; }
+.fan .bub::after { content: ""; position: absolute; left: 50%; bottom: -5px; margin-left: -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: #fff; }
+.fan .bub.gem { box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(255,201,74,.95); }
+.fan.got { pointer-events: none; animation: fanhop .55s ease-out forwards; }
+.fan.got .bub { animation: none; transform: translateX(-50%) scale(1.25); opacity: 0; transition: transform .25s, opacity .25s; }
+@keyframes fanstep { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-3px) rotate(2deg); } }
+.fan.left .fig { animation-name: fanstepl; }
+@keyframes fanstepl { from { transform: scaleX(-1) translateY(0) rotate(-2deg); } to { transform: scaleX(-1) translateY(-3px) rotate(2deg); } }
+@keyframes camflash { 0%, 80%, 100% { opacity: 0; transform: scale(.4); } 84% { opacity: 1; transform: scale(1.2); } 90% { opacity: .5; transform: scale(1); } }
+@keyframes bubpulse { 50% { transform: translateX(-50%) translateY(-3px); } }
+@keyframes fanhop { 30% { transform: translateY(-14px); } 100% { transform: translateY(-4px); opacity: 0; } }
 .crew { position: absolute; width: 62px; height: 83px; z-index: 5; pointer-events: none; }
 .crew svg { animation: bob .6s ease-in-out infinite alternate; }
 .artist { position: absolute; width: 70px; height: 96px; z-index: 6; transition: left .55s ease, top .55s ease; pointer-events: none; }
@@ -171,17 +190,18 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
 .tab.on { color: var(--accent); }
 .tab.shop { color: var(--gem); }
-.tab .ticon.wt { position: relative; display: grid; place-items: center; width: 38px; height: 30px; border-radius: 10px; color: var(--deep); isolation: isolate; overflow: hidden;
+.tab .ticon.wt { position: relative; display: grid; place-items: center; width: 48px; height: 38px; border-radius: 12px; color: var(--deep); isolation: isolate; overflow: hidden;
   background: linear-gradient(160deg, #FFFFFF 0%, #DCD6EE 100%); box-shadow: 0 2px 0 rgba(0,0,0,.28); }
-.tab .ticon.wt::after { content: ""; position: absolute; inset: 0; border-radius: 10px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.9) 50%, transparent 65%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; animation-delay: var(--shine-at, 0s); pointer-events: none; }
+.tab .ticon.wt::after { content: ""; position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.9) 50%, transparent 65%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; animation-delay: var(--shine-at, 0s); pointer-events: none; }
 .tab .ticon.wt svg { position: relative; z-index: 1; }
 .tab.on .ticon.wt { background: linear-gradient(160deg, #FFB3D4 0%, #FF6FAE 100%); box-shadow: 0 2px 0 #B84778; }
 .tab .bang { z-index: 2; }
 
-.tab.shop .ticon { position: relative; display: grid; place-items: center; width: 38px; height: 30px; border-radius: 10px; color: var(--deep); isolation: isolate;
+.tab.shop .ticon { position: relative; display: grid; place-items: center; width: 48px; height: 38px; border-radius: 12px; color: var(--deep); isolation: isolate;
   background: linear-gradient(160deg, #FFE27A 0%, #FFB938 100%); animation: shopwiggle 6s ease-in-out infinite; }
 .tab.shop .ticon::before { inset: -5px !important; border-radius: 14px !important; }
-.tab.shop .ticon::after { border-radius: 10px !important; }
+.tab.shop .ticon::after { border-radius: 12px !important; }
+.tab .ticon svg { width: 24px; height: 24px; }
 .tab.shop .spk { width: 9px; height: 9px; }
 .mult { position: absolute; z-index: 6; left: 50%; top: calc(100% + 5px); transform: translateX(-50%); display: block; padding: 0; background: none; font: 400 13px/1 var(--display); white-space: nowrap;
   color: var(--gem); text-shadow: 0 2px 0 var(--deep), 0 0 6px rgba(20,18,42,.6); }
@@ -213,7 +233,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
   font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; font-variant-numeric: tabular-nums; }
 .bang { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #F0453A; color: #fff; border: 2px solid var(--text);
   font: 700 13px/16px var(--body); text-align: center; box-sizing: border-box; }
-.tab .bang { top: 0; right: 50%; margin-right: -24px; }
+.tab .bang { top: 0; right: 50%; margin-right: -30px; }
 .pop { position: absolute; z-index: 12; left: 12px; width: 222px; max-width: calc(100% - 24px); box-sizing: border-box; background: var(--text); color: var(--deep);
   border-radius: 18px; padding: 10px 12px 12px; box-shadow: 0 10px 30px rgba(10,8,30,.45); display: flex; flex-direction: column; gap: 7px; animation: popin .16s ease-out; }
 @keyframes popin { from { transform: scale(.94); opacity: 0; } }
@@ -436,7 +456,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .addrow { display: flex; gap: 8px; align-items: center; } .addrow .nameinput { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: .1em; }
 .addf { display: flex; flex-direction: column; gap: 6px; }
 .csel { max-width: 50%; height: 40px; border-radius: 10px; background: var(--panel); color: var(--text); border: 2px solid var(--line); font: 600 14px var(--body); padding: 0 8px; }
-.tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -30px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
+.tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -36px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
 
 /* Sheets */
@@ -505,7 +525,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -1080,7 +1100,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 64, CONTACT = 'elicosand@gmail.com';
+const BUILD = 65, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1484,6 +1504,7 @@ function buildRoom() {
   wrap.dataset.plank = loc.plank; wrap.dataset.wall = loc.wall; wrap.dataset.tiles = loc.tiles ? '1' : ''; fit();
   if (shownLoc !== S.loc) { shownLoc = S.loc; showLocTitle(); }
   placeStations(loc);
+  if (fanEl) { fanEl.remove(); fanEl = null; }
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
     return `<button class="station" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
@@ -2029,6 +2050,51 @@ function crewFigure(id) {
   return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants,
     beanie: hatRoll >= 1 / 3 && hatRoll < 2 / 3 ? hatColor : null,
     hat: hatRoll >= 2 / 3 ? { style: 'cap', color: hatColor, brim: hatColor } : null }, 62, 83);
+}
+// ---------- fans & paparazzi ----------
+// every 30-90s of play someone walks through the room snapping pictures; tap them for a little bonus.
+// The bubble over their head shows what they're carrying: cash (most of the time) or a few gems (rare, capped per day).
+const FAN_MIN = 30, FAN_MAX = 90, FAN_WALK = 11000, FAN_CASH_SECS = 60, FAN_GEMS = 3, FAN_GEM_CAP = 15, FAN_GEM_ODDS = 0.12;
+let fanAcc = 0, fanNext = FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN), fanEl = null;
+const CAM_SVG = `<svg class="cam" viewBox="0 0 22 18" aria-hidden="true"><rect x="1" y="4" width="20" height="13" rx="3" fill="#2B2742" stroke="#14122A" stroke-width="1.5"></rect><rect x="6" y="1" width="8" height="4" rx="1.5" fill="#2B2742" stroke="#14122A" stroke-width="1.5"></rect><circle cx="11" cy="10.5" r="4.2" fill="#6E7BBF" stroke="#14122A" stroke-width="1.5"></circle><circle cx="12.3" cy="9.3" r="1.3" fill="#fff" opacity=".8"></circle><rect x="16" y="6" width="3" height="2" rx=".8" fill="#FFE27A"></rect></svg>`;
+const GEM_MINI = `<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z" fill="#FFB938" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M2 9h20M9 3l3 6 3-6M12 9v12" fill="none" stroke="#14122A" stroke-width="1.4" stroke-opacity=".5"></path></svg>`;
+function fanGemsToday() { const d = new Date().toDateString(); if (!S.fanDay || S.fanDay.d !== d) S.fanDay = { d, gems: 0 }; return S.fanDay; }
+function fanTick(dt) {
+  if (fanEl || document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
+  fanAcc += dt;
+  if (fanAcc < fanNext) return;
+  fanAcc = 0; fanNext = FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN);
+  spawnFan();
+}
+function spawnFan() {
+  const left = Math.random() < 0.5, gem = fanGemsToday().gems < FAN_GEM_CAP && Math.random() < FAN_GEM_ODDS;
+  const el = document.createElement('button');
+  el.className = 'fan' + (left ? ' left' : ''); el.setAttribute('aria-label', 'A fan is taking pictures: tap for a bonus');
+  el.dataset.gem = gem ? '1' : '';
+  el.innerHTML = `<span class="bub${gem ? ' gem' : ''}">${gem ? GEM_MINI : '$'}</span>
+    <div class="fig">${crewFigure('fan' + Math.random())}${CAM_SVG}<i class="flash" style="--fd:${(Math.random() * 1.2).toFixed(2)}s"></i></div>`;
+  const y = rows().mid - 92, from = left ? 400 : -70, to = left ? -70 : 400;
+  el.style.left = from + 'px'; el.style.top = y + 'px';
+  stage.appendChild(el); fanEl = el;
+  const walk = el.animate([{ left: from + 'px' }, { left: to + 'px' }], { duration: FAN_WALK, easing: 'linear', fill: 'forwards' });
+  walk.onfinish = () => { if (el.classList.contains('got')) return; el.remove(); if (fanEl === el) fanEl = null; };
+  el.addEventListener('click', e => { e.stopPropagation(); tapFan(el, walk); });
+  if (!S.fanHint) { S.fanHint = true; toast('A fan showed up! Tap them for a bonus'); }
+}
+function tapFan(el, walk) {
+  if (el.classList.contains('got')) return;
+  walk.pause(); el.classList.add('got');
+  let text;
+  if (el.dataset.gem) { S.gems += FAN_GEMS; fanGemsToday().gems += FAN_GEMS; text = '+' + FAN_GEMS + ' gems'; }
+  else { const v = Math.max(50, skipValue(FAN_CASH_SECS)); earn(v); text = '+' + fmt(v); }
+  S.stats.fans = (S.stats.fans || 0) + 1;
+  sfx('reward'); track('fan-tap');
+  const f = document.createElement('span'); f.className = 'floater'; f.textContent = text;
+  if (el.dataset.gem) f.style.color = 'var(--gem)';
+  f.style.left = (parseFloat(getComputedStyle(el).left) + 31) + 'px'; f.style.top = (parseFloat(el.style.top) + 4) + 'px';
+  stage.appendChild(f); setTimeout(() => f.remove(), 1000);
+  setTimeout(() => { el.remove(); if (fanEl === el) fanEl = null; }, 600);
+  save(); render();
 }
 function bigArtist(eq = S.equip) {
   const t = lookOf(eq, 'top') || itemById('basic').look, hat = lookOf(eq, 'hat'), neck = lookOf(eq, 'neck'), face = lookOf(eq, 'face');
@@ -2813,6 +2879,7 @@ function tick(t) {
     }
     els[st.id].bar.style.width = (Math.min(1, S.prog[st.id]) * 100) + '%';
   });
+  fanTick(dt);
   acc += realDt; saveAcc += realDt; S.stats.playSec += dt;
   if (acc > 0.1) { render(); acc = 0; }
   if (saveAcc > 5) { save(); saveAcc = 0; }
