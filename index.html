@@ -344,6 +344,11 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .nameinput { box-sizing: border-box; height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
 .nameinput:focus { outline: none; border-color: var(--gem); }
 .lookpick { display: flex; gap: 12px; }
+.picks { display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); gap: 6px; }
+.picks .pk { display: grid; place-items: center; aspect-ratio: 1; border-radius: 14px; background: var(--panel-2); border: 3px solid transparent; overflow: hidden; }
+.picks .pk.on { border-color: var(--gem); background: #4E4590; }
+.picks .pk svg { width: 100%; height: auto; display: block; }
+.sw.none { background: var(--panel-2) !important; position: relative; } .sw.none::after { content: ""; position: absolute; left: 18%; right: 18%; top: 50%; height: 3px; margin-top: -1.5px; background: var(--muted); transform: rotate(-45deg); border-radius: 2px; }
 .lookpick .lp { flex: 1; display: grid; place-items: center; height: 96px; border-radius: 16px; background: var(--panel-2); border: 3px solid transparent; }
 .lookpick .lp.on { border-color: var(--gem); background: #4E4590; }
 .loc-title { position: absolute; left: 50%; top: 34%; z-index: 9; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -1149,7 +1154,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 77, CONTACT = 'elicosand@gmail.com';
+const BUILD = 78, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1967,12 +1972,17 @@ $('scrim').addEventListener('click', e => {
     it2.parentNode.querySelectorAll('.fbo').forEach(b => b.classList.toggle('on', b === it2)); toast('Thanks! That helps a lot'); return; }
   const pay = e.target.closest('[data-pay]');
   if (pay) { grant(pay.dataset.pay); return openTab('shop'); }
+  const hp = e.target.closest('[data-hs],[data-hc],[data-fd]');
+  if (hp) { if (hp.dataset.hs && HAIRS.includes(hp.dataset.hs)) S.hs = hp.dataset.hs; if (hp.dataset.hc && HAIR_COLORS.includes(hp.dataset.hc)) S.hc = hp.dataset.hc;
+    if ('fd' in hp.dataset) S.fd = FACES.includes(hp.dataset.fd) ? hp.dataset.fd : null;
+    applyLook(); save(); sfx('tap'); if (S.onboarded) syncChart(true); return openTab('style'); }
   const lp = e.target.closest('[data-bt]');
-  if (lp) { S.bt = lp.dataset.bt === 'b' ? 'b' : 'a'; applyLook(); save(); sfx('tap'); if (S.onboarded) syncChart(true);
+  // switching look also switches the hair, unless you'd already picked a different style
+  if (lp) { const nb = lp.dataset.bt === 'b' ? 'b' : 'a'; if (!S.hs || S.hs === defaultHair(S.bt)) S.hs = defaultHair(nb); S.bt = nb; applyLook(); save(); sfx('tap'); if (S.onboarded) syncChart(true);
     if (sheetKey === 'welcome') { lp.parentElement.querySelectorAll('.lp').forEach(b => b.classList.toggle('on', b === lp)); return; }
     return openTab('style'); }
   const sw = e.target.closest('[data-skin],[data-phones]');
-  if (sw) { if (sw.dataset.skin) S.skin = sw.dataset.skin; if (sw.dataset.phones) S.phones = sw.dataset.phones; applyLook(); save(); openTab('style'); return; }
+  if (sw) { if (sw.dataset.skin) S.skin = sw.dataset.skin; if (sw.dataset.phones) S.phones = sw.dataset.phones; applyLook(); save(); if (S.onboarded) syncChart(true); openTab('style'); return; }
   if (e.target.closest('[data-move-ask]')) return openTab('move-confirm');
   if (e.target.closest('[data-move]')) return moveUp();
   if (e.target.closest('[data-album-ask]')) return openTab('album-confirm');
@@ -2110,6 +2120,38 @@ function faceExtra(fc, eyes) {
 }
 // Simple front-facing figure shared by the in-room artist and the crew.
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
+// ---------- hair and face details (drawn in the big figure's coordinates; the small figure scales them to its head) ----------
+const HAIRS = ['short', 'curly', 'buzz', 'long', 'bun', 'braids'];      // first three lead for look 1, last three for look 2; anyone can pick any
+const HAIR_COLORS = ['#231A17', '#5A3A22', '#C98F3E', '#A8442A', '#FF8FC0', '#E8E2F4'];
+const FACES = ['stubble', 'beard', 'mustache', 'freckles', 'mark', 'blush'];
+const defaultHair = bt => bt === 'b' ? 'long' : 'short';
+const shine = `<path d="M62 33 Q72 28 84 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
+function hairBack(hs, c, ln) {
+  if (hs === 'long') return `<path d="M47 56 Q40 100 52 118 Q80 124 108 118 Q120 100 113 56 Z" fill="${c}" ${ln}></path>`;
+  if (hs === 'braids') return [49, 111].map(x => [76, 86, 96, 106].map(y => `<ellipse cx="${x}" cy="${y}" rx="6.5" ry="5.6" fill="${c}" ${ln}></ellipse>`).join('')
+    + `<rect x="${x - 4}" y="111" width="8" height="4" rx="2" fill="#FF6FAE" ${ln}></rect><path d="M${x - 3} 115 L${x} 122 L${x + 3} 115 Z" fill="${c}" ${ln}></path>`).join('');
+  return '';
+}
+function hairTop(hs, c, ln, hat) {
+  if (hs === 'curly') return [[50, 46, 9], [56, 35, 10], [67, 27, 10], [80, 24, 10.5], [93, 27, 10], [104, 35, 10], [110, 46, 9]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" ${ln}></circle>`).join('')
+    + `<path d="M45 58 Q44 34 80 32 Q116 34 115 58 Q102 46 80 46 Q58 46 45 58 Z" fill="${c}"></path><path d="M47 58 Q58 47 80 47 Q102 47 113 58" fill="none" ${ln}></path>`
+    + `<path d="M60 30 Q64 27 68 29 M84 26 Q88 23 92 26" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.5" stroke-linecap="round"></path>`;
+  if (hs === 'buzz') return `<path d="M48 56 Q46 27 80 26 Q114 27 112 56 Q104 41 80 40 Q56 41 48 56 Z" fill="${c}" ${ln}></path>`;
+  if (hs === 'bun') return (hat ? '' : `<circle cx="80" cy="15" r="12" fill="${c}" ${ln}></circle><path d="M70 22 Q80 27 90 22" fill="none" stroke="#FF6FAE" stroke-width="3.5" stroke-linecap="round"></path>`)
+    + `<path d="M47 57 Q45 24 80 23 Q115 24 113 57 Q101 40 80 40 Q59 40 47 57 Z" fill="${c}" ${ln}></path><path d="M66 31 Q80 26 94 31" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
+  if (hs === 'braids') return `<path d="M47 59 Q44 24 80 23 Q116 24 113 59 Q101 42 80 42 Q59 42 47 59 Z" fill="${c}" ${ln}></path>` + shine;
+  return `<path d="M47 60 Q43 24 80 23 Q117 24 113 60 Q108 44 96 41 Q90 49 78 45 Q62 42 47 60 Z" fill="${c}" ${ln}></path>` + shine;   // short and long share the side-swept top
+}
+function faceDetail(fd, c) {
+  if (fd === 'stubble') return `<path d="M50 72 Q52 96 80 97 Q108 96 110 72 Q104 86 80 88 Q56 86 50 72 Z" fill="${c}" opacity=".28"></path>`;
+  if (fd === 'beard') return `<path d="M49 70 Q50 98 80 99 Q110 98 111 70 Q105 84 92 86 Q86 82 80 84 Q74 82 68 86 Q55 84 49 70 Z" fill="${c}" stroke="#1B1830" stroke-width="2.5" stroke-linejoin="round"></path>`;
+  if (fd === 'mustache') return `<path d="M68.5 85.2 Q73 81 80 82.6 Q87 81 91.5 85.2 Q86.5 87.6 80 86.4 Q73.5 87.6 68.5 85.2 Z" fill="${c}" stroke="#1B1830" stroke-width="1.4" stroke-linejoin="round"></path>`;
+  if (fd === 'freckles') return [[58, 76], [63, 79], [61, 73], [66, 75], [94, 75], [99, 73], [97, 79], [102, 76]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.05" fill="#9A5233" opacity=".42"></circle>`).join('');
+  if (fd === 'mark') return `<circle cx="97" cy="83" r="1.7" fill="#1B1830"></circle>`;
+  if (fd === 'blush') return `<ellipse cx="61" cy="77" rx="7.5" ry="4.2" fill="#FF6F8E" opacity=".55"></ellipse><ellipse cx="99" cy="77" rx="7.5" ry="4.2" fill="#FF6F8E" opacity=".55"></ellipse>`;
+  return '';
+}
+const MINI_HEAD = s => `<g transform="translate(80 60) scale(1.06) translate(-80 -60)">${s}</g>`;
 // look 'b': long hair that falls behind the shoulders (hats and clothes fit exactly the same), lashes and an extra eye sparkle
 const backHair = (c, ln, big) => big
   ? `<path d="M47 56 Q40 100 52 118 Q80 124 108 118 Q120 100 113 56 Z" fill="${c}" ${ln}></path>`
@@ -2121,7 +2163,7 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="6" stroke-linejoin="round"`;
   const sk = f.skin ? `fill="${f.skin}"` : 'class="skin"';
   let o = `<svg width="${w}" height="${h}" viewBox="${vb}" aria-hidden="true">
-    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>${f.long ? backHair(f.hair || '#231A17', ln, false) : ''}
+    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>${MINI_HEAD(hairBack(f.hs || (f.long ? 'long' : 'short'), f.hair || '#231A17', ln))}
     <path d="M58 146 H80 V193 H51 Q50 168 58 146 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path><path d="M80 146 H102 Q110 168 109 193 H80 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path>
     <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
     ${f.style === 'puffer' || f.puffy
@@ -2136,8 +2178,8 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
     ? `<path d="M80 104 V158" stroke="${f.trim}" stroke-width="5"></path><path d="M64 99 L80 114 L72 98 Z M96 99 L80 114 L88 98 Z" fill="${f.trim}"></path>`
     : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${f.trim}" stroke-width="9" stroke-linecap="round"></path>`;
   o += topEmblem(f);
-  o += `<ellipse ${sk} cx="80" cy="60" rx="35" ry="36" ${ln}></ellipse>
-    <path d="M45 60 Q41 22 80 21 Q119 22 115 60 Q109 43 96 40 Q89 49 77 44 Q61 41 45 60 Z" fill="${f.hair || '#231A17'}" ${ln}></path>`;
+  o += `${f.phones ? '' : ears(sk, ln, false)}<ellipse ${sk} cx="80" cy="60" rx="35" ry="36" ${ln}></ellipse>
+    ${MINI_HEAD(faceDetail(f.fd, f.hair || '#231A17') + hairTop(f.hs || (f.long ? 'long' : 'short'), f.hair || '#231A17', ln, !!(f.hat || f.beanie)))}`;
   if (f.neck && neckExtra(f.neck, false) !== null) o += neckExtra(f.neck, false);
   else if (f.neck) o += `<path d="M66 99 Q80 124 94 99" fill="none" stroke="${f.neck.color}" stroke-width="6" stroke-linecap="round"></path>` + (f.neck.charm ? `<circle cx="80" cy="124" r="8" fill="${f.neck.charm}" ${ln}></circle>` : '');
   const beanie = c => `<path d="M41 53 Q41 9 80 9 Q119 9 119 53 Z" fill="${c}" ${ln}></path><rect x="38" y="41" width="84" height="15" rx="7.5" fill="${c}" ${ln}></rect>
@@ -2159,9 +2201,9 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
   else o += miniEyes;
   return o + '</svg>';
 }
-function smallArtist(eq = S.equip, bt = S.bt) {
+function smallArtist(eq = S.equip, bt = S.bt, lk = myLook(bt)) {
   const t = lookOf(eq, 'top') || itemById('basic').look;
-  return miniFigure({ ...t, phones: true, long: bt === 'b', hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
+  return miniFigure({ ...t, phones: lk.ph !== false, long: bt === 'b', hs: lk.hs, hair: lk.hc, fd: lk.fd, hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
 }
 // crew look is random per station but stable (seeded by the station id)
 const CREW_SHIRTS = ['#6FD3FF', '#FFC94A', '#8BF0A0', '#B18CFF', '#FF9E57', '#F4F1EA', '#FF6FAE', '#4F7CFF'];
@@ -2173,7 +2215,8 @@ function crewFigure(id) {
   const rnd = () => { h = (h + 0x6D2B79F5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   const pick = arr => arr[Math.floor(rnd() * arr.length)];
   const body = pick(CREW_SHIRTS), skin = pick(SKINS), hair = pick(CREW_HAIR), pants = pick(CREW_PANTS), hatRoll = rnd(), hatColor = pick(CREW_BEANIES), long = rnd() < 0.45;
-  return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants, long,
+  const hs = pick(long ? ['long', 'bun', 'braids'] : ['short', 'curly', 'buzz']), fdRoll = rnd(), fd = fdRoll < 0.22 ? pick(long ? ['freckles', 'mark', 'blush'] : ['stubble', 'beard', 'mustache']) : null;
+  return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants, long, hs, fd,
     beanie: hatRoll >= 1 / 3 && hatRoll < 2 / 3 ? hatColor : null,
     hat: hatRoll >= 2 / 3 ? { style: 'cap', color: hatColor, brim: hatColor } : null }, 62, 83);
 }
@@ -2223,11 +2266,15 @@ function tapFan(el, walk) {
   setTimeout(() => { el.remove(); if (fanEl === el) fanEl = null; }, 600);
   save(); render();
 }
-function bigArtist(eq = S.equip, bt = S.bt) {
+const myLook = (bt = S.bt) => ({ hs: S.hs || defaultHair(bt), hc: S.hc || HAIR_COLORS[0], fd: S.fd || null, ph: S.phones !== 'none' });
+// ears only show when the headphones are off (the cups normally sit right where they are)
+const ears = (sk, ln, big) => big ? `<ellipse ${sk} cx="47" cy="68" rx="6" ry="8.5" ${ln}></ellipse><ellipse ${sk} cx="113" cy="68" rx="6" ry="8.5" ${ln}></ellipse>`
+  : `<ellipse ${sk} cx="45" cy="68" rx="7.5" ry="10" ${ln}></ellipse><ellipse ${sk} cx="115" cy="68" rx="7.5" ry="10" ${ln}></ellipse>`;
+function bigArtist(eq = S.equip, bt = S.bt, lk = myLook(bt)) {
   const t = lookOf(eq, 'top') || itemById('basic').look, hat = lookOf(eq, 'hat'), neck = lookOf(eq, 'neck'), face = lookOf(eq, 'face');
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   let o = `<svg width="170" height="228" viewBox="0 0 160 214" role="img" aria-label="Your artist, front view">
-    <ellipse cx="80" cy="206" rx="34" ry="5" fill="#000" opacity="0.3"></ellipse>${bt === 'b' ? backHair('#231A17', ln, true) : ''}
+    <ellipse cx="80" cy="206" rx="34" ry="5" fill="#000" opacity="0.3"></ellipse>${hairBack(lk.hs, lk.hc, ln)}
     <path d="M60 148 H80 V197 H54 Q53 172 60 148 Z" fill="#2C2F48" ${ln}></path>
     <path d="M80 148 H100 Q107 172 106 197 H80 Z" fill="#2C2F48" ${ln}></path>
     <path d="M70 170 Q69 182 68 194 M90 170 Q91 182 92 194" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2"></path>
@@ -2249,10 +2296,9 @@ function bigArtist(eq = S.equip, bt = S.bt) {
     : `<path d="M62 103 Q80 91 98 103" fill="none" stroke="${t.trim}" stroke-width="7" stroke-linecap="round"></path><path d="M74 104 V121 M86 104 V121" stroke="${t.trim}" stroke-width="2.5" stroke-linecap="round"></path><circle cx="74" cy="122" r="2" fill="${t.trim}"></circle><circle cx="86" cy="122" r="2" fill="${t.trim}"></circle><path d="M66 134 H94 L91 147 H69 Z" fill="#000" opacity="0.1"></path>`;
   o += topEmblem(t);
   o += `<rect class="skin" x="73" y="84" width="14" height="16" ${ln}></rect>
-    <ellipse class="skin" cx="80" cy="60" rx="33" ry="34" ${ln}></ellipse>
+    ${lk.ph === false ? ears('class="skin"', ln, true) : ''}<ellipse class="skin" cx="80" cy="60" rx="33" ry="34" ${ln}></ellipse>
     <ellipse cx="62" cy="76" rx="6" ry="3.5" fill="#FF8FA3" opacity="0.35"></ellipse><ellipse cx="98" cy="76" rx="6" ry="3.5" fill="#FF8FA3" opacity="0.35"></ellipse>
-    <path d="M47 60 Q43 24 80 23 Q117 24 113 60 Q108 44 96 41 Q90 49 78 45 Q62 42 47 60 Z" fill="#231A17" ${ln}></path>
-    <path d="M62 33 Q72 28 84 29" fill="none" stroke="#4A3A33" stroke-width="3" stroke-linecap="round"></path>`;
+    ${faceDetail(lk.fd, lk.hc)}${hairTop(lk.hs, lk.hc, ln, !!hat)}`;
   if (neck && neckExtra(neck, true) !== null) o += neckExtra(neck, true);
   else if (neck) o += `<path d="M68 99 Q80 122 92 99" fill="none" stroke="${neck.color}" stroke-width="3.5" stroke-linecap="round"></path>` + (neck.charm
     ? `<g transform="translate(80 121)">${[[-4, -4], [4, -4], [-4, 4], [4, 4]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4.6" fill="${neck.charm}" stroke="#1B1830" stroke-width="2"></circle>`).join('')}<circle r="2" fill="#2E8B45"></circle></g>`
@@ -2260,10 +2306,10 @@ function bigArtist(eq = S.equip, bt = S.bt) {
   if (hat && hat.style === 'beanie') o += `<path d="M48 50 Q48 20 80 20 Q112 20 112 50 Z" fill="${hat.color}" ${ln}></path><rect x="46" y="43" width="68" height="12" rx="6" fill="${hat.color}" ${ln}></rect><path d="M56 46 V52 M64 46 V52 M72 46 V52 M80 46 V52 M88 46 V52 M96 46 V52 M104 46 V52" stroke="#000" stroke-opacity=".15" stroke-width="2"></path><circle cx="80" cy="16" r="8" fill="${hat.color}" ${ln}></circle>`;
   if (hat && hat.style === 'bucket') o += `<ellipse cx="80" cy="42" rx="41" ry="8" fill="${hat.color}" ${ln}></ellipse><path d="M55 41 Q56 18 80 18 Q104 18 105 41 Z" fill="${hat.color}" ${ln}></path><path d="M57 34 H103" stroke="#000" stroke-opacity=".15" stroke-width="4"></path>`;
   if (hat && hat.style === 'crown') o += `<polygon points="55,34 60,10 70,25 80,5 90,25 100,10 105,34" fill="${hat.color}" ${ln}></polygon><circle cx="80" cy="22" r="4" fill="#6FD3FF" ${ln}></circle><circle cx="64" cy="27" r="3" fill="#FF6FAE"></circle><circle cx="96" cy="27" r="3" fill="#FF6FAE"></circle>`;
-  const tuck = hat && TUCK.includes(hat.style);
-  if (tuck) o += `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>`;
+  const tuck = hat && TUCK.includes(hat.style), phOn = lk.ph !== false;
+  if (tuck && phOn) o += `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>`;
   if (hat && HATS[hat.style]) o += HATS[hat.style](hat, ln, true);
-  o += (tuck ? '' : `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>`) + `
+  if (phOn) o += (tuck ? '' : `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>`) + `
     <ellipse class="phones" cx="47" cy="68" rx="9" ry="13" ${ln}></ellipse><ellipse class="phones" cx="113" cy="68" rx="9" ry="13" ${ln}></ellipse>
     <ellipse cx="44" cy="68" rx="3" ry="6" fill="#fff" opacity="0.25"></ellipse>`;
   const bigEyes = `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>` + (bt === 'b' ? lashes(K, true) : '');
@@ -2310,7 +2356,7 @@ const rarity = it => RARITY[it.rar] || RARITY.common;
 const RAR_ORDER = ['common', 'rare', 'epic', 'legendary', 'mythic'];
 // a figure wearing just this item, zoomed on the part it changes
 function itemArt(it, size = 70) {
-  const base = itemById('basic').look, f = { body: base.body, trim: base.trim, style: base.style, phones: true, long: S.bt === 'b' };
+  const base = itemById('basic').look, lk = myLook(), f = { body: base.body, trim: base.trim, style: base.style, phones: lk.ph, long: S.bt === 'b', hs: lk.hs, hair: lk.hc, fd: lk.fd };
   if (it.slot === 'top') Object.assign(f, it.look);
   else f[it.slot === 'hat' ? 'hat' : it.slot] = it.look;
   const vb = it.slot === 'top' ? '22 70 116 116' : it.slot === 'neck' ? '22 40 116 116' : '18 -4 124 124';
@@ -2462,7 +2508,7 @@ async function loadChart() {
 const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.bonus > 0).sort((a, b) => b.bonus - a.bonus || (b.album ? 1 : 0) - (a.album ? 1 : 0))[0];
 function myProfile() {
   const b = bestItem(S.owned);
-  return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, bt: S.bt === 'b' ? 'b' : 'a', fast: Math.round(S.stats.fastestAlbum || 0),
+  return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, bt: S.bt === 'b' ? 'b' : 'a', hs: S.hs || null, hc: S.hc || null, fd: S.fd || null, fast: Math.round(S.stats.fastestAlbum || 0),
     founder: !!S.owned.founder, badges: S.badges || [], clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
 }
 // data from other players is untrusted: keep only known items, colors and plain numbers
@@ -2472,7 +2518,7 @@ function cleanProfile(p) {
   const n = (x, max) => Math.max(0, Math.min(max, Math.floor(+x) || 0)), eq = {};
   for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
   const best = itemById(p.best);
-  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, bt: p.bt === 'b' ? 'b' : 'a', skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: [...PHONES, ...Object.values(PHONES_X).map(x => x[1])].includes(p.ph) ? p.ph : PHONES[0],
+  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, bt: p.bt === 'b' ? 'b' : 'a', hs: HAIRS.includes(p.hs) ? p.hs : null, hc: HAIR_COLORS.includes(p.hc) ? p.hc : null, fd: FACES.includes(p.fd) ? p.fd : null, skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: [...PHONES, ...Object.values(PHONES_X).map(x => x[1]), 'none'].includes(p.ph) ? p.ph : PHONES[0],
     founder: !!p.founder, badges: Array.isArray(p.badges) ? p.badges.filter(b => ['Lifer', 'Grinder'].includes(b)) : [], clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 
@@ -2630,7 +2676,7 @@ function openTab(tab) {
     const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
     openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
       <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind">${b}</span>`).join('') : ''}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
-      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq, p.bt)}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
+      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph === 'none' ? PHONES[0] : p.ph}">${bigArtist(p.eq, p.bt, { hs: p.hs || defaultHair(p.bt), hc: p.hc || HAIR_COLORS[0], fd: p.fd, ph: p.ph !== 'none' })}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
       ${p ? `<div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>` : ''}
       <div class="sec"><h3>Career</h3><div class="statgrid">
         <div><b>${albums}</b><span>Albums dropped</span></div>
@@ -2764,8 +2810,12 @@ function openTab(tab) {
       return `<button class="slot ${it ? '' : 'empty'} ${styleSlot === sl ? 'on' : ''}" data-stab="${sl}" aria-label="${SLOTS.find(x => x[0] === sl)[1]}">${it ? itemArt(it, 50) : ic(slotIc[sl])}</button>`; };
     let grid;
     if (styleSlot === 'colors') {
-      grid = `<div class="sec"><h3>Look</h3>${lookPick()}</div><div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
-        <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>
+      grid = `<div class="sec"><h3>Look</h3>${lookPick()}</div>
+        <div class="sec"><h3>Hair</h3>${hairPick()}</div>
+        <div class="sec"><h3>Hair color</h3><div class="swatches">${HAIR_COLORS.map(c => `<button class="sw ${(S.hc || HAIR_COLORS[0]) === c ? 'on' : ''}" style="background:${c}" data-hc="${c}" aria-label="Hair color ${c}"></button>`).join('')}</div></div>
+        <div class="sec"><h3>Face</h3>${facePick()}</div>
+        <div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
+        <div class="sec"><h3>Headphones</h3><div class="swatches"><button class="sw none ${S.phones === 'none' ? 'on' : ''}" data-phones="none" aria-label="No headphones"></button>${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>
         ${Object.keys(PHONES_X).some(k => (S.phonesX || {})[k]) ? `<div class="sec"><h3>Earned colors <small class="h3note">from long-term goals</small></h3><div class="swatches earned">${Object.entries(PHONES_X).filter(([k]) => (S.phonesX || {})[k]).map(([k, [n, c]]) => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="${n} headphones"></button>`).join('')}</div></div>` : ''}`;
     } else {
       const rank = i => i.id === 'basic' ? -2 : i.gift ? -1 : i.album ? 1000 + i.album : i.gems;
@@ -2879,10 +2929,14 @@ const _unusedSwatch = it => { const c = it.look.body || it.look.color; const tr 
   return `<span style="width:24px;height:24px;border-radius:50%;background:${c};box-shadow:inset 0 0 0 4px ${tr};outline:2px solid rgba(255,255,255,.15)"></span>`; };
 const hms = ms => { const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); };
 // the two looks, shown as head icons only (no labels): 'a' short hair, 'b' long hair with lashes
-const lookPick = () => `<div class="lookpick">${['a', 'b'].map(bt => `<button class="lp ${(S.bt || 'a') === bt ? 'on' : ''}" data-bt="${bt}" aria-label="Look ${bt === 'a' ? 1 : 2}">${miniFigure({ ...itemById('basic').look, phones: true, long: bt === 'b' }, 80, 80, '18 -4 124 124')}</button>`).join('')}</div>`;
+const headIcon = (o, size = 52) => miniFigure({ ...itemById('basic').look, phones: S.phones !== 'none', long: S.bt === 'b', hs: (S.hs || defaultHair(S.bt)), hair: S.hc || HAIR_COLORS[0], fd: S.fd || null, ...o }, size, size, '26 4 108 108');
+const hairPick = () => { const mine = S.bt === 'b' ? ['long', 'bun', 'braids', 'short', 'curly', 'buzz'] : HAIRS, cur = S.hs || defaultHair(S.bt);
+  return `<div class="picks" style="--n:6">${mine.map(h => `<button class="pk ${cur === h ? 'on' : ''}" data-hs="${h}" aria-label="Hair ${h}">${headIcon({ hs: h })}</button>`).join('')}</div>`; };
+const facePick = () => `<div class="picks" style="--n:7">${[null, ...FACES].map(fd => `<button class="pk ${(S.fd || null) === fd ? 'on' : ''}" data-fd="${fd || ''}" aria-label="Face ${fd || 'none'}">${headIcon({ fd })}</button>`).join('')}</div>`;
+const lookPick = () => `<div class="lookpick">${['a', 'b'].map(bt => `<button class="lp ${(S.bt || 'a') === bt ? 'on' : ''}" data-bt="${bt}" aria-label="Look ${bt === 'a' ? 1 : 2}">${headIcon({ long: bt === 'b', hs: defaultHair(bt), fd: null }, 80)}</button>`).join('')}</div>`;
 function applyLook() {
   document.documentElement.style.setProperty('--skin', S.skin);
-  document.documentElement.style.setProperty('--phones', S.phones);
+  document.documentElement.style.setProperty('--phones', S.phones === 'none' ? PHONES[0] : S.phones);
   artist.innerHTML = smallArtist();
   artist.classList.toggle('mythic', wearingMythic());
 }
