@@ -171,6 +171,13 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .tab { height: 52px; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
 .tab.on { color: var(--accent); }
 .tab.shop { color: var(--gem); }
+.tab .ticon.wt { position: relative; display: grid; place-items: center; width: 38px; height: 30px; border-radius: 10px; color: var(--deep); isolation: isolate; overflow: hidden;
+  background: linear-gradient(160deg, #FFFFFF 0%, #DCD6EE 100%); box-shadow: 0 2px 0 rgba(0,0,0,.28); }
+.tab .ticon.wt::after { content: ""; position: absolute; inset: 0; border-radius: 10px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.9) 50%, transparent 65%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; animation-delay: var(--shine-at, 0s); pointer-events: none; }
+.tab .ticon.wt svg { position: relative; z-index: 1; }
+.tab.on .ticon.wt { background: linear-gradient(160deg, #FFB3D4 0%, #FF6FAE 100%); box-shadow: 0 2px 0 #B84778; }
+.tab .bang { z-index: 2; }
+
 .tab.shop .ticon { position: relative; display: grid; place-items: center; width: 38px; height: 30px; border-radius: 10px; color: var(--deep); isolation: isolate;
   background: linear-gradient(160deg, #FFE27A 0%, #FFB938 100%); animation: shopwiggle 6s ease-in-out infinite; }
 .tab.shop .ticon::before { inset: -5px !important; border-radius: 14px !important; }
@@ -498,7 +505,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -594,9 +601,9 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 
   <nav class="tabs" aria-label="Main">
     <button class="tab" data-tab="crew">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg>Crew<span class="bang" id="crewBang" hidden>!</span></button>
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg></span>Crew<span class="bang" id="crewBang" hidden>!</span></button>
     <button class="tab" data-tab="style">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg>Style<span class="bang" id="styleBang" hidden>!</span></button>
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg></span>Style<span class="bang" id="styleBang" hidden>!</span></button>
     <button class="tab-hype" id="hypeBtn" aria-label="2x Hype">
       <span class="orb"><i class="spk"></i><i class="spk"></i><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
       <span class="hl" id="hypeLbl">2x Hype</span>
@@ -605,7 +612,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
       <span class="ticon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20" r="1.4"></circle><circle cx="17" cy="20" r="1.4"></circle></svg><i class="spk"></i><i class="spk"></i></span>Shop</button>
 
     <button class="tab" data-tab="career">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>Career<span class="tab-pct" id="movePct">0%</span></button>
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></span>Career<span class="tab-pct" id="movePct">0%</span></button>
   </nav>
 
   <div class="tut-ptr" id="tutPtr" hidden></div>
@@ -1073,7 +1080,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 63, CONTACT = 'elicosand@gmail.com';
+const BUILD = 64, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1736,7 +1743,7 @@ let sheetKey = null, nextSheetKey = null;
 // every shine in the game runs off the same 4.5s clock, so they all sweep together
 function syncShine(root) {
   const t = (performance.now() / 1000) % 4.5;
-  root.querySelectorAll('.card, .offer, .sbtn.crate, .tab-hype .orb, .tab.shop .ticon').forEach(el => el.style.setProperty('--shine-at', `-${t.toFixed(2)}s`));
+  root.querySelectorAll('.card, .offer, .sbtn.crate, .tab-hype .orb, .tab.shop .ticon, .tab .ticon.wt').forEach(el => el.style.setProperty('--shine-at', `-${t.toFixed(2)}s`));
 }
 function openSheet(html) {
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
