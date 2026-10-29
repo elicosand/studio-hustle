@@ -444,7 +444,11 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .chartme { border: 2px solid var(--gem); }
 .buyart { position: relative; overflow: hidden; display: grid; place-items: center; min-height: 160px; border-radius: 18px; background: #EEF7FC; }
 .buyart .rays { width: 220px; height: 220px; margin: -110px 0 0 -110px; opacity: .9; background: repeating-conic-gradient(rgba(124,79,224,.16) 0 9deg, rgba(124,79,224,0) 9deg 30deg); }
-.buycost.short b { color: #E0453A; }
+.buycost .need { color: var(--accent); }
+/* buy buttons: same height, same little shadow, same gap, so the stack reads evenly */
+.buybtns { display: flex; flex-direction: column; gap: 14px; }
+.buybtns > button { height: 52px; margin: 0; }
+.buybtns .cta:disabled, .buybtns .ghost { box-shadow: 0 3px 0 rgba(10,8,30,.35); }
 .buywhat { text-align: center; margin: 0; }
 .buycost i.g { width: 26px; height: 26px; }
 .buycost { display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--panel-2); border-radius: 16px; padding: 12px; }
@@ -1142,7 +1146,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 74, CONTACT = 'elicosand@gmail.com';
+const BUILD = 76, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1281,6 +1285,8 @@ const titleTag = (albums, loc) => { const t = titleOf(albums, loc); return `<spa
 const OFFERS = {
   goldenMic: { name: 'Golden Mic', sub: 'Permanent 2x income now. Free players earn it at album 10', money: '$4.99', once: true },
   starter: { name: 'Starter Pack', sub: 'A one-time deal for new artists', money: '$2.99', once: true },
+  rising: { name: 'Rising Star Pack', sub: 'For artists with an album out', money: '$4.99', once: true },
+  headliner: { name: 'Headliner Pack', sub: 'For established stars', money: '$9.99', once: true },
   adFree: { name: 'Ad-Free Rewards', sub: 'Get every ad reward instantly, forever', money: '$6.99', once: true },
   autoCrew: { name: 'Day-One Crew', sub: 'Your first station runs itself on every map, forever', money: '$2.99', once: true },
   monitors: { name: 'Pro Monitors', sub: 'Permanent +25% income', gems: 300, once: true },
@@ -1820,6 +1826,12 @@ function openSheet(html) {
 }
 let buildTaps = 0;
 let pendingDaily = false, pendingBonus = 0, pendingWelcome = false;
+function currentPack() {
+  const a = S.albums || 0, has = id => S.perks[id];
+  if (a >= 5) return has('headliner') ? null : 'headliner';
+  if (a >= 2 || (a >= 1 && has('starter'))) return has('rising') ? null : 'rising';
+  return has('starter') ? null : 'starter';
+}
 function grant(id) {
   const o = OFFERS[id]; if (!o) return;
   if (o.once) S.perks[id] = true;
@@ -1827,7 +1839,14 @@ function grant(id) {
   if (o.skip) { const v = skipValue(o.skip); earn(v); toast('+' + fmt(v) + ' from the time skip'); }
   if (id === 'autoCrew') { applyAutoCrew(); buildRoom(); }
   track('buy/' + id);
-  if (id === 'starter') { S.owned.flame = true; S.gems += 450; const v = skipValue(4 * 3600); earn(v); }
+  // pack contents are all permanent; anything already owned turns into its gem value instead
+  const item = (iid, val) => { if (S.owned[iid]) S.gems += val; else S.owned[iid] = true; };
+  const perk = (pid, val) => { if (S.perks[pid]) S.gems += val; else S.perks[pid] = true; };
+  const hypeUp = key => { const lv = hypeLv(), costs = key === 'len' ? HYPE_LEN_COST : HYPE_CAP_COST;
+    if (lv[key] < costs.length) { lv[key]++; S.hypeLv = lv; } else S.gems += 150; };
+  if (id === 'starter') { item('flame', 105); S.gems += 450; perk('nightOwl', 200); }
+  if (id === 'rising') { item('varsity', 120); S.gems += 750; hypeUp('len'); hypeUp('cap'); }
+  if (id === 'headliner') { item('puffer', 325); S.gems += 1500; perk('monitors', 300); }
   if (!o.skip) toast(o.name + (o.gemsOut ? ' added' : ' unlocked'));
   sfx(o.gemsOut ? 'gems' : 'bling'); save(); render();
 }
@@ -2252,7 +2271,7 @@ const ART = {
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
   moon: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 42A20 20 0 1 1 26 12a15 15 0 0 0 18 30z" fill="#FFE08A" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><circle cx="48" cy="16" r="2.5" fill="#fff"></circle><circle cx="54" cy="28" r="1.8" fill="#fff"></circle></svg>`,
   mic: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="22" y="6" width="20" height="32" rx="10" fill="#FFC94A" stroke="#14122A" stroke-width="3"></rect><path d="M26 14h12M26 20h12M26 26h12" stroke="#C8901A" stroke-width="2.5" stroke-linecap="round"></path><path d="M14 30a18 18 0 0 0 36 0" fill="none" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M32 48v10M22 58h20" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M26 10v8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"></path></svg>`,
-  gift: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="#FF6FAE" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="#FF8FC0" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="#FFC94A" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="#FFC94A" stroke="#14122A" stroke-width="2.5"></path></svg>`,
+  gift: (box = '#FF6FAE', lid = '#FF8FC0', rib = '#FFC94A') => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="${box}" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="${lid}" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="${rib}" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="${rib}" stroke="#14122A" stroke-width="2.5"></path>${box === '#FF6FAE' ? '' : `<polygon points="${starPts(20, 40, 6)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon><polygon points="${starPts(44, 44, 4.5)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon>`}</svg>`,
   noAds: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="8" fill="#fff" stroke="#14122A" stroke-width="3"></rect><path d="M27 24v16l13-8z" fill="#2E9CF0"></path><path d="M12 54 52 10" stroke="#F0453A" stroke-width="5" stroke-linecap="round"></path></svg>`,
 };
 // a framed record for each map you've cleared; one color per map
@@ -2664,7 +2683,10 @@ function openTab(tab) {
     openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
       <p class="testnote">${TEST ? 'Test mode: real-money items are free.' : "Playtest: real-money items aren't for sale yet. Tap one to say if you'd buy it."}</p>
       ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
-      ${offer('starter', ART.gift(), '#FF9CC8', '2x value', '<span>Flame Hoodie</span><span>450 gems</span><span>4h of cash</span>')}
+      ${(() => { const p = currentPack();
+        return p === 'starter' ? offer('starter', ART.gift(), '#FF9CC8', '2x value', '<span>Flame Hoodie</span><span>450 gems</span><span>Night Owl</span>')
+          : p === 'rising' ? offer('rising', ART.gift('#9B6BFF', '#C9B3FF', '#FFC94A'), '#C9B3FF', '2x value', '<span>Varsity Jacket</span><span>750 gems</span><span>Hype upgrades</span>')
+          : p === 'headliner' ? offer('headliner', ART.gift('#FFC94A', '#FFE08A', '#FF6FAE'), '#FFC27A', '2x value', '<span>Puffer Jacket</span><span>1,500 gems</span><span>Pro Monitors</span>') : ''; })()}
       ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
       ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', 'Hands-free', '<span>No tapping</span><span>Every map</span><span>Forever</span>')}
       <div class="banner">Time skips & boosts</div>
@@ -2822,12 +2844,11 @@ function openTab(tab) {
       <p class="buywhat">${pb.what}</p>
       ${S.gems >= pb.gems
         ? `<div class="buycost"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · ${(S.gems - pb.gems).toLocaleString()} left after</span></div>
-      <button class="cta" data-confirm-buy>Buy for ${pb.gems.toLocaleString()} gems</button>
-      <button class="ghost" data-cancel-buy>Cancel</button>`
-        : `<div class="buycost short"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · need ${(pb.gems - S.gems).toLocaleString()} more</span></div>
-      <button class="cta" disabled>Not enough gems</button>
-      <button class="cta pink" data-get-gems>Get more gems</button>
-      <button class="ghost" data-cancel-buy>Back</button>`}`);
+      <div class="buybtns"><button class="cta" data-confirm-buy>Buy for ${pb.gems.toLocaleString()} gems</button>
+      <button class="ghost" data-cancel-buy>Cancel</button></div>`
+        : `<div class="buycost short"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · <span class="need">need ${(pb.gems - S.gems).toLocaleString()} more</span></span></div>
+      <div class="buybtns"><button class="cta pink" data-get-gems>Get more gems</button>
+      <button class="ghost" data-cancel-buy>Back</button></div>`}`);
   } else if (tab === 'test-ask') {
     openSheet(`<div class="sheet-head"><h2>Test mode</h2>${closeBtn()}</div>
       <p>A separate practice career for checking pacing. Speed the game up to 200x and keep Hype on. Your real save, The Charts and play tracking are untouched, and you can switch back any time in Settings.</p>
