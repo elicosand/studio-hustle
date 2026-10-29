@@ -1,5 +1,5 @@
 // Offline support. Change VERSION whenever you upload a new build so players get the update.
-const VERSION = 'studio-hustle-v44';
+const VERSION = 'studio-hustle-v46';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
   './music/beat1.mp3', './music/beat2.mp3', './music/beat3.mp3'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL))); self.skipWaiting(); });

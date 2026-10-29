@@ -591,35 +591,44 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 <script>
 (() => {
 // ---------- room art ----------
-const planks = (color, from, step) => Array.from({ length: 12 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
+const planks = (color, from, step) => Array.from({ length: 18 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
 
 const APARTMENT_DECOR = `
   ${planks('#94683F', 128, 40)}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5D4F92"></div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#463A78"></div>
+  <!-- water stains and peeling paint on the wall -->
+  <div class="abs" style="left:64px;top:6px;width:58px;height:40px;border-radius:50%;background:radial-gradient(circle, rgba(30,22,60,.45), rgba(30,22,60,0) 70%)"></div>
+  <div class="abs" style="left:270px;top:30px;width:70px;height:46px;border-radius:50%;background:radial-gradient(circle, rgba(30,22,60,.4), rgba(30,22,60,0) 70%)"></div>
+  <div class="abs" style="left:96px;top:52px;width:22px;height:30px;background:#7A6BB0;clip-path:polygon(0 0,100% 0,80% 60%,55% 100%,30% 55%)"></div>
+  <div class="abs" style="left:268px;top:8px;width:18px;height:22px;background:#7A6BB0;clip-path:polygon(0 0,100% 0,70% 100%,35% 60%)"></div>
   <div class="abs" style="left:140px;top:12px;width:110px;height:60px;border-radius:6px;background:#0E0D1F;border:5px solid #4A4466;box-sizing:border-box;overflow:hidden">
     <svg width="100" height="50" viewBox="0 0 100 50" aria-hidden="true">
-      <circle cx="80" cy="12" r="6" fill="#F4E7B8"></circle>
-      <rect x="2" y="26" width="18" height="24" fill="#26234A"></rect><rect x="22" y="18" width="14" height="32" fill="#2F2B58"></rect>
-      <rect x="38" y="30" width="20" height="20" fill="#26234A"></rect><rect x="60" y="22" width="16" height="28" fill="#2F2B58"></rect>
-      <rect x="78" y="32" width="20" height="18" fill="#26234A"></rect>
-      <rect class="tw" style="animation-delay:-0.7s" x="7" y="32" width="3" height="3" fill="#FFC94A"></rect><rect class="tw" style="animation-delay:-1.4s" x="27" y="24" width="3" height="3" fill="#FFC94A"></rect>
-      <rect class="tw" style="animation-delay:-2.1s" x="44" y="36" width="3" height="3" fill="#FFC94A"></rect><rect class="tw" style="animation-delay:-2.8s" x="65" y="28" width="3" height="3" fill="#FFC94A"></rect>
-      <rect class="tw" style="animation-delay:-0.3s" x="84" y="38" width="3" height="3" fill="#FFC94A"></rect>
+      <rect width="100" height="50" fill="#4B3A78"></rect><rect y="16" width="100" height="14" fill="#9A4F7E"></rect><rect y="28" width="100" height="22" fill="#E07A5A"></rect>
+      <circle cx="74" cy="34" r="9" fill="#FFB36B"></circle>
+      <rect x="2" y="26" width="18" height="24" fill="#2A1F3D"></rect><rect x="22" y="18" width="14" height="32" fill="#33264A"></rect>
+      <rect x="38" y="30" width="20" height="20" fill="#2A1F3D"></rect><rect x="60" y="24" width="16" height="26" fill="#33264A"></rect>
+      <rect x="78" y="32" width="20" height="18" fill="#2A1F3D"></rect>
+      <rect x="7" y="32" width="3" height="3" fill="#FFC94A"></rect><rect x="44" y="36" width="3" height="3" fill="#FFC94A"></rect><rect x="84" y="38" width="3" height="3" fill="#FFC94A"></rect>
+      <path d="M0 10 Q25 16 50 11 Q75 6 100 13" fill="none" stroke="#1E1630" stroke-width="1"></path>
+      <path d="M58 2 L63 13 L60 20 L67 31" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.2"></path>
     </svg>
-    <div class="cloud" style="top:6px;width:30px;height:9px;background:#3A3466;animation-duration:38s"></div>
     <div class="abs" style="left:47px;top:0;width:5px;height:50px;background:#4A4466"></div>
+    <div class="abs" style="left:8px;top:6px;width:22px;height:6px;background:#C9B98A;opacity:.85;transform:rotate(-18deg)"></div>
   </div>
+  <!-- floor stains, scuffs and junk -->
+  <div class="abs mid" style="left:168px;top:300px;width:54px;height:14px;border-radius:50%;background:rgba(60,35,18,.28)"></div>
+  <div class="abs" style="left:180px;top:490px;width:52px;height:18px;border-radius:50%;background:rgba(60,35,18,.25)"></div>
+  <div class="abs" style="left:160px;top:118px;width:80px;height:3px;background:#5E3F24;transform:rotate(2deg)"></div>
+  <div class="abs" style="left:236px;top:500px;width:12px;height:12px;border-radius:50%;background:#F4F1EA;border:2px solid #1B1830"></div>
+  <div class="abs" style="left:150px;top:496px;width:10px;height:16px;border-radius:3px;background:#C2384F;border:2px solid #1B1830;transform:rotate(70deg)"></div>
   <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#4E4183"></div>
   <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#4E4183"></div>
   <div class="abs" style="right:0;top:420px;width:12px;height:84px;background:#6B5246"></div>
-  <div class="abs" style="left:118px;top:300px;width:154px;height:96px;border-radius:50%;background:#8E5BB0"></div>
-  <div class="abs" style="left:136px;top:312px;width:118px;height:72px;border-radius:50%;border:3px dashed #B07DD0;box-sizing:border-box"></div>
+  <div class="abs mid" style="left:66px;top:276px;width:258px;height:26px;border-radius:13px;background:#8E5BB0"></div><div class="abs mid" style="left:74px;top:281px;width:242px;height:16px;border-radius:8px;border:2px dashed #B07DD0;box-sizing:border-box"></div>
   <!-- beanbag, speakers, pizza boxes, record crate, plants -->
-  <div class="abs" style="left:30px;top:262px;width:86px;height:66px;border-radius:50% 50% 46% 46%;background:#E0716A;border:3px solid #1B1830;box-sizing:border-box"></div>
-  <div class="abs" style="left:46px;top:270px;width:52px;height:30px;border-radius:50%;background:#F09A8F"></div>
-  <div class="abs" style="left:290px;top:262px;width:32px;height:50px;border-radius:6px;background:#2C2F48;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:298px;top:284px;width:16px;height:16px;border-radius:50%;background:#6A6390"></div>
-  <div class="abs" style="left:328px;top:262px;width:32px;height:50px;border-radius:6px;background:#2C2F48;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:284px;width:16px;height:16px;border-radius:50%;background:#6A6390"></div>
+  <div class="abs" style="left:64px;top:540px;width:46px;height:38px;border-radius:50% 50% 46% 46%;background:#E0716A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:284px;top:540px;width:20px;height:34px;border-radius:4px;background:#2C2F48;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:306px;top:540px;width:20px;height:34px;border-radius:4px;background:#2C2F48;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:158px;top:552px;width:62px;height:16px;border-radius:3px;background:#E8C9A0;border:3px solid #1B1830;box-sizing:border-box;transform:rotate(-4deg)"></div>
   <div class="abs" style="left:162px;top:540px;width:62px;height:16px;border-radius:3px;background:#F0D5AE;border:3px solid #1B1830;box-sizing:border-box;transform:rotate(3deg)"></div>
   <div class="abs" style="left:236px;top:548px;width:52px;height:38px;border-radius:5px;background:#8A5A3A;border:3px solid #1B1830;box-sizing:border-box"></div>
@@ -650,8 +659,7 @@ const STUDIO_DECOR = `
   <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#8573C2"></div>
   <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#8573C2"></div>
   <div class="abs" style="left:0;top:304px;width:12px;height:84px;background:#A07A5C"></div>
-  <div class="abs" style="left:112px;top:294px;width:166px;height:108px;border-radius:50%;background:#4FB0C2"></div>
-  <div class="abs" style="left:140px;top:312px;width:110px;height:72px;border-radius:50%;background:#66C3D3"></div>
+  <div class="abs mid" style="left:66px;top:276px;width:258px;height:26px;border-radius:13px;background:#4FB0C2"></div><div class="abs mid" style="left:74px;top:281px;width:242px;height:16px;border-radius:8px;border:2px solid #66C3D3;box-sizing:border-box"></div>
   <!-- couch and plants -->
   <div class="abs" style="left:112px;top:540px;width:166px;height:50px;border-radius:14px;background:#5E8BD8;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:124px;top:528px;width:142px;height:24px;border-radius:12px;background:#7BA4EA;border:3px solid #1B1830;box-sizing:border-box"></div>
@@ -663,7 +671,7 @@ const bricks = Array.from({ length: 4 }, (_, r) => Array.from({ length: 9 }, (_,
   `<div class="abs" style="left:${c * 46 - (r % 2 ? 23 : 0)}px;top:${r * 21}px;width:42px;height:17px;border-radius:2px;background:${(r + c) % 3 ? '#8B4A3C' : '#7D4134'}"></div>`).join('')).join('');
 const LOFT_DECOR = `
   ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:508px;background:#A8A2B0"></div>`).join('')}
-  ${Array.from({ length: 10 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#A8A2B0"></div>`).join('')}
+  ${Array.from({ length: 15 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#A8A2B0"></div>`).join('')}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5E3027;overflow:hidden">${bricks}</div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#3E2019"></div>
   <div class="abs" style="left:96px;top:6px;width:198px;height:72px;border-radius:4px;background:#2B1F3D;border:5px solid #26222E;box-sizing:border-box;overflow:hidden">
@@ -687,14 +695,8 @@ const LOFT_DECOR = `
   <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#4A2620"></div>
   <div class="abs" style="left:20px;top:96px;width:350px;height:6px;border-radius:3px;background:#8C8794"></div>
   <div class="abs" style="right:0;top:420px;width:12px;height:84px;background:#3A3A44"></div>
-  <div class="abs" style="left:110px;top:292px;width:170px;height:112px;border-radius:18px;background:#C2683A"></div>
-  <div class="abs" style="left:122px;top:304px;width:146px;height:88px;border-radius:12px;border:3px solid #E08A5A;box-sizing:border-box"></div>
+  <div class="abs mid" style="left:66px;top:276px;width:258px;height:26px;border-radius:13px;background:#C2683A"></div><div class="abs mid" style="left:74px;top:281px;width:242px;height:16px;border-radius:8px;border:2px solid #E08A5A;box-sizing:border-box"></div>
   <!-- arcade cabinet, lounge chairs, coffee table with beanbags, plants -->
-  <div class="abs" style="left:40px;top:240px;width:58px;height:90px;border-radius:8px 8px 4px 4px;background:#7C4FE0;border:3px solid #1B1830;box-sizing:border-box"></div>
-  <div class="abs" style="left:49px;top:252px;width:40px;height:30px;border-radius:4px;background:#14122A;box-shadow:inset 0 0 0 3px #6FD3FF"></div>
-  <div class="abs" style="left:52px;top:292px;width:10px;height:10px;border-radius:50%;background:#FF6FAE"></div><div class="abs" style="left:72px;top:292px;width:10px;height:10px;border-radius:50%;background:#FFC94A"></div>
-  <div class="abs" style="left:286px;top:258px;width:40px;height:40px;border-radius:50%;background:#FF9E57;border:3px solid #1B1830;box-sizing:border-box"></div>
-  <div class="abs" style="left:322px;top:294px;width:40px;height:40px;border-radius:50%;background:#FF9E57;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:150px;top:546px;width:90px;height:34px;border-radius:8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:102px;top:548px;width:42px;height:34px;border-radius:50%;background:#6FD3FF;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:246px;top:548px;width:42px;height:34px;border-radius:50%;background:#FF6FAE;border:3px solid #1B1830;box-sizing:border-box"></div>
@@ -706,37 +708,80 @@ const PRO_DECOR = `
   ${[14, 52, 300, 338].map(l => [10, 46].map(t => `<div class="abs" style="left:${l}px;top:${t}px;width:32px;height:30px;border-radius:4px;background:${(l + t) % 3 ? '#2E3550' : '#38416A'};box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)"></div>`).join('')).join('')}
   <div class="abs" style="left:98px;top:8px;width:194px;height:68px;border-radius:6px;background:#2B1F3D;border:5px solid #11141E;box-sizing:border-box;overflow:hidden">
     <svg width="184" height="58" viewBox="0 0 184 58" aria-hidden="true">
-      <rect width="184" height="58" fill="#F7A86B"></rect><rect y="0" width="184" height="22" fill="#F08A7A"></rect>
-      <circle cx="92" cy="40" r="15" fill="#FFE08A"></circle>
-      <ellipse cx="30" cy="62" rx="70" ry="20" fill="#7A4A6E"></ellipse><ellipse cx="150" cy="64" rx="80" ry="22" fill="#6A3E62"></ellipse>
-      <rect x="28" y="22" width="3" height="30" fill="#3A2238"></rect><path d="M29.5 22 q-10 -2 -14 4 M29.5 22 q10 -2 14 4 M29.5 22 q-6 -8 -12 -6 M29.5 22 q6 -8 12 -6" stroke="#3A2238" stroke-width="2.6" fill="none" stroke-linecap="round"></path>
-      <rect x="154" y="16" width="3" height="36" fill="#3A2238"></rect><path d="M155.5 16 q-10 -2 -14 4 M155.5 16 q10 -2 14 4 M155.5 16 q-6 -8 -12 -6 M155.5 16 q6 -8 12 -6" stroke="#3A2238" stroke-width="2.6" fill="none" stroke-linecap="round"></path>
+      <rect width="184" height="58" fill="#141A33"></rect><rect y="34" width="184" height="24" fill="#1E2547"></rect>
+      <path d="M40 58 L52 0 L62 0 L50 58 Z" fill="#9FE6FF" opacity=".16"></path><path d="M130 58 L118 0 L128 0 L140 58 Z" fill="#FFE08A" opacity=".16"></path>
+      ${[[12, 8], [34, 14], [70, 6], [96, 12], [150, 9], [172, 16], [110, 4]].map(([x, y], k) => `<circle class="tw" style="animation-delay:-${k * .4}s" cx="${x}" cy="${y}" r="1.2" fill="#fff"></circle>`).join('')}
+      <path d="M0 40 Q46 30 92 38 Q138 46 184 34 L184 58 L0 58 Z" fill="#0E1226"></path>
+      ${Array.from({ length: 26 }, (_, k) => `<circle cx="${4 + k * 7}" cy="${46 + (k * 7) % 9}" r="1.3" fill="${['#FFC94A', '#FF9E57', '#F4F1EA'][k % 3]}"></circle>`).join('')}
     </svg>
-    <svg class="birds" width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M1 5 Q4 1 7 5 Q10 1 13 5 M12 8 Q14 5 16 8 Q18 5 20 8" fill="none" stroke="#5A2E4E" stroke-width="1.6" stroke-linecap="round"></path></svg>
     <div class="abs" style="left:90px;top:0;width:4px;height:58px;background:#11141E"></div>
   </div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#161A26"></div>
   <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#2A2F42"></div>
   <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#2A2F42"></div>
   <div class="abs" style="left:0;top:420px;width:12px;height:84px;background:#5A4636"></div>
-  <div class="abs" style="left:108px;top:290px;width:174px;height:114px;border-radius:20px;background:#7A2E3A"></div>
-  <div class="abs" style="left:120px;top:302px;width:150px;height:90px;border-radius:14px;border:3px solid #C9A15A;box-sizing:border-box"></div>
+  <div class="abs mid" style="left:66px;top:276px;width:258px;height:26px;border-radius:13px;background:#7A2E3A"></div><div class="abs mid" style="left:74px;top:281px;width:242px;height:16px;border-radius:8px;border:2px solid #C9A15A;box-sizing:border-box"></div>
   <!-- vintage synth, guitar stands, leather couch, plants -->
-  <div class="abs" style="left:30px;top:262px;width:78px;height:40px;border-radius:6px;background:#8A5A3A;border:3px solid #1B1830;box-sizing:border-box"></div>
-  <div class="abs" style="left:36px;top:280px;width:66px;height:16px;border-radius:2px;background:repeating-linear-gradient(90deg,#F4F1EA 0 7px,#1B1830 7px 9px)"></div>
-  <div class="abs" style="left:40px;top:267px;width:8px;height:8px;border-radius:50%;background:#FF9E57"></div><div class="abs" style="left:54px;top:267px;width:8px;height:8px;border-radius:50%;background:#6FD3FF"></div><div class="abs" style="left:68px;top:267px;width:8px;height:8px;border-radius:50%;background:#FFC94A"></div>
-  <div class="abs" style="left:50px;top:302px;width:6px;height:28px;background:#1B1830"></div><div class="abs" style="left:82px;top:302px;width:6px;height:28px;background:#1B1830"></div>
-  <div class="abs" style="left:296px;top:292px;width:30px;height:52px;border-radius:50% 50% 45% 45%;background:#C2384F;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:308px;top:260px;width:6px;height:36px;background:#3A2A22"></div>
-  <div class="abs" style="left:332px;top:298px;width:30px;height:50px;border-radius:50% 50% 45% 45%;background:#E8D2A0;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:344px;top:266px;width:6px;height:36px;background:#3A2A22"></div>
+  <div class="abs" style="left:64px;top:546px;width:44px;height:26px;border-radius:5px;background:#8A5A3A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:68px;top:556px;width:36px;height:10px;background:repeating-linear-gradient(90deg,#F4F1EA 0 5px,#1B1830 5px 6px)"></div>
+  <div class="abs" style="left:292px;top:546px;width:22px;height:38px;border-radius:50% 50% 45% 45%;background:#C2384F;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:301px;top:526px;width:5px;height:24px;background:#3A2A22"></div>
   <div class="abs" style="left:112px;top:540px;width:166px;height:50px;border-radius:14px;background:#7A4A2E;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:124px;top:528px;width:142px;height:24px;border-radius:12px;background:#9A6040;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:150px;top:552px;width:38px;height:22px;border-radius:8px;background:#C9A15A;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:202px;top:552px;width:38px;height:22px;border-radius:8px;background:#C2384F;border:3px solid #1B1830;box-sizing:border-box"></div>
   <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#14122A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#14122A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
 
+const MANSION_DECOR = `
+  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:508px;background:#D8CDB8"></div>`).join('')}
+  ${Array.from({ length: 15 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#D8CDB8"></div>`).join('')}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#F1EADB"></div>
+  ${[18, 330].map(l => `<div class="abs" style="left:${l}px;top:12px;width:42px;height:60px;border-radius:4px;border:3px solid #C9A15A;box-sizing:border-box"></div>`).join('')}
+  <div class="abs" style="left:84px;top:6px;width:222px;height:72px;border-radius:36px 36px 4px 4px;background:#2B1F3D;border:5px solid #C9A15A;box-sizing:border-box;overflow:hidden">
+    <svg width="212" height="62" viewBox="0 0 212 62" aria-hidden="true">
+      <rect width="212" height="62" fill="#FFD9A0"></rect><rect y="0" width="212" height="22" fill="#FFB988"></rect>
+      <circle cx="160" cy="34" r="12" fill="#FFF1C2"></circle>
+      <ellipse cx="40" cy="64" rx="80" ry="26" fill="#7DB86A"></ellipse><ellipse cx="170" cy="66" rx="90" ry="28" fill="#5E9E58"></ellipse><ellipse cx="110" cy="70" rx="70" ry="22" fill="#4E8A4C"></ellipse>
+      <rect x="92" y="40" width="26" height="12" fill="#F4F1EA"></rect><path d="M89 41 L105 31 L121 41 Z" fill="#C2683A"></path><rect x="96" y="52" width="18" height="4" rx="2" fill="#6FD3FF"></rect>
+      ${[[24, 40], [60, 46], [150, 44], [186, 40]].map(([x, y]) => `<rect x="${x}" y="${y}" width="3" height="10" fill="#4A3424"></rect><circle cx="${x + 1.5}" cy="${y - 2}" r="6" fill="#3E7A3C"></circle>`).join('')}
+    </svg>
+    <div class="cloud" style="top:8px;background:#FFF4E2"></div>
+    <div class="abs" style="left:104px;top:0;width:4px;height:62px;background:#C9A15A"></div>
+  </div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#C9A15A"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#E2D7C1"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#E2D7C1"></div>
+  <div class="abs" style="left:0;top:420px;width:12px;height:84px;background:#8A5A3A"></div>
+  <div class="abs mid" style="left:66px;top:276px;width:258px;height:26px;border-radius:13px;background:#2E6B6A"></div><div class="abs mid" style="left:74px;top:281px;width:242px;height:16px;border-radius:8px;border:2px solid #C9A15A;box-sizing:border-box"></div>
+  <!-- aquarium, white piano bench and statue, white sectional, palms -->
+  <div class="abs" style="left:62px;top:546px;width:48px;height:32px;border-radius:5px;background:#6FD3FF;border:3px solid #1B1830;box-sizing:border-box;overflow:hidden"><div class="abs" style="left:8px;top:8px;width:10px;height:6px;border-radius:50%;background:#FF9E57"></div><div class="abs" style="left:26px;top:14px;width:9px;height:5px;border-radius:50%;background:#FFC94A"></div></div>
+  <div class="abs" style="left:286px;top:542px;width:40px;height:40px;border-radius:50%;background:#EDE6D6;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:298px;top:554px;width:16px;height:16px;border-radius:50%;background:#FFC94A;border:2px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:112px;top:540px;width:166px;height:50px;border-radius:14px;background:#F4F1EA;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:124px;top:528px;width:142px;height:24px;border-radius:12px;background:#FFFFFF;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:150px;top:552px;width:38px;height:22px;border-radius:8px;background:#2E6B6A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  <div class="abs" style="left:202px;top:552px;width:38px;height:22px;border-radius:8px;background:#C9A15A;border:3px solid #1B1830;box-sizing:border-box"></div>
+  ${[[26, 336], [330, 336]].map(([l]) => `<div class="abs" style="left:${l + 2}px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#C9A15A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:${l - 4}px;top:532px;width:44px;height:36px;background:#3E8E47;clip-path:polygon(50% 100%,0 20%,30% 40%,25% 0,50% 35%,75% 0,70% 40%,100% 20%)"></div>`).join('')}`;
+
+const STADIUM_DECOR = `
+  ${planks('#2C2836', 128, 40)}
+  <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#0E0C1C;overflow:hidden">
+    ${Array.from({ length: 4 }, (_, r) => Array.from({ length: 40 }, (_, c) => `<div class="abs" style="left:${c * 10 + (r % 2) * 5}px;top:${30 + r * 13}px;width:6px;height:6px;border-radius:50%;background:${['#FF6FAE', '#6FD3FF', '#FFC94A', '#8BF0A0', '#F4F1EA', '#B18CFF'][(r * 7 + c * 3) % 6]};opacity:${(.45 + ((c * 13 + r * 5) % 5) / 10).toFixed(2)}"></div>`).join('')).join('')}
+    <div class="abs" style="left:40px;top:-10px;width:30px;height:60px;background:linear-gradient(#FFF8D0, rgba(255,248,208,0));transform:rotate(25deg);opacity:.35"></div>
+    <div class="abs" style="left:320px;top:-10px;width:30px;height:60px;background:linear-gradient(#D0F4FF, rgba(208,244,255,0));transform:rotate(-25deg);opacity:.35"></div>
+    ${[[30, 8], [120, 4], [210, 10], [300, 6]].map(([x, y], k) => `<div class="abs tw" style="left:${x}px;top:${y}px;width:3px;height:3px;border-radius:50%;background:#fff;animation-delay:-${k * .6}s"></div>`).join('')}
+  </div>
+  <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#FF6FAE"></div>
+  <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#1E1B26"></div>
+  <div class="abs" style="right:0;top:84px;width:12px;height:516px;background:#1E1B26"></div>
+  <div class="abs" style="left:0;top:420px;width:12px;height:84px;background:#3A3A44"></div>
+  <div class="abs mid" style="left:66px;top:276px;width:258px;height:26px;border-radius:13px;background:#3A2F55"></div><div class="abs mid" style="left:74px;top:281px;width:242px;height:16px;border-radius:8px;border:2px solid #5B4C86;box-sizing:border-box"></div>
+  <!-- speaker stacks, light towers, confetti -->
+  ${[64, 286].map(l => `<div class="abs" style="left:${l}px;top:534px;width:40px;height:54px;border-radius:5px;background:#1B1830;border:3px solid #3A3A44;box-sizing:border-box"></div><div class="abs" style="left:${l + 9}px;top:542px;width:22px;height:22px;border-radius:50%;background:#2E2A36;border:3px solid #57535E;box-sizing:border-box"></div>`).join('')}
+  ${Array.from({ length: 14 }, (_, k) => `<div class="abs${k % 2 ? '' : ' mid'}" style="left:${70 + (k * 41) % 250}px;top:${k % 2 ? 488 + (k * 7) % 28 : 276 + (k * 5) % 24}px;width:6px;height:10px;border-radius:2px;background:${['#FF6FAE', '#FFC94A', '#6FD3FF', '#8BF0A0'][k % 4]};transform:rotate(${k * 37}deg);opacity:.8"></div>`).join('')}
+  <div class="abs" style="left:112px;top:540px;width:166px;height:46px;border-radius:10px;background:#1B1830;border:3px solid #FF6FAE;box-sizing:border-box"></div>
+  ${[130, 166, 202, 238].map(x => `<div class="abs" style="left:${x}px;top:552px;width:22px;height:22px;border-radius:50%;background:#FFC94A;box-shadow:0 0 10px #FFC94A"></div>`).join('')}`;
+
 const LOCATIONS = [
   {
-    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#A5774F', plank: '#94683F', wall: '#5D4F92', goal: 600000, decor: APARTMENT_DECOR, home: [160, 278],
+    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#9C7350', plank: '#8A6340', wall: '#5D4F92', goal: 600000, decor: APARTMENT_DECOR, home: [160, 278],
     stations: [
       { id: 'beats', name: 'Laptop Beats', icon: 'note', unlock: 0, base: 1, cycle: 1.2, cost: 6, growth: 1.13, crew: 'Producer', crewCost: 90, spot: [214, 176],
         pos: [226, 112, 140, 128], ring: 90, hint: 36,
@@ -867,9 +912,86 @@ const LOCATIONS = [
           <span class="abs" style="left:70px;top:88px;width:30px;height:6px;border-radius:3px;background:#1B1830;transform:rotate(-20deg)"></span>` },
     ],
   },
+  {
+    id: 'mansion', name: 'Hillside Mansion', track: 'music/beat3.mp3', floor: '#EDE6D6', plank: '#D8CDB8', wall: '#F1EADB', goal: 100000000000000, decor: MANSION_DECOR, home: [160, 284],
+    stations: [
+      { id: 'piano', name: 'Piano Suite', icon: 'note', unlock: 0, base: 6250000, cycle: 2, cost: 37500000, growth: 1.13, crew: 'Songwriter', crewCost: 562500000, spot: [140, 160],
+        pos: [24, 112, 128, 100],
+        furn: `<span class="abs" style="left:4px;top:0;width:120px;height:88px;border-radius:44px 44px 10px 10px;background:#F4F1EA;border:4px solid #1B1830;box-sizing:border-box"></span>
+          <span class="abs" style="left:14px;top:62px;width:100px;height:18px;border-radius:3px;background:repeating-linear-gradient(90deg,#fff 0 8px,#1B1830 8px 10px)"></span>
+          <span class="abs" style="left:30px;top:12px;width:68px;height:40px;border-radius:34px 34px 4px 4px;background:#E2D7C1"></span>
+          <span class="abs" style="left:44px;top:90px;width:40px;height:12px;border-radius:4px;background:#1B1830"></span>` },
+      { id: 'podcast', name: 'Podcast Room', icon: 'mic', unlock: 500000000, base: 37500000, cycle: 3.6, cost: 343750000, growth: 1.14, crew: 'Podcast Producer', crewCost: 5625000000, spot: [214, 180],
+        pos: [212, 112, 154, 132], ring: 96, hint: 40,
+        furn: `<span class="abs" style="left:10px;top:6px;width:134px;height:74px;border-radius:37px;background:#8A5A3A;border:4px solid #1B1830;box-sizing:border-box"></span>
+          <span class="abs" style="left:28px;top:20px;width:22px;height:30px;border-radius:11px;background:#2E2A36;border:3px solid #C9A15A;box-sizing:border-box"></span>
+          <span class="abs" style="left:104px;top:20px;width:22px;height:30px;border-radius:11px;background:#2E2A36;border:3px solid #C9A15A;box-sizing:border-box"></span>
+          <span class="abs" style="left:62px;top:30px;width:30px;height:20px;border-radius:4px;background:#1E1B26;box-shadow:inset 0 0 0 2px #FF6FAE"></span>
+          <span class="abs" style="left:56px;top:92px;width:42px;height:40px;border-radius:50%;background:#2E2A4A;border:4px solid #3A3558;box-sizing:border-box"></span>` },
+      { id: 'brand', name: 'Brand Collab', icon: 'shirt', unlock: 3750000000, base: 200000000, cycle: 7.5, cost: 2500000000, growth: 1.15, crew: 'Brand Manager', crewCost: 31250000000, spot: [140, 398],
+        pos: [24, 384, 128, 150],
+        furn: `<span class="abs" style="left:4px;top:8px;width:120px;height:6px;border-radius:3px;background:#C9A15A"></span>
+          ${['#FF6FAE', '#6FD3FF', '#FFC94A', '#7C4FE0', '#8BF0A0'].map((c, k) => `<span class="abs" style="left:${10 + k * 22}px;top:14px;width:20px;height:42px;border-radius:4px 4px 6px 6px;background:${c};border:2px solid #1B1830;box-sizing:border-box"></span>`).join('')}
+          <span class="abs" style="left:10px;top:72px;width:108px;height:56px;border-radius:8px;background:#F4F1EA;border:3px solid #1B1830;box-sizing:border-box"></span>
+          ${[0, 1, 2].map(k => `<span class="abs" style="left:${20 + k * 32}px;top:86px;width:26px;height:16px;border-radius:8px 8px 3px 3px;background:${['#F4F1EA', '#FF6FAE', '#1E1B26'][k]};border:2px solid #1B1830;box-sizing:border-box"></span>`).join('')}` },
+      { id: 'docu', name: 'Documentary', icon: 'camera', unlock: 21875000000, base: 1000000000, cycle: 13, cost: 13750000000, growth: 1.16, crew: 'Film Crew', crewCost: 156250000000, spot: [178, 408],
+        pos: [236, 384, 130, 150],
+        furn: `<span class="abs" style="left:14px;top:20px;width:66px;height:46px;border-radius:8px;background:#1E1B26;border:3px solid #57535E;box-sizing:border-box"></span>
+          <span class="abs" style="left:20px;top:4px;width:26px;height:26px;border-radius:50%;background:#2E2A36;border:3px solid #57535E;box-sizing:border-box"></span><span class="abs" style="left:48px;top:4px;width:26px;height:26px;border-radius:50%;background:#2E2A36;border:3px solid #57535E;box-sizing:border-box"></span>
+          <span class="abs" style="left:78px;top:32px;width:18px;height:20px;background:#57535E;clip-path:polygon(0 30%,100% 0,100% 100%,0 70%)"></span>
+          <span class="abs" style="left:44px;top:66px;width:6px;height:60px;background:#57535E"></span>
+          <span class="abs" style="left:84px;top:80px;width:40px;height:44px;border-radius:4px;background:#C2384F;border:3px solid #1B1830;box-sizing:border-box"></span>
+          <span class="abs" style="left:84px;top:118px;width:6px;height:22px;background:#1B1830"></span><span class="abs" style="left:118px;top:118px;width:6px;height:22px;background:#1B1830"></span>` },
+    ],
+  },
+  {
+    id: 'stadium', name: 'Stadium Tour', track: 'music/beat1.mp3', floor: '#34303F', plank: '#2C2836', wall: '#0E0C1C', goal: 6000000000000000, decor: STADIUM_DECOR, home: [160, 284],
+    stations: [
+      { id: 'mainstage', name: 'Main Stage', icon: 'mic', unlock: 0, base: 312500000, cycle: 2.2, cost: 1875000000, growth: 1.13, crew: 'Stage Manager', crewCost: 28125000000, spot: [140, 160],
+        pos: [24, 112, 128, 100],
+        furn: `<span class="abs" style="left:0;top:0;width:128px;height:84px;border-radius:10px;background:#1E1B26;border:3px solid #FFC94A;box-sizing:border-box"></span>
+          <span class="abs" style="left:3px;top:81px;width:122px;height:13px;border-radius:0 0 9px 9px;background:#3A3A44"></span>
+          <span class="abs" style="left:56px;top:18px;width:16px;height:16px;border-radius:50%;background:#E8E2F4;border:3px solid #8C86A6;box-sizing:border-box"></span><span class="abs" style="left:62px;top:34px;width:4px;height:36px;background:#8C86A6"></span>
+          <span class="abs" style="left:12px;top:10px;width:30px;height:64px;background:linear-gradient(rgba(255,240,180,.55), rgba(255,240,180,0));clip-path:polygon(40% 0,60% 0,100% 100%,0 100%)"></span>
+          <span class="abs" style="left:86px;top:10px;width:30px;height:64px;background:linear-gradient(rgba(180,230,255,.55), rgba(180,230,255,0));clip-path:polygon(40% 0,60% 0,100% 100%,0 100%)"></span>` },
+      { id: 'lightrig', name: 'Light Show', icon: 'star', unlock: 25000000000, base: 1875000000, cycle: 3.8, cost: 17187500000, growth: 1.14, crew: 'Lighting Director', crewCost: 281250000000, spot: [214, 180],
+        pos: [212, 112, 154, 132], ring: 96, hint: 40,
+        furn: `<span class="abs" style="left:4px;top:4px;width:146px;height:10px;border-radius:3px;background:#57535E"></span>
+          ${['#FF6FAE', '#6FD3FF', '#FFC94A', '#8BF0A0', '#B18CFF'].map((c, k) => `<span class="abs" style="left:${10 + k * 28}px;top:14px;width:20px;height:16px;border-radius:4px;background:#1E1B26;border:2px solid #57535E;box-sizing:border-box"></span><span class="abs" style="left:${6 + k * 28}px;top:30px;width:28px;height:48px;background:linear-gradient(${c}, rgba(0,0,0,0));opacity:.6;clip-path:polygon(35% 0,65% 0,100% 100%,0 100%)"></span>`).join('')}
+          <span class="abs" style="left:56px;top:92px;width:42px;height:40px;border-radius:50%;background:#2E2A4A;border:4px solid #3A3558;box-sizing:border-box"></span>` },
+      { id: 'jumbotron', name: 'Jumbotron', icon: 'monitor', unlock: 187500000000, base: 10000000000, cycle: 8, cost: 125000000000, growth: 1.15, crew: 'Broadcast Crew', crewCost: 1562500000000, spot: [140, 398],
+        pos: [24, 384, 128, 150],
+        furn: `<span class="abs" style="left:4px;top:0;width:120px;height:80px;border-radius:8px;background:#1E1B26;border:4px solid #57535E;box-sizing:border-box;overflow:hidden">
+            <span class="abs" style="left:0;top:0;width:112px;height:72px;background:linear-gradient(135deg,#7C4FE0,#FF6FAE)"></span>
+            <span class="abs" style="left:40px;top:16px;width:32px;height:32px;border-radius:50%;background:#F1CBA8;border:3px solid #1B1830;box-sizing:border-box"></span>
+            <span class="abs" style="left:32px;top:46px;width:48px;height:26px;border-radius:14px 14px 0 0;background:#1E1B26"></span></span>
+          <span class="abs" style="left:28px;top:80px;width:8px;height:56px;background:#57535E"></span><span class="abs" style="left:92px;top:80px;width:8px;height:56px;background:#57535E"></span>` },
+      { id: 'worldtour', name: 'World Tour', icon: 'disc', unlock: 1093750000000, base: 50000000000, cycle: 14, cost: 687500000000, growth: 1.16, crew: 'Tour Manager', crewCost: 7812500000000, spot: [178, 408],
+        pos: [236, 384, 130, 150],
+        furn: `<span class="abs" style="left:22px;top:6px;width:86px;height:86px;border-radius:50%;background:#4FB0E8;border:4px solid #1B1830;box-sizing:border-box;overflow:hidden">
+            <span class="abs" style="left:10px;top:14px;width:30px;height:22px;border-radius:40% 60% 50% 40%;background:#58B060"></span><span class="abs" style="left:44px;top:34px;width:26px;height:30px;border-radius:50% 40% 60% 40%;background:#58B060"></span><span class="abs" style="left:14px;top:50px;width:18px;height:14px;border-radius:50%;background:#58B060"></span></span>
+          <span class="abs" style="left:4px;top:100px;width:122px;height:34px;border-radius:8px;background:#F4F1EA;border:3px solid #1B1830;box-sizing:border-box"></span>
+          <span class="abs" style="left:14px;top:108px;width:20px;height:14px;border-radius:2px;background:#6FD3FF"></span><span class="abs" style="left:40px;top:108px;width:20px;height:14px;border-radius:2px;background:#6FD3FF"></span><span class="abs" style="left:66px;top:108px;width:20px;height:14px;border-radius:2px;background:#6FD3FF"></span>
+          <span class="abs" style="left:18px;top:128px;width:16px;height:16px;border-radius:50%;background:#1B1830"></span><span class="abs" style="left:94px;top:128px;width:16px;height:16px;border-radius:50%;background:#1B1830"></span>` },
+    ],
+  },
 ];
-const FUTURE = ['Hillside Mansion', 'Stadium Tour'];
-// pacing (Hype on): apartment ~11m, studio ~35m, loft ~55m, pro ~75m; all 6 maps ~6 hours. Each album makes the next tour faster
+const FUTURE = [];
+// stations sit on one shared grid (left/right column, two rows). The top row clears the corner buttons;
+// the bottom row splits the remaining floor evenly with the couch, and tall screens get a taller room instead of empty floor.
+const COL_L = 24, COL_R = 366;
+let roomExtra = 0;   // extra room height on tall screens, in stage pixels
+LOCATIONS.forEach(l => l.stations.forEach((st, i) => { st.slot = i; st.pos0 = st.pos; st.spot0 = st.spot; }));
+// the couch row keeps clear of the Hype button, which pokes up into the bottom of the room
+const couchShift = () => Math.max(0, roomExtra - 44);
+function rows() { const r1 = 166, g = Math.max(24, (528 + couchShift() - r1 - 132 - 162) / 2); return { r1, r2: r1 + 132 + g, mid: r1 + 132 + g / 2 }; }
+function placeStations(loc) {
+  const Rw = rows();
+  loc.stations.forEach(st => { const [ox, oy, w, h] = st.pos0, nx = st.slot % 2 ? COL_R - w : COL_L, ny = st.slot < 2 ? Rw.r1 : Rw.r2;
+    st.pos = [nx, ny, w, h]; st.spot = [st.spot0[0] + nx - ox, st.spot0[1] + ny - oy]; });
+  loc.home = [160, Rw.mid - 78];
+}
+// pacing (Hype on): apartment ~11m, studio ~35m, loft ~55m, pro ~75m, mansion ~80m, stadium ~100m; all 6 maps ~6 hours. Each album makes the next tour faster
 // an album drops only after the whole tour: you must reach the last map and hit its goal
 const GEMS_PER_ALBUM = 50;
 const lastLoc = () => LOCATIONS.length - 1;
@@ -927,7 +1049,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 44, CONTACT = 'elicosand@gmail.com';
+const BUILD = 46, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -979,6 +1101,8 @@ const GOALS = [
   { id: 'earn10m', text: 'Earn $10M in total', target: 1e7, val: () => S.stats.lifetime, gems: 20, money: true },
   { id: 'move2', text: 'Move into the Downtown Loft', target: 2, val: () => S.maxLoc || 0, gems: 30 },
   { id: 'move3', text: 'Move into the Pro Studio', target: 3, val: () => S.maxLoc || 0, gems: 40 },
+  { id: 'move4', text: 'Move into the Hillside Mansion', target: 4, val: () => S.maxLoc || 0, gems: 50 },
+  { id: 'move5', text: 'Reach the Stadium Tour', target: 5, val: () => S.maxLoc || 0, gems: 60 },
   { id: 'album1', text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
   { id: 'lv100', text: 'Get any station to Lv 100', target: 100, val: () => S.stats.maxLevel, gems: 30 },
   { id: 'album3', text: 'Drop 3 albums', target: 3, val: () => S.albums || 0, gems: 50 },
@@ -1257,7 +1381,7 @@ const movePct = () => Math.min(100, S.earned / LOC().goal * 100);
 
 function fmt(n) {
   if (n < 1000) return '$' + (n < 10 && n % 1 ? n.toFixed(1).replace(/\.0$/, '') : Math.floor(n));
-  const u = ['K', 'M', 'B', 'T', 'Qa', 'Qi'];
+  const u = ['K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'Ud', 'Dd'];
   let i = -1; while (n >= 1000 && i < u.length - 1) { n /= 1000; i++; }
   const t = n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2);
   return '$' + (t.includes('.') ? t.replace(/\.?0+$/, '') : t) + u[i];   // 14.0B -> 14B, 1.50K -> 1.5K
@@ -1282,6 +1406,7 @@ function buildRoom() {
   wrap.style.setProperty('--floor', loc.floor);
   wrap.dataset.plank = loc.plank; wrap.dataset.wall = loc.wall; fit();
   if (shownLoc !== S.loc) { shownLoc = S.loc; showLocTitle(); }
+  placeStations(loc);
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
     return `<button class="station" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
@@ -1296,6 +1421,14 @@ function buildRoom() {
     const [l, t, w, h] = st.pos;
     return `<div class="crew" id="crew-${st.id}" style="left:${l + w / 2 - 31 + (l > 180 ? 16 : 0)}px;top:${t + h - 58}px" hidden>${crewFigure(loc.id + st.id)}</div>`;
   }).join('');
+  // decor follows the layout: the middle rug sits between the rows, the couch area stays at the bottom, walls stretch
+  const Rw = rows();
+  $('roomArt').querySelectorAll(':scope > .abs').forEach(el => {
+    const t = parseFloat(el.style.top) || 0, h = parseFloat(el.style.height) || 0;
+    if (el.classList.contains('mid')) el.style.top = (t - 289 + Rw.mid) + 'px';
+    else if (h >= 400) el.style.height = (h + roomExtra) + 'px';
+    else if (t >= 470 && h > 3) el.style.top = (t + couchShift()) + 'px';
+  });
   els = {};
   loc.stations.forEach(st => {
     const b = $('st-' + st.id);
@@ -1311,6 +1444,9 @@ function fit() {
   const r = wrap.getBoundingClientRect();
   const s = Math.min(r.width / 390, r.height / 600);
   stage.style.transform = `translate(-50%, 0) scale(${s})`;
+  const extra = Math.max(0, Math.round(r.height / s - 600));
+  stage.style.height = (600 + extra) + 'px';
+  if (Math.abs(extra - roomExtra) > 4) { roomExtra = extra; if (S && LOC()) return buildRoom(); }
   // the floor keeps its planks below the room when the screen is taller than the room
   const wall = wrap.dataset.wall || 'transparent', pl = wrap.dataset.plank || 'rgba(0,0,0,.1)', tile = Math.max(8, Math.round(40 * s)), line = Math.max(1, Math.round(2 * s));
   const wh = Math.round(92 * s);
