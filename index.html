@@ -303,6 +303,10 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 @keyframes loctitle { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.96); } 15%, 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -6px); } }
 .card .amount { font: 400 20px var(--display); color: var(--deep); text-align: center; padding-bottom: 6px; }
 .gemcard .art { height: 112px; }
+.test-chip { position: absolute; left: 50%; top: 88px; transform: translateX(-50%); z-index: 6; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 999px; pointer-events: none; }
+.speeds { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.testsec { border: 2px dashed #F0453A; border-radius: 16px; padding: 12px; }
+.crewart { display: grid; place-items: center; transform: scale(1.3); }
 .gemcard { animation: gemglow 3s ease-in-out infinite; }
 @keyframes gemglow { 50% { box-shadow: 0 4px 0 rgba(20,18,42,.35), 0 0 20px rgba(139,240,160,.75); } }
 .gemcard .rays { position: absolute; left: 50%; top: 56%; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; pointer-events: none;
@@ -500,6 +504,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
   </header>
 
   <div class="room-wrap" id="roomWrap">
+    <div class="test-chip" id="testChip" hidden>TEST MODE</div>
     <div class="loc-title" id="locTitle" hidden><b id="locTitleName"></b><span id="locTitleSub"></span></div>
     <div class="side side-l">
       <button class="sbtn crate" id="crateBtn" aria-label="Free crate">
@@ -922,7 +927,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 400, bonus: 0.25, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 43, CONTACT = 'elicosand@gmail.com';
+const BUILD = 44, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1020,6 +1025,7 @@ const OFFERS = {
   goldenMic: { name: 'Golden Mic', sub: 'Permanent 2x income on everything', money: '$4.99', once: true },
   starter: { name: 'Starter Pack', sub: 'A one-time deal for new artists', money: '$2.99', once: true },
   adFree: { name: 'Ad-Free Rewards', sub: 'Get every ad reward instantly, forever', money: '$6.99', once: true },
+  autoCrew: { name: 'Day-One Crew', sub: 'Your first station runs itself on every map, forever', money: '$2.99', once: true },
   monitors: { name: 'Pro Monitors', sub: 'Permanent +50% income', gems: 400, once: true },
   nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
   skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
@@ -1189,7 +1195,9 @@ function dailyCash(minutes) {
   const best = LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), first.base * fame() / first.cycle);
   return Math.round(Math.max(perSec(), best) * 60 * minutes);
 }
-const KEY = 'artist-tycoon-v1';   // save key kept so existing progress carries over
+const TEST = (() => { try { return localStorage.getItem('sh-test') === '1'; } catch (e) { return false; } })();
+// test mode plays on its own save, so the real career and The Charts are never touched
+const KEY = TEST ? 'artist-tycoon-test' : 'artist-tycoon-v1';   // save key kept so existing progress carries over
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
@@ -1421,7 +1429,7 @@ function payAdGems() {
 const adGemNote = () => adGemsLeft() > 0 ? `+${AD_GEMS} gems per ad · ${adGemsLeft()} left today` : 'Ad gems are maxed for today';
 function watchAd(onDone) {
   clearInterval(adTimer);
-  const done = () => { const g = payAdGems(); onDone(); if (g) setTimeout(() => toast('Ad reward' + g), 50); };
+  const done = () => { track('ad-watched'); const g = payAdGems(); onDone(); if (g) setTimeout(() => toast('Ad reward' + g), 50); };
   if (S.perks.adFree) { done(); return; }
   let left = AD_SECONDS;
   openSheet(`<div class="welcome"><span class="lbl">Ad plays here</span><span class="amt" id="adCount">${left}</span>
@@ -1435,7 +1443,7 @@ function watchAd(onDone) {
   }, 1000);
 }
 $('dailyBtn').addEventListener('click', () => openTab('daily'));
-$('tutSkip').addEventListener('click', () => { S.tut = TUT.length; save(); updateTut(); });
+$('tutSkip').addEventListener('click', () => { S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
@@ -1457,6 +1465,12 @@ $('chartsBtn').addEventListener('click', () => { openTab('charts'); refreshChart
 $('mult').addEventListener('click', () => openTab('boosts'));
 $('settings').addEventListener('click', () => openTab('settings'));
 
+// Day-One Crew: the first station of a fresh map already has its crew
+function applyAutoCrew() {
+  if (!S.perks.autoCrew) return;
+  const first = LOC().stations[0];
+  if (lvl(first.id) && !S.crew[first.id]) { S.crew[first.id] = true; S.running[first.id] = true; }
+}
 function moveUp() {
   const next = S.loc + 1;
   if (!LOCATIONS[next] || movePct() < 100) return;
@@ -1466,7 +1480,8 @@ function moveUp() {
   S.maxLoc = Math.max(S.maxLoc || 0, next);
   S.stats.lifetime = Math.max(S.stats.lifetime, 0);
   let gems = 0;
-  if (firstTime) { gems = MAP_GEMS[cleared] || 0; S.gems += gems; S.mapPaid = next; }
+  if (firstTime) { gems = MAP_GEMS[cleared] || 0; S.gems += gems; S.mapPaid = next; track(`reach/${LOC().id}/${hrs(S.stats.playSec)}`); }
+  applyAutoCrew();
   buildRoom(); save(); render(); sfx(firstTime ? 'bling' : 'move'); syncChart(true);
   const loc = LOC();
   openSheet(`<div class="welcome"><h2>Welcome to the ${loc.name}</h2>
@@ -1485,6 +1500,8 @@ function dropAlbum() {
   if (runTime > 0 && (!S.stats.fastestAlbum || runTime < S.stats.fastestAlbum)) S.stats.fastestAlbum = runTime;
   S.runPlay = S.stats.playSec;
   Object.assign(S, runState(0));
+  applyAutoCrew();
+  track(`album/${Math.min(S.albums, 10)}${S.albums > 10 ? '+' : ''}/${hrs(S.stats.playSec)}`);
   const it = ITEMS.find(i => i.album === S.albums);
   S.gems += GEMS_PER_ALBUM;
   if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; }
@@ -1514,12 +1531,15 @@ function openSheet(html) {
   if (refresh) return;
   const c = sh.querySelector('[data-close]'); if (c) c.focus({ preventScroll: true });
 }
+let buildTaps = 0;
 let pendingDaily = false, pendingBonus = 0, pendingWelcome = false;
 function grant(id) {
   const o = OFFERS[id]; if (!o) return;
   if (o.once) S.perks[id] = true;
   if (o.gemsOut) S.gems += o.gemsOut;
   if (o.skip) { const v = skipValue(o.skip); earn(v); toast('+' + fmt(v) + ' from the time skip'); }
+  if (id === 'autoCrew') { applyAutoCrew(); buildRoom(); }
+  track('buy/' + id);
   if (id === 'starter') { S.owned.flame = true; S.gems += 300; const v = skipValue(4 * 3600); earn(v); }
   if (!o.skip) toast(o.name + (o.gemsOut ? ' added' : ' unlocked'));
   sfx(o.gemsOut ? 'gems' : 'bling'); save(); render();
@@ -1558,7 +1578,7 @@ $('scrim').addEventListener('click', e => {
     if (raw.length < 2) { sfx('denied'); toast('Pick a name with at least 2 letters'); $('welcomeName').focus(); return; }
     const clean = cleanName(raw);
     if (clean !== raw.slice(0, 16)) { sfx('denied'); toast("That name isn't allowed. Try another"); return; }
-    S.name = clean; S.country = $('welcomeCountry').value || null; S.onboarded = true; save();
+    S.name = clean; S.country = $('welcomeCountry').value || null; S.onboarded = true; save(); track('onboarded');
     sfx('bling'); closeSheet(); toast('Welcome, ' + clean + '!'); syncChart(true); return;
   }
   const ct = e.target.closest('[data-ctab]');
@@ -1603,13 +1623,13 @@ $('scrim').addEventListener('click', e => {
     if (S.owned[it.id]) { if (S.equip[it.slot] === it.id) { if (it.slot !== 'top') S.equip[it.slot] = null; } else S.equip[it.slot] = it.id; applyLook(); save(); render(); sfx('tap'); return openTab('style'); }
     if (it.album) { sfx('denied'); toast(`Unlocks when you drop album ${it.album}`); return; }
     if (S.gems < it.gems) { sfx('denied'); toast('Not enough gems'); return; }
-    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); save(); render(); return openTab('style'); }
+    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); track('item/' + it.id); save(); render(); return openTab('style'); }
   const rn = e.target.closest('[data-rename]');
   if (rn) { renameFrom = rn.dataset.from || 'style'; return openTab('rename'); }
   if (e.target.closest('[data-save-name]')) { const v = ($('artistNameInput').value || '').trim().slice(0, 16); const clean = cleanName(v); S.name = clean;
     save(); toast(clean !== (v || 'New Artist') ? "That name isn't allowed" : 'Name saved'); syncChart(true); return openTab(renameFrom); }
   const bi = e.target.closest('[data-buy-item]');
-  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
+  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; track('item/' + it.id); S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
   const bo = e.target.closest('[data-buy]');
   if (bo && !bo.disabled) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
@@ -1624,7 +1644,14 @@ $('scrim').addEventListener('click', e => {
   if (e.target.closest('[data-album-ask]')) return openTab('album-confirm');
   if (e.target.closest('[data-album]')) return dropAlbum();
   if (e.target.closest('[data-reset-ask]')) return openTab('reset');
-  if (e.target.closest('[data-reset]')) { S = fresh(); S.tut = 0; tutShownAt = 0; applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
+  if (e.target.closest('[data-build-tap]') && !TEST) { buildTaps = (buildTaps || 0) + 1; if (buildTaps >= 5) { buildTaps = 0; return openTab('test-ask'); } return; }
+  if (e.target.closest('[data-test-enter]')) { save(); try { localStorage.setItem('sh-test', '1'); } catch (err) {} location.reload(); return; }
+  if (e.target.closest('[data-test-exit]')) { save(); try { localStorage.removeItem('sh-test'); } catch (err) {} location.reload(); return; }
+  const tsp = e.target.closest('[data-test-speed]');
+  if (tsp) { S.test.speed = +tsp.dataset.testSpeed; save(); render(); return openTab('settings'); }
+  if (e.target.closest('[data-test-hype]')) { S.test.hype = !S.test.hype; if (!S.test.hype) S.hypeUntil = 0; save(); render(); return openTab('settings'); }
+  if (e.target.closest('[data-test-gems]')) { S.gems += 1000; sfx('gems'); save(); render(); return openTab('settings'); }
+  if (e.target.closest('[data-reset]')) { S = fresh(); if (TEST) Object.assign(S, { test: { speed: 10, hype: true }, onboarded: true, name: 'Test Artist' }); S.tut = 0; tutShownAt = 0; applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
 });
 $('scrim').addEventListener('change', e => {
   if (e.target.id === 'countrySel') { S.country = e.target.value || null; save(); syncChart(true).then(() => { if (Charts.tab === 'country') loadChart().then(() => openTab('charts')); }); toast('Country saved'); }
@@ -1878,6 +1905,23 @@ const newCode = () => Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ2
 
 // inside the Claude preview, outside connections are blocked
 const inPreview = !!window.claude || /claude/i.test(location.hostname);
+// ---------- play tracking: anonymous event counts in GoatCounter (no cookies, nothing personal) ----------
+const GOAT = 'studiohustle';
+const trackQueue = [];
+function track(path) {
+  if (TEST || inPreview || !GOAT) return;
+  const send = () => window.goatcounter.count({ path: 'event/' + path, title: path, event: true });
+  try { if (window.goatcounter && window.goatcounter.count) send(); else trackQueue.push(path); } catch (e) {}
+}
+function startTracking() {
+  if (TEST || inPreview || !GOAT) return;
+  const sc = document.createElement('script');
+  sc.async = true; sc.src = 'https://gc.zgo.at/count.js'; sc.dataset.goatcounter = `https://${GOAT}.goatcounter.com/count`;
+  sc.onload = () => { const q = trackQueue.splice(0); setTimeout(() => q.forEach(track), 500); };
+  document.head.appendChild(sc);
+}
+// play time as a bucket, so pacing can be read without tracking anyone individually
+const hrs = sec => { const m = sec / 60; return m < 15 ? '0-15m' : m < 30 ? '15-30m' : m < 60 ? '30-60m' : m < 120 ? '1-2h' : m < 180 ? '2-3h' : m < 240 ? '3-4h' : m < 360 ? '4-6h' : m < 480 ? '6-8h' : m < 720 ? '8-12h' : '12h+'; };
 const why = d => (d && (d.msg || d.message || d.error_description || d.error)) || '';
 const Charts = { syncError: '', tab: 'global', rows: [], rank: null, total: null, status: 'idle', lastSync: 0, busy: false };
 function cloud() {   // fills in missing fields on the same object so every caller shares one session
@@ -1910,6 +1954,7 @@ function setSession(d) { const c = cloud(); c.at = d.access_token; c.rt = d.refr
 
 // push this player's row; the server only accepts +5 albums per save, so big jumps catch up over a few syncs
 async function syncChart(force) {
+  if (TEST) { Charts.syncError = 'test mode never posts to The Charts'; return; }
   const c = cloud();
   if (Charts.busy) { if (force) Charts.again = true; return; }   // a change came in mid-save: save again right after
   if (!force && Date.now() - Charts.lastSync < 20000) return;
@@ -2168,6 +2213,7 @@ function openTab(tab) {
       ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
       ${offer('starter', ART.gift(), '#FF9CC8', 'x10 value', '<span>Flame Hoodie</span><span>300 gems</span><span>4h of cash</span>')}
       ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
+      ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', 'Hands-free', '<span>No tapping</span><span>Every map</span><span>Forever</span>')}
       <div class="banner">Time skips & boosts</div>
       <div class="cards">
         ${card('skip1', ART.clock(1), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold')}
@@ -2290,9 +2336,19 @@ function openTab(tab) {
         <div class="row"><span class="rt"><span class="email" id="fbEmail">${CONTACT}</span></span><button class="hire" data-copy-email>Copy</button></div>
         <a class="ghost" href="mailto:${CONTACT}?subject=Studio%20Hustle%20feedback%20(Build%20${BUILD})" style="display:grid;place-items:center;text-decoration:none;color:var(--text)">Open email app</a>
       </div>
-      <p>Studio Hustle · Build ${BUILD} · Music by Elijah Gray</p>
+      ${TEST ? `<div class="sec testsec"><h3>Test mode <small class="h3note">separate save</small></h3>
+        <p>Your real career is safe. Nothing here posts to The Charts or play tracking.</p>
+        <div class="speeds">${[1, 10, 50, 200].map(n => `<button class="stab ${(S.test.speed || 1) === n ? 'on' : ''}" data-test-speed="${n}">${n}x</button>`).join('')}</div>
+        <div class="row"><span class="rt"><b>Hype always on</b><span>${S.test.hype ? 'On' : 'Off'}</span></span><button class="hire" data-test-hype>${S.test.hype ? 'Turn off' : 'Turn on'}</button></div>
+        <div class="row"><span class="rt"><b>Free gems</b><span>For trying the shop</span></span><button class="hire" data-test-gems>+1,000</button></div>
+        <button class="ghost" data-test-exit>Back to my real career</button></div>` : ''}
+      <p data-build-tap>Studio Hustle · Build ${BUILD} · Music by Elijah Gray</p>
       <p>Progress saves in this browser. Starting over wipes everything, including albums and fame.</p>
       <button class="ghost" data-reset-ask>Start a new career</button>`);
+  } else if (tab === 'test-ask') {
+    openSheet(`<div class="sheet-head"><h2>Test mode</h2>${closeBtn()}</div>
+      <p>A separate practice career for checking pacing. Speed the game up to 200x and keep Hype on. Your real save, The Charts and play tracking are untouched, and you can switch back any time in Settings.</p>
+      <button class="cta" data-test-enter>Enter test mode</button><button class="ghost" data-close>Cancel</button>`);
   } else if (tab === 'reset') {
     openSheet(`<div class="sheet-head"><h2>Start over?</h2>${closeBtn()}</div>
       <p>This erases all progress in this browser and can't be undone.</p>
@@ -2349,7 +2405,8 @@ function render() {
   $('upBtn').disabled = S.cash < plan.cost;
   $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
   $('dailyDot').hidden = !dailyReady();
-  if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; }
+  if (TEST) $('testChip').textContent = `TEST · ${S.test.speed}x${S.test.hype ? ' · Hype' : ''}`;
+  if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; if (S.stats.days <= 30) track('days-played/' + S.stats.days); }
   $('goalsDot').hidden = !(activeGoals().some(goalReady) || tasksClaimable());
   $('crewBang').hidden = !LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= x.crewCost);
   $('styleBang').hidden = !(S.newItems && S.newItems.length);
@@ -2375,7 +2432,9 @@ const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) +
 let lastT = performance.now(), acc = 0, saveAcc = 0, chartAcc = 170;
 const floatGate = {};
 function tick(t) {
-  const dt = Math.min(0.25, (t - lastT) / 1000); lastT = t;
+  const realDt = Math.min(0.25, (t - lastT) / 1000); lastT = t;
+  const dt = TEST ? realDt * ((S.test && S.test.speed) || 1) : realDt;
+  if (TEST && S.test && S.test.hype && S.hypeUntil < Date.now() + 60000) S.hypeUntil = Date.now() + 3600000;
   LOC().stations.forEach(st => {
     if (!lvl(st.id) || !els[st.id]) return;
     const auto = !!S.crew[st.id];
@@ -2393,10 +2452,10 @@ function tick(t) {
     }
     els[st.id].bar.style.width = (Math.min(1, S.prog[st.id]) * 100) + '%';
   });
-  acc += dt; saveAcc += dt; S.stats.playSec += dt;
+  acc += realDt; saveAcc += realDt; S.stats.playSec += dt;
   if (acc > 0.1) { render(); acc = 0; }
   if (saveAcc > 5) { save(); saveAcc = 0; }
-  chartAcc += dt; if (chartAcc > 180) { chartAcc = 0; syncChart(); }
+  chartAcc += realDt; if (chartAcc > 180) { chartAcc = 0; syncChart(); }
   requestAnimationFrame(tick);
 }
 
@@ -2428,6 +2487,7 @@ function start(data) {
   S.equip = Object.assign({ top: 'basic', hat: null, neck: null, face: null }, S.equip);
   S.stats = Object.assign({ upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, S.stats);
   S.goalsDone = S.goalsDone || {};
+  if (TEST) { S.test = Object.assign({ speed: 10, hype: true }, S.test); if (!S.onboarded) { S.onboarded = true; S.name = 'Test Artist'; } $('testChip').hidden = false; }
   if (S.runPlay == null) S.runPlay = S.stats.playSec;
   ITEMS.forEach(i => { if (i.album && i.album <= (S.albums || 0)) S.owned[i.id] = true; });
   if (!Array.isArray(S.clears)) S.clears = LOCATIONS.map((_, i) => i < (S.maxLoc || 0) ? Math.max(1, (S.albums || 0) + (i < S.loc ? 1 : 0)) : 0);
@@ -2444,7 +2504,7 @@ function start(data) {
     else if (dailyReady()) { if ($('scrim').hidden) openTab('daily'); else pendingDaily = true; }
     if (S.onboarded) setTimeout(() => syncChart(true), 1500);
   }
-  render(); save();
+  render(); save(); startTracking();
   requestAnimationFrame(t => { lastT = t; requestAnimationFrame(tick); });
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); else if (S && S.onboarded) syncChart(); });
