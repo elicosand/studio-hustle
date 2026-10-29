@@ -387,6 +387,12 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .charts-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .charts-tabs .stab { font-size: 12px; font-weight: 700; }
 .chartme { border: 2px solid var(--gem); }
+.buyart { display: grid; place-items: center; height: 120px; border-radius: 18px; background: #EEF7FC; }
+.buywhat { text-align: center; margin: 0; }
+.buycost i.g { width: 22px; height: 22px; }
+.buycost { display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--panel-2); border-radius: 16px; padding: 12px; }
+.buycost > span { font-size: 12px; color: var(--muted); font-weight: 700; }
+.buycost b { display: flex; align-items: center; gap: 6px; font: 400 26px var(--display); color: var(--gem); }
 .fbq { display: flex; flex-direction: column; gap: 8px; }
 .fbopts { display: flex; gap: 6px; } .fbo { flex: 1; min-width: 0; height: 42px; border-radius: 12px; background: var(--panel-2); color: var(--text); font-weight: 800; font-size: 14px; border: 2px solid transparent; }
 .fbo.on { background: var(--text); color: var(--deep); border-color: var(--gem); }
@@ -1071,7 +1077,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 56, CONTACT = 'elicosand@gmail.com';
+const BUILD = 58, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1734,6 +1740,7 @@ function claimDaily() {
     <button class="cta" data-close>Nice</button>`);
 }
 $('scrim').addEventListener('click', e => {
+  if ((e.target === $('scrim') || e.target.closest('[data-close]')) && sheetKey === 'confirm-buy') { const pb = pendingBuy; pendingBuy = null; return pb ? backFromBuy(pb) : closeSheet(); }
   if ((e.target === $('scrim') || e.target.closest('[data-close]')) && sheetKey !== 'welcome') return closeSheet();
   const hire = e.target.closest('[data-hire]');
   if (hire) {
@@ -1764,8 +1771,10 @@ $('scrim').addEventListener('click', e => {
   if (e.target.closest('[data-copy-code]')) { const code = cloud().code; try { navigator.clipboard.writeText(code).then(() => toast('Code copied'), () => toast('Your code: ' + code)); } catch (err) { toast('Your code: ' + code); } return; }
   const hu = e.target.closest('[data-hup]');
   if (hu) { const key = hu.dataset.hup, lv = hypeLv(), costs = key === 'len' ? HYPE_LEN_COST : HYPE_CAP_COST, c = costs[lv[key]];
-    if (c != null && S.gems >= c) { S.gems -= c; lv[key]++; S.hypeLv = lv; sfx('unlock'); toast(key === 'len' ? `Each ad now gives ${HYPE_LEN[lv.len]} minutes` : `Hype now stacks up to ${capText()}`); save(); render(); }
-    return openTab('hype'); }
+    if (c == null) return;
+    if (S.gems < c) { sfx('denied'); toast('Not enough gems'); return; }
+    return askBuy(key === 'len' ? 'Longer Hype' : 'Bigger Hype cap', key === 'len' ? `Each ad gives ${HYPE_LEN[lv.len + 1]} minutes instead of ${HYPE_LEN[lv.len]}` : `Hype stacks up to ${HYPE_CAPS[lv.cap + 1]} hours instead of ${HYPE_CAPS[lv.cap]}`, c, svgIc(key === 'len' ? 'star' : 'monitor', '#FF6FAE', 56),
+      () => { const l2 = hypeLv(); if (S.gems < c || l2[key] !== lv[key]) return; S.gems -= c; l2[key]++; S.hypeLv = l2; sfx('unlock'); toast(key === 'len' ? `Each ad now gives ${HYPE_LEN[l2.len]} minutes` : `Hype now stacks up to ${capText()}`); save(); render(); }, 'hype'); }
   if (e.target.closest('[data-copy-email]')) {
     const sel = () => { const r = document.createRange(); r.selectNodeContents($('fbEmail')); const s2 = getSelection(); s2.removeAllRanges(); s2.addRange(r); toast('Email selected. Copy it from the menu'); };
     try { navigator.clipboard.writeText(CONTACT).then(() => toast('Email copied'), sel); } catch (err) { sel(); }
@@ -1799,18 +1808,23 @@ $('scrim').addEventListener('click', e => {
     if (S.owned[it.id]) { if (S.equip[it.slot] === it.id) { if (it.slot !== 'top') S.equip[it.slot] = null; } else S.equip[it.slot] = it.id; applyLook(); save(); render(); sfx('tap'); return openTab('style'); }
     if (it.album) { sfx('denied'); toast(`Unlocks when you drop album ${it.album}`); return; }
     if (S.gems < it.gems) { sfx('denied'); toast('Not enough gems'); return; }
-    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); track('item/' + it.id); save(); render(); return openTab('style'); }
+    return askItem(it, 'style'); }
   const rn = e.target.closest('[data-rename]');
   if (rn) { renameFrom = rn.dataset.from || 'style'; return openTab('rename'); }
   if (e.target.closest('[data-save-name]')) { const v = ($('artistNameInput').value || '').trim().slice(0, 16); const clean = cleanName(v); S.name = clean;
     save(); toast(clean !== (v || 'New Artist') ? "That name isn't allowed" : 'Name saved'); syncChart(true); return openTab(renameFrom); }
   const bi = e.target.closest('[data-buy-item]');
-  if (bi) { const it = itemById(bi.dataset.buyItem); if (it && !S.owned[it.id]) { if (S.gems >= (it.gems || 0)) { S.gems -= it.gems; S.owned[it.id] = true; track('item/' + it.id); S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); save(); render(); } else { sfx('denied'); toast('Not enough gems'); } } return openTab(bi.dataset.from || 'style'); }
+  if (bi) { const it = itemById(bi.dataset.buyItem); if (!it || S.owned[it.id]) return openTab(bi.dataset.from || 'style');
+    if (S.gems < (it.gems || 0)) { sfx('denied'); toast('Not enough gems'); return; }
+    return askItem(it, bi.dataset.from || 'style'); }
   const bo = e.target.closest('[data-buy]');
   if (bo && !bo.disabled) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
     if (S.gems < o.gems) { sfx('denied'); toast('Not enough gems'); return; }
-    S.gems -= o.gems; grant(id); return openTab('shop'); }
+    const art = { skip1: ART.clock(1), skip4: ART.clock(4), monitors: ART.monitors(), nightOwl: ART.moon() }[id] || '';
+    return askBuy(o.name, o.skip ? `Instant ${fmt(skipValue(o.skip))} cash` : o.sub, o.gems, art, () => { if (S.gems < o.gems || (o.once && S.perks[id])) return; S.gems -= o.gems; grant(id); }, 'shop'); }
+  if (e.target.closest('[data-confirm-buy]')) { const pb = pendingBuy; pendingBuy = null; if (pb) { pb.run(); return backFromBuy(pb); } return closeSheet(); }
+  if (e.target.closest('[data-cancel-buy]')) { const pb = pendingBuy; pendingBuy = null; return pb ? backFromBuy(pb) : closeSheet(); }
   const it2 = e.target.closest('[data-intent]');
   if (it2) { const id = it2.dataset.intent, v = it2.dataset.v; S.intent = Object.assign({}, S.intent, { [id]: v }); save(); track(`would-buy/${id}/${v.toLowerCase()}`); sfx('tap');
     it2.parentNode.querySelectorAll('.fbo').forEach(b => b.classList.toggle('on', b === it2)); toast('Thanks! That helps a lot'); return; }
@@ -1958,8 +1972,10 @@ function crewFigure(id) {
   let h = 2166136261; for (const c of id) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }   // FNV-1a seed
   const rnd = () => { h = (h + 0x6D2B79F5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   const pick = arr => arr[Math.floor(rnd() * arr.length)];
-  return miniFigure({ body: pick(CREW_SHIRTS), trim: 'rgba(0,0,0,.2)', style: 'tee', skin: pick(SKINS), hair: pick(CREW_HAIR), pants: pick(CREW_PANTS),
-    beanie: rnd() < 0.45 ? pick(CREW_BEANIES) : null }, 62, 83);
+  const body = pick(CREW_SHIRTS), skin = pick(SKINS), hair = pick(CREW_HAIR), pants = pick(CREW_PANTS), hatRoll = rnd(), hatColor = pick(CREW_BEANIES);
+  return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants,
+    beanie: hatRoll >= 1 / 3 && hatRoll < 2 / 3 ? hatColor : null,
+    hat: hatRoll >= 2 / 3 ? { style: 'cap', color: hatColor, brim: hatColor } : null }, 62, 83);
 }
 function bigArtist(eq = S.equip) {
   const t = lookOf(eq, 'top') || itemById('basic').look, hat = lookOf(eq, 'hat'), neck = lookOf(eq, 'neck'), face = lookOf(eq, 'face');
@@ -2582,6 +2598,14 @@ function openTab(tab) {
         : `<textarea id="fb-${x.k}" class="fbtext" data-fbt="${x.k}" rows="2" maxlength="400" placeholder="${x.text}">${esc(d[x.k] || '')}</textarea>`}</div>`).join('')}
       <button class="cta" data-fb-send>Send feedback</button>
       ${S.fbPrompted && !S.fbSent ? '<button class="ghost" data-close>Maybe later</button>' : ''}`);
+  } else if (tab === 'confirm-buy') {
+    const pb = pendingBuy; if (!pb) return closeSheet();
+    openSheet(`<div class="sheet-head"><h2>Buy ${esc(pb.name)}?</h2>${closeBtn()}</div>
+      ${pb.art ? `<div class="buyart">${pb.art}</div>` : ''}
+      <p class="buywhat">${pb.what}</p>
+      <div class="buycost"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · ${(S.gems - pb.gems).toLocaleString()} left after</span></div>
+      <button class="cta" data-confirm-buy>Buy for ${pb.gems.toLocaleString()} gems</button>
+      <button class="ghost" data-cancel-buy>Cancel</button>`);
   } else if (tab === 'test-ask') {
     openSheet(`<div class="sheet-head"><h2>Test mode</h2>${closeBtn()}</div>
       <p>A separate practice career for checking pacing. Speed the game up to 200x and keep Hype on. Your real save, The Charts and play tracking are untouched, and you can switch back any time in Settings.</p>
@@ -2694,6 +2718,22 @@ function redeem(raw) {
       <button class="cta" data-equip="founder" data-then="close">Wear it</button><button class="ghost" data-close>Later</button>`);
   }
 }
+
+// ---------- "are you sure?" before spending gems ----------
+function backFromBuy(pb) { openTab(pb.back); $('sheet').scrollTop = pb.scroll || 0; }
+let pendingBuy = null;
+function askBuy(name, what, gems, art, run, back) {
+  pendingBuy = { name, what, gems, art, run, back, scroll: $('scrim').hidden ? 0 : $('sheet').scrollTop };
+  openTab('confirm-buy');
+}
+function askItem(it, back) {
+  const [rn, rc] = rarity(it);
+  askBuy(it.name, `<b style="color:${rc}">${rn}</b> ${slotLabel(it.slot)} · +${Math.round(it.bonus * 100)}% income`, it.gems, itemArt(it, 96), () => {
+    if (S.owned[it.id] || S.gems < it.gems) return;
+    S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); track('item/' + it.id); save(); render();
+  }, back);
+}
+const slotLabel = sl => ({ top: 'top', hat: 'hat', neck: 'necklace', face: 'glasses' })[sl] || '';
 // ---------- loop ----------
 let lastT = performance.now(), acc = 0, saveAcc = 0, chartAcc = 170;
 const floatGate = {};
