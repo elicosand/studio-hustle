@@ -367,6 +367,8 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .best .bt { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .best em { font-style: normal; font-weight: 800; }
 .ttl { font-weight: 800; } .statgrid .ttl { font: 400 17px var(--display); }
 .prof-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: -4px; }
+.ptags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.founder-pill { font: 400 12px var(--display); color: #14122A; background: linear-gradient(135deg, #FFE27A, #FFB938); border-radius: 999px; padding: 4px 10px; box-shadow: 0 0 10px rgba(255,201,74,.55); }
 .ttl-pill { font: 400 14px var(--display); border: 2px solid; border-radius: 999px; padding: 4px 12px; }
 .prof-art { min-height: 0; padding-block: 14px 4px; }
 .plaques { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
@@ -460,6 +462,7 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .cta.pink { background: var(--accent); box-shadow: 0 3px 0 #B84778; }
 .ghost { height: 50px; border-radius: 16px; background: var(--panel-2); font-size: 15px; font-weight: 700; flex: none; }
 .welcome { display: flex; flex-direction: column; gap: 8px; text-align: center; align-items: center; }
+.welcome h2 { font-family: var(--display); font-weight: 400; }
 .welcome .amt { font-family: var(--display); font-size: 36px; color: var(--cash); }
 .sec { display: flex; flex-direction: column; gap: 10px; }
 .sec + .sec { border-top: 1px solid var(--line); padding-top: 14px; }
@@ -1041,6 +1044,7 @@ const ITEMS = [
   { id: 'bucket', rar: 'epic', slot: 'hat', name: 'Bucket Hat', album: 10, bonus: 0.08, look: { color: '#E2D3B0', style: 'bucket' } },
   { id: 'starshades', rar: 'epic', slot: 'face', name: 'Star Shades', album: 20, bonus: 0.08, look: { color: '#FF6FAE', style: 'star' } },
   { id: 'crown', rar: 'mythic', slot: 'hat', name: 'Diamond Crown', album: 30, bonus: 0.25, look: { color: '#FFC94A', style: 'crown' } },
+  { id: 'founder', rar: 'founder', slot: 'top', name: 'Founder Tee', gift: true, bonus: 0, look: { style: 'tee', body: '#7C4FE0', trim: '#FFC94A', graphic: 'founder' } },
   { id: 'mixtape', rar: 'rare', slot: 'top', name: 'Mixtape Tee', album: 2, bonus: 0.04, look: { style: 'tee', body: '#F4F1EA', trim: '#C9C3DE', graphic: 'cassette' } },
   { id: 'latenight', rar: 'epic', slot: 'top', name: 'Late Night Hoodie', album: 4, bonus: 0.08, look: { style: 'hoodie', body: '#2A3570', trim: '#FFC94A', emblem: 'moon' } },
   { id: 'recordpend', rar: 'epic', slot: 'neck', name: 'Gold Record Pendant', album: 7, bonus: 0.09, look: { style: 'record', color: '#C9CED9', pend: '#FFC94A' } },
@@ -1067,7 +1071,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 52, CONTACT = 'elicosand@gmail.com';
+const BUILD = 56, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1141,7 +1145,7 @@ const TASKS = [
   { id: 'ads', text: 'Watch 3 ads of any kind', stat: 'ads', target: 3 },
   { id: 'play', text: 'Play for 15 minutes', stat: 'playSec', target: 900, time: true },
 ];
-const TASK_GEMS = 5, TASK_BONUS = 5;
+const TASK_GEMS = 5, TASK_BONUS = 15;   // finishing all three is worth more than a single ad
 function dailyTasks() {
   const today = dayKey();
   if (!S.dt || S.dt.day !== today) {
@@ -1750,6 +1754,7 @@ $('scrim').addEventListener('click', e => {
   const fbo = e.target.closest('[data-fb]');
   if (fbo) { const d = fbDraft(); d[fbo.dataset.fb] = fbo.dataset.v; save(); fbo.parentNode.querySelectorAll('.fbo').forEach(b => b.classList.toggle('on', b === fbo)); sfx('tap'); return; }
   if (e.target.closest('[data-fb-send]')) { sendFeedback(); return; }
+  if (e.target.closest('[data-redeem]')) { redeem($('codeInput').value); return; }
   const pd = e.target.closest('[data-period]');
   if (pd) { if (Charts.period === pd.dataset.period) return; Charts.period = pd.dataset.period; Charts.status = 'loading'; openTab('charts'); loadChart().then(() => { if (sheetKey === 'charts') openTab('charts'); }); return; }
   const ct = e.target.closest('[data-ctab]');
@@ -1806,6 +1811,9 @@ $('scrim').addEventListener('click', e => {
     if (o.money) return openTab('pay:' + id);
     if (S.gems < o.gems) { sfx('denied'); toast('Not enough gems'); return; }
     S.gems -= o.gems; grant(id); return openTab('shop'); }
+  const it2 = e.target.closest('[data-intent]');
+  if (it2) { const id = it2.dataset.intent, v = it2.dataset.v; S.intent = Object.assign({}, S.intent, { [id]: v }); save(); track(`would-buy/${id}/${v.toLowerCase()}`); sfx('tap');
+    it2.parentNode.querySelectorAll('.fbo').forEach(b => b.classList.toggle('on', b === it2)); toast('Thanks! That helps a lot'); return; }
   const pay = e.target.closest('[data-pay]');
   if (pay) { grant(pay.dataset.pay); return openTab('shop'); }
   const sw = e.target.closest('[data-skin],[data-phones]');
@@ -1827,7 +1835,7 @@ $('scrim').addEventListener('click', e => {
 $('scrim').addEventListener('change', e => {
   if (e.target.id === 'countrySel') { S.country = e.target.value || null; save(); syncChart(true).then(() => { if (Charts.tab === 'country') loadChart().then(() => openTab('charts')); }); toast('Country saved'); }
 });
-$('scrim').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'friendInput') addFriend(e.target.value); });
+$('scrim').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'friendInput') addFriend(e.target.value); if (e.key === 'Enter' && e.target.id === 'codeInput') redeem(e.target.value); });
 $('scrim').addEventListener('input', e => {
   if (e.target.dataset && e.target.dataset.fbt) { fbDraft()[e.target.dataset.fbt] = e.target.value.slice(0, 400); saveSoon(); return; }
   const k = e.target.dataset && e.target.dataset.vol; if (!k) return;
@@ -1860,6 +1868,7 @@ function topExtra(t, ln, sk, big) {
   const K = '#1B1830';
   if (t.style === 'tee') return `<path d="M68 100 Q80 110 92 100" fill="none" stroke="${t.trim}" stroke-width="${big ? 4 : 6}" stroke-linecap="round"></path>` + (t.graphic === 'cassette'
     ? `<rect x="63" y="118" width="34" height="22" rx="3" fill="#FF6FAE" stroke="${K}" stroke-width="2.5"></rect><rect x="68" y="122" width="24" height="7" rx="2" fill="#F4F1EA"></rect><circle cx="72" cy="134" r="3" fill="${K}"></circle><circle cx="88" cy="134" r="3" fill="${K}"></circle><path d="M75 134 H85" stroke="${K}" stroke-width="2"></path>`
+    : t.graphic === 'founder' ? `<circle cx="80" cy="130" r="15" fill="#14122A"></circle><polygon points="${starPts(80, 130, 11)}" fill="#FFC94A" stroke="#14122A" stroke-width="1.5"></polygon><path d="M66 151 H94" stroke="#FFC94A" stroke-width="3" stroke-linecap="round"></path>`
     : t.graphic !== 'tour' ? '' : `<g opacity=".8"><circle cx="80" cy="129" r="14" fill="none" stroke="${t.trim}" stroke-width="3"></circle><polygon points="${starPts(80, 129, 8)}" fill="${t.trim}"></polygon><rect x="65" y="146" width="30" height="4" rx="2" fill="${t.trim}"></rect></g>`);
   if (t.style === 'jersey') return `<path d="M69 99 L80 113 L91 99 Z" ${sk} stroke="${t.trim}" stroke-width="3" stroke-linejoin="round"></path>
     <path d="M57 104 Q64 117 58 130 M103 104 Q96 117 102 130" fill="none" stroke="${t.trim}" stroke-width="3" stroke-linecap="round"></path>`
@@ -2033,7 +2042,7 @@ function plaqueRow(cl) {
 }
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // Common ~+2% · Rare +3–5% · Epic +6–10% · Legendary +12–18% · Mythic +25% and up
-const RARITY = { common: ['Common', '#7F7A99'], rare: ['Rare', '#2F7FE8'], epic: ['Epic', '#7C4FE0'], legendary: ['Legendary', '#E5650F'], mythic: ['Mythic', '#E0307A'] };
+const RARITY = { founder: ['Founder', '#C9871A'], common: ['Common', '#7F7A99'], rare: ['Rare', '#2F7FE8'], epic: ['Epic', '#7C4FE0'], legendary: ['Legendary', '#E5650F'], mythic: ['Mythic', '#E0307A'] };
 const rarity = it => RARITY[it.rar] || RARITY.common;
 const RAR_ORDER = ['common', 'rare', 'epic', 'legendary', 'mythic'];
 // a figure wearing just this item, zoomed on the part it changes
@@ -2187,20 +2196,21 @@ async function loadChart() {
   } catch (e) { Charts.status = 'offline'; }
 }
 // the public profile card: look, maps cleared and a few career stats
-const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.id !== 'basic').sort((a, b) => b.bonus - a.bonus || (b.album ? 1 : 0) - (a.album ? 1 : 0))[0];
+const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.bonus > 0).sort((a, b) => b.bonus - a.bonus || (b.album ? 1 : 0) - (a.album ? 1 : 0))[0];
 function myProfile() {
   const b = bestItem(S.owned);
   return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, fast: Math.round(S.stats.fastestAlbum || 0),
-    clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
+    founder: !!S.owned.founder, clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
 }
 // data from other players is untrusted: keep only known items, colors and plain numbers
 function cleanProfile(p) {
-  if (!p || typeof p !== 'object') return null;
+  // an empty profile means that player hasn't opened a version that shares it yet: show that honestly, not a default look
+  if (!p || typeof p !== 'object' || !p.eq) return null;
   const n = (x, max) => Math.max(0, Math.min(max, Math.floor(+x) || 0)), eq = {};
   for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
   const best = itemById(p.best);
   return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: PHONES.includes(p.ph) ? p.ph : PHONES[0],
-    clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
+    founder: !!p.founder, clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 
 // ---------- playtest feedback: 7 quick questions, saved to the database (email as a fallback) ----------
@@ -2215,7 +2225,7 @@ const FB_QS = [
 ];
 function fbDraft() { if (!S.fb) S.fb = {}; return S.fb; }
 async function sendFeedback() {
-  const answers = Object.assign({}, fbDraft()), meta = { build: BUILD, map: LOC().id, albums: S.albums || 0, minutes: Math.round(S.stats.playSec / 60), days: S.stats.days || 1, test: TEST };
+  const answers = Object.assign({}, fbDraft()), meta = { build: BUILD, map: LOC().id, albums: S.albums || 0, minutes: Math.round(S.stats.playSec / 60), days: S.stats.days || 1, test: TEST, wouldBuy: S.intent || {} };
   if (!Object.keys(answers).length) { toast('Answer at least one question first'); return; }
   try {
     if (inPreview) throw new Error('preview');
@@ -2355,9 +2365,9 @@ function openTab(tab) {
     const maps = [...LOCATIONS.map(l => l.name), ...FUTURE], loc = p ? p.loc : 0, best = p && itemById(p.best);
     const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
     openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
-      <div class="prof-top"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
-      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq)}</div>` : `<p class="cnote">This artist hasn't updated the game yet, so their outfit and stats aren't on the charts.</p>`}
-      <div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>
+      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
+      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq)}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
+      ${p ? `<div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>` : ''}
       <div class="sec"><h3>Career</h3><div class="statgrid">
         <div><b>${albums}</b><span>Albums dropped</span></div>
         <div><b>${fmt(life)}</b><span>Lifetime earnings</span></div>
@@ -2421,7 +2431,7 @@ function openTab(tab) {
         <span class="price">${S.owned[it.id] ? 'Owned' : `<i class="g"></i>${it.gems}`}</span></button>`; };
     const order = ['top', 'hat', 'neck', 'face'];
     openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
-      <p class="testnote">Test mode: real-money items are free in this build.</p>
+      <p class="testnote">${TEST ? 'Test mode: real-money items are free.' : "Playtest: real-money items aren't for sale yet. Tap one to say if you'd buy it."}</p>
       ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
       ${offer('starter', ART.gift(), '#FF9CC8', '2x value', '<span>Flame Hoodie</span><span>450 gems</span><span>4h of cash</span>')}
       ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
@@ -2445,10 +2455,15 @@ function openTab(tab) {
       </div>`);
   } else if (tab.startsWith('pay:')) {
     const id = tab.slice(4), o = OFFERS[id];
-    openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
-      <p>${o.sub}.</p>
-      <div class="keeps"><div><b>Real game</b>Opens the App Store or Google Play checkout for ${o.money}</div><div><b>This build</b>Test purchase. No money is charged.</div></div>
+    if (TEST) return openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
+      <p>${o.sub}.</p><div class="keeps"><div><b>Real game</b>Checkout for ${o.money}</div><div><b>Test mode</b>Free, so you can try it.</div></div>
       <button class="cta" data-pay="${id}">Get it (test)</button><button class="ghost" data-close>Cancel</button>`);
+    const said = (S.intent || {})[id];
+    openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
+      <div class="welcome"><span class="amt">${o.money}</span><p>${o.sub}.</p></div>
+      <p class="cnote">Purchases aren't turned on during the playtest. If this were a real ${o.money} purchase right now, would you buy it?</p>
+      <div class="fbopts">${['Yes', 'Maybe', 'No'].map(v => `<button class="fbo ${said === v ? 'on' : ''}" data-intent="${id}" data-v="${v}">${v}</button>`).join('')}</div>
+      <button class="ghost" data-tab-go="shop">Back to the shop</button>`);
   } else if (tab === 'hype') {
     const left = Math.max(0, S.hypeUntil - Date.now());
     const full = left >= hypeCap() * 1000 - 1000, lv = hypeLv(), mins = HYPE_LEN[lv.len];
@@ -2485,8 +2500,8 @@ function openTab(tab) {
       grid = `<div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
         <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>`;
     } else {
-      const rank = i => i.id === 'basic' ? -1 : i.album ? 1000 + i.album : i.gems;
-      grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot).sort((a, b) => rank(a) - rank(b)).map(it => {
+      const rank = i => i.id === 'basic' ? -2 : i.gift ? -1 : i.album ? 1000 + i.album : i.gems;
+      grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot && (!i.gift || S.owned[i.id])).sort((a, b) => rank(a) - rank(b)).map(it => {
         const own = S.owned[it.id], on = S.equip[it.slot] === it.id, [rn, rc] = rarity(it);
         const bar = own ? rn : it.album ? `Album ${it.album}` : `<i class="g"></i>${it.gems}`;
         const tier = ['epic', 'legendary', 'mythic'].includes(it.rar) ? it.rar : '', best = own && it.bonus && bestInSlot(it.slot) === it;
@@ -2543,6 +2558,8 @@ function openTab(tab) {
       <div class="vols">${[['master', 'Master'], ['music', 'Music'], ['sfx', 'Sound effects']].map(([k, l]) => `
         <div class="vol"><label for="vol-${k}">${l}</label><input type="range" id="vol-${k}" data-vol="${k}" min="0" max="100" step="1" value="${Math.round(volOf(k) * 100)}"><output id="out-${k}">${Math.round(volOf(k) * 100)}</output></div>`).join('')}
       </div>
+      <div class="sec"><h3>Redeem a code</h3>
+        <div class="addrow"><input id="codeInput" class="nameinput" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="Enter code"><button class="hire" data-redeem>Redeem</button></div></div>
       <div class="sec"><h3>Playtest feedback</h3>
         <p>Help shape the game: 7 quick questions.</p>
         <button class="cta" data-tab-go="feedback">Give feedback</button>
@@ -2625,6 +2642,7 @@ function render() {
   $('upBtn').disabled = S.cash < plan.cost;
   $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
   $('dailyDot').hidden = !dailyReady();
+  maybeGift();
   if (!TEST && !S.fbPrompted && S.stats.playSec > 2700 && $('scrim').hidden && S.onboarded) { S.fbPrompted = true; save(); openTab('feedback'); }
   if (TEST) $('testChip').textContent = `TEST · ${S.test.speed}x${S.test.hype ? ' · Hype' : ''}`;
   if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; if (S.stats.days <= 30) track('days-played/' + S.stats.days); }
@@ -2649,6 +2667,33 @@ function render() {
 }
 const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
+
+const TESTER_GIFT = 500;   // playtest thank-you; remove when the game launches
+function maybeGift() {
+  if (TEST || S.testerGift || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
+  S.testerGift = true; S.gems += TESTER_GIFT; save(); render(); sfx('bling'); track('tester-gift');
+  openSheet(`<div class="welcome"><h2>Thanks for playtesting!</h2>
+    <span class="amt" style="color:var(--gem)">+${TESTER_GIFT} gems</span>
+    <p>Use them to try the shop and the wardrobe. Got a code from the developer? Enter it in Settings.</p></div>
+    <button class="cta" data-close>Let's go</button>`);
+}
+
+// redeem codes, stored as hashes so they aren't readable in the page source
+const codeHash = t => { let h = 2166136261; for (const ch of t) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36) + t.length; };
+const CODES = { '87sz5h13': 'founder' };
+function redeem(raw) {
+  const t = (raw || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), kind = CODES[codeHash(t)];
+  if (!t) return;
+  if (!kind) { sfx('denied'); toast("That code didn't work. Check the spelling"); return; }
+  if (kind === 'founder') {
+    if (S.owned.founder) { toast('Founder already unlocked'); return; }
+    S.owned.founder = true; S.newItems = [...(S.newItems || []), 'founder']; save(); render(); sfx('bling'); track('code/founder'); syncChart(true);
+    openSheet(`<div class="welcome"><h2>Founder unlocked</h2>
+      <p>You got the <b style="color:#FFC94A">Founder Tee</b>, a shirt only founding testers will ever have, plus a <b style="color:#FFC94A">★ Founding Tester</b> badge on your profile.</p>
+      <div class="dresser" style="width:100%">${bigArtist(Object.assign({}, S.equip, { top: 'founder' }))}</div></div>
+      <button class="cta" data-equip="founder" data-then="close">Wear it</button><button class="ghost" data-close>Later</button>`);
+  }
+}
 // ---------- loop ----------
 let lastT = performance.now(), acc = 0, saveAcc = 0, chartAcc = 170;
 const floatGate = {};
