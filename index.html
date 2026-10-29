@@ -367,6 +367,10 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 .best .bt { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .best em { font-style: normal; font-weight: 800; }
 .ttl { font-weight: 800; } .statgrid .ttl { font: 400 17px var(--display); }
 .prof-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: -4px; }
+.row.goal .gtier { font-style: normal; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.1); margin-right: 2px; }
+.row.goal.t3 .gtier { background: rgba(255,201,74,.2); color: #FFC94A; } .row.goal.t2 .gtier { background: rgba(111,211,255,.18); color: #9FE6FF; }
+.row.goal .xrw { color: #FFC94A; }
+.founder-pill.grind { background: linear-gradient(135deg, #BFF3FF, #7C4FE0); color: #14122A; }
 .ptags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .founder-pill { font: 400 12px var(--display); color: #14122A; background: linear-gradient(135deg, #FFE27A, #FFB938); border-radius: 999px; padding: 4px 10px; box-shadow: 0 0 10px rgba(255,201,74,.55); }
 .ttl-pill { font: 400 14px var(--display); border: 2px solid; border-radius: 999px; padding: 4px 12px; }
@@ -617,7 +621,6 @@ i.g { display: inline-block; width: 13px; height: 13px; background: #FFC94A; cli
 const planks = (color, from, step) => Array.from({ length: 18 }, (_, i) => `<div class="abs" style="left:0;top:${from + i * step}px;width:390px;height:2px;background:${color}"></div>`).join('');
 
 const APARTMENT_DECOR = `
-  ${planks('#94683F', 128, 40)}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5D4F92"></div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#463A78"></div>
   <!-- water stains and peeling paint on the wall -->
@@ -642,7 +645,6 @@ const APARTMENT_DECOR = `
   <!-- floor stains, scuffs and junk -->
   <div class="abs mid" style="left:168px;top:300px;width:54px;height:14px;border-radius:50%;background:rgba(60,35,18,.28)"></div>
   <div class="abs" style="left:180px;top:490px;width:52px;height:18px;border-radius:50%;background:rgba(60,35,18,.25)"></div>
-  <div class="abs" style="left:160px;top:118px;width:80px;height:3px;background:#5E3F24;transform:rotate(2deg)"></div>
   <div class="abs" style="left:236px;top:500px;width:12px;height:12px;border-radius:50%;background:#F4F1EA;border:2px solid #1B1830"></div>
   <div class="abs" style="left:150px;top:496px;width:10px;height:16px;border-radius:3px;background:#C2384F;border:2px solid #1B1830;transform:rotate(70deg)"></div>
   <div class="abs" style="left:0;top:84px;width:12px;height:516px;background:#4E4183"></div>
@@ -660,7 +662,6 @@ const APARTMENT_DECOR = `
   <div class="abs" style="left:24px;top:96px;width:6px;height:22px;border-radius:3px;background:#3E8E47"></div><div class="abs" style="left:16px;top:88px;width:22px;height:16px;border-radius:50%;background:#58B060"></div>`;
 
 const STUDIO_DECOR = `
-  ${planks('#CFA570', 128, 40)}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#9C89D4"></div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#7E6BB8"></div>
   <div class="abs" style="left:20px;top:14px;width:46px;height:56px;border-radius:6px;background:#B3A3E3"></div>
@@ -693,8 +694,6 @@ const STUDIO_DECOR = `
 const bricks = Array.from({ length: 4 }, (_, r) => Array.from({ length: 9 }, (_, c) =>
   `<div class="abs" style="left:${c * 46 - (r % 2 ? 23 : 0)}px;top:${r * 21}px;width:42px;height:17px;border-radius:2px;background:${(r + c) % 3 ? '#8B4A3C' : '#7D4134'}"></div>`).join('')).join('');
 const LOFT_DECOR = `
-  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:508px;background:#A8A2B0"></div>`).join('')}
-  ${Array.from({ length: 15 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#A8A2B0"></div>`).join('')}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#5E3027;overflow:hidden">${bricks}</div>
   <div class="abs" style="left:0;top:84px;width:390px;height:8px;background:#3E2019"></div>
   <div class="abs" style="left:96px;top:6px;width:198px;height:72px;border-radius:4px;background:#2B1F3D;border:5px solid #26222E;box-sizing:border-box;overflow:hidden">
@@ -726,7 +725,6 @@ const LOFT_DECOR = `
   <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#26222E;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
 
 const PRO_DECOR = `
-  ${planks('#363A48', 128, 40)}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#232838"></div>
   ${[14, 52, 300, 338].map(l => [10, 46].map(t => `<div class="abs" style="left:${l}px;top:${t}px;width:32px;height:30px;border-radius:4px;background:${(l + t) % 3 ? '#2E3550' : '#38416A'};box-shadow:inset 0 -6px 0 rgba(0,0,0,.18)"></div>`).join('')).join('')}
   <div class="abs" style="left:98px;top:8px;width:194px;height:68px;border-radius:6px;background:#2B1F3D;border:5px solid #11141E;box-sizing:border-box;overflow:hidden">
@@ -754,8 +752,6 @@ const PRO_DECOR = `
   <div class="abs" style="left:26px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#14122A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:22px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:38px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:336px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#14122A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:332px;top:542px;width:22px;height:26px;border-radius:50%;background:#3E8E47;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:348px;top:536px;width:24px;height:30px;border-radius:50%;background:#58B060;border:3px solid #1B1830;box-sizing:border-box"></div>`;
 
 const MANSION_DECOR = `
-  ${Array.from({ length: 9 }, (_, i) => `<div class="abs" style="left:${i * 48}px;top:92px;width:2px;height:508px;background:#D8CDB8"></div>`).join('')}
-  ${Array.from({ length: 15 }, (_, i) => `<div class="abs" style="left:0;top:${140 + i * 48}px;width:390px;height:2px;background:#D8CDB8"></div>`).join('')}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#F1EADB"></div>
   ${[18, 330].map(l => `<div class="abs" style="left:${l}px;top:12px;width:42px;height:60px;border-radius:4px;border:3px solid #C9A15A;box-sizing:border-box"></div>`).join('')}
   <div class="abs" style="left:84px;top:6px;width:222px;height:72px;border-radius:36px 36px 4px 4px;background:#2B1F3D;border:5px solid #C9A15A;box-sizing:border-box;overflow:hidden">
@@ -784,7 +780,6 @@ const MANSION_DECOR = `
   ${[[26, 336], [330, 336]].map(([l]) => `<div class="abs" style="left:${l + 2}px;top:564px;width:30px;height:24px;border-radius:4px 4px 8px 8px;background:#C9A15A;border:3px solid #1B1830;box-sizing:border-box"></div><div class="abs" style="left:${l - 4}px;top:532px;width:44px;height:36px;background:#3E8E47;clip-path:polygon(50% 100%,0 20%,30% 40%,25% 0,50% 35%,75% 0,70% 40%,100% 20%)"></div>`).join('')}`;
 
 const STADIUM_DECOR = `
-  ${planks('#2C2836', 128, 40)}
   <div class="abs" style="left:0;top:0;width:390px;height:84px;background:#0E0C1C;overflow:hidden">
     ${Array.from({ length: 4 }, (_, r) => Array.from({ length: 40 }, (_, c) => `<div class="abs" style="left:${c * 10 + (r % 2) * 5}px;top:${30 + r * 13}px;width:6px;height:6px;border-radius:50%;background:${['#FF6FAE', '#6FD3FF', '#FFC94A', '#8BF0A0', '#F4F1EA', '#B18CFF'][(r * 7 + c * 3) % 6]};opacity:${(.45 + ((c * 13 + r * 5) % 5) / 10).toFixed(2)}"></div>`).join('')).join('')}
     <div class="abs" style="left:40px;top:-10px;width:30px;height:60px;background:linear-gradient(#FFF8D0, rgba(255,248,208,0));transform:rotate(25deg);opacity:.35"></div>
@@ -870,7 +865,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', wall: '#5E3027', goal: 25000000000, decor: LOFT_DECOR, home: [160, 284],
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', tiles: true, wall: '#5E3027', goal: 25000000000, decor: LOFT_DECOR, home: [160, 284],
     stations: [
       { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -936,7 +931,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'mansion', name: 'Hillside Mansion', track: 'music/beat3.mp3', floor: '#EDE6D6', plank: '#D8CDB8', wall: '#F1EADB', goal: 100000000000000, decor: MANSION_DECOR, home: [160, 284],
+    id: 'mansion', name: 'Hillside Mansion', track: 'music/beat3.mp3', floor: '#EDE6D6', plank: '#D8CDB8', tiles: true, wall: '#F1EADB', goal: 100000000000000, decor: MANSION_DECOR, home: [160, 284],
     stations: [
       { id: 'piano', name: 'Piano Suite', icon: 'note', unlock: 0, base: 6250000, cycle: 2, cost: 37500000, growth: 1.13, crew: 'Songwriter', crewCost: 562500000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -1077,7 +1072,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 280, bonus: 0.13, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 58, CONTACT = 'elicosand@gmail.com';
+const BUILD = 60, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1119,27 +1114,63 @@ function updateTut() {
   ptr.style.height = (r.height + pad * 2) + 'px';
   ptr.style.borderRadius = (Math.max(10, parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0) + pad) + 'px';
 }
+// 40 career goals in three tiers. Moving maps is rewarded by plaques only, so there are no "move into" goals.
+const maxClears = () => Math.max(0, ...((S.clears) || [0]));
+const ownedCount = () => Object.keys(S.owned || {}).filter(k => S.owned[k] && k !== 'basic').length;
 const GOALS = [
-  { id: 'up10', text: 'Upgrade stations 10 times', target: 10, val: () => S.stats.upgrades, gems: 5 },
-  { id: 'unlock2', text: 'Unlock 2 stations', target: 2, val: () => S.stats.unlocks, gems: 5 },
-  { id: 'hire1', text: 'Hire your first crew member', target: 1, val: () => S.stats.hires, gems: 10 },
-  { id: 'crate1', text: 'Open a crate', target: 1, val: () => S.stats.crates, gems: 5 },
-  { id: 'lv25', text: 'Get any station to Lv 25', target: 25, val: () => S.stats.maxLevel, gems: 10 },
-  { id: 'hype1', text: 'Turn on 2x Hype', target: 1, val: () => S.stats.hypes, gems: 5 },
-  { id: 'hire4', text: 'Hire 4 crew members', target: 4, val: () => S.stats.hires, gems: 15 },
-  { id: 'earn100k', text: 'Earn $100K in total', target: 1e5, val: () => S.stats.lifetime, gems: 10, money: true },
-  { id: 'move1', text: 'Move into the Home Studio', target: 1, val: () => S.maxLoc || 0, gems: 20 },
-  { id: 'lv50', text: 'Get any station to Lv 50', target: 50, val: () => S.stats.maxLevel, gems: 15 },
-  { id: 'earn10m', text: 'Earn $10M in total', target: 1e7, val: () => S.stats.lifetime, gems: 20, money: true },
-  { id: 'move2', text: 'Move into the Downtown Loft', target: 2, val: () => S.maxLoc || 0, gems: 30 },
-  { id: 'move3', text: 'Move into the Pro Studio', target: 3, val: () => S.maxLoc || 0, gems: 40 },
-  { id: 'move4', text: 'Move into the Hillside Mansion', target: 4, val: () => S.maxLoc || 0, gems: 50 },
-  { id: 'move5', text: 'Reach the Stadium Tour', target: 5, val: () => S.maxLoc || 0, gems: 60 },
-  { id: 'album1', text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
-  { id: 'lv100', text: 'Get any station to Lv 100', target: 100, val: () => S.stats.maxLevel, gems: 30 },
-  { id: 'album3', text: 'Drop 3 albums', target: 3, val: () => S.albums || 0, gems: 50 },
+  // early: done during the first tour
+  { id: 'up10', tier: 1, text: 'Upgrade stations 10 times', target: 10, val: () => S.stats.upgrades, gems: 5 },
+  { id: 'unlock2', tier: 1, text: 'Unlock 2 stations', target: 2, val: () => S.stats.unlocks, gems: 5 },
+  { id: 'hire1', tier: 1, text: 'Hire your first crew member', target: 1, val: () => S.stats.hires, gems: 10 },
+  { id: 'crate1', tier: 1, text: 'Open a crate', target: 1, val: () => S.stats.crates, gems: 5 },
+  { id: 'lv25', tier: 1, text: 'Get any station to Lv 25', target: 25, val: () => S.stats.maxLevel, gems: 10 },
+  { id: 'hype1', tier: 1, text: 'Turn on 2x Hype', target: 1, val: () => S.stats.hypes, gems: 5 },
+  { id: 'hire4', tier: 1, text: 'Hire 4 crew members', target: 4, val: () => S.stats.hires, gems: 15 },
+  { id: 'earn100k', tier: 1, text: 'Earn $100K in total', target: 1e5, val: () => S.stats.lifetime, gems: 10, money: true },
+  { id: 'lv50', tier: 1, text: 'Get any station to Lv 50', target: 50, val: () => S.stats.maxLevel, gems: 15 },
+  { id: 'earn10m', tier: 1, text: 'Earn $10M in total', target: 1e7, val: () => S.stats.lifetime, gems: 20, money: true },
+  { id: 'album1', tier: 1, text: 'Drop your first album', target: 1, val: () => S.albums || 0, gems: 30 },
+  { id: 'lv100', tier: 1, text: 'Get any station to Lv 100', target: 100, val: () => S.stats.maxLevel, gems: 30 },
+  { id: 'album3', tier: 1, text: 'Drop 3 albums', target: 3, val: () => S.albums || 0, gems: 50 },
+  // mid-term: the next few weeks
+  { id: 'crates25', tier: 2, text: 'Open 25 crates', target: 25, val: () => S.stats.crates, gems: 20 },
+  { id: 'up2500', tier: 2, text: 'Buy 2,500 upgrades', target: 2500, val: () => S.stats.upgrades, gems: 20 },
+  { id: 'hype25', tier: 2, text: 'Turn on Hype 25 times', target: 25, val: () => S.stats.hypes, gems: 20 },
+  { id: 'tracks250k', tier: 2, text: 'Make 250,000 tracks', target: 250000, val: () => S.stats.payouts, gems: 25 },
+  { id: 'hire25', tier: 2, text: 'Hire 25 crew in total', target: 25, val: () => S.stats.hires, gems: 25 },
+  { id: 'own10', tier: 2, text: 'Own 10 outfit pieces', target: 10, val: ownedCount, gems: 30 },
+  { id: 'days7', tier: 2, text: 'Play on 7 different days', target: 7, val: () => S.stats.days || 1, gems: 30 },
+  { id: 'silver', tier: 2, text: 'Get a Silver plaque (clear a map 3 times)', target: 3, val: maxClears, gems: 30 },
+  { id: 'tasks10', tier: 2, text: 'Finish all 3 daily tasks 10 times', target: 10, val: () => S.stats.taskSets || 0, gems: 40 },
+  { id: 'crates100', tier: 2, text: 'Open 100 crates', target: 100, val: () => S.stats.crates, gems: 40 },
+  { id: 'lv200', tier: 2, text: 'Get any station to Lv 200', target: 200, val: () => S.stats.maxLevel, gems: 40 },
+  { id: 'earn50qa', tier: 2, text: 'Earn $50Qa in total', target: 5e16, val: () => S.stats.lifetime, gems: 40, money: true },
+  { id: 'album5', tier: 2, text: 'Drop 5 albums', target: 5, val: () => S.albums || 0, gems: 50 },
+  { id: 'goldplq', tier: 2, text: 'Get a Gold plaque (clear a map 5 times)', target: 5, val: maxClears, gems: 50 },
+  // long-term: months of grinding, with the biggest rewards and a few things money can't buy
+  { id: 'up25k', tier: 3, text: 'Buy 25,000 upgrades', target: 25000, val: () => S.stats.upgrades, gems: 250 },
+  { id: 'hype100', tier: 3, text: 'Turn on Hype 100 times', target: 100, val: () => S.stats.hypes, gems: 250 },
+  { id: 'crates500', tier: 3, text: 'Open 500 crates', target: 500, val: () => S.stats.crates, gems: 300 },
+  { id: 'tracks10m', tier: 3, text: 'Make 10,000,000 tracks', target: 1e7, val: () => S.stats.payouts, gems: 300 },
+  { id: 'own20', tier: 3, text: 'Own 20 outfit pieces', target: 20, val: ownedCount, gems: 300 },
+  { id: 'album10', tier: 3, text: 'Drop 10 albums', target: 10, val: () => S.albums || 0, gems: 300 },
+  { id: 'hype500', tier: 3, text: 'Turn on Hype 500 times', target: 500, val: () => S.stats.hypes, gems: 400 },
+  { id: 'tasks50', tier: 3, text: 'Finish all 3 daily tasks 50 times', target: 50, val: () => S.stats.taskSets || 0, gems: 400 },
+  { id: 'album20', tier: 3, text: 'Drop 20 albums', target: 20, val: () => S.albums || 0, gems: 400, reward: { phones: 'ruby' } },
+  { id: 'days30', tier: 3, text: 'Play on 30 different days', target: 30, val: () => S.stats.days || 1, gems: 500, reward: { title: 'Lifer' } },
+  { id: 'up100k', tier: 3, text: 'Buy 100,000 upgrades', target: 100000, val: () => S.stats.upgrades, gems: 500, reward: { title: 'Grinder' } },
+  { id: 'diamondplq', tier: 3, text: 'Get a Diamond plaque (clear a map 20 times)', target: 20, val: maxClears, gems: 500, reward: { phones: 'diamond' } },
+  { id: 'album30', tier: 3, text: 'Drop 30 albums', target: 30, val: () => S.albums || 0, gems: 500, reward: { phones: 'gold' } },
 ];
-const activeGoals = () => GOALS.filter(g => !S.goalsDone[g.id]).slice(0, 3);
+// headphone colors that can only be earned
+const PHONES_X = { ruby: ['Ruby', '#D7263D'], diamond: ['Diamond', '#BFF3FF'], gold: ['Gold', '#FFC94A'] };
+const rewardText = r => !r ? '' : r.phones ? `${PHONES_X[r.phones][0]} headphones` : `"${r.title}" badge`;
+function goalRows() {
+  const pct = g => Math.min(1, g.val() / g.target);
+  const order = g => S.goalsDone[g.id] ? 3 : goalReady(g) ? 0 : 1;
+  return [...GOALS].sort((a, b) => order(a) - order(b) || (order(a) === 1 ? pct(b) - pct(a) : 0) || a.tier - b.tier);
+}
+const activeGoals = () => GOALS.filter(g => !S.goalsDone[g.id]);
 const goalReady = g => g.val() >= g.target;
 
 // daily tasks: 3 picked from this pool each day, counted from where the stat stood when the day started
@@ -1442,7 +1473,7 @@ function showLocTitle() {
 function buildRoom() {
   const loc = LOC();
   wrap.style.setProperty('--floor', loc.floor);
-  wrap.dataset.plank = loc.plank; wrap.dataset.wall = loc.wall; fit();
+  wrap.dataset.plank = loc.plank; wrap.dataset.wall = loc.wall; wrap.dataset.tiles = loc.tiles ? '1' : ''; fit();
   if (shownLoc !== S.loc) { shownLoc = S.loc; showLocTitle(); }
   placeStations(loc);
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
@@ -1485,13 +1516,18 @@ function fit() {
   const extra = Math.max(0, Math.round(r.height / s - 600));
   stage.style.height = (600 + extra) + 'px';
   if (Math.abs(extra - roomExtra) > 4) { roomExtra = extra; if (S && LOC()) return buildRoom(); }
-  // the floor keeps its planks below the room when the screen is taller than the room
-  const wall = wrap.dataset.wall || 'transparent', pl = wrap.dataset.plank || 'rgba(0,0,0,.1)', tile = Math.max(8, Math.round(40 * s)), line = Math.max(1, Math.round(2 * s));
-  const wh = Math.round(92 * s);
-  wrap.style.backgroundImage = `linear-gradient(to bottom, ${wall} ${wh}px, transparent ${wh}px), linear-gradient(to bottom, transparent ${tile - line}px, ${pl} ${tile - line}px)`;
-  wrap.style.backgroundSize = `100% ${wh}px, 100% ${tile}px`;
-  wrap.style.backgroundRepeat = 'no-repeat, repeat';
-  wrap.style.backgroundPosition = `0 0, 0 ${Math.round(10 * s)}px`;
+  // one floor pattern for every map, drawn once for the whole room so lines never double up:
+  // planks = evenly spaced horizontal lines; tiles (Loft, Mansion) = the same lines plus matching vertical ones, centered on the room
+  const wall = wrap.dataset.wall || 'transparent', pl = wrap.dataset.plank || 'rgba(0,0,0,.1)', tiles = !!wrap.dataset.tiles;
+  const gap = (tiles ? 48 : 40) * s, line = Math.max(1, Math.round(2 * s)), wh = Math.round(92 * s);
+  const left = (r.width - 390 * s) / 2 + (195 * s) % gap - line / 2;
+  const layers = [`linear-gradient(to bottom, ${wall} ${wh}px, transparent ${wh}px)`, `linear-gradient(to bottom, transparent ${gap - line}px, ${pl} ${gap - line}px)`];
+  const sizes = [`100% ${wh}px`, `100% ${gap}px`], reps = ['no-repeat', 'repeat'], pos = ['0 0', `0 ${wh}px`];
+  if (tiles) { layers.push(`linear-gradient(to right, ${pl} ${line}px, transparent ${line}px)`); sizes.push(`${gap}px 100%`); reps.push('repeat'); pos.push(`${left}px ${wh}px`); }
+  wrap.style.backgroundImage = layers.join(', ');
+  wrap.style.backgroundSize = sizes.join(', ');
+  wrap.style.backgroundRepeat = reps.join(', ');
+  wrap.style.backgroundPosition = pos.join(', ');
 }
 new ResizeObserver(fit).observe(wrap);
 new ResizeObserver(() => { $('cash').dataset.fit = ''; $('gems').dataset.fit = ''; }).observe($('app'));
@@ -1781,10 +1817,15 @@ $('scrim').addEventListener('click', e => {
     return;
   }
   const gc = e.target.closest('[data-goal]');
-  if (gc) { const g = GOALS.find(x => x.id === gc.dataset.goal); if (g && goalReady(g) && !S.goalsDone[g.id]) { S.goalsDone[g.id] = true; S.gems += g.gems; sfx('reward'); toast('+' + g.gems + ' gems'); save(); render(); } return openTab('goals'); }
+  if (gc) { const g = GOALS.find(x => x.id === gc.dataset.goal); if (g && goalReady(g) && !S.goalsDone[g.id]) {
+      S.goalsDone[g.id] = true; S.gems += g.gems; track('goal/' + g.id);
+      if (g.reward && g.reward.phones) { S.phonesX = Object.assign({}, S.phonesX, { [g.reward.phones]: true }); S.phones = PHONES_X[g.reward.phones][1]; applyLook(); }
+      if (g.reward && g.reward.title) S.badges = [...new Set([...(S.badges || []), g.reward.title])];
+      sfx(g.reward ? 'bling' : 'reward'); toast('+' + g.gems + ' gems' + (g.reward ? ' + ' + rewardText(g.reward) : '')); save(); render(); if (g.reward) syncChart(true); }
+    const sc = $('sheet').scrollTop; openTab('goals'); $('sheet').scrollTop = sc; return; }
   const tk = e.target.closest('[data-task]');
   if (tk) { const t = dailyTasks().find(x => x.id === tk.dataset.task); if (t && t.ready && !t.got) { S.dt.got[t.id] = true; S.gems += TASK_GEMS; sfx('reward'); toast('+' + TASK_GEMS + ' gems'); save(); render(); } return openTab('goals'); }
-  if (e.target.closest('[data-task-bonus]')) { if (dailyTasks().every(t => t.got) && !S.dt.bonus) { S.dt.bonus = true; S.gems += TASK_BONUS; sfx('bling'); toast('All done today! +' + TASK_BONUS + ' gems'); save(); render(); } return openTab('goals'); }
+  if (e.target.closest('[data-task-bonus]')) { if (dailyTasks().every(t => t.got) && !S.dt.bonus) { S.dt.bonus = true; S.stats.taskSets = (S.stats.taskSets || 0) + 1; S.gems += TASK_BONUS; sfx('bling'); toast('All done today! +' + TASK_BONUS + ' gems'); save(); render(); } return openTab('goals'); }
   const pf = e.target.closest('[data-prof]');
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
@@ -2073,7 +2114,7 @@ let styleSlot = 'top', renameFrom = 'style';
 // popups that should change while open: refresh them when what they show changes
 const LIVE = {
   crew: () => LOC().stations.map(x => (lvl(x.id) ? 1 : 0) + (S.crew[x.id] ? 2 : 0) + (S.cash >= x.crewCost ? 4 : 0)).join(''),
-  goals: () => activeGoals().map(g => g.id + (goalReady(g) ? '!' : Math.floor(Math.min(g.val(), g.target) / g.target * 20))).join(',')
+  goals: () => GOALS.map(g => S.goalsDone[g.id] ? 'x' : goalReady(g) ? '!' : Math.floor(Math.min(g.val(), g.target) / g.target * 20)).join('')
     + '|' + dailyTasks().map(t => t.id + (t.got ? 'x' : t.ready ? '!' : Math.floor(t.v / t.target * 20))).join(',') + (S.dt.bonus ? 'b' : '') + '|' + new Date().getMinutes(),
   hype: () => Math.ceil(Math.max(0, S.hypeUntil - Date.now()) / 1000) + '|' + S.gems,
 };
@@ -2216,7 +2257,7 @@ const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.bonus > 0).sort((a,
 function myProfile() {
   const b = bestItem(S.owned);
   return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, fast: Math.round(S.stats.fastestAlbum || 0),
-    founder: !!S.owned.founder, clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
+    founder: !!S.owned.founder, badges: S.badges || [], clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
 }
 // data from other players is untrusted: keep only known items, colors and plain numbers
 function cleanProfile(p) {
@@ -2225,8 +2266,8 @@ function cleanProfile(p) {
   const n = (x, max) => Math.max(0, Math.min(max, Math.floor(+x) || 0)), eq = {};
   for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
   const best = itemById(p.best);
-  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: PHONES.includes(p.ph) ? p.ph : PHONES[0],
-    founder: !!p.founder, clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
+  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: [...PHONES, ...Object.values(PHONES_X).map(x => x[1])].includes(p.ph) ? p.ph : PHONES[0],
+    founder: !!p.founder, badges: Array.isArray(p.badges) ? p.badges.filter(b => ['Lifer', 'Grinder'].includes(b)) : [], clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 
 // ---------- playtest feedback: 7 quick questions, saved to the database (email as a fallback) ----------
@@ -2381,7 +2422,7 @@ function openTab(tab) {
     const maps = [...LOCATIONS.map(l => l.name), ...FUTURE], loc = p ? p.loc : 0, best = p && itemById(p.best);
     const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
     openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
-      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
+      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind">${b}</span>`).join('') : ''}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
       ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq)}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
       ${p ? `<div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>` : ''}
       <div class="sec"><h3>Career</h3><div class="statgrid">
@@ -2514,7 +2555,8 @@ function openTab(tab) {
     let grid;
     if (styleSlot === 'colors') {
       grid = `<div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
-        <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>`;
+        <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>
+        ${Object.keys(PHONES_X).some(k => (S.phonesX || {})[k]) ? `<div class="sec"><h3>Earned colors <small class="h3note">from long-term goals</small></h3><div class="swatches earned">${Object.entries(PHONES_X).filter(([k]) => (S.phonesX || {})[k]).map(([k, [n, c]]) => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="${n} headphones"></button>`).join('')}</div></div>` : ''}`;
     } else {
       const rank = i => i.id === 'basic' ? -2 : i.gift ? -1 : i.album ? 1000 + i.album : i.gems;
       grid = '<div class="items">' + ITEMS.filter(i => i.slot === styleSlot && (!i.gift || S.owned[i.id])).sort((a, b) => rank(a) - rank(b)).map(it => {
@@ -2540,12 +2582,13 @@ function openTab(tab) {
       <button class="cta" data-save-name>Save</button>`);
     setTimeout(() => { const i = $('artistNameInput'); if (i) i.focus(); }, 50);
   } else if (tab === 'goals') {
-    const list = activeGoals(), done = GOALS.filter(g => S.goalsDone[g.id]).length;
-    const rows = list.map(g => { const v = Math.min(g.val(), g.target), ok = goalReady(g);
-      const prog = g.money ? `${fmt(v)} / ${fmt(g.target)}` : `${Math.floor(v)} / ${g.target}`;
-      return `<div class="row"><span class="rt"><b>${g.text}</b><span>${prog} · ${g.gems} gems</span>
-        <span class="mile" style="margin-top:6px"><i style="width:${v / g.target * 100}%;background:${ok ? 'var(--cash)' : 'var(--gem)'}"></i></span></span>
-        <button class="hire" data-goal="${g.id}" ${ok ? '' : 'disabled'}>${ok ? 'Claim' : 'Working'}</button></div>`; }).join('');
+    const done = GOALS.filter(g => S.goalsDone[g.id]).length, tierName = ['', 'Starter', 'Mid-term', 'Long-term'];
+    const rows = goalRows().map(g => { const fin = !!S.goalsDone[g.id], v = Math.min(g.val(), g.target), ok = !fin && goalReady(g);
+      const prog = g.money ? `${fmt(v)} / ${fmt(g.target)}` : `${Math.floor(v).toLocaleString()} / ${g.target.toLocaleString()}`;
+      const prize = `${g.gems} gems${g.reward ? ` + <b class="xrw">${rewardText(g.reward)}</b>` : ''}`;
+      return `<div class="row goal t${g.tier} ${fin ? 'done' : ''}"><span class="rt"><b>${g.text}</b><span><em class="gtier">${tierName[g.tier]}</em> ${fin ? 'Done' : prog} · ${prize}</span>
+        ${fin ? '' : `<span class="mile" style="margin-top:6px"><i style="width:${v / g.target * 100}%;background:${ok ? 'var(--cash)' : 'var(--gem)'}"></i></span>`}</span>
+        ${fin ? `<span class="hired">${svgIc('star', '#8BF0A0', 16)}</span>` : `<button class="hire" data-goal="${g.id}" ${ok ? '' : 'disabled'}>${ok ? 'Claim' : 'Working'}</button>`}</div>`; }).join('');
     const ts = dailyTasks(), allGot = ts.every(t => t.got);
     const left = (() => { const d = new Date(); d.setHours(24, 0, 0, 0); const m = Math.ceil((d - Date.now()) / 60000); return m >= 60 ? Math.floor(m / 60) + 'h ' + (m % 60) + 'm' : m + 'm'; })();
     const tRows = ts.map(t => { const prog = t.time ? `${Math.floor(t.v / 60)} / ${t.target / 60} min` : `${Math.floor(t.v)} / ${t.target}`;
