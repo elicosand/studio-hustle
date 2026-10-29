@@ -343,6 +343,9 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .item .eq { position: absolute; top: 4px; left: 4px; z-index: 1; background: var(--deep); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
 .nameinput { box-sizing: border-box; height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
 .nameinput:focus { outline: none; border-color: var(--gem); }
+.lookpick { display: flex; gap: 12px; }
+.lookpick .lp { flex: 1; display: grid; place-items: center; height: 96px; border-radius: 16px; background: var(--panel-2); border: 3px solid transparent; }
+.lookpick .lp.on { border-color: var(--gem); background: #4E4590; }
 .loc-title { position: absolute; left: 50%; top: 34%; z-index: 9; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px;
   pointer-events: none; white-space: nowrap; animation: loctitle 2.8s ease-in-out forwards; }
 .loc-title b { font: 400 28px var(--display); color: #fff; text-shadow: 0 3px 0 var(--deep), 0 0 18px rgba(20,18,42,.6); }
@@ -1146,7 +1149,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 76, CONTACT = 'elicosand@gmail.com';
+const BUILD = 77, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1964,6 +1967,10 @@ $('scrim').addEventListener('click', e => {
     it2.parentNode.querySelectorAll('.fbo').forEach(b => b.classList.toggle('on', b === it2)); toast('Thanks! That helps a lot'); return; }
   const pay = e.target.closest('[data-pay]');
   if (pay) { grant(pay.dataset.pay); return openTab('shop'); }
+  const lp = e.target.closest('[data-bt]');
+  if (lp) { S.bt = lp.dataset.bt === 'b' ? 'b' : 'a'; applyLook(); save(); sfx('tap'); if (S.onboarded) syncChart(true);
+    if (sheetKey === 'welcome') { lp.parentElement.querySelectorAll('.lp').forEach(b => b.classList.toggle('on', b === lp)); return; }
+    return openTab('style'); }
   const sw = e.target.closest('[data-skin],[data-phones]');
   if (sw) { if (sw.dataset.skin) S.skin = sw.dataset.skin; if (sw.dataset.phones) S.phones = sw.dataset.phones; applyLook(); save(); openTab('style'); return; }
   if (e.target.closest('[data-move-ask]')) return openTab('move-confirm');
@@ -2103,11 +2110,18 @@ function faceExtra(fc, eyes) {
 }
 // Simple front-facing figure shared by the in-room artist and the crew.
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
+// look 'b': long hair that falls behind the shoulders (hats and clothes fit exactly the same), lashes and an extra eye sparkle
+const backHair = (c, ln, big) => big
+  ? `<path d="M47 56 Q40 100 52 118 Q80 124 108 118 Q120 100 113 56 Z" fill="${c}" ${ln}></path>`
+  : `<path d="M44 58 Q36 104 50 122 Q80 128 110 122 Q124 104 116 58 Z" fill="${c}" ${ln}></path>`;
+const lashes = (K, big) => big
+  ? `<path d="M65 62.5 L62.3 60.4 M66.5 60.8 L64.7 58.4 M95 62.5 L97.7 60.4 M93.5 60.8 L95.3 58.4" stroke="${K}" stroke-width="2.2" stroke-linecap="round"></path><circle cx="67.6" cy="70.6" r="1" fill="#fff"></circle><circle cx="89.6" cy="70.6" r="1" fill="#fff"></circle>`
+  : `<path d="M64 61 L60.7 58.6 M66 59 L63.9 56 M96 61 L99.3 58.6 M94 59 L96.1 56" stroke="${K}" stroke-width="3" stroke-linecap="round"></path><circle cx="71" cy="64" r="2.2" fill="#fff"></circle><circle cx="93" cy="64" r="2.2" fill="#fff"></circle>`;
 function miniFigure(f, w, h, vb = '0 0 160 214') {
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="6" stroke-linejoin="round"`;
   const sk = f.skin ? `fill="${f.skin}"` : 'class="skin"';
   let o = `<svg width="${w}" height="${h}" viewBox="${vb}" aria-hidden="true">
-    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>
+    <ellipse cx="80" cy="204" rx="40" ry="9" fill="#000" opacity="0.3"></ellipse>${f.long ? backHair(f.hair || '#231A17', ln, false) : ''}
     <path d="M58 146 H80 V193 H51 Q50 168 58 146 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path><path d="M80 146 H102 Q110 168 109 193 H80 Z" fill="${f.pants || '#2C2F48'}" ${ln}></path>
     <rect x="52" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect><rect x="80" y="188" width="28" height="13" rx="6" fill="#F4F1EA" ${ln}></rect>
     ${f.style === 'puffer' || f.puffy
@@ -2138,16 +2152,16 @@ function miniFigure(f, w, h, vb = '0 0 160 214') {
   if (hat && HATS[hat.style]) o += HATS[hat.style](hat, ln, false);
   if (f.phones) o += (tuck ? '' : `<path d="M43 66 Q43 14 80 14 Q117 14 117 66" fill="none" stroke="${K}" stroke-width="9" stroke-linecap="round"></path>`) + `
     <ellipse class="phones" cx="45" cy="68" rx="11" ry="15" ${ln}></ellipse><ellipse class="phones" cx="115" cy="68" rx="11" ry="15" ${ln}></ellipse>`;
-  const face = f.face, miniEyes = `<ellipse cx="69" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse>`;
+  const face = f.face, miniEyes = `<ellipse cx="69" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse>` + (f.long ? lashes(K, false) : '');
   if (face && faceExtra(face, miniEyes) !== null) o += faceExtra(face, miniEyes);
   else if (face && face.style === 'plain') o += `<rect x="56" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect><rect x="81" y="58" width="23" height="16" rx="6" fill="${face.color}" ${ln}></rect>`;
   else if (face && face.style === 'star') o += `<polygon points="${starPts(68, 66, 13)}" fill="${face.color}" ${ln}></polygon><polygon points="${starPts(92, 66, 13)}" fill="${face.color}" ${ln}></polygon>`;
-  else o += `<ellipse cx="69" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="5.5" ry="9" fill="${K}"></ellipse>`;
+  else o += miniEyes;
   return o + '</svg>';
 }
-function smallArtist(eq = S.equip) {
+function smallArtist(eq = S.equip, bt = S.bt) {
   const t = lookOf(eq, 'top') || itemById('basic').look;
-  return miniFigure({ ...t, phones: true, hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
+  return miniFigure({ ...t, phones: true, long: bt === 'b', hat: lookOf(eq, 'hat'), neck: lookOf(eq, 'neck'), face: lookOf(eq, 'face') }, 70, 94);
 }
 // crew look is random per station but stable (seeded by the station id)
 const CREW_SHIRTS = ['#6FD3FF', '#FFC94A', '#8BF0A0', '#B18CFF', '#FF9E57', '#F4F1EA', '#FF6FAE', '#4F7CFF'];
@@ -2158,8 +2172,8 @@ function crewFigure(id) {
   let h = 2166136261; for (const c of id) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }   // FNV-1a seed
   const rnd = () => { h = (h + 0x6D2B79F5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   const pick = arr => arr[Math.floor(rnd() * arr.length)];
-  const body = pick(CREW_SHIRTS), skin = pick(SKINS), hair = pick(CREW_HAIR), pants = pick(CREW_PANTS), hatRoll = rnd(), hatColor = pick(CREW_BEANIES);
-  return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants,
+  const body = pick(CREW_SHIRTS), skin = pick(SKINS), hair = pick(CREW_HAIR), pants = pick(CREW_PANTS), hatRoll = rnd(), hatColor = pick(CREW_BEANIES), long = rnd() < 0.45;
+  return miniFigure({ body, trim: 'rgba(0,0,0,.2)', style: 'tee', skin, hair, pants, long,
     beanie: hatRoll >= 1 / 3 && hatRoll < 2 / 3 ? hatColor : null,
     hat: hatRoll >= 2 / 3 ? { style: 'cap', color: hatColor, brim: hatColor } : null }, 62, 83);
 }
@@ -2209,11 +2223,11 @@ function tapFan(el, walk) {
   setTimeout(() => { el.remove(); if (fanEl === el) fanEl = null; }, 600);
   save(); render();
 }
-function bigArtist(eq = S.equip) {
+function bigArtist(eq = S.equip, bt = S.bt) {
   const t = lookOf(eq, 'top') || itemById('basic').look, hat = lookOf(eq, 'hat'), neck = lookOf(eq, 'neck'), face = lookOf(eq, 'face');
   const K = '#1B1830', ln = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   let o = `<svg width="170" height="228" viewBox="0 0 160 214" role="img" aria-label="Your artist, front view">
-    <ellipse cx="80" cy="206" rx="34" ry="5" fill="#000" opacity="0.3"></ellipse>
+    <ellipse cx="80" cy="206" rx="34" ry="5" fill="#000" opacity="0.3"></ellipse>${bt === 'b' ? backHair('#231A17', ln, true) : ''}
     <path d="M60 148 H80 V197 H54 Q53 172 60 148 Z" fill="#2C2F48" ${ln}></path>
     <path d="M80 148 H100 Q107 172 106 197 H80 Z" fill="#2C2F48" ${ln}></path>
     <path d="M70 170 Q69 182 68 194 M90 170 Q91 182 92 194" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="2"></path>
@@ -2252,12 +2266,11 @@ function bigArtist(eq = S.equip) {
   o += (tuck ? '' : `<path d="M45 66 Q45 16 80 16 Q115 16 115 66" fill="none" stroke="#1E1B33" stroke-width="7" stroke-linecap="round"></path>`) + `
     <ellipse class="phones" cx="47" cy="68" rx="9" ry="13" ${ln}></ellipse><ellipse class="phones" cx="113" cy="68" rx="9" ry="13" ${ln}></ellipse>
     <ellipse cx="44" cy="68" rx="3" ry="6" fill="#fff" opacity="0.25"></ellipse>`;
-  const bigEyes = `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>`;
+  const bigEyes = `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>` + (bt === 'b' ? lashes(K, true) : '');
   if (face && faceExtra(face, bigEyes) !== null) o += faceExtra(face, bigEyes);
   else if (face && face.style === 'plain') o += `<rect x="58" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><rect x="81" y="60" width="21" height="14" rx="5" fill="${face.color}" ${ln}></rect><path d="M62 63 L66 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path><path d="M85 63 L89 63" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"></path>`;
   else if (face && face.style === 'star') o += `<polygon points="${starPts(69, 67, 11)}" fill="${face.color}" ${ln}></polygon><polygon points="${starPts(91, 67, 11)}" fill="${face.color}" ${ln}></polygon>`;
-  else o += `<ellipse cx="69" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse><ellipse cx="91" cy="68" rx="4.5" ry="7.5" fill="${K}"></ellipse>
-    <circle cx="70.5" cy="65" r="1.7" fill="#fff"></circle><circle cx="92.5" cy="65" r="1.7" fill="#fff"></circle>`;
+  else o += bigEyes;
   return o + '</svg>';
 }
 
@@ -2297,7 +2310,7 @@ const rarity = it => RARITY[it.rar] || RARITY.common;
 const RAR_ORDER = ['common', 'rare', 'epic', 'legendary', 'mythic'];
 // a figure wearing just this item, zoomed on the part it changes
 function itemArt(it, size = 70) {
-  const base = itemById('basic').look, f = { body: base.body, trim: base.trim, style: base.style, phones: true };
+  const base = itemById('basic').look, f = { body: base.body, trim: base.trim, style: base.style, phones: true, long: S.bt === 'b' };
   if (it.slot === 'top') Object.assign(f, it.look);
   else f[it.slot === 'hat' ? 'hat' : it.slot] = it.look;
   const vb = it.slot === 'top' ? '22 70 116 116' : it.slot === 'neck' ? '22 40 116 116' : '18 -4 124 124';
@@ -2449,7 +2462,7 @@ async function loadChart() {
 const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.bonus > 0).sort((a, b) => b.bonus - a.bonus || (b.album ? 1 : 0) - (a.album ? 1 : 0))[0];
 function myProfile() {
   const b = bestItem(S.owned);
-  return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, fast: Math.round(S.stats.fastestAlbum || 0),
+  return { v: 1, loc: S.maxLoc || 0, eq: Object.assign({}, S.equip), skin: S.skin, ph: S.phones, bt: S.bt === 'b' ? 'b' : 'a', fast: Math.round(S.stats.fastestAlbum || 0),
     founder: !!S.owned.founder, badges: S.badges || [], clears: clearsOf(), play: Math.round(S.stats.playSec || 0), days: S.stats.days || 1, items: Object.keys(S.owned).filter(k => S.owned[k] && k !== 'basic').length, best: b ? b.id : null };
 }
 // data from other players is untrusted: keep only known items, colors and plain numbers
@@ -2459,7 +2472,7 @@ function cleanProfile(p) {
   const n = (x, max) => Math.max(0, Math.min(max, Math.floor(+x) || 0)), eq = {};
   for (const sl of ['top', 'hat', 'neck', 'face']) { const it = itemById(p.eq && p.eq[sl]); eq[sl] = it && it.slot === sl ? it.id : sl === 'top' ? 'basic' : null; }
   const best = itemById(p.best);
-  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: [...PHONES, ...Object.values(PHONES_X).map(x => x[1])].includes(p.ph) ? p.ph : PHONES[0],
+  return { loc: n(p.loc, LOCATIONS.length + FUTURE.length - 1), eq, bt: p.bt === 'b' ? 'b' : 'a', skin: SKINS.includes(p.skin) ? p.skin : SKINS[3], ph: [...PHONES, ...Object.values(PHONES_X).map(x => x[1])].includes(p.ph) ? p.ph : PHONES[0],
     founder: !!p.founder, badges: Array.isArray(p.badges) ? p.badges.filter(b => ['Lifer', 'Grinder'].includes(b)) : [], clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 
@@ -2571,6 +2584,7 @@ function openTab(tab) {
       <label class="lbl" for="welcomeName">Your artist name</label>
       <div class="addrow"><input id="welcomeName" class="nameinput" maxlength="16" autocomplete="off" placeholder="Type a name" value="${esc(S.name && S.name !== 'New Artist' ? S.name : '')}">
         <button class="hire dice" data-random-name aria-label="Pick a random name"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="8" cy="8" r="1.4" fill="currentColor"></circle><circle cx="16" cy="16" r="1.4" fill="currentColor"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor"></circle><circle cx="16" cy="8" r="1.4" fill="currentColor"></circle><circle cx="8" cy="16" r="1.4" fill="currentColor"></circle></svg></button></div>
+      <span class="lbl">Your look</span>${lookPick()}
       <label class="lbl" for="welcomeCountry">Where are you from? <span style="text-transform:none;letter-spacing:0">(optional)</span></label>
       <select id="welcomeCountry" class="csel wide"><option value="">Prefer not to say</option>${COUNTRIES.map(([k, n]) => `<option value="${k}" ${S.country === k ? 'selected' : ''}>${n}</option>`).join('')}</select>
       <p class="cnote">Your name shows on the leaderboard. You can change both later in Charts.</p>
@@ -2616,7 +2630,7 @@ function openTab(tab) {
     const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
     openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
       <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind">${b}</span>`).join('') : ''}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
-      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq)}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
+      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph}">${bigArtist(p.eq, p.bt)}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
       ${p ? `<div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>` : ''}
       <div class="sec"><h3>Career</h3><div class="statgrid">
         <div><b>${albums}</b><span>Albums dropped</span></div>
@@ -2750,7 +2764,7 @@ function openTab(tab) {
       return `<button class="slot ${it ? '' : 'empty'} ${styleSlot === sl ? 'on' : ''}" data-stab="${sl}" aria-label="${SLOTS.find(x => x[0] === sl)[1]}">${it ? itemArt(it, 50) : ic(slotIc[sl])}</button>`; };
     let grid;
     if (styleSlot === 'colors') {
-      grid = `<div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
+      grid = `<div class="sec"><h3>Look</h3>${lookPick()}</div><div class="sec"><h3>Skin tone</h3><div class="swatches">${SKINS.map(c => `<button class="sw ${S.skin === c ? 'on' : ''}" style="background:${c}" data-skin="${c}" aria-label="Skin tone ${c}"></button>`).join('')}</div></div>
         <div class="sec"><h3>Headphones</h3><div class="swatches">${PHONES.map(c => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="Headphone color ${c}"></button>`).join('')}</div></div>
         ${Object.keys(PHONES_X).some(k => (S.phonesX || {})[k]) ? `<div class="sec"><h3>Earned colors <small class="h3note">from long-term goals</small></h3><div class="swatches earned">${Object.entries(PHONES_X).filter(([k]) => (S.phonesX || {})[k]).map(([k, [n, c]]) => `<button class="sw ${S.phones === c ? 'on' : ''}" style="background:${c}" data-phones="${c}" aria-label="${n} headphones"></button>`).join('')}</div></div>` : ''}`;
     } else {
@@ -2864,6 +2878,8 @@ function openTab(tab) {
 const _unusedSwatch = it => { const c = it.look.body || it.look.color; const tr = it.look.trim || 'transparent';
   return `<span style="width:24px;height:24px;border-radius:50%;background:${c};box-shadow:inset 0 0 0 4px ${tr};outline:2px solid rgba(255,255,255,.15)"></span>`; };
 const hms = ms => { const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); };
+// the two looks, shown as head icons only (no labels): 'a' short hair, 'b' long hair with lashes
+const lookPick = () => `<div class="lookpick">${['a', 'b'].map(bt => `<button class="lp ${(S.bt || 'a') === bt ? 'on' : ''}" data-bt="${bt}" aria-label="Look ${bt === 'a' ? 1 : 2}">${miniFigure({ ...itemById('basic').look, phones: true, long: bt === 'b' }, 80, 80, '18 -4 124 124')}</button>`).join('')}</div>`;
 function applyLook() {
   document.documentElement.style.setProperty('--skin', S.skin);
   document.documentElement.style.setProperty('--phones', S.phones);
