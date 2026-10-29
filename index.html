@@ -324,6 +324,12 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .namebar button { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--deep); display: grid; place-items: center; }
 .wardrobe { display: grid; grid-template-columns: 58px minmax(0, 1fr) 58px; gap: 8px; align-items: center; }
 .slots { display: flex; flex-direction: column; gap: 12px; }
+/* Style screen: header, name and character pinned together; the name bar shares the character card's width and corners */
+.sheet > .style-stick { position: sticky; top: -18px; z-index: 8; background: var(--panel); margin: -18px -18px 0; padding: 0 18px 12px; box-shadow: 0 10px 10px -10px rgba(10,8,30,.55); }
+.style-stick .sheet-head { padding: 16px 0 10px; }
+.showcase { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.showcase .namebar { border-radius: 18px; min-height: 42px; }
+.showcase .dresser { min-height: 214px; }
 .slot { width: 58px; height: 58px; border-radius: 14px; background: #EEF7FC; display: grid; place-items: center; overflow: hidden; border: 3px solid transparent; box-sizing: border-box; color: var(--muted); }
 .slot.empty { background: transparent; border: 3px dashed var(--line); }
 .slot.on { border-color: var(--gem); }
@@ -473,7 +479,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .chartme .xv { font: 400 20px var(--display); color: var(--gem); padding-right: 6px; } .chartme .xv small { font: 700 11px var(--body); color: var(--muted); }
 .clist { display: flex; flex-direction: column; gap: 6px; transition: opacity .15s; }
 .clist.dim { opacity: .45; }
-.sheet.tall { height: 76%; }
+.sheet.tall { height: 100%; }
 .crow { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 8px 12px 8px 8px; }
 .crow.me { box-shadow: inset 0 0 0 2px var(--gem); }
 .crow .cr { width: 32px; text-align: center; font: 400 15px var(--display); color: var(--muted); }
@@ -498,8 +504,8 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
 
 /* Sheets */
-.scrim { position: absolute; inset: 0; background: rgba(8,7,20,.6); z-index: 20; display: flex; align-items: flex-end; }
-.sheet { width: 100%; max-height: 84%; overflow-y: auto; overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; background: var(--panel); border-radius: 24px 24px 0 0; box-sizing: border-box;
+.scrim { position: absolute; inset: 0; top: calc(var(--hud-h, 110px) - 12px); background: rgba(8,7,20,.6); z-index: 20; display: flex; align-items: flex-end; }
+.sheet { width: 100%; max-height: 100%; overflow-y: auto; overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; background: var(--panel); border-radius: 24px 24px 0 0; box-sizing: border-box;
   padding-top: 18px; padding-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px)); padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
   display: flex; flex-direction: column; gap: 14px; animation: up .22s ease-out; }
 @keyframes up { from { transform: translateY(40px); opacity: 0 } }
@@ -1154,7 +1160,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 78, CONTACT = 'elicosand@gmail.com';
+const BUILD = 82, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1615,6 +1621,10 @@ function fit() {
   wrap.style.backgroundPosition = pos.join(', ');
 }
 new ResizeObserver(fit).observe(wrap);
+// remember where the money/gems bar ends so pop-ups can start right below it
+const hudEl = document.querySelector('.hud');
+const setHudH = () => { const a = $('app').getBoundingClientRect(), h = hudEl.getBoundingClientRect(); $('app').style.setProperty('--hud-h', Math.round(h.bottom - a.top) + 'px'); };
+new ResizeObserver(setHudH).observe(hudEl); setHudH();
 new ResizeObserver(() => { $('cash').dataset.fit = ''; $('gems').dataset.fit = ''; }).observe($('app'));
 
 
@@ -2122,33 +2132,40 @@ function faceExtra(fc, eyes) {
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
 // ---------- hair and face details (drawn in the big figure's coordinates; the small figure scales them to its head) ----------
 const HAIRS = ['short', 'curly', 'buzz', 'long', 'bun', 'braids'];      // first three lead for look 1, last three for look 2; anyone can pick any
-const HAIR_COLORS = ['#231A17', '#5A3A22', '#C98F3E', '#A8442A', '#FF8FC0', '#E8E2F4'];
+const HAIR_COLORS = ['#231A17', '#5A3A22', '#C98F3E', '#A8442A', '#FF8FC0', '#6FD3FF', '#B18CFF', '#E8E2F4'];
 const FACES = ['stubble', 'beard', 'mustache', 'freckles', 'mark', 'blush'];
 const defaultHair = bt => bt === 'b' ? 'long' : 'short';
 const shine = `<path d="M62 33 Q72 28 84 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
 function hairBack(hs, c, ln) {
   if (hs === 'long') return `<path d="M47 56 Q40 100 52 118 Q80 124 108 118 Q120 100 113 56 Z" fill="${c}" ${ln}></path>`;
-  if (hs === 'braids') return [49, 111].map(x => [76, 86, 96, 106].map(y => `<ellipse cx="${x}" cy="${y}" rx="6.5" ry="5.6" fill="${c}" ${ln}></ellipse>`).join('')
+  if (hs === 'braids') return [53, 107].map(x => [76, 86, 96, 106].map(y => `<ellipse cx="${x}" cy="${y}" rx="6.5" ry="5.6" fill="${c}" ${ln}></ellipse>`).join('')
     + `<rect x="${x - 4}" y="111" width="8" height="4" rx="2" fill="#FF6FAE" ${ln}></rect><path d="M${x - 3} 115 L${x} 122 L${x + 3} 115 Z" fill="${c}" ${ln}></path>`).join('');
   return '';
 }
+// curly hair outline: soft scallops along an arc over the head, closed by the standard (buzz) hairline
+const CURLY_D = (() => { const cx = 80, cy = 58, rx = 35, ry = 37, n = 7, bump = 6;
+  const pt = t => [cx + rx * Math.cos(t), cy + ry * Math.sin(t)];
+  let d = '', [x0, y0] = pt(Math.PI); d += `M${x0.toFixed(1)} ${y0.toFixed(1)}`;
+  for (let i = 1; i <= n; i++) { const t0 = Math.PI + Math.PI * (i - 1) / n, t1 = Math.PI + Math.PI * i / n, tm = (t0 + t1) / 2;
+    const [x1, y1] = pt(t1), qx = cx + (rx + bump) * Math.cos(tm), qy = cy + (ry + bump) * Math.sin(tm);
+    d += ` Q${qx.toFixed(1)} ${qy.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`; }
+  return d + ' Q104 45 80 44 Q56 45 45 58 Z'; })();
 function hairTop(hs, c, ln, hat) {
-  if (hs === 'curly') return [[50, 46, 9], [56, 35, 10], [67, 27, 10], [80, 24, 10.5], [93, 27, 10], [104, 35, 10], [110, 46, 9]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" ${ln}></circle>`).join('')
-    + `<path d="M45 58 Q44 34 80 32 Q116 34 115 58 Q102 46 80 46 Q58 46 45 58 Z" fill="${c}"></path><path d="M47 58 Q58 47 80 47 Q102 47 113 58" fill="none" ${ln}></path>`
-    + `<path d="M60 30 Q64 27 68 29 M84 26 Q88 23 92 26" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.5" stroke-linecap="round"></path>`;
-  if (hs === 'buzz') return `<path d="M48 56 Q46 27 80 26 Q114 27 112 56 Q104 41 80 40 Q56 41 48 56 Z" fill="${c}" ${ln}></path>`;
+  if (hs === 'curly') return `<path d="${CURLY_D}" fill="${c}" ${ln}></path>`
+    + `<path d="M60 37 q3 -5 7 -2 M73 30 q3 -5 7 -2 M87 30 q3 -5 7 -2 M96 37 q3 -5 7 -2" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.2" stroke-linecap="round"></path>`;
+  if (hs === 'buzz') return `<path d="M48 59 Q46 27 80 26 Q114 27 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path>`;
   if (hs === 'bun') return (hat ? '' : `<circle cx="80" cy="15" r="12" fill="${c}" ${ln}></circle><path d="M70 22 Q80 27 90 22" fill="none" stroke="#FF6FAE" stroke-width="3.5" stroke-linecap="round"></path>`)
-    + `<path d="M47 57 Q45 24 80 23 Q115 24 113 57 Q101 40 80 40 Q59 40 47 57 Z" fill="${c}" ${ln}></path><path d="M66 31 Q80 26 94 31" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
-  if (hs === 'braids') return `<path d="M47 59 Q44 24 80 23 Q116 24 113 59 Q101 42 80 42 Q59 42 47 59 Z" fill="${c}" ${ln}></path>` + shine;
+    + `<path d="M48 59 Q45 24 80 23 Q115 24 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path><path d="M66 31 Q80 26 94 31" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
+  if (hs === 'braids') return `<path d="M48 59 Q44 24 80 23 Q116 24 112 59 Q104 45 80 44 Q56 45 48 59 Z" fill="${c}" ${ln}></path>` + shine;
   return `<path d="M47 60 Q43 24 80 23 Q117 24 113 60 Q108 44 96 41 Q90 49 78 45 Q62 42 47 60 Z" fill="${c}" ${ln}></path>` + shine;   // short and long share the side-swept top
 }
 function faceDetail(fd, c) {
   if (fd === 'stubble') return `<path d="M50 72 Q52 96 80 97 Q108 96 110 72 Q104 86 80 88 Q56 86 50 72 Z" fill="${c}" opacity=".28"></path>`;
   if (fd === 'beard') return `<path d="M49 70 Q50 98 80 99 Q110 98 111 70 Q105 84 92 86 Q86 82 80 84 Q74 82 68 86 Q55 84 49 70 Z" fill="${c}" stroke="#1B1830" stroke-width="2.5" stroke-linejoin="round"></path>`;
   if (fd === 'mustache') return `<path d="M68.5 85.2 Q73 81 80 82.6 Q87 81 91.5 85.2 Q86.5 87.6 80 86.4 Q73.5 87.6 68.5 85.2 Z" fill="${c}" stroke="#1B1830" stroke-width="1.4" stroke-linejoin="round"></path>`;
-  if (fd === 'freckles') return [[58, 76], [63, 79], [61, 73], [66, 75], [94, 75], [99, 73], [97, 79], [102, 76]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.05" fill="#9A5233" opacity=".42"></circle>`).join('');
+  if (fd === 'freckles') return [[58.6, 76.2], [61.4, 74.6], [64, 77], [65.6, 75.2], [101.4, 76.2], [98.6, 74.6], [96, 77], [94.4, 75.2]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.05" fill="#9A5233" opacity=".42"></circle>`).join('');
   if (fd === 'mark') return `<circle cx="97" cy="83" r="1.7" fill="#1B1830"></circle>`;
-  if (fd === 'blush') return `<ellipse cx="61" cy="77" rx="7.5" ry="4.2" fill="#FF6F8E" opacity=".55"></ellipse><ellipse cx="99" cy="77" rx="7.5" ry="4.2" fill="#FF6F8E" opacity=".55"></ellipse>`;
+  if (fd === 'blush') return `<ellipse cx="62" cy="76.5" rx="7" ry="4" fill="#FF8AA0" opacity=".5"></ellipse><ellipse cx="98" cy="76.5" rx="7" ry="4" fill="#FF8AA0" opacity=".5"></ellipse>`;
   return '';
 }
 const MINI_HEAD = s => `<g transform="translate(80 60) scale(1.06) translate(-80 -60)">${s}</g>`;
@@ -2829,9 +2846,8 @@ function openTab(tab) {
           <span class="bar" style="background:${own ? rc : '#8C86A6'}">${bar}</span></button>`;
       }).join('') + '</div>';
     }
-    openSheet(`<div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
-      <div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div>
-      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="dresser"><span class="spot"></span>${dressSparks}${bigArtist()}</div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div>
+    openSheet(`<div class="style-stick"><div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
+      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="showcase"><div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div><div class="dresser"><span class="spot"></span>${dressSparks}${bigArtist()}</div></div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div></div>
       <p class="bonusline">Wardrobe bonus <b>+${g}% income</b><small>Your best item in each slot counts, so wear whatever you like.</small></p>
       <div class="stabs">${['top', 'hat', 'neck', 'face', 'colors'].map(k => `<button class="stab ${styleSlot === k ? 'on' : ''}" data-stab="${k}" aria-label="${k === 'colors' ? 'Colors' : SLOTS.find(x => x[0] === k)[1]}">${ic(slotIc[k], 24)}</button>`).join('')}</div>
       ${grid}`);
