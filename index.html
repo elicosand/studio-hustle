@@ -295,6 +295,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 @keyframes drift-dl { from { background-position: 0 0; } to { background-position: -180px 180px; } }
 .wall.stars { animation-name: drift-dl-s; } @keyframes drift-dl-s { from { background-position: 0 0; } to { background-position: -140px 140px; } }
 @keyframes drift-up { from { background-position: 0 0; } to { background-position: 0 -72px; } }
+.card.outfit .art { overflow: hidden; border-radius: 16px 16px 0 0; }
 .card.outfit .rays { top: 46%; width: 112px; height: 112px; margin: -56px 0 0 -56px; opacity: .85; }
 
 .card:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
@@ -441,7 +442,9 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .charts-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .charts-tabs .stab { font-size: 12px; font-weight: 700; }
 .chartme { border: 2px solid var(--gem); }
-.buyart { display: grid; place-items: center; height: 120px; border-radius: 18px; background: #EEF7FC; }
+.buyart { position: relative; overflow: hidden; display: grid; place-items: center; min-height: 160px; border-radius: 18px; background: #EEF7FC; }
+.buyart .rays { width: 220px; height: 220px; margin: -110px 0 0 -110px; opacity: .9; background: repeating-conic-gradient(rgba(124,79,224,.16) 0 9deg, rgba(124,79,224,0) 9deg 30deg); }
+.buycost.short b { color: #E0453A; }
 .buywhat { text-align: center; margin: 0; }
 .buycost i.g { width: 26px; height: 26px; }
 .buycost { display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--panel-2); border-radius: 16px; padding: 12px; }
@@ -484,7 +487,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 
 /* Sheets */
 .scrim { position: absolute; inset: 0; background: rgba(8,7,20,.6); z-index: 20; display: flex; align-items: flex-end; }
-.sheet { width: 100%; max-height: 84%; overflow-y: auto; background: var(--panel); border-radius: 24px 24px 0 0; box-sizing: border-box;
+.sheet { width: 100%; max-height: 84%; overflow-y: auto; overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; background: var(--panel); border-radius: 24px 24px 0 0; box-sizing: border-box;
   padding-top: 18px; padding-bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px)); padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
   display: flex; flex-direction: column; gap: 14px; animation: up .22s ease-out; }
 @keyframes up { from { transform: translateY(40px); opacity: 0 } }
@@ -1139,7 +1142,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 72, CONTACT = 'elicosand@gmail.com';
+const BUILD = 74, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1928,15 +1931,14 @@ $('scrim').addEventListener('click', e => {
     save(); toast(clean !== (v || 'New Artist') ? "That name isn't allowed" : 'Name saved'); syncChart(true); return openTab(renameFrom); }
   const bi = e.target.closest('[data-buy-item]');
   if (bi) { const it = itemById(bi.dataset.buyItem); if (!it || S.owned[it.id]) return openTab(bi.dataset.from || 'style');
-    if (S.gems < (it.gems || 0)) { sfx('denied'); toast('Not enough gems'); return; }
     return askItem(it, bi.dataset.from || 'style'); }
   const bo = e.target.closest('[data-buy]');
   if (bo && !bo.disabled) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
-    if (S.gems < o.gems) { sfx('denied'); toast('Not enough gems'); return; }
     const art = { skip1: ART.clock(1), skip4: ART.clock(4), monitors: ART.monitors(), nightOwl: ART.moon() }[id] || '';
     return askBuy(o.name, o.skip ? `Instant ${fmt(skipValue(o.skip))} cash` : o.sub, o.gems, art, () => { if (S.gems < o.gems || (o.once && S.perks[id])) return; S.gems -= o.gems; grant(id); }, 'shop'); }
   if (e.target.closest('[data-confirm-buy]')) { const pb = pendingBuy; pendingBuy = null; if (pb) { pb.run(); return backFromBuy(pb); } return closeSheet(); }
+  if (e.target.closest('[data-get-gems]')) { pendingBuy = null; openTab('shop'); const g = document.querySelector('[data-buy="gems100"]'); if (g) g.scrollIntoView({ block: 'center' }); return; }
   if (e.target.closest('[data-cancel-buy]')) { const pb = pendingBuy; pendingBuy = null; return pb ? backFromBuy(pb) : closeSheet(); }
   const it2 = e.target.closest('[data-intent]');
   if (it2) { const id = it2.dataset.intent, v = it2.dataset.v; S.intent = Object.assign({}, S.intent, { [id]: v }); save(); track(`would-buy/${id}/${v.toLowerCase()}`); sfx('tap');
@@ -2816,11 +2818,16 @@ function openTab(tab) {
   } else if (tab === 'confirm-buy') {
     const pb = pendingBuy; if (!pb) return closeSheet();
     openSheet(`<div class="sheet-head"><h2>Buy ${esc(pb.name)}?</h2>${closeBtn()}</div>
-      ${pb.art ? `<div class="buyart">${pb.art}</div>` : ''}
+      ${pb.art ? `<div class="buyart"><span class="rays"></span>${pb.art}</div>` : ''}
       <p class="buywhat">${pb.what}</p>
-      <div class="buycost"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · ${(S.gems - pb.gems).toLocaleString()} left after</span></div>
+      ${S.gems >= pb.gems
+        ? `<div class="buycost"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · ${(S.gems - pb.gems).toLocaleString()} left after</span></div>
       <button class="cta" data-confirm-buy>Buy for ${pb.gems.toLocaleString()} gems</button>
-      <button class="ghost" data-cancel-buy>Cancel</button>`);
+      <button class="ghost" data-cancel-buy>Cancel</button>`
+        : `<div class="buycost short"><span>Costs</span><b><i class="g"></i>${pb.gems.toLocaleString()}</b><span>You have ${S.gems.toLocaleString()} · need ${(pb.gems - S.gems).toLocaleString()} more</span></div>
+      <button class="cta" disabled>Not enough gems</button>
+      <button class="cta pink" data-get-gems>Get more gems</button>
+      <button class="ghost" data-cancel-buy>Back</button>`}`);
   } else if (tab === 'test-ask') {
     openSheet(`<div class="sheet-head"><h2>Test mode</h2>${closeBtn()}</div>
       <p>A separate practice career for checking pacing. Speed the game up to 200x and keep Hype on. Your real save, The Charts and play tracking are untouched, and you can switch back any time in Settings.</p>
@@ -2943,7 +2950,7 @@ function askBuy(name, what, gems, art, run, back) {
 }
 function askItem(it, back) {
   const [rn, rc] = rarity(it);
-  askBuy(it.name, `<b style="color:${rc}">${rn}</b> ${slotLabel(it.slot)} · +${Math.round(it.bonus * 100)}% income`, it.gems, itemArt(it, 96), () => {
+  askBuy(it.name, `<b style="color:${rc}">${rn}</b> ${slotLabel(it.slot)} · +${Math.round(it.bonus * 100)}% income`, it.gems, bigArtist({ top: 'basic', hat: null, neck: null, face: null, [it.slot]: it.id }), () => {
     if (S.owned[it.id] || S.gems < it.gems) return;
     S.gems -= it.gems; S.owned[it.id] = true; S.equip[it.slot] = it.id; applyLook(); sfx('bling'); toast(it.name + ' unlocked'); track('item/' + it.id); save(); render();
   }, back);
