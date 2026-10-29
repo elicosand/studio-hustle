@@ -326,10 +326,13 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .slots { display: flex; flex-direction: column; gap: 12px; }
 /* Style screen: header, name and character pinned together; the name bar shares the character card's width and corners */
 .sheet > .style-stick { position: sticky; top: -18px; z-index: 8; background: var(--panel); margin: -18px -18px 0; padding: 0 18px 12px; box-shadow: 0 10px 10px -10px rgba(10,8,30,.55); }
-.style-stick .sheet-head { padding: 16px 0 10px; }
+.style-stick .sheet-head { padding: 14px 0 8px; }
 .showcase { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .showcase .namebar { border-radius: 18px; min-height: 42px; }
-.showcase .dresser { min-height: 214px; }
+.showcase .dresser { min-height: 0; height: 172px; padding-block: 8px 4px; }
+.showcase .dresser > svg { width: 128px; height: auto; position: relative; }
+.showcase .namebar { min-height: 38px; }
+.wbadge { position: absolute; top: 8px; left: 8px; z-index: 2; background: var(--deep); color: var(--cash); font: 400 12px var(--display); padding: 3px 8px; border-radius: 999px; }
 .slot { width: 58px; height: 58px; border-radius: 14px; background: #EEF7FC; display: grid; place-items: center; overflow: hidden; border: 3px solid transparent; box-sizing: border-box; color: var(--muted); }
 .slot.empty { background: transparent; border: 3px dashed var(--line); }
 .slot.on { border-color: var(--gem); }
@@ -1160,7 +1163,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 82, CONTACT = 'elicosand@gmail.com';
+const BUILD = 83, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -2132,7 +2135,7 @@ function faceExtra(fc, eyes) {
 // f: { body, trim, style, skin (color or null for the player's tone), hair, phones, hat, neck, face, cap }
 // ---------- hair and face details (drawn in the big figure's coordinates; the small figure scales them to its head) ----------
 const HAIRS = ['short', 'curly', 'buzz', 'long', 'bun', 'braids'];      // first three lead for look 1, last three for look 2; anyone can pick any
-const HAIR_COLORS = ['#231A17', '#5A3A22', '#C98F3E', '#A8442A', '#FF8FC0', '#6FD3FF', '#B18CFF', '#E8E2F4'];
+const HAIR_COLORS = ['#231A17', '#6E4A2E', '#E6C36A', '#A8442A', '#FF8FC0', '#6FD3FF', '#B18CFF', '#E8E2F4'];
 const FACES = ['stubble', 'beard', 'mustache', 'freckles', 'mark', 'blush'];
 const defaultHair = bt => bt === 'b' ? 'long' : 'short';
 const shine = `<path d="M62 33 Q72 28 84 29" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"></path>`;
@@ -2847,10 +2850,10 @@ function openTab(tab) {
       }).join('') + '</div>';
     }
     openSheet(`<div class="style-stick"><div class="sheet-head"><h2>Style</h2>${closeBtn()}</div>
-      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="showcase"><div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div><div class="dresser"><span class="spot"></span>${dressSparks}${bigArtist()}</div></div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div></div>
-      <p class="bonusline">Wardrobe bonus <b>+${g}% income</b><small>Your best item in each slot counts, so wear whatever you like.</small></p>
+      <div class="wardrobe"><div class="slots">${slotCard('top')}${slotCard('hat')}</div><div class="showcase"><div class="namebar"><span>${esc(S.name || 'New Artist')}</span><button data-rename aria-label="Rename your artist"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button></div><div class="dresser"><span class="spot"></span>${dressSparks}<span class="wbadge">+${g}% income</span>${bigArtist()}</div></div><div class="slots">${slotCard('neck')}${slotCard('face')}</div></div></div>
       <div class="stabs">${['top', 'hat', 'neck', 'face', 'colors'].map(k => `<button class="stab ${styleSlot === k ? 'on' : ''}" data-stab="${k}" aria-label="${k === 'colors' ? 'Colors' : SLOTS.find(x => x[0] === k)[1]}">${ic(slotIc[k], 24)}</button>`).join('')}</div>
-      ${grid}`);
+      ${grid}
+      <p class="bonusline"><small>Wardrobe bonus: your best item in each slot counts toward your income, so wear whatever you like.</small></p>`);
   } else if (tab === 'rename') {
     openSheet(`<div class="sheet-head"><h2>Name your artist</h2>${closeBtn()}</div>
       <label class="lbl" for="artistNameInput">Artist name</label>
@@ -2951,6 +2954,7 @@ const hairPick = () => { const mine = S.bt === 'b' ? ['long', 'bun', 'braids', '
 const facePick = () => `<div class="picks" style="--n:7">${[null, ...FACES].map(fd => `<button class="pk ${(S.fd || null) === fd ? 'on' : ''}" data-fd="${fd || ''}" aria-label="Face ${fd || 'none'}">${headIcon({ fd })}</button>`).join('')}</div>`;
 const lookPick = () => `<div class="lookpick">${['a', 'b'].map(bt => `<button class="lp ${(S.bt || 'a') === bt ? 'on' : ''}" data-bt="${bt}" aria-label="Look ${bt === 'a' ? 1 : 2}">${headIcon({ long: bt === 'b', hs: defaultHair(bt), fd: null }, 80)}</button>`).join('')}</div>`;
 function applyLook() {
+  const oldHair = { '#5A3A22': '#6E4A2E', '#C98F3E': '#E6C36A' }; if (oldHair[S.hc]) S.hc = oldHair[S.hc];
   document.documentElement.style.setProperty('--skin', S.skin);
   document.documentElement.style.setProperty('--phones', S.phones === 'none' ? PHONES[0] : S.phones);
   artist.innerHTML = smallArtist();
