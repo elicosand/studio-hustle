@@ -444,7 +444,11 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .best .bi { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #9FD8F2; overflow: hidden; display: grid; place-items: center; }
 .best .bt { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .best em { font-style: normal; font-weight: 800; }
 .ttl { font-weight: 800; } .statgrid .ttl { font: 400 17px var(--display); }
-.prof-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: -4px; }
+.prof-top { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.pcountry { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--deep); color: var(--text); font: 600 12px var(--body); padding: 4px 10px; border-radius: 999px; }
+.prof-top .ptags { flex-wrap: nowrap; max-width: 100%; }
+.prof-top .ptags > span { white-space: nowrap; flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.prof-top .cnote { margin: 0; }
 .row.goal .gtier { font-style: normal; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.1); margin-right: 2px; }
 .row.goal.t3 .gtier { background: rgba(255,201,74,.2); color: #FFC94A; } .row.goal.t2 .gtier { background: rgba(111,211,255,.18); color: #9FE6FF; }
 .row.goal .xrw { color: #FFC94A; }
@@ -1180,7 +1184,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 98, CONTACT = 'elicosand@gmail.com';
+const BUILD = 101, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -2759,8 +2763,8 @@ function openTab(tab) {
     const maps = [...LOCATIONS.map(l => l.name), ...FUTURE], loc = p ? p.loc : 0, best = p && itemById(p.best);
     const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
     openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
-      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind">${b}</span>`).join('') : ''}</span>${country ? `<span class="cnote">${esc(countryName(country))}</span>` : ''}</div>
-      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph === 'none' ? PHONES[0] : p.ph}"><span class="spot"></span>${stageSparks()}${bigArtist(p.eq, p.bt, { hs: p.hs || defaultHair(p.bt), hc: p.hc || HAIR_COLORS[0], fd: p.fd, ph: p.ph !== 'none' })}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
+      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind">${b}</span>`).join('') : ''}</span></div>
+      ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph === 'none' ? PHONES[0] : p.ph}"><span class="spot"></span>${stageSparks()}${country ? `<span class="pcountry">${esc(countryName(country))}</span>` : ''}${bigArtist(p.eq, p.bt, { hs: p.hs || defaultHair(p.bt), hc: p.hc || HAIR_COLORS[0], fd: p.fd, ph: p.ph !== 'none' })}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
       ${p ? `<div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>` : ''}
       <div class="sec"><h3>Career</h3><div class="statgrid">
         <div><b>${albums}</b><span>Albums dropped</span></div>
