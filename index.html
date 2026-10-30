@@ -308,7 +308,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .rib.small { position: absolute; top: -8px; right: -4px; left: auto; z-index: 3; font-size: 10px; padding: 2px 8px; background: linear-gradient(135deg, #FF6B57, #F0303A); animation: ribglow 2s ease-in-out infinite; color: #fff; font-family: var(--display); border-radius: 8px 8px 2px 8px; transform: rotate(4deg); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 /* glow, sparkle and float so the shop feels like treasure */
 .glow::before { content: ""; position: absolute; left: 50%; top: 48%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,0) 70%); animation: pulseglow 2.6s ease-in-out infinite; }
-.glow > svg { position: relative; animation: floaty 3s ease-in-out infinite; filter: drop-shadow(0 4px 0 rgba(20,18,42,.18)); }
+.glow > svg, .glow > .hype-tile { position: relative; animation: floaty 3s ease-in-out infinite; filter: drop-shadow(0 4px 0 rgba(20,18,42,.18)); }
 .spk { position: absolute; z-index: 1; width: 12px; height: 12px; background: #fff; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); transform: scale(var(--k, 1)); animation: sparkle 2.4s ease-in-out infinite; pointer-events: none; }
 .card.green .spk { background: #FFF7C2; }
 @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(calc(var(--k, 1) * .3)) rotate(0); } 50% { opacity: 1; transform: scale(var(--k, 1)) rotate(45deg); } }
@@ -416,6 +416,11 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .tab-hype .orb .spk { width: 10px; height: 10px; top: -6px; right: -6px; z-index: 2; }
 .tab-hype .orb .spk + .spk { top: auto; bottom: -4px; left: -7px; right: auto; animation-delay: -1.2s; width: 8px; height: 8px; }
 @keyframes hypewiggle { 0%, 90%, 100% { transform: rotate(0); } 92.5% { transform: rotate(-5deg) scale(1.05); } 95% { transform: rotate(5deg) scale(1.05); } 97.5% { transform: rotate(-2deg); } }
+.hype-tile { position: relative; display: grid; place-items: center; width: 68px; height: 68px; border-radius: 20px; color: var(--deep); border: 4px solid var(--ink); box-sizing: border-box; isolation: isolate;
+  background: linear-gradient(160deg, #FF9CCB 0%, #FF4F9A 100%); box-shadow: 0 4px 0 #B84778; }
+.hype-tile::before { content: ""; position: absolute; inset: -10px; border-radius: 28px; z-index: -1; background: radial-gradient(circle, rgba(255,111,174,.75) 0%, rgba(255,111,174,0) 70%); }
+.hype-tile svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 0 rgba(20,18,42,.25)); }
+.buyart .hype-tile { width: 84px; height: 84px; border-radius: 24px; } .buyart .hype-tile svg { width: 42px; height: 42px; }
 .tab-hype:active .orb { transform: translateY(2px); box-shadow: 0 2px 0 #B84778; animation: none; }
 .tab-hype.active .orb { background: linear-gradient(160deg, #FFE27A 0%, #FFB938 100%); box-shadow: 0 4px 0 #B8860B; animation: none; }
 .tab-hype.active .orb::before { background: radial-gradient(circle, rgba(255,226,122,.75) 0%, rgba(255,226,122,0) 70%); }
@@ -585,7 +590,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -1175,7 +1180,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 95, CONTACT = 'elicosand@gmail.com';
+const BUILD = 97, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -2403,7 +2408,7 @@ const ART = {
     return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">${spots.map(([x, y, k]) => gemPath(x, y, k)).join('')}</svg>`; },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
-  bolt: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="8" width="40" height="48" rx="12" fill="#FF6FAE" stroke="#14122A" stroke-width="3"></rect><rect x="12" y="34" width="40" height="22" rx="0" fill="#FF8FC8" opacity=".55"></rect><path d="M35 14 L22 35 H31 L28 50 L42 28 H33 Z" fill="#fff" stroke="#14122A" stroke-width="2.5" stroke-linejoin="round"></path><path d="M54 22 l3 -6 3 6 M57 16 v14" stroke="#14122A" stroke-width="3" stroke-linecap="round" fill="none"></path></svg>`,
+  bolt: () => `<span class="hype-tile"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>`,
   frenzy: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4 L36 14 L46 8 L44 19 L56 18 L48 27 L58 32 L48 37 L56 46 L44 45 L46 56 L36 50 L32 60 L28 50 L18 56 L20 45 L8 46 L16 37 L6 32 L16 27 L8 18 L20 19 L18 8 L28 14 Z" fill="#FFE27A" opacity=".9"></path><rect x="14" y="22" width="36" height="26" rx="6" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><rect x="24" y="16" width="14" height="8" rx="2.5" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><circle cx="32" cy="35" r="8" fill="#6E7BBF" stroke="#14122A" stroke-width="3"></circle><circle cx="34.5" cy="32.5" r="2.4" fill="#fff" opacity=".85"></circle><rect x="42" y="26" width="5" height="3.5" rx="1.2" fill="#FFC94A"></rect></svg>`,
   moon: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 42A20 20 0 1 1 26 12a15 15 0 0 0 18 30z" fill="#FFE08A" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><circle cx="48" cy="16" r="2.5" fill="#fff"></circle><circle cx="54" cy="28" r="1.8" fill="#fff"></circle></svg>`,
   mic: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="22" y="6" width="20" height="32" rx="10" fill="#FFC94A" stroke="#14122A" stroke-width="3"></rect><path d="M26 14h12M26 20h12M26 26h12" stroke="#C8901A" stroke-width="2.5" stroke-linecap="round"></path><path d="M14 30a18 18 0 0 0 36 0" fill="none" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M32 48v10M22 58h20" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M26 10v8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"></path></svg>`,
