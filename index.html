@@ -282,6 +282,8 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .banner { margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); padding: 9px 12px; background: var(--panel-2); text-align: center; font: 400 15px var(--display); letter-spacing: .02em; }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
 .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cards.two.solo { grid-template-columns: minmax(0, 1fr); max-width: calc(50% - 5px); margin-inline: auto; width: 100%; }
+.cards.two .card.gold .art { height: 112px; }
 .card { position: relative; display: flex; flex-direction: column; border-radius: 16px; overflow: visible; box-shadow: 0 4px 0 rgba(20,18,42,.35); }
 .card .price { border-radius: 0 0 16px 16px; }
 /* shop wallpapers, one per section (Eatventure-style): soft patterns that drift slowly behind the card art.
@@ -369,6 +371,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 @keyframes loctitle { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.96); } 15%, 75% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -6px); } }
 .card .amount { font: 400 20px var(--display); color: var(--deep); text-align: center; padding-bottom: 6px; }
 .gemcard .art { height: 112px; }
+.frenzy-chip { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 6; background: #FFE27A; color: var(--deep); font: 400 12px var(--display); padding: 4px 11px; border-radius: 999px; box-shadow: 0 2px 0 rgba(0,0,0,.3), 0 0 12px rgba(255,226,122,.7); pointer-events: none; white-space: nowrap; }
 .test-chip { position: absolute; left: 50%; top: 88px; transform: translateX(-50%); z-index: 6; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 999px; pointer-events: none; }
 .speeds { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .testsec { border: 2px dashed #F0453A; border-radius: 16px; padding: 12px; }
@@ -616,6 +619,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 
   <div class="room-wrap" id="roomWrap">
     <div class="test-chip" id="testChip" hidden>TEST MODE</div>
+    <div class="frenzy-chip" id="frenzyChip" hidden></div>
     <div class="loc-title" id="locTitle" hidden><b id="locTitleName"></b><span id="locTitleSub"></span></div>
     <div class="side side-l">
       <button class="sbtn crate" id="crateBtn" aria-label="Free crate">
@@ -1171,7 +1175,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 91, CONTACT = 'elicosand@gmail.com';
+const BUILD = 95, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1332,8 +1336,10 @@ const OFFERS = {
   autoCrew: { name: 'Day-One Crew', sub: 'Your first station runs itself on every map, forever', money: '$2.99', once: true },
   monitors: { name: 'Pro Monitors', sub: 'Permanent +25% income', gems: 300, once: true },
   nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
+  skip15: { name: 'Time Skip · 15 min', sub: 'Instant cash', gems: 10, skip: 900 },
   skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
-  skip4: { name: 'Time Skip · 4 hours', sub: 'Instant cash', gems: 100, skip: 4 * 3600 },
+  hypeRefill: { name: 'Hype Refill', sub: 'Fill your 2x Hype all the way to its cap, no ads', gems: 25 },
+  fanFrenzy: { name: 'Fan Frenzy', sub: 'Fans and paparazzi show up 3x as often for 30 minutes', gems: 20 },
   gems100: { name: 'Handful of Gems', sub: '100 gems', money: '$0.99', gemsOut: 100 },
   gems550: { name: 'Bag of Gems', sub: '550 gems · 10% bonus', money: '$4.99', gemsOut: 550 },
   gems1200: { name: 'Chest of Gems', sub: '1,200 gems · 20% bonus', money: '$9.99', gemsOut: 1200 },
@@ -1546,6 +1552,8 @@ function buyPlan(st) {
   return { n, cost: bulkCost(st, n) };
 }
 const hypeOn = () => Date.now() < S.hypeUntil;
+const hypeLeftToFill = () => Math.max(0, hypeCap() * 1000 - Math.max(0, S.hypeUntil - Date.now()));   // hypeCap is in seconds
+const frenzyOn = () => Date.now() < (S.frenzyUntil || 0);
 // everything that multiplies income, in one place
 const totalMult = () => (Date.now() < S.hypeUntil ? 2 : 1) * boostMult() * fame() * gearMult();
 const playTime = sec => { const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60); return h ? `${h}h ${m}m` : m ? `${m}m` : `${Math.floor(sec)}s`; };
@@ -1892,6 +1900,9 @@ function grant(id) {
   if (o.gemsOut) S.gems += o.gemsOut;
   if (o.skip) { const v = skipValue(o.skip); earn(v); toast('+' + fmt(v) + ' from the time skip'); }
   if (id === 'autoCrew') { applyAutoCrew(); buildRoom(); }
+  if (id === 'hypeRefill') S.hypeUntil = Date.now() + hypeCap() * 1000;
+  // Fan Frenzy runs on real time, so moving maps (or dropping an album) never interrupts it; buying again adds 30 more minutes
+  if (id === 'fanFrenzy') S.frenzyUntil = Math.max(Date.now(), S.frenzyUntil || 0) + 30 * 60000;
   track('buy/' + id);
   // pack contents are all permanent; anything already owned turns into its gem value instead
   const item = (iid, val) => { if (S.owned[iid]) S.gems += val; else S.owned[iid] = true; };
@@ -2008,7 +2019,8 @@ $('scrim').addEventListener('click', e => {
   const bo = e.target.closest('[data-buy]');
   if (bo && !bo.disabled) { const id = bo.dataset.buy, o = OFFERS[id]; if (!o) return;
     if (o.money) return openTab('pay:' + id);
-    const art = { skip1: ART.clock(1), skip4: ART.clock(4), monitors: ART.monitors(), nightOwl: ART.moon() }[id] || '';
+    if (id === 'hypeRefill' && hypeLeftToFill() <= 60000) { sfx('denied'); toast('Your Hype is already full'); return; }
+    const art = { skip15: ART.clock(0), skip1: ART.clock(4), monitors: ART.monitors(), nightOwl: ART.moon(), hypeRefill: ART.bolt(), fanFrenzy: ART.frenzy() }[id] || '';
     return askBuy(o.name, o.skip ? `Instant ${fmt(skipValue(o.skip))} cash` : o.sub, o.gems, art, () => { if (S.gems < o.gems || (o.once && S.perks[id])) return; S.gems -= o.gems; grant(id); }, 'shop'); }
   if (e.target.closest('[data-confirm-buy]')) { const pb = pendingBuy; pendingBuy = null; if (pb) { pb.run(); return backFromBuy(pb); } return closeSheet(); }
   if (e.target.closest('[data-get-gems]')) { pendingBuy = null; openTab('shop'); const g = document.querySelector('[data-buy="gems100"]'); if (g) g.scrollIntoView({ block: 'center' }); return; }
@@ -2294,7 +2306,7 @@ const COIN_MINI = `<span class="coin fcoin">$</span>`;
 function fanGemsToday() { const d = new Date().toDateString(); if (!S.fanDay || S.fanDay.d !== d) S.fanDay = { d, gems: 0 }; return S.fanDay; }
 function fanTick(dt) {
   if (fanEl || document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
-  fanAcc += dt;
+  fanAcc += dt * (frenzyOn() ? 3 : 1);
   if (fanAcc < fanNext) return;
   fanAcc = 0; fanNext = FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN);
   spawnFan();
@@ -2391,6 +2403,8 @@ const ART = {
     return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">${spots.map(([x, y, k]) => gemPath(x, y, k)).join('')}</svg>`; },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
+  bolt: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="8" width="40" height="48" rx="12" fill="#FF6FAE" stroke="#14122A" stroke-width="3"></rect><rect x="12" y="34" width="40" height="22" rx="0" fill="#FF8FC8" opacity=".55"></rect><path d="M35 14 L22 35 H31 L28 50 L42 28 H33 Z" fill="#fff" stroke="#14122A" stroke-width="2.5" stroke-linejoin="round"></path><path d="M54 22 l3 -6 3 6 M57 16 v14" stroke="#14122A" stroke-width="3" stroke-linecap="round" fill="none"></path></svg>`,
+  frenzy: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4 L36 14 L46 8 L44 19 L56 18 L48 27 L58 32 L48 37 L56 46 L44 45 L46 56 L36 50 L32 60 L28 50 L18 56 L20 45 L8 46 L16 37 L6 32 L16 27 L8 18 L20 19 L18 8 L28 14 Z" fill="#FFE27A" opacity=".9"></path><rect x="14" y="22" width="36" height="26" rx="6" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><rect x="24" y="16" width="14" height="8" rx="2.5" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><circle cx="32" cy="35" r="8" fill="#6E7BBF" stroke="#14122A" stroke-width="3"></circle><circle cx="34.5" cy="32.5" r="2.4" fill="#fff" opacity=".85"></circle><rect x="42" y="26" width="5" height="3.5" rx="1.2" fill="#FFC94A"></rect></svg>`,
   moon: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 42A20 20 0 1 1 26 12a15 15 0 0 0 18 30z" fill="#FFE08A" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><circle cx="48" cy="16" r="2.5" fill="#fff"></circle><circle cx="54" cy="28" r="1.8" fill="#fff"></circle></svg>`,
   mic: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="22" y="6" width="20" height="32" rx="10" fill="#FFC94A" stroke="#14122A" stroke-width="3"></rect><path d="M26 14h12M26 20h12M26 26h12" stroke="#C8901A" stroke-width="2.5" stroke-linecap="round"></path><path d="M14 30a18 18 0 0 0 36 0" fill="none" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M32 48v10M22 58h20" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M26 10v8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"></path></svg>`,
   gift: (box = '#FF6FAE', lid = '#FF8FC0', rib = '#FFC94A') => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="${box}" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="${lid}" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="${rib}" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="${rib}" stroke="#14122A" stroke-width="2.5"></path>${box === '#FF6FAE' ? '' : `<polygon points="${starPts(20, 40, 6)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon><polygon points="${starPts(44, 44, 4.5)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon>`}</svg>`,
@@ -2807,6 +2821,7 @@ function openTab(tab) {
     const order = ['top', 'hat', 'neck', 'face'];
     openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
       <p class="testnote">${TEST ? 'Test mode: real-money items are free.' : "Playtest: real-money items aren't for sale yet. Tap one to say if you'd buy it."}</p>
+      <div class="banner">Special offers</div>
       ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
       ${(() => { const p = currentPack();
         return p === 'starter' ? offer('starter', ART.gift(), '#FF9CC8', '2x value', '<span>Flame Hoodie</span><span>450 gems</span><span>Night Owl</span>')
@@ -2814,12 +2829,15 @@ function openTab(tab) {
           : p === 'headliner' ? offer('headliner', ART.gift('#FFC94A', '#FFE08A', '#FF6FAE'), '#FFC27A', '2x value', '<span>Puffer Jacket</span><span>1,500 gems</span><span>Pro Monitors</span>') : ''; })()}
       ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
       ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', 'Hands-free', '<span>No tapping</span><span>Every map</span><span>Forever</span>')}
-      <div class="banner">Time skips & boosts</div>
-      <div class="cards">
-        ${card('skip1', ART.clock(1), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold')}
-        ${card('skip4', ART.clock(4), 'Skip 4 hours', '+' + fmt(skipValue(4 * 3600)), 'gold', 'Best deal')}
-        ${card('monitors', ART.monitors(), '+25% income<br>forever', '', 'gold')}
-        ${card('nightOwl', ART.moon(), '8h offline<br>earnings', '', 'gold')}
+      ${(() => { // one-time perks get their own section and leave the shop once owned (like outfits)
+        const perks = [['monitors', ART.monitors(), '+25% income<br>forever'], ['nightOwl', ART.moon(), '8h offline<br>earnings']].filter(([id]) => !S.perks[id]);
+        return perks.length ? `<div class="banner">Permanent upgrades</div><div class="cards two ${perks.length === 1 ? 'solo' : ''}">${perks.map(([id, art, t]) => card(id, art, t, '', 'gold', 'Forever')).join('')}</div>` : ''; })()}
+      <div class="banner">Boosts</div>
+      <div class="cards two boosts">
+        ${card('skip15', ART.clock(0), 'Skip 15 min', '+' + fmt(skipValue(900)), 'gold')}
+        ${card('skip1', ART.clock(4), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold', 'Best deal')}
+        ${card('hypeRefill', ART.bolt(), 'Hype Refill<br>fill to max', hypeLeftToFill() > 60000 ? '+' + hms(hypeLeftToFill()) : 'Full', 'gold')}
+        ${card('fanFrenzy', ART.frenzy(), 'Fan Frenzy<br>3x fans', frenzyOn() ? hms(S.frenzyUntil - Date.now()) + ' left' : '30 min', 'gold')}
       </div>
       <div class="banner">Outfits</div>
       ${ITEMS.some(i => i.gems && !S.owned[i.id]) ? '' : '<p class="testnote">You own every outfit in the shop. Nice collection!</p>'}
@@ -3063,6 +3081,7 @@ function render() {
   const now = Date.now();
   const hb = $('hypeBtn');
   $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x Hype';
+  const fz = frenzyOn(); $('frenzyChip').hidden = !fz; if (fz) $('frenzyChip').textContent = 'Fan Frenzy ' + hms(S.frenzyUntil - now);
   $('hypeBtn').classList.toggle('active', hypeOn());
   const cb = $('crateBtn'), crateWait = now < S.crateReady;
   $('crateLbl').textContent = crateWait ? mmss(S.crateReady - now) : 'Free';
