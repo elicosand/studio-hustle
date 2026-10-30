@@ -352,6 +352,8 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .item .eq { position: absolute; top: 4px; left: 4px; z-index: 1; background: var(--deep); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; }
 .nameinput { box-sizing: border-box; height: 50px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text); font: 600 18px var(--body); padding: 0 14px; -webkit-user-select: text; user-select: text; }
 .nameinput:focus { outline: none; border-color: var(--gem); }
+.tut-target { animation: none !important; }
+.station { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; }
 .lookpick { display: flex; gap: 12px; }
 .picks { display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); gap: 6px; }
 .picks .pk { display: grid; place-items: center; aspect-ratio: 1; border-radius: 14px; background: var(--panel-2); border: 3px solid transparent; overflow: hidden; }
@@ -510,6 +512,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .csel { max-width: 50%; height: 40px; border-radius: 10px; background: var(--panel); color: var(--text); border: 2px solid var(--line); font: 600 14px var(--body); padding: 0 8px; }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -36px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
+.tab-pct.album { background: var(--accent); color: #fff; animation: glow 1.2s ease-in-out infinite; }
 
 /* Sheets */
 .scrim { position: absolute; inset: 0; top: calc(var(--hud-h, 110px) - 12px); background: rgba(8,7,20,.6); z-index: 20; display: flex; align-items: flex-end; }
@@ -1168,7 +1171,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 88, CONTACT = 'elicosand@gmail.com';
+const BUILD = 91, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
@@ -1176,18 +1179,34 @@ const TUT = [
   { text: 'Hire crew so stations keep earning without you. Open the Crew tab.', target: () => document.querySelector('[data-tab="crew"]'), done: () => S.stats.hires >= 1 },
   { text: 'Tap 2x Hype and watch a quick ad to double everything you earn for 20 minutes.', target: () => $('hypeBtn').querySelector('.orb'), done: () => S.stats.hypes >= 1 },
   { text: "Your crew works even while you're away. Earn $600K to move up, and track it in Career.", target: () => document.querySelector('[data-tab="career"]'), done: () => false, timeout: 8000 },
+  { text: 'Make it yours: change your hair, look and outfits anytime in Style.', target: () => document.querySelector('[data-tab="style"]'), done: () => sheetKey === 'style', timeout: 8000 },
+];
+// one-time pointers after the tutorial, for the two big moments of the loop: your first move up, and your first album
+const COACH = [
+  { id: 'move1', text: () => `Goal reached! Open Career to move up to the ${LOCATIONS[S.loc + 1].name}.`, show: () => S.loc === 0 && !(S.maxLoc > 0) && movePct() >= 100 },
+  { id: 'album1', text: () => 'Tour complete! Open Career and drop your first album for a permanent income boost.', show: () => !(S.albums > 0) && albumReady() },
 ];
 let tutShownAt = 0;
 function updateTut() {
   const tip = $('tut'), ptr = $('tutPtr');
-  const hide = () => { tip.hidden = true; ptr.hidden = true; };
+  const hide = () => { tip.hidden = true; ptr.hidden = true; document.querySelectorAll('.tut-target').forEach(t => t.classList.remove('tut-target')); };
   $('app').classList.toggle('tut-on', !tip.hidden);
-  if (S.tut == null || S.tut >= TUT.length || S.loc !== 0) return hide();
-  const step = TUT[S.tut];
-  if (step.done() || (step.timeout && tutShownAt && Date.now() - tutShownAt > step.timeout)) { S.tut++; tutShownAt = 0; save(); return updateTut(); }
+  let step;
+  if (S.tut != null && S.tut < TUT.length && S.loc === 0) {
+    step = TUT[S.tut];
+    if (step.done() || (step.timeout && tutShownAt && Date.now() - tutShownAt > step.timeout)) { S.tut++; tutShownAt = 0; save(); return updateTut(); }
+  } else {
+    if (!S.onboarded) return hide();
+    const c = COACH.find(c => !(S.coach || {})[c.id] && c.show());
+    if (!c) return hide();
+    // done once Career is opened
+    if (sheetKey === 'career') { S.coach = Object.assign({}, S.coach, { [c.id]: true }); save(); return hide(); }
+    step = { text: c.text(), target: () => document.querySelector('[data-tab="career"]') };
+  }
   if (!$('scrim').hidden) return hide();
   if (!tutShownAt) tutShownAt = Date.now();
   const el = step.target(); if (!el) return hide();
+  document.querySelectorAll('.tut-target').forEach(t => { if (t !== el) t.classList.remove('tut-target'); }); el.classList.add('tut-target');
   const app = $('app').getBoundingClientRect(), r = el.getBoundingClientRect(), room = $('roomWrap').getBoundingClientRect();
   if ($('tutText').textContent !== step.text) $('tutText').textContent = step.text;
   tip.hidden = false; ptr.hidden = false;
@@ -1603,6 +1622,14 @@ function buildRoom() {
     els[st.id] = { b, badge: b.querySelector('.badge'), lv: b.querySelector('.lv'), up: b.querySelector('.up'), bar: b.querySelector('.prog i'),
       prog: b.querySelector('.prog'), lock: b.querySelector('.lockspot'), furn: b.querySelector('.furn'), crew: $('crew-' + st.id) };
     b.addEventListener('click', () => tapStation(st));
+    // hold to keep producing: the press itself starts a track, and while the finger stays down each finished track starts the next
+    b.addEventListener('pointerdown', () => {
+      if (!lvl(st.id) || S.crew[st.id]) return;
+      holdSt = st.id;
+      if (!S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); }
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => b.addEventListener(ev, () => { if (holdSt === st.id) holdSt = null; }));
+    b.addEventListener('contextmenu', e => e.preventDefault());
   });
   moveArtist(def(S.selected));
   if (actx) playMusic();
@@ -1669,14 +1696,15 @@ function tapStation(st) {
   S.selected = st.id;
   let started = false;
   if (!S.crew[st.id] && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); started = true; }
-  // tapping the same station again closes its card, unless that tap just started a track (so tap-to-make-beats never hides the card)
-  if (wasOpen && !started) { closePop(); render(); return; }
+  // tapping the same station again closes its card only for crewed stations; on manual stations extra taps just keep the card open
+  if (wasOpen && !started && S.crew[st.id]) { closePop(); render(); return; }
   popOpen = true;
   moveArtist(st);
   render();
 }
 // upgrade card that pops out of the tapped station
-let popOpen = false;
+let popOpen = false, holdSt = null;
+window.addEventListener('blur', () => { holdSt = null; });
 function closePop() { popOpen = false; $('pop').hidden = true; }
 $('popClose').addEventListener('click', closePop);
 $('roomWrap').addEventListener('click', e => { if (!e.target.closest('.station, .sbtn, .pop')) closePop(); });
@@ -1760,7 +1788,7 @@ function watchAd(onDone) {
   }, 1000);
 }
 $('dailyBtn').addEventListener('click', () => openTab('daily'));
-$('tutSkip').addEventListener('click', () => { S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
+$('tutSkip').addEventListener('click', () => { if (S.tut != null && S.tut >= TUT.length - 1 || S.loc > 0) S.coach = { move1: true, album1: true }; S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
@@ -2989,8 +3017,10 @@ function render() {
   $('rate').hidden = true;
   setFit($('gems'), S.gems.toLocaleString(), 19, 12);
   const mp = Math.floor(movePct());
-  $('movePct').textContent = mp + '%';
-  $('movePct').classList.toggle('full', mp >= 100);
+  const alb = albumReady();
+  $('movePct').textContent = alb ? 'Album!' : mp + '%';
+  $('movePct').classList.toggle('full', mp >= 100 && !alb);
+  $('movePct').classList.toggle('album', alb);
 
   LOC().stations.forEach(st => {
     const e = els[st.id]; if (!e) return;
@@ -3108,7 +3138,7 @@ function tick(t) {
       // fast stations ding at most about once a second so it never turns into a buzz
       if (!auto || st.id === S.selected) { cashGap = cycleTime(st) < 0.9 ? 1100 : 400; sfx('cash'); }
       if (!floatGate[st.id] || t - floatGate[st.id] > 450) { floater(st, '+' + fmt(v)); floatGate[st.id] = t; }
-      if (auto) S.prog[st.id] -= n; else { S.prog[st.id] = 0; S.running[st.id] = false; }
+      if (auto) S.prog[st.id] -= n; else if (holdSt === st.id) S.prog[st.id] = 0; else { S.prog[st.id] = 0; S.running[st.id] = false; }
     }
     els[st.id].bar.style.width = (Math.min(1, S.prog[st.id]) * 100) + '%';
   });
