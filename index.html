@@ -1058,7 +1058,7 @@ const STADIUM_DECOR = `
 
 const LOCATIONS = [
   {
-    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#C08347', plank: '#7A4524', wall: '#5D4F92', goal: 600000, decor: APARTMENT_DECOR, home: [160, 278],
+    id: 'apartment', name: 'Rundown Apartment', track: 'music/beat1.mp3', floor: '#C08347', plank: '#7A4524', wall: '#5D4F92', goal: 2500000, decor: APARTMENT_DECOR, home: [160, 278],
     stations: [
       { id: 'beats', name: 'Laptop Beats', icon: 'note', unlock: 0, base: 1, cycle: 1.2, cost: 6, growth: 1.13, crew: 'Producer', crewCost: 90, spot: [214, 176],
         pos: [226, 112, 140, 128], ring: 90, hint: 36,
@@ -1069,7 +1069,7 @@ const LOCATIONS = [
       { id: 'socials', name: 'Socials', icon: 'phone', unlock: 600, base: 32, cycle: 6, cost: 400, growth: 1.15, crew: 'Manager', crewCost: 5000, spot: [140, 394],
         pos: [24, 384, 112, 162],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="112" height="162" viewBox="0 0 112 162" aria-hidden="true"><ellipse cx="56" cy="154" rx="54" ry="7" fill="#000" opacity=".2"/><path d="M8 4 H104 V118 Q104 138 84 140 H28 Q8 138 8 118 Z" fill="#8C7BD0" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 104 Q8 138 28 140 H84 Q104 138 104 104 Q80 118 56 118 Q32 118 8 104 Z" fill="#7464BC"/><path d="M14 10 H98" stroke="#FF6FAE" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 8"/><path d="M18 10 H98" stroke="#6FD3FF" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 8" stroke-dashoffset="-4.5"/><path d="M22 25 L23.5 28.5 L27 30 L23.5 31.5 L22 35 L20.5 31.5 L17 30 L20.5 28.5 Z" fill="#fff" opacity=".55"/><path d="M92 66 L93.2 68.8 L96 70 L93.2 71.2 L92 74 L90.8 71.2 L88 70 L90.8 68.8 Z" fill="#fff" opacity=".55"/><path d="M18 80.5 L19.05 82.95 L21.5 84 L19.05 85.05 L18 87.5 L16.95 85.05 L14.5 84 L16.95 82.95 Z" fill="#fff" opacity=".55"/><path d="M90 22 c-3 -6 -11 -3 -8 4 l8 8 8 -8 c3 -7 -5 -10 -8 -4 z" fill="none" stroke="#FF6FAE" stroke-width="3" stroke-linejoin="round"/><circle class="gl" cx="56" cy="44" r="30" fill="#FFF7E0" opacity=".18"/><circle cx="56" cy="44" r="23" fill="none" stroke="#1B1830" stroke-width="12"/><circle cx="56" cy="44" r="23" fill="none" stroke="#FFF7E0" stroke-width="7"/><path d="M56 74 V100 M56 86 L42 106 M56 86 L70 106" stroke="#1B1830" stroke-width="3" stroke-linecap="round"/><rect x="49" y="31" width="14" height="25" rx="3" fill="#1E1B33" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="52" y="35" width="8" height="15" rx="1.5" fill="#FF6FAE"/><circle cx="56" cy="53" r="1.2" fill="#C9C3DE"/></svg>` },
-      { id: 'busk', name: 'Street Busk', icon: 'guitar', unlock: 3500, base: 150, cycle: 10, cost: 2200, growth: 1.16, crew: 'Hype Man', crewCost: 25000, spot: [178, 408],
+      { id: 'busk', name: 'Street Busk', icon: 'guitar', unlock: 80, base: 6, cycle: 3, cost: 55, growth: 1.14, crew: 'Hype Man', crewCost: 900, spot: [178, 408],
         pos: [236, 384, 130, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
 <ellipse cx="65" cy="142" rx="62" ry="7" fill="#000" opacity=".2"/>
@@ -1097,15 +1097,15 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', wall: '#9C89D4', goal: 300000000, decor: STUDIO_DECOR, home: [160, 284],
+    id: 'studio', name: 'Home Studio', track: 'music/beat2.mp3', floor: '#E0B983', plank: '#CFA570', wall: '#9C89D4', goal: 350000000, decor: STUDIO_DECOR, home: [160, 284],
     stations: [
       { id: 'pads', name: 'Beat Pads', icon: 'grid', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Beatmaker', crewCost: 4500, spot: [132, 160],
         pos: [24, 112, 118, 100],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="118" height="100" viewBox="0 0 118 100" aria-hidden="true"><ellipse cx="59" cy="94" rx="56" ry="6" fill="#000" opacity=".2"/><rect x="10" y="66" width="8" height="26" rx="2" fill="#8E6E55" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="100" y="66" width="8" height="26" rx="2" fill="#8E6E55" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M10 34 H108 L115 56 H3 Z" fill="#D2AE86" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M3 56 H115 V66 Q115 70 111 70 H7 Q3 70 3 66 Z" fill="#A9835F" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 38 H50" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="59" cy="32" rx="34" ry="16" fill="#6FD3FF" opacity=".18"/><rect x="28" y="14" width="62" height="40" rx="5" fill="#1E1B33" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="34" y="20" width="10" height="8" rx="2" fill="#FF6FAE"/><rect x="47" y="20" width="10" height="8" rx="2" fill="#6FD3FF"/><rect x="60" y="20" width="10" height="8" rx="2" fill="#6FD3FF"/><rect x="73" y="20" width="10" height="8" rx="2" fill="#FFC94A"/><rect x="34" y="31" width="10" height="8" rx="2" fill="#6FD3FF"/><rect x="47" y="31" width="10" height="8" rx="2" fill="#FF6FAE"/><rect x="60" y="31" width="10" height="8" rx="2" fill="#8BF0A0"/><rect x="73" y="31" width="10" height="8" rx="2" fill="#6FD3FF"/><rect x="34" y="42" width="10" height="8" rx="2" fill="#FFC94A"/><rect x="47" y="42" width="10" height="8" rx="2" fill="#6FD3FF"/><rect x="60" y="42" width="10" height="8" rx="2" fill="#FF6FAE"/><rect x="73" y="42" width="10" height="8" rx="2" fill="#8BF0A0"/><circle cx="40" cy="50" r="2.5" fill="#C9C3DE"/><circle cx="50" cy="50" r="2.5" fill="#C9C3DE"/><circle cx="78" cy="50" r="2.5" fill="#FFC94A"/><rect x="6" y="18" width="18" height="26" rx="3" fill="#2C2F48" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="15.0" cy="35.16" r="5.3999999999999995" fill="#26223A" stroke="#4A4466" stroke-width="2"/><circle cx="15.0" cy="24.240000000000002" r="2.34" fill="#4A4466"/><rect x="94" y="18" width="18" height="26" rx="3" fill="#2C2F48" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="103.0" cy="35.16" r="5.3999999999999995" fill="#26223A" stroke="#4A4466" stroke-width="2"/><circle cx="103.0" cy="24.240000000000002" r="2.34" fill="#4A4466"/></svg>` },
-      { id: 'mixer', name: 'Mixing Desk', icon: 'sliders', unlock: 4000, base: 300, cycle: 3, cost: 2750, growth: 1.14, crew: 'Mix Engineer', crewCost: 45000, spot: [214, 180],
+      { id: 'mixer', name: 'Mixing Desk', icon: 'sliders', unlock: 0, base: 50, cycle: 1.4, cost: 300, growth: 1.13, crew: 'Mix Engineer', crewCost: 4500, spot: [214, 180],
         pos: [212, 112, 154, 132], ring: 96, hint: 40,
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="154" height="132" viewBox="0 0 154 132" aria-hidden="true"><ellipse cx="77" cy="124" rx="72" ry="7" fill="#000" opacity=".22"/><ellipse cx="77" cy="108" rx="22" ry="8" fill="#3A3558" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="73" y="108" width="8" height="14" fill="#2E2A4A" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="14" y="80" width="10" height="34" rx="2" fill="#1C1830" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="130" y="80" width="10" height="34" rx="2" fill="#1C1830" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M18 16 H136 L148 62 H6 Z" fill="#3A3360" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M6 62 H148 V78 Q148 82 144 82 H10 Q6 82 6 78 Z" fill="#231E3A" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M22 20 H72" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/><rect x="28" y="22" width="4" height="5" rx="1" fill="#8BF0A0"/><rect x="40" y="22" width="4" height="5" rx="1" fill="#8BF0A0"/><rect x="52" y="22" width="4" height="5" rx="1" fill="#FFC94A"/><rect x="64" y="22" width="4" height="5" rx="1" fill="#8BF0A0"/><rect x="76" y="22" width="4" height="5" rx="1" fill="#FF6FAE"/><rect x="88" y="22" width="4" height="5" rx="1" fill="#8BF0A0"/><rect x="100" y="22" width="4" height="5" rx="1" fill="#FFC94A"/><rect x="112" y="22" width="4" height="5" rx="1" fill="#8BF0A0"/><path d="M30 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="26" y="40" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M42 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="38" y="34" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M54 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="50" y="46" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M66 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="62" y="38" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M78 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="74" y="32" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M90 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="86" y="44" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M102 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="98" y="36" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><path d="M114 30 V54" stroke="#3E3760" stroke-width="4" stroke-linecap="round"/><rect x="110" y="42" width="8" height="6" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.4"/><rect x="118" y="26" width="22" height="28" rx="3" fill="#2A2440" stroke="#1B1830" stroke-width="1.6"/><circle cx="124" cy="33" r="2.6" fill="#FFC94A"/><circle cx="134" cy="33" r="2.6" fill="#FF6FAE"/><circle cx="124" cy="44" r="2.6" fill="#6FD3FF"/><circle cx="134" cy="44" r="2.6" fill="#8BF0A0"/></svg>` },
-      { id: 'vocalpro', name: 'Pro Vocal Booth', icon: 'mic', unlock: 30000, base: 1600, cycle: 6, cost: 20000, growth: 1.15, crew: 'Vocal Coach', crewCost: 250000, spot: [140, 398],
+      { id: 'vocalpro', name: 'Pro Vocal Booth', icon: 'mic', unlock: 4000, base: 300, cycle: 3, cost: 2750, growth: 1.14, crew: 'Vocal Coach', crewCost: 45000, spot: [140, 398],
         pos: [24, 384, 124, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="124" height="150" viewBox="0 0 124 150" aria-hidden="true"><ellipse cx="62" cy="144" rx="60" ry="6" fill="#000" opacity=".2"/><rect x="6" y="10" width="112" height="126" rx="12" fill="#5B5288" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="14" y="18" width="96" height="40" rx="4" fill="#6A619A"/><path d="M18 30 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M38 30 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M58 30 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M78 30 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M18 44 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M38 44 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M58 44 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><path d="M78 44 l5 -4 5 4 5 -4 5 4" fill="none" stroke="#8D84C4" stroke-width="2" stroke-linejoin="round"/><rect x="6" y="10" width="112" height="126" rx="12" fill="#BFE8FF" fill-opacity=".22"/><path d="M20 70 L44 30 M30 76 L50 42" stroke="#fff" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"/><rect x="6" y="10" width="112" height="126" rx="12" fill="none" stroke="#C9C3DE" stroke-width="6"/><rect x="6" y="10" width="112" height="126" rx="12" fill="none" stroke="#1B1830" stroke-width="3"/><path d="M6 128 H118 V132 Q118 140 110 140 H14 Q6 140 6 132 Z" fill="#9A94B4" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="54" y="2" width="16" height="9" rx="4" fill="#FF4F6A" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse class="rec" cx="62" cy="6" rx="14" ry="8" fill="#FF4F6A" opacity=".25"/><path d="M62 18 V34" stroke="#1B1830" stroke-width="3"/><circle cx="62" cy="50" r="15" fill="none" stroke="#8C86A6" stroke-width="3"/><rect x="54" y="34" width="16" height="30" rx="8" fill="#E8E2F4" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M56 42 H68 M56 48 H68 M56 54 H68" stroke="#8C86A6" stroke-width="1.6"/><path d="M58 38 Q60 36 62 36" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
       { id: 'video', name: 'Music Video', icon: 'camera', unlock: 175000, base: 8000, cycle: 10, cost: 110000, growth: 1.16, crew: 'Director', crewCost: 1250000, spot: [178, 408],
@@ -1114,7 +1114,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', tiles: true, wall: '#5E3027', goal: 25000000000, decor: LOFT_DECOR, home: [160, 284],
+    id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', tiles: true, wall: '#5E3027', goal: 60000000000, decor: LOFT_DECOR, home: [160, 284],
     stations: [
       { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -1186,7 +1186,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'pro', name: 'Pro Studio', track: 'music/beat2.mp3', floor: '#454A5C', plank: '#363A48', wall: '#232838', goal: 2000000000000, decor: PRO_DECOR, home: [160, 284],
+    id: 'pro', name: 'Pro Studio', track: 'music/beat2.mp3', floor: '#454A5C', plank: '#363A48', wall: '#232838', goal: 4000000000000, decor: PRO_DECOR, home: [160, 284],
     stations: [
       { id: 'console', name: 'Studio Console', icon: 'sliders', unlock: 0, base: 125000, cycle: 1.8, cost: 750000, growth: 1.13, crew: 'Head Engineer', crewCost: 11250000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -1231,7 +1231,7 @@ const LOCATIONS = [
 <rect x="34" y="64" width="10" height="10" rx="2" fill="#FF6FAE" stroke="#1B1830" stroke-width="1.2"/><path d="M50 67 H82 M50 72 H70" stroke="#E8E2F4" stroke-opacity="1" stroke-width="2.2" stroke-linecap="round"/><rect x="34" y="79" width="10" height="10" rx="2" fill="#6FD3FF" stroke="#1B1830" stroke-width="1.2"/><path d="M50 82 H78 M50 87 H67" stroke="#E8E2F4" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round"/><rect x="34" y="94" width="10" height="10" rx="2" fill="#FFC94A" stroke="#1B1830" stroke-width="1.2"/><path d="M50 97 H74 M50 102 H64" stroke="#E8E2F4" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round"/><rect x="34" y="109" width="10" height="10" rx="2" fill="#8BF0A0" stroke="#1B1830" stroke-width="1.2"/><path d="M50 112 H70 M50 117 H61" stroke="#E8E2F4" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round"/>
 <rect x="36" y="118" width="56" height="3" rx="1.5" fill="#3A3558"/><rect x="36" y="118" width="30" height="3" rx="1.5" fill="#8BF0A0"/>
 <path d="M30 20 V50" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'labeldeal', name: 'Label Deal', icon: 'star', unlock: 437500000, base: 20000000, cycle: 12, cost: 275000000, growth: 1.16, crew: 'A&R Exec', crewCost: 3125000000, spot: [178, 408],
+      { id: 'labeldeal', name: 'Label Deal', icon: 'star', unlock: 75000000, base: 4000000, cycle: 7, cost: 50000000, growth: 1.15, crew: 'A&R Exec', crewCost: 625000000, spot: [178, 408],
         pos: [236, 384, 130, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
 <ellipse cx="65" cy="144" rx="62" ry="6" fill="#000" opacity=".25"/>
@@ -1254,7 +1254,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'mansion', name: 'Hillside Mansion', track: 'music/beat3.mp3', floor: '#EDE6D6', plank: '#D8CDB8', tiles: true, wall: '#F1EADB', goal: 100000000000000, decor: MANSION_DECOR, home: [160, 284],
+    id: 'mansion', name: 'Hillside Mansion', track: 'music/beat3.mp3', floor: '#EDE6D6', plank: '#D8CDB8', tiles: true, wall: '#F1EADB', goal: 400000000000000, decor: MANSION_DECOR, home: [160, 284],
     stations: [
       { id: 'piano', name: 'Piano Suite', icon: 'note', unlock: 0, base: 6250000, cycle: 2, cost: 37500000, growth: 1.13, crew: 'Songwriter', crewCost: 562500000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -1320,7 +1320,7 @@ const LOCATIONS = [
     ],
   },
   {
-    id: 'stadium', name: 'Stadium Tour', track: 'music/beat1.mp3', floor: '#34303F', plank: '#2C2836', wall: '#0E0C1C', goal: 6000000000000000, decor: STADIUM_DECOR, home: [160, 284],
+    id: 'stadium', name: 'Stadium Tour', track: 'music/beat1.mp3', floor: '#34303F', plank: '#2C2836', wall: '#0E0C1C', goal: 25000000000000000, decor: STADIUM_DECOR, home: [160, 284],
     stations: [
       { id: 'mainstage', name: 'Main Stage', icon: 'mic', unlock: 0, base: 312500000, cycle: 2.2, cost: 1875000000, growth: 1.13, crew: 'Stage Manager', crewCost: 28125000000, spot: [140, 160],
         pos: [24, 112, 128, 100],
@@ -1392,7 +1392,13 @@ const FUTURE = [];
 const COL_L = 24, COL_R = 366;
 let roomExtra = 0;   // extra room height on tall screens, in stage pixels
 // each station keeps the side it was designed for: right column if it started on the right, bottom row if it started low
-LOCATIONS.forEach(l => l.stations.forEach(st => { st.slot = (st.pos[1] > 250 ? 2 : 0) + (st.pos[0] > 150 ? 1 : 0); st.pos0 = st.pos; }));
+// the tour grows as you go: 2 stations on the first two maps, 3 on the next two, 4 on the last two.
+// Retired stations keep their art here for future tours; they just aren't placed in any room.
+const RETIRED = new Set(['booth', 'socials', 'pads', 'video', 'rooftop', 'playlist']);
+LOCATIONS.forEach(l => { l.stations = l.stations.filter(st => !RETIRED.has(st.id)); });
+// slots: 0 top-left, 1 top-right, 2 bottom-left, 3 bottom-right, 4 bottom-center, 5 top-center
+const LAYOUT = { 2: [5, 4], 3: [0, 1, 4], 4: [0, 1, 2, 3] };
+LOCATIONS.forEach(l => l.stations.forEach((st, i) => { st.slot = LAYOUT[l.stations.length][i]; st.pos0 = st.pos; }));
 // the couch row keeps clear of the Hype button, which pokes up into the bottom of the room
 const couchShift = () => Math.max(0, roomExtra - 44);
 function rows() { const r1 = 166, g = Math.max(24, (528 + couchShift() - r1 - 132 - 162) / 2); return { r1, r2: r1 + 132 + g + 22, mid: r1 + 132 + g / 2 }; }
@@ -1400,11 +1406,11 @@ function placeStations(loc) {
   const Rw = rows();
   // every station sits in the same size box for its row (top 150 x 112, bottom 136 x 150), mirrored across the room,
   // and its art is scaled to fit and stands on the bottom of the box, so rows, crew, badges and the rug line up on every map
-  loc.stations.forEach(st => { const [, , aw, ah] = st.pos0, top = st.slot < 2, w = top ? 150 : 136, h = top ? 112 : 150,
-      nx = st.slot % 2 ? COL_R - w : COL_L, ny = top ? Rw.r1 : Rw.r2, k = Math.min(w / aw, h / ah);
+  loc.stations.forEach(st => { const [, , aw, ah] = st.pos0, top = st.slot < 2 || st.slot === 5, w = top ? 150 : 136, h = top ? 112 : 150,
+      nx = st.slot >= 4 ? (390 - w) / 2 : st.slot % 2 ? COL_R - w : COL_L, ny = top ? Rw.r1 : Rw.r2, k = Math.min(w / aw, h / ah);
     st.pos = [nx, ny, w, h]; st.fit = [k, (w - aw * k) / 2, h - ah * k, aw, ah];
     // the artist stands beside the crew member, on the side facing the middle of the room, feet level with theirs
-    const right = st.slot % 2, crewX = nx + w / 2 - 31 + (right ? 16 : 0);
+    const right = st.slot >= 4 ? 0 : st.slot % 2, crewX = nx + w / 2 - 31 + (right ? 16 : 0);
     st.spot = [Math.max(14, Math.min(306, right ? crewX - 56 : crewX + 48)), ny + h - 71]; });
   loc.home = [160, Rw.mid - 78];
 }
@@ -1414,7 +1420,7 @@ const GEMS_PER_ALBUM = 50;
 const lastLoc = () => LOCATIONS.length - 1;
 // album boost grows with the length of the tour: +25% with 3 maps, +50% once all 6 are in
 const FAME_PER_ALBUM = Math.round(LOCATIONS.length / 3 * 25) / 100;
-const albumReady = () => S.loc === lastLoc() && S.earned >= LOCATIONS[lastLoc()].goal;
+const albumReady = () => S.loc === lastLoc() && S.earned >= goalOf(lastLoc());
 const DAILY = [
   { min: 2, gems: 0 }, { min: 3, gems: 0 }, { min: 0, gems: 10 }, { min: 5, gems: 0 },
   { min: 0, gems: 15 }, { min: 8, gems: 0 }, { min: 15, gems: 50 },
@@ -1486,10 +1492,10 @@ const BUILD = 102, CONTACT = 'elicosand@gmail.com';
 const TUT = [
   { text: 'Tap the laptop to make your first beat.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
   { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
-  { text: 'Keep making beats. Save $80 and tap the Vocal Booth to unlock it.', target: () => els.booth && els.booth.b, done: () => S.stats.unlocks >= 1 },
+  { text: 'Keep making beats. Save $80 and tap Street Busk to unlock it.', target: () => els.busk && els.busk.b, done: () => S.stats.unlocks >= 1 },
   { text: 'Hire crew so stations keep earning without you. Open the Crew tab.', target: () => document.querySelector('[data-tab="crew"]'), done: () => S.stats.hires >= 1 },
   { text: 'Tap 2x Hype and watch a quick ad to double everything you earn for 20 minutes.', target: () => $('hypeBtn').querySelector('.orb'), done: () => S.stats.hypes >= 1 },
-  { text: "Your crew works even while you're away. Earn $600K to move up, and track it in Career.", target: () => document.querySelector('[data-tab="career"]'), done: () => false, timeout: 8000 },
+  { text: "Your crew works even while you're away. Earn $2.5M to move up, and track it in Career.", target: () => document.querySelector('[data-tab="career"]'), done: () => false, timeout: 8000 },
   { text: 'Make it yours: change your hair, look and outfits anytime in Style.', target: () => document.querySelector('[data-tab="style"]'), done: () => sheetKey === 'style', timeout: 8000 },
 ];
 // one-time pointers after the tutorial, for the two big moments of the loop: your first move up, and your first album
@@ -1836,7 +1842,14 @@ const def = id => LOC().stations.find(s => s.id === id);
 const lvl = id => S.levels[id] || 0;
 const milesHit = L => MILES.filter(m => L >= m).length;
 const cycleTime = st => st.cycle / Math.pow(2, milesHit(lvl(st.id)));
-const fame = () => 1 + FAME_PER_ALBUM * (S.albums || 0);
+const FAME_LATE = 0.1, FAME_KNEE = 10;   // +50% per album up to album 10, then +10% per album so the multiplier never runs away
+const fameAt = a => 1 + FAME_PER_ALBUM * Math.min(a, FAME_KNEE) + FAME_LATE * Math.max(0, a - FAME_KNEE);
+const fame = () => fameAt(S.albums || 0);
+const fameNext = () => (S.albums || 0) < FAME_KNEE ? FAME_PER_ALBUM : FAME_LATE;
+// every album raises the money goals a little so tours level off at about 30 minutes instead of shrinking to nothing
+const GOAL_SCALE = [1, 1.2, 1.33, 1.41, 1.46, 1.49, 1.49, 1.47, 1.43, 1.35];
+const goalScale = (a = S.albums || 0) => a < GOAL_SCALE.length ? GOAL_SCALE[a] : 2.85 * Math.pow(1.0145, a - 12);
+const goalOf = i => LOCATIONS[i].goal * goalScale();
 const nextExclusive = () => ITEMS.filter(i => i.album && i.album > (S.albums || 0)).sort((a, b) => a.album - b.album)[0];
 const pctTxt = x => Math.round(x * 100) + '%';
 const bestInSlot = sl => ITEMS.filter(i => i.slot === sl && S.owned && S.owned[i.id]).sort((a, b) => b.bonus - a.bonus)[0];
@@ -1865,7 +1878,7 @@ const hypeOn = () => Date.now() < S.hypeUntil;
 const hypeLeftToFill = () => Math.max(0, hypeCap() * 1000 - Math.max(0, S.hypeUntil - Date.now()));   // hypeCap is in seconds
 const frenzyOn = () => Date.now() < (S.frenzyUntil || 0);
 // everything that multiplies income, in one place
-const totalMult = () => (Date.now() < S.hypeUntil ? 2 : 1) * boostMult() * fame() * gearMult();
+const totalMult = () => (Date.now() < S.hypeUntil ? 2 : 1) * boostMult() * fame();   // wardrobe is shown separately as a profit bonus
 const playTime = sec => { const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60); return h ? `${h}h ${m}m` : m ? `${m}m` : `${Math.floor(sec)}s`; };
 // sets text and shrinks the font until it fits its column (never cuts off with "...")
 function setFit(el, text, max, min) {
@@ -1878,7 +1891,7 @@ function setFit(el, text, max, min) {
 const fmtX = n => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n >= 100 ? Math.round(n).toString() : n >= 10 ? (Math.round(n * 10) / 10).toString() : (Math.round(n * 100) / 100).toString();
 const mult = () => hypeOn() ? 2 : 1;
 const perSec = () => LOC().stations.reduce((a, st) => a + (lvl(st.id) && S.crew[st.id] ? payout(st) / cycleTime(st) : 0), 0);
-const movePct = () => Math.min(100, S.earned / LOC().goal * 100);
+const movePct = () => Math.min(100, S.earned / goalOf(S.loc) * 100);
 
 function fmt(n) {
   if (n < 1000) return '$' + (n < 10 && n % 1 ? n.toFixed(1).replace(/\.0$/, '') : Math.floor(n));
@@ -1914,7 +1927,7 @@ function buildRoom() {
   if (fanEl) { fanEl.remove(); fanEl = null; }
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
-    return `<button class="station ${st.slot < 2 ? 'rt' : 'rb'}" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
+    return `<button class="station ${st.slot < 2 || st.slot === 5 ? 'rt' : 'rb'}" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
       <span class="sel-ring"></span>
       <span class="furn" style="position:absolute;left:0;top:0;width:${st.fit[3]}px;height:${st.fit[4]}px;transform-origin:0 0;transform:translate(${st.fit[1].toFixed(1)}px,${st.fit[2].toFixed(1)}px) scale(${st.fit[0].toFixed(3)})">${st.furn}</span>
       <span class="tap-hint"></span>
@@ -1924,11 +1937,11 @@ function buildRoom() {
     </button>`;
   }).join('') + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
-    return `<div class="crew${st.slot < 2 ? ' rt' : ''}" id="crew-${st.id}" style="left:${l + w / 2 - 31 + (l > 180 ? 16 : 0)}px;top:${t + h - 58}px" hidden>${crewFigure(loc.id + st.id)}</div>`;
+    return `<div class="crew${st.slot < 2 || st.slot === 5 ? ' rt' : ''}" id="crew-${st.id}" style="left:${l + w / 2 - 31 + (st.slot % 2 && st.slot < 4 ? 16 : 0)}px;top:${t + h - 58}px" hidden>${crewFigure(loc.id + st.id)}</div>`;
   }).join('');
   // decor follows the layout: the middle rug sits between the rows, the couch area stays at the bottom, walls stretch
   const Rw = rows();
-  const topLow = Math.max(...loc.stations.filter(st => st.slot < 2).map(st => st.pos[1] + st.pos[3] + 25)), midV = (topLow + Rw.r2 - 16) / 2;
+  const topLow = Math.max(...loc.stations.filter(st => st.slot < 2 || st.slot === 5).map(st => st.pos[1] + st.pos[3] + 25)), midV = (topLow + Rw.r2 - 16) / 2;
   $('roomArt').querySelectorAll(':scope > .abs').forEach(el => {
     const t = parseFloat(el.style.top) || 0, h = parseFloat(el.style.height) || 0;
     if (el.classList.contains('mid')) el.style.top = (t - 289 + midV) + 'px';
@@ -2113,7 +2126,7 @@ $('tutSkip').addEventListener('click', () => { if (S.tut != null && S.tut >= TUT
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
-  const v = Math.max(25, skipValue(45)) * (S.owned.lucky ? 2 : 1);
+  const v = Math.max(25, skipValue(180)) * (S.owned.lucky ? 2 : 1);   // about 3 minutes of income
   earn(v); S.gems += 3; S.stats.crates++; S.crateReady = Date.now() + CRATE_CD * 1000; sfx('reward');
   pendingBonus = v;
   openSheet(`<div class="sheet-head"><h2>Crate opened</h2>${closeBtn()}</div>
@@ -3007,7 +3020,7 @@ function openTab(tab) {
     openSheet(`<div class="sheet-head"><h2>Career</h2>${closeBtn()}</div>
       <div class="sec">
         <h3>Move Up</h3>
-        <p>${next ? `Earn ${fmt(loc.goal)} here to move into the ${next.name}.` : `This is the last stop on the tour. Earn ${fmt(loc.goal)} here to finish it and drop an album.`}</p>
+        <p>${next ? `Earn ${fmt(goalOf(S.loc))} here to move into the ${next.name}.` : `This is the last stop on the tour. Earn ${fmt(goalOf(S.loc))} here to finish it and drop an album.`}</p>
         <div class="big-bar"><i style="width:${pct}%"></i></div>
         <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${fmt(S.earned)} earned</span><span>${Math.floor(pct)}%</span></div>
         <div style="display:flex;flex-direction:column;gap:10px">${allLocs.map((l, i) => `<div class="loc ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}"><span class="dot"></span>${l}${i === S.loc ? ' · you are here' : ''}</div>`).join('')}</div>
@@ -3015,7 +3028,7 @@ function openTab(tab) {
       </div>
       <div class="sec">
         <h3>Drop Album</h3>
-        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(FAME_PER_ALBUM)} income per album, forever, plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and earn ${fmt(last.goal)} there.` : `Earn ${fmt(last.goal)} in the ${last.name} first.`}</p>
+        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever (+${pctTxt(FAME_PER_ALBUM)} each up to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}), plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and earn ${fmt(goalOf(lastLoc()))} there.` : `Earn ${fmt(goalOf(lastLoc()))} in the ${last.name} first.`}</p>
         <div class="row"><span class="ric">${svgIc('note', '#FFC94A', 20)}</span><span class="rt"><b>Albums dropped: ${S.albums || 0}</b><span>Fame bonus x${fmtX(fame())}${nextExclusive() ? ` · next exclusive at album ${nextExclusive().album}` : ''}</span></span></div>
         <button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Locked'}</button>
       </div>
@@ -3109,13 +3122,15 @@ function openTab(tab) {
       <span class="rt"><b>${name}</b><span>${how}</span></span><span class="xv">x${fmtX(x)}</span></div>`;
     const bolt = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6FAE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>';
     openSheet(`<div class="sheet-head"><h2>Your multipliers</h2>${closeBtn()}</div>
-      <div class="welcome"><span class="amt" style="color:var(--gem)">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others.</p>${perSec() > 0 ? `<p>Your crew earns <b style="color:var(--cash)">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
+      <div class="welcome"><span class="amt" style="color:var(--gem)">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others, and your wardrobe adds profit on top.</p>${perSec() > 0 ? `<p>Your crew earns <b style="color:var(--cash)">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
       ${row(h, bolt, '2x Hype', h ? 2 : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
-      ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each, forever`)}
-      ${row(g > 1, svgIc('shirt', '#B18CFF', 20), 'Wardrobe', g, g > 1 ? `+${Math.round((g - 1) * 100)}% from your best item in each slot${S.owned.lucky ? ' · crates pay 2x' : ''}` : 'Collect items in Style for a bonus')}
+      ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}`)}
       ${row(!!S.perks.goldenMic, svgIc('mic', '#FFC94A', 20), 'Golden Mic', S.perks.goldenMic ? 2 : 1, S.perks.goldenMic ? 'Owned · forever' : `In the Shop, or free at album ${MIC_FREE_AT}`)}
       ${row(!!S.perks.monitors, svgIc('sliders', '#8BF0A0', 20), 'Pro Monitors', S.perks.monitors ? 1.25 : 1, S.perks.monitors ? 'Owned · forever' : 'Available in the Shop')}
-      <p class="mathline">${[h ? 2 : 1, f, g, S.perks.goldenMic ? 2 : 1, S.perks.monitors ? 1.25 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>`);
+      <p class="mathline">${[h ? 2 : 1, f, S.perks.goldenMic ? 2 : 1, S.perks.monitors ? 1.25 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>
+      <h3 style="margin-top:14px">Profit bonus</h3>
+      <div class="row mrow ${g > 1 ? '' : 'off'}"><span class="ric">${svgIc('shirt', '#B18CFF', 20)}</span><span class="rt"><b>Wardrobe</b><span>${g > 1 ? `Your best item in each slot${S.owned.lucky ? ' · crates pay 2x' : ''}` : 'Collect items in Style for a bonus'}</span></span><span class="xv">+${Math.round((g - 1) * 100)}%</span></div>
+      <p class="cnote">Outfits add profit to every payout on top of your multiplier.</p>`);
   } else if (tab === 'move-confirm') {
     openSheet(`<div class="sheet-head"><h2>Move to the ${next.name}?</h2>${closeBtn()}</div>
       <div class="keeps"><div><b>You keep</b>Your style, gems and fame</div><div><b>You start fresh</b>Cash, stations and crew</div></div>
@@ -3123,7 +3138,7 @@ function openTab(tab) {
       <button class="cta" data-move>Move in</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'album-confirm') {
     openSheet(`<div class="sheet-head"><h2>Drop album #${(S.albums || 0) + 1}?</h2>${closeBtn()}</div>
-      <div class="keeps"><div><b>You gain</b>Fame x${fmtX(fame() + FAME_PER_ALBUM)} on every station, forever, plus ${GEMS_PER_ALBUM} gems</div><div><b>You restart</b>Back in the apartment with $0</div></div>
+      <div class="keeps"><div><b>You gain</b>Fame x${fmtX(fame() + fameNext())} on every station, forever, plus ${GEMS_PER_ALBUM} gems</div><div><b>You restart</b>Back in the apartment with $0</div></div>
       <button class="cta pink" data-album>Drop it</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'shop') {
     const owned = id => OFFERS[id].once && S.perks[id];
@@ -3531,6 +3546,8 @@ function start(data) {
   S.owned = Object.assign({ basic: true }, S.owned); S.perks = S.perks || {};
   S.equip = Object.assign({ top: 'basic', hat: null, neck: null, face: null }, S.equip);
   S.stats = Object.assign({ upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, S.stats);
+  // stations were trimmed to 2-2-3-3-4-4: keep saves pointing at stations that still exist
+  { const here = LOC().stations; if (!here.some(x => x.id === S.selected)) S.selected = here[0].id; if (!S.levels[here[0].id]) S.levels[here[0].id] = 1; }
   S.goalsDone = S.goalsDone || {};
   if (TEST) { S.test = Object.assign({ speed: 10, hype: true }, S.test); if (!S.onboarded) { S.onboarded = true; S.name = 'Test Artist'; } $('testChip').hidden = false; }
   if (S.runPlay == null) S.runPlay = S.stats.playSec;
