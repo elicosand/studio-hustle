@@ -712,6 +712,22 @@ html, body { background: var(--bar) !important; }
 .tab-hype .orb { top: 0; bottom: 0; }
 .tab-hype .hl { margin: 0 0 0 24px; }
 .chips .dealtime { background: #14122A !important; color: #FFE27A !important; }
+
+/* bottom bar v2: square tiles like the side buttons, hanging about a quarter over the bar's top edge; Hype's center lines up with theirs */
+.tabs { grid-template-columns: 58px 58px 120px 58px 58px; column-gap: 5px; justify-content: center; padding-top: 0; }
+.tab { height: 50px; justify-content: flex-start; gap: 0; }
+.tab .ticon.wt, .tab.shop .ticon { position: absolute; top: -14px; left: 50%; width: 56px; height: 52px; margin-left: -28px; border-radius: 16px; box-shadow: 0 4px 0 rgba(0,0,0,.35); }
+.tab .ticon svg { width: 26px; height: 26px; }
+.tab .tcap { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: #14122A; color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 7px; z-index: 2; }
+.tab.on .tcap { background: var(--accent); color: #14122A; }
+.tab .bang { top: -20px; margin-right: -34px; z-index: 3; }
+.tab-pct { top: -20px; margin-right: -36px; z-index: 3; }
+.tab-hype { height: 50px; margin: 0; }
+.tab-hype .orb { top: -14px; bottom: auto; height: 52px; box-shadow: 0 4px 0 #B84778; }
+.tab-hype .hl { margin: -28px 0 0 24px; }
+.fly { position: fixed; z-index: 120; pointer-events: none; width: 26px; height: 26px; }
+.fly .coin { width: 26px; height: 26px; display: grid; place-items: center; font-size: 14px; border-width: 2px; }
+.fly svg { width: 26px; height: 26px; }
 </style>
 </head>
 <body>
@@ -830,18 +846,18 @@ html, body { background: var(--bar) !important; }
 
   <nav class="tabs" aria-label="Main">
     <button class="tab" data-tab="crew">
-      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg></span>Crew<span class="bang" id="crewBang" hidden>!</span></button>
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg></span><span class="tcap">Crew</span><span class="bang" id="crewBang" hidden>!</span></button>
     <button class="tab" data-tab="style">
-      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg></span>Style<span class="bang" id="styleBang" hidden>!</span></button>
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg></span><span class="tcap">Style</span><span class="bang" id="styleBang" hidden>!</span></button>
     <button class="tab-hype" id="hypeBtn" aria-label="2x Hype">
       <span class="orb"><i class="spk"></i><i class="spk"></i><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
       <span class="hl" id="hypeLbl">2x Hype</span>
     </button>
     <button class="tab shop" data-tab="shop">
-      <span class="ticon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20" r="1.4"></circle><circle cx="17" cy="20" r="1.4"></circle></svg><i class="spk"></i><i class="spk"></i></span>Shop</button>
+      <span class="ticon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20" r="1.4"></circle><circle cx="17" cy="20" r="1.4"></circle></svg><i class="spk"></i><i class="spk"></i></span><span class="tcap">Shop</span></button>
 
     <button class="tab" data-tab="career">
-      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></span>Career<span class="tab-pct" id="movePct">0%</span></button>
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></span><span class="tcap">Career</span><span class="tab-pct" id="movePct">0%</span></button>
   </nav>
 
   <div class="tut-ptr" id="tutPtr" hidden></div>
@@ -1829,7 +1845,7 @@ function chaNoise(dur, vol) {
   src.connect(f).connect(g).connect(busSfx); src.start(t0); src.stop(t0 + dur + 0.02);
 }
 const SFX = {
-  cash: () => { chaNoise(0.045, 0.02); tone(1976, 0.18, 'sine', 0.03, 0.04); tone(2637, 0.26, 'sine', 0.024, 0.075); tone(3951, 0.12, 'triangle', 0.008, 0.075); },
+  cash: () => { tone(1976, 0.18, 'sine', 0.03, 0.04); tone(2637, 0.26, 'sine', 0.024, 0.075); tone(3951, 0.12, 'triangle', 0.008, 0.075); },
   upgrade: () => { tone(523, 0.08, 'square', 0.03); tone(784, 0.12, 'square', 0.03, 0.06); },
   milestone: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.14, 'square', 0.03, i * 0.06)),
   unlock: () => { tone(392, 0.12, 'triangle', 0.06); tone(523, 0.12, 'triangle', 0.06, 0.08); tone(784, 0.25, 'triangle', 0.06, 0.16); },
@@ -2129,6 +2145,33 @@ function moveArtist(st) {
   const [x, y] = st ? st.spot : LOC().home;
   artist.style.left = x + 'px'; artist.style.top = y + 'px';
 }
+// ---------- reward flurry ----------
+// any tap that pays out a lump of cash or gems (welcome back, daily, crates, goals, shop...) sends coins or gems flying into the top bar
+function flurry(kind, x, y, n = 10) {
+  const target = $(kind === 'gems' ? 'gems' : 'cash'); if (!target) return;
+  const pill = target.closest('.pill'), ic = (pill && pill.querySelector('.hud-ic')) || target, tr = ic.getBoundingClientRect(), tx = tr.left + tr.width / 2, ty = tr.top + tr.height / 2;
+  for (let i = 0; i < n; i++) {
+    const el = document.createElement('span'); el.className = 'fly ' + kind;
+    el.innerHTML = kind === 'gems' ? GEM_MINI : '<span class="coin">$</span>';
+    const sx = x + (Math.random() * 70 - 35), sy = y + (Math.random() * 40 - 20);
+    el.style.left = sx + 'px'; el.style.top = sy + 'px'; document.body.appendChild(el);
+    const midX = sx + (Math.random() * 120 - 60), midY = Math.min(sy, ty) + (sy - ty) * .35;
+    el.animate([{ transform: 'translate(-50%,-50%) scale(.4)', opacity: 0 }, { transform: `translate(calc(-50% + ${midX - sx}px), calc(-50% + ${midY - sy}px)) scale(1)`, opacity: 1, offset: .35 },
+      { transform: `translate(calc(-50% + ${tx - sx}px), calc(-50% + ${ty - sy}px)) scale(.55)`, opacity: .9 }], { duration: 650 + i * 45, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' })
+      .onfinish = () => { el.remove(); target.closest('.pill') && target.closest('.pill').animate([{ transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 160 }); if (i % 3 === 0) sfx(kind === 'gems' ? 'tap' : 'cash'); };
+  }
+}
+let flurryBefore = null;
+document.addEventListener('click', e => {
+  if (!S || e.target.closest('.station, #upBtn, .tab, .tab-hype, .bcoin, .fan')) return;
+  flurryBefore = { cash: S.cash, gems: S.gems, x: e.clientX, y: e.clientY };
+  setTimeout(() => {
+    const b = flurryBefore; flurryBefore = null; if (!b) return;
+    const dg = S.gems - b.gems, dc = S.cash - b.cash;
+    if (dg > 0) { flurry('gems', b.x, b.y, Math.min(12, 4 + Math.round(dg / 10))); sfx('gems'); }
+    if (dc > Math.max(perSec() * 3, 0) && dc > 0) { flurry('cash', b.x, b.y, 12); }
+  }, 30);
+}, true);
 // ---------- bonus coins ----------
 // after a payout there's a small chance a spinning coin pops out of the station; tap it for 30 seconds of income
 const BCOIN_GAP = 40000, BCOIN_ODDS = 0.04, BCOIN_LIFE = 7000, BCOIN_SECS = 30;
@@ -2925,19 +2968,18 @@ const ART = {
     if (n === 4) return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">
       <path d="M14 22 Q8 34 10 44 Q12 54 32 54 Q52 54 54 44 Q56 34 50 22 Z" fill="#5FA8D8" stroke="#14122A" stroke-width="2.6" stroke-linejoin="round"></path>
       <path d="M16 30 Q14 40 18 48" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"></path>
-      ${gemPath(14, 4, .95)}${gemPath(30, 2, 1.05)}${gemPath(22, 10, 1)}
       <path d="M14 22 Q32 28 50 22" fill="none" stroke="#14122A" stroke-width="2.6"></path><path d="M26 25 Q24 33 20 36 M38 25 Q40 33 44 35" fill="none" stroke="#8C5A2E" stroke-width="2.6" stroke-linecap="round"></path>
-      ${gemPath(-2, 38, .8)}${gemPath(48, 40, .75)}</svg>`;
+      ${gemPath(14, 4, .95)}${gemPath(30, 2, 1.05)}${gemPath(22, 10, 1)}${gemPath(-2, 38, .8)}${gemPath(48, 40, .75)}</svg>`;
     const chest = (x, y, k, body, dark, trim) => `<g transform="translate(${x},${y}) scale(${k})">
       <rect x="0" y="16" width="44" height="24" rx="3" fill="${body}" stroke="#14122A" stroke-width="2.6"></rect>
       <path d="M0 22 H44" stroke="${dark}" stroke-width="3"></path><rect x="18" y="20" width="8" height="10" rx="2" fill="${trim}" stroke="#14122A" stroke-width="2"></rect>
       <path d="M3 34 H20" stroke="#fff" stroke-opacity=".3" stroke-width="2.5" stroke-linecap="round"></path></g>`;
     if (n === 5) return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">
-      ${gemPath(8, 6, 1)}${gemPath(26, 0, 1.15)}${gemPath(40, 8, .95)}${gemPath(18, 12, 1)}
-      ${chest(9, 13, 1, '#8FB9D9', '#5F8BAE', '#C9E3F2')}</svg>`;
+      ${chest(9, 15, 1, '#8FB9D9', '#5F8BAE', '#C9E3F2')}
+      ${gemPath(8, 8, 1)}${gemPath(36, 10, .95)}${gemPath(24, 2, 1.15)}${gemPath(18, 16, .9)}</svg>`;
     return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">
-      ${gemPath(14, 0, 1)}${gemPath(30, -4, 1.15)}${gemPath(44, 4, .95)}${gemPath(24, 8, 1.05)}
-      ${chest(-2, 26, .62, '#8FB9D9', '#5F8BAE', '#C9E3F2')}${chest(14, 9, 1.1, '#FFC94A', '#D9A441', '#FFF1C2')}</svg>`;
+      ${chest(-2, 26, .62, '#8FB9D9', '#5F8BAE', '#C9E3F2')}${chest(14, 11, 1.1, '#FFC94A', '#D9A441', '#FFF1C2')}
+      ${gemPath(14, 2, 1)}${gemPath(44, 6, .95)}${gemPath(28, -2, 1.15)}${gemPath(24, 12, 1)}${gemPath(0, 20, .7)}</svg>`;
   },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
