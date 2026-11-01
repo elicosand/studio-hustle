@@ -143,7 +143,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .lockspot.can { border-color: var(--cash); }
 
 /* fans / paparazzi who wander through the room: tap them for a bonus */
-.fan { position: absolute; width: 62px; height: 104px; z-index: 7; padding: 0; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.fan { position: absolute; width: 62px; height: 104px; z-index: 3; padding: 0; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .fan .fig { position: absolute; left: 0; bottom: 0; width: 62px; height: 83px; animation: fanstep .32s ease-in-out infinite alternate; }
 .fan.left .fig { transform: scaleX(-1); }
 .fan .cam { position: absolute; left: 38px; top: 14px; width: 22px; height: 18px; }
@@ -167,7 +167,13 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 @keyframes camflash { 0%, 80%, 100% { opacity: 0; transform: scale(.4); } 84% { opacity: 1; transform: scale(1.2); } 90% { opacity: .5; transform: scale(1); } }
 @keyframes bubpulse { 50% { transform: translateX(-50%) translateY(-3px); } }
 @keyframes fanhop { 30% { transform: translateY(-14px); } 100% { transform: translateY(-4px); opacity: 0; } }
+.rat { position: absolute; width: 30px; height: 14px; pointer-events: none; }
+.rat svg { display: block; animation: ratbob .18s ease-in-out infinite alternate; }
+.rat.flip svg { transform: scaleX(-1); }
+@keyframes ratbob { to { translate: 0 -1.5px; } }
 .crew { position: absolute; width: 62px; height: 83px; z-index: 5; pointer-events: none; }
+/* depth: top-row stations (1) < their crew (2) < fans walking the middle (3) < bottom-row stations (4) < bottom crew (5) < artist (6) */
+.station.rt { z-index: 1; } .crew.rt { z-index: 2; } .station.rb { z-index: 4; }
 .crew svg { animation: bob .6s ease-in-out infinite alternate; }
 .artist { position: absolute; width: 70px; height: 96px; z-index: 6; transition: left .55s ease, top .55s ease; pointer-events: none; }
 .artist.working svg { animation: bob .45s ease-in-out infinite alternate; }
@@ -461,7 +467,14 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .row.goal .gtier { font-style: normal; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 999px; background: rgba(255,255,255,.1); margin-right: 2px; }
 .row.goal.t3 .gtier { background: rgba(255,201,74,.2); color: #FFC94A; } .row.goal.t2 .gtier { background: rgba(111,211,255,.18); color: #9FE6FF; }
 .row.goal .xrw { color: #FFC94A; }
-.founder-pill.grind { background: linear-gradient(135deg, #BFF3FF, #7C4FE0); color: #14122A; }
+.founder-pill.grind { position: relative; overflow: hidden; isolation: isolate; display: inline-flex; align-items: center; gap: 4px; }
+.founder-pill.grind svg { flex: none; }
+.founder-pill.grind::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.8) 48%, transparent 61%); transform: translateX(-130%); animation: pillshine 4.8s ease-in-out infinite; }
+@keyframes pillshine { 0%, 55% { transform: translateX(-130%); } 85%, 100% { transform: translateX(130%); } }
+.founder-pill.b-grinder { background: linear-gradient(135deg, #3A3358, #14122A); color: #FFE27A; box-shadow: inset 0 0 0 2px #FFC94A, 0 0 12px rgba(255,201,74,.65); }
+.founder-pill.b-grinder::after { background: linear-gradient(105deg, transparent 35%, rgba(255,226,122,.55) 48%, transparent 61%); }
+.founder-pill.b-lifer { background: linear-gradient(110deg, #FF8FC8, #B9A6FF, #9FE6FF, #B9A6FF, #FF8FC8); background-size: 300% 100%; animation: holo 7s linear infinite; color: #14122A; box-shadow: inset 0 0 0 2px #fff, 0 0 12px rgba(185,166,255,.85); }
+@keyframes holo { to { background-position: 300% 0; } }
 .ptags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .founder-pill { font: 400 12px var(--display); color: #14122A; background: linear-gradient(135deg, #FFE27A, #FFB938); border-radius: 999px; padding: 4px 10px; box-shadow: 0 0 10px rgba(255,201,74,.55); }
 .ttl-pill { font: 400 14px var(--display); border: 2px solid; border-radius: 999px; padding: 4px 12px; }
@@ -547,6 +560,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .sheet > .sheet-head { position: sticky; top: -18px; z-index: 8; background: var(--panel); margin: -18px -18px -4px; padding: 16px 18px 8px; box-shadow: 0 10px 10px -10px rgba(10,8,30,.55); }
 .sheet h2 { font-family: var(--display); font-size: 20px; margin: 0; font-weight: 400; }
 .close { width: 44px; height: 44px; border-radius: 12px; background: var(--panel-2); display: grid; place-items: center; }
+.headbtns { display: flex; gap: 8px; flex: none; }
 .sheet p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
 .row { display: flex; align-items: center; gap: 12px; background: var(--panel-2); border-radius: 16px; padding: 10px 10px 10px 12px; }
 .row .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -579,6 +593,14 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .welcome { display: flex; flex-direction: column; gap: 8px; text-align: center; align-items: center; }
 .welcome h2 { font-family: var(--display); font-weight: 400; }
 .welcome .amt { font-family: var(--display); font-size: 36px; color: var(--cash); }
+.album-pop h2 { font-size: 26px; background: linear-gradient(180deg, #FFF4C2, #FFC94A 60%, #FF9E57); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 0 rgba(20,18,42,.5)); }
+.album-stage { background: radial-gradient(circle at 50% 60%, #FFE9A8 0%, #FFB547 45%, #E8762F 100%); min-height: 220px; box-shadow: 0 0 0 3px #FFC94A, 0 0 26px rgba(255,201,74,.6); }
+.album-stage::before { background: #C9741F; box-shadow: inset 0 -6px 0 #A85F17; }
+.album-stage .arays { position: absolute; left: 50%; top: 52%; width: 420px; height: 420px; margin: -210px 0 0 -210px; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(rgba(255,255,255,.34) 0 8deg, rgba(255,255,255,0) 8deg 24deg); animation: spin 22s linear infinite; }
+.album-stage .spk { background: #fff; }
+.album-pop .amt { font-size: 40px; animation: fameIn .7s cubic-bezier(.2,1.6,.4,1) both .25s; }
+@keyframes fameIn { from { transform: scale(.4); opacity: 0; } }
 .sec { display: flex; flex-direction: column; gap: 10px; }
 .sec + .sec { border-top: 1px solid var(--line); padding-top: 14px; }
 .sec h3 { margin: 0; font-size: 16px; font-weight: 700; }
@@ -603,7 +625,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .crowd, .cflash, .gl, .rec, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 </style>
@@ -765,6 +787,8 @@ const APARTMENT_DECOR = `
     <path d="M35 12 H295 M31 23 H299" stroke="#6E4596" stroke-width="1.8"/>
     <path d="M45 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/><path d="M85 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/><path d="M125 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/><path d="M165 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/><path d="M205 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/><path d="M245 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/><path d="M285 13 l4.5 5 -4.5 5 -4.5 -5 z" fill="#FFC94A" stroke="#1B1830" stroke-width="1.3" stroke-linejoin="round"/>
     <path d="M34 7 H160" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+  <!-- a few faint dirt spots on the open floor -->
+  <div class="abs" style="left:176px;top:206px;width:38px;height:16px;border-radius:50%;background:radial-gradient(closest-side, rgba(60,30,10,.26), rgba(60,30,10,0));pointer-events:none"></div><div class="abs" style="left:186px;top:436px;width:30px;height:12px;border-radius:50%;background:radial-gradient(closest-side, rgba(60,30,10,.26), rgba(60,30,10,0));pointer-events:none"></div><div class="abs" style="left:14px;top:470px;width:26px;height:11px;border-radius:50%;background:radial-gradient(closest-side, rgba(60,30,10,.26), rgba(60,30,10,0));pointer-events:none"></div><div class="abs" style="left:300px;top:286px;width:24px;height:9px;border-radius:50%;background:radial-gradient(closest-side, rgba(60,30,10,.26), rgba(60,30,10,0));pointer-events:none"></div>
   <!-- bottom decor: beanbag, record crate, one plant (outlined and shaded like the stations) -->
   <div class="abs" style="left:30px;top:546px;width:66px;height:51px"><svg width="66" height="51" viewBox="0 0 80 62" aria-hidden="true">
     <ellipse cx="40" cy="56" rx="36" ry="5" fill="#000" opacity=".22"/>
@@ -1047,7 +1071,15 @@ const LOCATIONS = [
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="112" height="162" viewBox="0 0 112 162" aria-hidden="true"><ellipse cx="56" cy="154" rx="54" ry="7" fill="#000" opacity=".2"/><path d="M8 4 H104 V118 Q104 138 84 140 H28 Q8 138 8 118 Z" fill="#8C7BD0" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 104 Q8 138 28 140 H84 Q104 138 104 104 Q80 118 56 118 Q32 118 8 104 Z" fill="#7464BC"/><path d="M14 10 H98" stroke="#FF6FAE" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 8"/><path d="M18 10 H98" stroke="#6FD3FF" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 8" stroke-dashoffset="-4.5"/><path d="M22 25 L23.5 28.5 L27 30 L23.5 31.5 L22 35 L20.5 31.5 L17 30 L20.5 28.5 Z" fill="#fff" opacity=".55"/><path d="M92 66 L93.2 68.8 L96 70 L93.2 71.2 L92 74 L90.8 71.2 L88 70 L90.8 68.8 Z" fill="#fff" opacity=".55"/><path d="M18 80.5 L19.05 82.95 L21.5 84 L19.05 85.05 L18 87.5 L16.95 85.05 L14.5 84 L16.95 82.95 Z" fill="#fff" opacity=".55"/><path d="M90 22 c-3 -6 -11 -3 -8 4 l8 8 8 -8 c3 -7 -5 -10 -8 -4 z" fill="none" stroke="#FF6FAE" stroke-width="3" stroke-linejoin="round"/><circle class="gl" cx="56" cy="44" r="30" fill="#FFF7E0" opacity=".18"/><circle cx="56" cy="44" r="23" fill="none" stroke="#1B1830" stroke-width="12"/><circle cx="56" cy="44" r="23" fill="none" stroke="#FFF7E0" stroke-width="7"/><path d="M56 74 V100 M56 86 L42 106 M56 86 L70 106" stroke="#1B1830" stroke-width="3" stroke-linecap="round"/><rect x="49" y="31" width="14" height="25" rx="3" fill="#1E1B33" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="52" y="35" width="8" height="15" rx="1.5" fill="#FF6FAE"/><circle cx="56" cy="53" r="1.2" fill="#C9C3DE"/></svg>` },
       { id: 'busk', name: 'Street Busk', icon: 'guitar', unlock: 3500, base: 150, cycle: 10, cost: 2200, growth: 1.16, crew: 'Hype Man', crewCost: 25000, spot: [178, 408],
         pos: [236, 384, 130, 150],
-        furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true"><ellipse cx="62" cy="142" rx="62" ry="7" fill="#000" opacity=".2"/><rect x="80" y="26" width="44" height="42" rx="6" fill="#2C2F48" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><rect x="85" y="31" width="34" height="26" rx="3" fill="#3A3D5C"/><circle cx="102" cy="44" r="10" fill="#26223A" stroke="#4A4466" stroke-width="3"/><circle cx="88" cy="62" r="2" fill="#FFC94A"/><circle cx="95" cy="62" r="2" fill="#FFC94A"/><circle cx="102" cy="62" r="2" fill="#FFC94A"/><path d="M84 30 H118" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/><path d="M92 26 V14 Q92 10 96 10 H108 Q112 10 112 14 V26" fill="#BFE8FF" fill-opacity=".55" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="98" cy="22" r="3" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/><circle cx="105" cy="19" r="3" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/><path d="M2 118 H62 L64 144 H0 Z" fill="#2A2236" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M6 122 H58 L59 140 H5 Z" fill="#B03A4F"/><circle cx="16" cy="132" r="4" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/><circle cx="26" cy="128" r="4" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/><circle cx="44" cy="134" r="4" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/><rect x="30" y="130" width="12" height="7" rx="1" fill="#8BF0A0" stroke="#1B1830" stroke-width="1.5" transform="rotate(-10 36 133)"/><g transform="translate(40 140) scale(.74) translate(-40 -140) translate(-2 -8) rotate(28 30 96)">
+        furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
+<ellipse cx="65" cy="142" rx="62" ry="7" fill="#000" opacity=".2"/>
+<rect x="62" y="48" width="48" height="66" rx="6" fill="#2C2F48" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="67" y="54" width="38" height="40" rx="3" fill="#3A3D5C"/><circle cx="86" cy="74" r="13" fill="#26223A" stroke="#4A4466" stroke-width="3"/><circle cx="86" cy="74" r="4" fill="#3A3558"/>
+<circle cx="74" cy="104" r="2.4" fill="#FFC94A"/><circle cx="82" cy="104" r="2.4" fill="#FFC94A"/><circle cx="90" cy="104" r="2.4" fill="#FFC94A"/>
+<path d="M66 52 H104" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M76 48 V34 Q76 30 80 30 H92 Q96 30 96 34 V48" fill="#BFE8FF" fill-opacity=".55" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="82" cy="42" r="3" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/><circle cx="89" cy="39" r="3" fill="#FFC94A" stroke="#1B1830" stroke-width="1.5"/>
+<g transform="translate(36 126) rotate(14) scale(.95) translate(-30 -116)">
 <rect x="26" y="8" width="8" height="52" rx="2" fill="#6B4A2E" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="23" y="0" width="14" height="13" rx="3" fill="#4E372B" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="25" cy="5" r="1.5" fill="#E8E2F4"/><circle cx="35" cy="5" r="1.5" fill="#E8E2F4"/><circle cx="25" cy="10" r="1.5" fill="#E8E2F4"/><circle cx="35" cy="10" r="1.5" fill="#E8E2F4"/>
 <path d="M30 56 C18 56 14 64 15 72 C16 78 18 80 16 84 C8 90 7 100 10 106 C14 116 22 118 30 118 C38 118 46 116 50 106 C53 100 52 90 44 84 C42 80 44 78 45 72 C46 64 42 56 30 56 Z" fill="#E0A14A" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
@@ -1055,7 +1087,13 @@ const LOCATIONS = [
 <circle cx="30" cy="84" r="8" fill="#3A2416" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="30" cy="84" r="11" fill="none" stroke="#8A5A2E" stroke-width="1.6"/>
 <rect x="21" y="100" width="18" height="5" rx="2" fill="#4E372B" stroke="#1B1830" stroke-width="1.6"/>
 <path d="M28 9 V102 M32 9 V102" stroke="#F4F1EA" stroke-opacity=".75" stroke-width="1"/>
-</g></svg>` },
+</g>
+<path d="M6 120 Q5 108 16 107 H44 Q57 107 56 118 Z" fill="#2A2236" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M2 126 Q2 116 12 116 H46 Q58 116 58 124 V136 Q58 144 48 144 H12 Q2 144 2 136 Z" fill="#2A2236" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M7 126 Q7 121 13 121 H46 Q53 121 53 126 V134 Q53 139 46 139 H13 Q7 139 7 134 Z" fill="#B03A4F"/>
+<circle cx="16" cy="130" r="3.6" fill="#FFC94A" stroke="#1B1830" stroke-width="1.4"/><circle cx="44" cy="133" r="3.6" fill="#FFC94A" stroke="#1B1830" stroke-width="1.4"/>
+<rect x="22" y="127" width="13" height="7" rx="1" fill="#8BF0A0" stroke="#1B1830" stroke-width="1.4" transform="rotate(-8 28 130)"/>
+<path d="M14 111 H36" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
     ],
   },
   {
@@ -1592,7 +1630,10 @@ const PLAQUE_TIERS = [[1, 'Wood', '#7A4A26'], [3, 'Silver', '#C9CED9'], [5, 'Gol
 const plaqueTier = n => PLAQUE_TIERS.filter(t => n >= t[0]).pop();
 // titles shown on the charts, earned by maps reached and albums dropped
 const TITLES = [[0, 0, 'Bedroom Producer', '#B7B0D4'], [0, 1, 'Local Act', '#6FD3FF'], [0, 2, 'Rising Star', '#8BF0A0'], [1, 0, 'Signed Artist', '#FF9E57'],
-  [3, 0, 'Gold Artist', '#FFC94A'], [5, 0, 'Platinum Artist', '#E4E7F0'], [10, 0, 'Diamond Artist', '#9FE6FF'], [20, 0, 'Icon', '#FF6FAE'], [30, 0, 'Legend', '#C9A6FF']];
+  [3, 0, 'Charting Artist', '#FF6FAE'], [5, 0, 'Gold Artist', '#FFC94A'], [10, 0, 'Platinum Artist', '#E4E7F0'], [20, 0, 'Diamond Artist', '#9FE6FF'], [30, 0, 'Icon', '#FF8FC8'], [50, 0, 'Legend', '#C9A6FF']];
+// title ladder follows the plaque ladder: Gold at 5, Platinum at 10, Diamond at 20
+const GRIND_IC = '<svg width="12" height="13" viewBox="0 0 12 13" aria-hidden="true"><path d="M7 0 L1 7.5 H5.5 L4.5 13 L11 5 H6.5 Z" fill="#FFC94A" stroke="#14122A" stroke-width="1"></path></svg>';
+const LIFER_IC = '<svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M8 5 C6 1.5 1.5 1.5 1.5 5 S6 8.5 8 5 S14.5 1.5 14.5 5 S10 8.5 8 5 Z" fill="none" stroke="#14122A" stroke-width="2"></path></svg>';
 const titleOf = (albums, loc) => TITLES.filter(([a, l]) => (albums || 0) >= a && (loc || 0) >= l).pop();
 const titleTag = (albums, loc) => { const t = titleOf(albums, loc); return `<span class="ttl" style="color:${t[3]}">${t[2]}</span>`; };
 // money: real-money price shown (test purchase in this build). gems: gem price.
@@ -1873,7 +1914,7 @@ function buildRoom() {
   if (fanEl) { fanEl.remove(); fanEl = null; }
   $('roomArt').innerHTML = loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
-    return `<button class="station" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
+    return `<button class="station ${st.slot < 2 ? 'rt' : 'rb'}" id="st-${st.id}" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">
       <span class="sel-ring"></span>
       <span class="furn" style="position:absolute;left:0;top:0;width:${st.fit[3]}px;height:${st.fit[4]}px;transform-origin:0 0;transform:translate(${st.fit[1].toFixed(1)}px,${st.fit[2].toFixed(1)}px) scale(${st.fit[0].toFixed(3)})">${st.furn}</span>
       <span class="tap-hint"></span>
@@ -1883,7 +1924,7 @@ function buildRoom() {
     </button>`;
   }).join('') + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
-    return `<div class="crew" id="crew-${st.id}" style="left:${l + w / 2 - 31 + (l > 180 ? 16 : 0)}px;top:${t + h - 58}px" hidden>${crewFigure(loc.id + st.id)}</div>`;
+    return `<div class="crew${st.slot < 2 ? ' rt' : ''}" id="crew-${st.id}" style="left:${l + w / 2 - 31 + (l > 180 ? 16 : 0)}px;top:${t + h - 58}px" hidden>${crewFigure(loc.id + st.id)}</div>`;
   }).join('');
   // decor follows the layout: the middle rug sits between the rows, the couch area stays at the bottom, walls stretch
   const Rw = rows();
@@ -2133,15 +2174,19 @@ function dropAlbum() {
   S.gems += GEMS_PER_ALBUM;
   if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; }
   buildRoom(); save(); render(); sfx('move'); syncChart(true);
-  const prev = it ? `<div class="dresser" style="width:100%">${bigArtist(Object.assign({}, S.equip, { [it.slot]: it.id }))}</div>` : '';
-  openSheet(`<div class="welcome"><h2>Album #${S.albums} is out</h2><span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
-    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive that adds +${Math.round(it.bonus * 100)}% income to your wardrobe.` : ''} ${micNow ? ' You earned the <b style="color:#FFC94A">Golden Mic</b>: 2x income, forever.' : ''} +${GEMS_PER_ALBUM + plaqueGems} gems${plaqueGems ? ` (including the ${LOCATIONS[lastLoc()].name} plaque)` : ''}.${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p>${prev}</div>
+  // the big moment: your artist on the glowing stage with gold rays and sparkles (wearing the new exclusive if there is one)
+  const prev = `<div class="dresser album-stage" style="width:100%"><span class="arays"></span><span class="spot"></span>${stageSparks(14)}${bigArtist(it ? Object.assign({}, S.equip, { [it.slot]: it.id }) : S.equip)}</div>`;
+  openSheet(`<div class="welcome album-pop"><h2>Album #${S.albums} is out!</h2>${prev}<span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
+    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive that adds +${Math.round(it.bonus * 100)}% income to your wardrobe.` : ''} ${micNow ? ' You earned the <b style="color:#FFC94A">Golden Mic</b>: 2x income, forever.' : ''} +${GEMS_PER_ALBUM + plaqueGems} gems${plaqueGems ? ` (including the ${LOCATIONS[lastLoc()].name} plaque)` : ''}.${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p></div>
     ${it ? `<button class="cta" data-equip="${it.id}" data-then="close">Wear it</button>` : ''}
     <button class="ghost" data-close>Start the next run</button>`);
 }
 
 // ---------- sheets ----------
 const closeBtn = () => '<button class="close" data-close aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>';
+// a back arrow that sits beside the X on screens opened from another screen
+const backBtn = attr => `<button class="close back" ${attr} aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>`;
+const headBtns = attr => `<span class="headbtns">${backBtn(attr)}${closeBtn()}</span>`;
 let sheetKey = null, nextSheetKey = null;
 // every shine in the game runs off the same 4.5s clock, so they all sweep together
 function syncShine(root) {
@@ -2567,6 +2612,23 @@ function crewFigure(id) {
     beanie: hatRoll >= 1 / 3 && hatRoll < 2 / 3 ? hatColor : null,
     hat: hatRoll >= 2 / 3 ? { style: 'cap', color: hatColor, brim: hatColor } : null }, 62, 83);
 }
+// ---------- the apartment rat ----------
+// every few minutes a tiny rat scurries along the gap between the bottom stations and the decor, behind both
+const RAT_MIN = 150, RAT_MAX = 330, RAT_RUN = 3400;
+let ratAcc = 0, ratNext = 60 + Math.random() * 90;
+const RAT_SVG = `<svg width="30" height="14" viewBox="0 0 30 14" aria-hidden="true"><path d="M4 9 Q-2 9 1 4" fill="none" stroke="#8C7A86" stroke-width="1.6" stroke-linecap="round"></path><ellipse cx="13" cy="9" rx="9" ry="4.6" fill="#7A6C78" stroke="#1B1830" stroke-width="1.6"></ellipse><path d="M19 6 Q26 6 28 9.5 Q24 12 19 11.5 Z" fill="#7A6C78" stroke="#1B1830" stroke-width="1.6" stroke-linejoin="round"></path><circle cx="19.5" cy="5.6" r="2.4" fill="#C9A3B0" stroke="#1B1830" stroke-width="1.3"></circle><circle cx="23.6" cy="8.2" r="1" fill="#1B1830"></circle><circle cx="28" cy="9.6" r="1" fill="#FF8FA3"></circle><path d="M9 6.5 Q13 5 17 6.5" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.3" stroke-linecap="round"></path></svg>`;
+function ratTick(dt) {
+  if (LOC().id !== 'apartment' || document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length)) return;
+  ratAcc += dt; if (ratAcc < ratNext) return;
+  ratAcc = 0; ratNext = RAT_MIN + Math.random() * (RAT_MAX - RAT_MIN);
+  const art = $('roomArt'); if (!art) return;
+  const right = Math.random() < 0.5, el = document.createElement('div');
+  el.className = 'rat' + (right ? '' : ' flip'); el.innerHTML = RAT_SVG;
+  el.style.top = (rows().r2 + 150 + 2) + 'px';
+  art.insertBefore(el, art.firstChild);   // first in the room art, so decor, stations and crew all draw over it
+  const from = right ? -34 : 394, to = right ? 394 : -34;
+  el.animate([{ left: from + 'px' }, { left: to + 'px' }], { duration: RAT_RUN, easing: 'linear', fill: 'forwards' }).onfinish = () => el.remove();
+}
 // ---------- fans & paparazzi ----------
 // every 30-90s of play someone walks through the room snapping pictures; tap them for a little bonus.
 // The bubble over their head shows what they're carrying: cash (most of the time) or a few gems (rare, capped per day).
@@ -2718,6 +2780,7 @@ const LIVE = {
   goals: () => GOALS.map(g => S.goalsDone[g.id] ? 'x' : goalReady(g) ? '!' : Math.floor(Math.min(g.val(), g.target) / g.target * 20)).join('')
     + '|' + dailyTasks().map(t => t.id + (t.got ? 'x' : t.ready ? '!' : Math.floor(t.v / t.target * 20))).join(',') + (S.dt.bonus ? 'b' : '') + '|' + new Date().getMinutes(),
   hype: () => Math.ceil(Math.max(0, S.hypeUntil - Date.now()) / 1000) + '|' + S.gems,
+  career: () => Math.floor(movePct()) + '|' + albumReady(),
 };
 let liveSig = '';
 function refreshLive() {
@@ -3025,8 +3088,8 @@ function openTab(tab) {
     const name = me ? cleanName(S.name) : r.name, albums = me ? (S.albums || 0) : r.albums, life = me ? S.stats.lifetime : r.lifetime, country = me ? S.country : r.country;
     const maps = [...LOCATIONS.map(l => l.name), ...FUTURE], loc = p ? p.loc : 0, best = p && itemById(p.best);
     const t = titleOf(albums, loc), pcl = p && p.clears ? p.clears : maps.map((_, i) => i < loc ? 1 : 0);
-    openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${closeBtn()}</div>
-      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind">${b}</span>`).join('') : ''}</span></div>
+    openSheet(`<div class="sheet-head"><h2>${esc(name)}${me ? ' <small class="h3note">you</small>' : ''}</h2>${headBtns('data-back-charts')}</div>
+      <div class="prof-top"><span class="ptags"><span class="ttl-pill" style="color:${t[3]};border-color:${t[3]}">${t[2]}</span>${p && p.founder ? '<span class="founder-pill">★ Founding Tester</span>' : ''}${p ? p.badges.map(b => `<span class="founder-pill grind b-${b.toLowerCase()}">${b === 'Lifer' ? LIFER_IC : GRIND_IC}${b}</span>`).join('') : ''}</span></div>
       ${p ? `<div class="dresser prof-art" style="--skin:${p.skin};--phones:${p.ph === 'none' ? PHONES[0] : p.ph}"><span class="spot"></span>${stageSparks()}${country ? `<span class="pcountry">${esc(countryName(country))}</span>` : ''}${bigArtist(p.eq, p.bt, { hs: p.hs || defaultHair(p.bt), hc: p.hc || HAIR_COLORS[0], fd: p.fd, ph: p.ph !== 'none' })}</div>` : `<p class="cnote">This artist hasn't opened the latest version yet, so their outfit, plaques and stats will show up after they do.</p>`}
       ${p ? `<div class="sec"><h3>Plaques <small class="h3note">${pcl.filter(Boolean).length} of ${maps.length} maps cleared</small></h3>${plaqueRow(pcl)}</div>` : ''}
       <div class="sec"><h3>Career</h3><div class="statgrid">
@@ -3039,7 +3102,7 @@ function openTab(tab) {
         <div class="wide best">${best ? `<span class="bi">${itemArt(best, 52)}</span>` : ''}<span class="bt"><b>${best ? esc(best.name) : 'None yet'}</b><span>Best item${best ? ` · <em style="color:${rarity(best)[1]}">${rarity(best)[0]}</em> · +${Math.round(best.bonus * 100)}% income` : ''}</span></span></div>` : ''}
       </div></div>
       ${me ? '<button class="cta" data-tab-go="style">Change my look</button>' : ''}
-      <button class="ghost" data-back-charts>Back to The Charts</button>`);
+      `);
   } else if (tab === 'boosts') {
     const h = hypeOn(), g = gearMult(), f = fame();
     const row = (on, ic, name, x, how) => `<div class="row mrow ${on ? '' : 'off'}"><span class="ric">${ic}</span>
@@ -3128,11 +3191,11 @@ function openTab(tab) {
       <p>${o.sub}.</p><div class="keeps"><div><b>Real game</b>Checkout for ${o.money}</div><div><b>Test mode</b>Free, so you can try it.</div></div>
       <button class="cta" data-pay="${id}">Get it (test)</button><button class="ghost" data-close>Cancel</button>`);
     const said = (S.intent || {})[id];
-    openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${closeBtn()}</div>
+    openSheet(`<div class="sheet-head"><h2>${o.name}</h2>${headBtns('data-tab-go="shop"')}</div>
       <div class="welcome"><span class="amt">${o.money}</span><p>${o.sub}.</p></div>
       <p class="cnote">Purchases aren't turned on during the playtest. If this were a real ${o.money} purchase right now, would you buy it?</p>
       <div class="fbopts">${['Yes', 'Maybe', 'No'].map(v => `<button class="fbo ${said === v ? 'on' : ''}" data-intent="${id}" data-v="${v}">${v}</button>`).join('')}</div>
-      <button class="ghost" data-tab-go="shop">Back to the shop</button>`);
+      `);
   } else if (tab === 'hype') {
     const left = Math.max(0, S.hypeUntil - Date.now());
     const full = left >= hypeCap() * 1000 - 1000, lv = hypeLv(), mins = HYPE_LEN[lv.len];
@@ -3433,7 +3496,7 @@ function tick(t) {
     }
     els[st.id].bar.style.width = (Math.min(1, S.prog[st.id]) * 100) + '%';
   });
-  fanTick(dt);
+  fanTick(dt); ratTick(dt);
   acc += realDt; saveAcc += realDt; S.stats.playSec += dt;
   if (acc > 0.1) { render(); acc = 0; }
   if (saveAcc > 5) { save(); saveAcc = 0; }
