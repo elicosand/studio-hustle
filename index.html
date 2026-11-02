@@ -472,14 +472,19 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .gemcard .rib.small { animation: none; top: -8px; right: 4px; left: auto; box-sizing: border-box; height: 18px; display: flex; align-items: center; white-space: nowrap; background: #EE3338; box-shadow: 0 2px 0 rgba(20,18,42,.4); font: 400 9.5px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; padding: 1px 7px 0; border-radius: 6px 6px 2px 6px; transform: rotate(3deg); transform-origin: 100% 50%; }
 .card.skipcard { background: radial-gradient(ellipse at 50% 36%, #9EDCFB 0%, #63BDF0 58%, #4AA9E6 100%); }
 .card.skipcard .price { background: #2466B8; }
-.skipcard .amount b { white-space: nowrap; } .frcard .amount b { font-size: 11.5px; padding: 0 8px; }
+.skipcard .amount b { white-space: nowrap; font-size: 12px; padding: 0 9px; }
+.frcard .art .gempack { top: 13%; height: 87%; }
+[data-buy="frenzy50"] .art .gempack { top: 21.7%; height: 78.3%; }   /* the big pack reads heavier: 10% smaller again */
+[data-buy="fanFrenzy"] .art > svg { width: 98px; height: 98px; margin: -8px 0 -4px; }   /* as big as the Hype tile beside it */   /* the dark cameras read heavier than the clocks: 13% smaller */
 .card.skipcard.frcard { background: radial-gradient(ellipse at 50% 36%, #FFD0E3 0%, #FFA9CB 58%, #F78FB8 100%); } .card.skipcard.frcard .price { background: #A8275C; }
 .skipcard .gempack { overflow: visible; }
 .crow .rt > b { display: flex; align-items: center; min-width: 0; }
-.ondot { flex: none; display: inline-block; box-sizing: border-box; width: 7px; height: 7px; aspect-ratio: 1; border-radius: 50%; margin-right: 6px; background: transparent; }
-.ondot.on { background: #3DDC6E; border: 1.25px solid #14122A; }
+.crow .rt > b .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ondot { display: none; flex: none; box-sizing: border-box; width: 7px; height: 7px; border-radius: 50%; margin-left: 6px; background: #3DDC6E; border: 1.25px solid #14122A; }
+.ondot.on, .onlegend .ondot { display: inline-block; } .onlegend .ondot { margin: 0 6px 0 0; }
 .onlegend { display: flex; align-items: center; justify-content: center; gap: 0; }
-.oninfo { width: 18px; height: 18px; margin-left: 6px; border-radius: 50%; background: var(--panel-2); color: var(--muted); font: 700 11px/18px var(--body); font-style: italic; }
+.oninfo { position: relative; width: 32px; height: 32px; margin: -8px -6px -8px 0; display: grid; place-items: center; background: none; }
+.oninfo span { width: 16px; height: 16px; border-radius: 50%; background: var(--panel-2); color: var(--text); display: grid; place-items: center; font: 800 10px/1 var(--body); font-style: normal; padding-top: 1px; box-sizing: border-box; }
 .vpinfo { font-size: 11px; opacity: .55; margin-top: -6px; }
 .skipbar { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 10px 10px 10px 14px; font-size: 13px; line-height: 1.35; color: var(--muted); }
 .skipbar span { flex: 1; min-width: 0; } .skipbar b { color: #fff; font-family: var(--display); font-weight: 400; }
@@ -867,20 +872,18 @@ html, body { background: var(--bar) !important; }
 .evstrip .t { flex: 1; min-width: 0; display: flex; flex-direction: column; } .evstrip small { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: #8BF0A0; } .evstrip.quiet small { color: #FFC94A; }
 .evstrip b { font: 400 15px/1.15 var(--display); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; } .evstrip .cdx { flex: none; font-size: 12px; font-weight: 700; color: var(--muted); }
 .evweek2 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
-.evd { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0 8px; border-radius: 12px; background: var(--panel-2); color: var(--muted); min-height: 76px; box-sizing: border-box; border: 2px solid transparent; }
+.evd { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0 16px; border-radius: 12px; background: var(--panel-2); color: var(--muted); min-height: 86px; box-sizing: border-box; border: 2px solid transparent; }
 .evd small { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; } .evd b { font: 400 16px/1.1 var(--display); color: var(--text); }
 .evd .evic { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--c); border: 2px solid #14122A; margin-top: 2px; } .evd .evic.none { background: none; border: 2px dashed rgba(218,212,242,.3); }
-.evd.today small { color: #8BF0A0; } .evd.today::after { content: ""; position: absolute; bottom: 3px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #8BF0A0; }
+.evd.today small { color: #8BF0A0; } .evd.today::after { content: ""; position: absolute; bottom: 6px; left: 50%; width: 6px; height: 6px; transform: translateX(-50%); border-radius: 50%; background: #3DDC6E; }
 .evd.sel { background: var(--text); border-color: var(--text); } .evd.sel small { color: var(--deep); } .evd.sel b { color: var(--deep); }
-.evd.wk6 { border-top-right-radius: 4px; border-bottom-right-radius: 4px; } .evd.wk0 { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
-.evd.wk6:not(.sel), .evd.wk0:not(.sel) { background: linear-gradient(180deg, var(--panel-2), color-mix(in srgb, var(--c) 18%, var(--panel-2))); }
 .evdet { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 18px; background: var(--panel-2); border: 3px solid var(--c, transparent); overflow: hidden; }
 .evdet.quiet { border-style: dashed; border-color: rgba(218,212,242,.3); }
 .evhead { display: flex; align-items: center; gap: 12px; } .evbig { flex: none; width: 76px; height: 76px; border-radius: 16px; display: grid; place-items: center; background: color-mix(in srgb, var(--c, #fff) 30%, var(--panel)); overflow: hidden; }
 .evbig > svg, .evbig > img { width: 60px; height: 60px; object-fit: contain; } .evbig.none { background: var(--panel); }
 .evhead .t { min-width: 0; display: flex; flex-direction: column; gap: 3px; } .evhead small { font-size: 11px; font-weight: 700; color: var(--muted); } .evhead b { font: 400 20px/1.1 var(--display); } .evhead .t > span { font-size: 14px; font-weight: 700; }
 .evhead .live { color: #8BF0A0; }
-.evtags { display: flex; flex-wrap: wrap; gap: 6px; } .evtags span { background: var(--c); color: #14122A; font-size: 13px; font-weight: 800; padding: 5px 10px; border-radius: 999px; border: 2px solid #14122A; }
+.evtags { display: flex; flex-wrap: wrap; gap: 6px; } .evtags span { background: color-mix(in srgb, var(--c) 42%, #fff); color: #14122A; font-size: 13px; font-weight: 800; padding: 5px 10px; border-radius: 999px; border: 2px solid #14122A; }
 .evauto { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
 .evobj { display: flex; flex-direction: column; gap: 6px; } .evobj b { font-size: 16px; } .evprog { font-size: 13px; color: var(--muted); font-weight: 600; }
 .evweek { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
@@ -1765,7 +1768,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 117, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 118, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1891,7 +1894,7 @@ const TASKS = [
   { id: 'crates', text: 'Open 3 crates', stat: 'crates', target: 3 },
   { id: 'payouts', text: 'Make 400 tracks', stat: 'payouts', target: 400 },
   { id: 'hypes', text: 'Watch 2 Hype ads', stat: 'hypes', target: 2 },
-  { id: 'ads', text: 'Watch 3 ads of any kind', stat: 'ads', target: 3 },
+  { id: 'fans', text: 'Tap 5 fans', stat: 'fans', target: 5 },
   { id: 'play', text: 'Play for 15 minutes', stat: 'playSec', target: 900, time: true },
 ];
 const TASK_GEMS = 5, TASK_BONUS = 15;   // finishing all three is worth more than a single ad
@@ -1965,11 +1968,11 @@ const DEAL_DAYS = 3, DEAL_SLOTS = 3;
 // ---------- Backstage Pass: a monthly season of 30 tiers. Stars from daily tasks, goals, albums and the Wednesday Challenge move you up.
 // Every tier has a Free reward; VIP ($5.99) adds a second reward on every tier. Each tier has exactly one reward per track (no stacking rules).
 const PASS_TIERS = 30;
-// stars per tier follow the month's length and round DOWN, so a full month of daily tasks (40 stars a day) always clears all 30 tiers:
-// 28 days -> 37 per tier (1,110 of 1,120), 29 -> 38 (1,140 of 1,160), 30 -> 40 (1,200 of 1,200), 31 -> 41 (1,230 of 1,240)
+// stars per tier = days in the month (28-31), so all 30 tiers need 840-930 stars. Daily tasks give 40 a day and the
+// Wednesday Challenge 20 a week, about 1.4x what's needed: players can miss roughly a quarter of the month and still finish
 const monthDays = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); };
 let PASS_STEP = 40;
-const passStepFor = (days = monthDays()) => Math.floor(days * 40 / 30);
+const passStepFor = (days = monthDays()) => days;
 const PASS_STARS = { task: 10, taskSet: 10, goal: 10, album: 30, wed: 20 };
 const PASS_JACKET = 'backstage';
 const passFree = t => t === 30 ? { gems: 50, skips: 1 } : t % 5 === 0 ? { skips: 1 } : { gems: 10 };
@@ -2001,7 +2004,7 @@ const passClaimable = () => { const p = pass(), t = passTier(); for (let i = 1; 
 const rewardLine = r => [r.item ? itemById(r.item).name : '', r.gems ? r.gems + ' gems' : '', r.skips ? r.skips + (r.skips === 1 ? ' skip' : ' skips') : '', r.frenzy ? r.frenzy + 'x Fan Frenzy' : ''].filter(Boolean).join(' + ');
 // ---------- inventory: stored time skips and Fan Frenzies. Whole numbers, never below zero, saved with the career ----------
 const INV = { skips: { name: 'Time Skip', icon: () => '<img src="art/shop/boost-60.svg" width="44" height="45" alt="">', time: '1 hour', what: () => `Instantly earn 1 hour of cash: ${fmt(skipValue(3600))} at your current income.` },
-  frenzies: { name: 'Fan Frenzy', icon: () => ART.frenzy().replace('width="84" height="84"', 'width="48" height="48"'), time: '30 minutes', what: () => frenzyOn() ? 'Adds 30 minutes to your active Fan Frenzy.' : 'Fans and paparazzi show up 3x as often for 30 minutes.' } };
+  frenzies: { name: 'Fan Frenzy', icon: () => ART.frenzy().replace('width="78" height="78"', 'width="48" height="48"'), time: '30 minutes', what: () => frenzyOn() ? 'Adds 30 minutes to your active Fan Frenzy.' : 'Fans and paparazzi show up 3x as often for 30 minutes.' } };
 // every grant and every use is an entry with its own id. Counts are the sum of entries, so merging two copies of a career
 // (another tab, another phone) can't duplicate a reward or bring back a spent item.
 function invLog() { if (!S.invLog) { S.invLog = {}; for (const k of ['skips', 'frenzies']) if (S[k] > 0) S.invLog['legacy:' + k] = [k, Math.floor(S[k])]; } return S.invLog; }
@@ -3402,7 +3405,7 @@ const ART = {
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
   bolt: () => `<span class="hype-tile"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>`,
-  frenzy: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4 L36 14 L46 8 L44 19 L56 18 L48 27 L58 32 L48 37 L56 46 L44 45 L46 56 L36 50 L32 60 L28 50 L18 56 L20 45 L8 46 L16 37 L6 32 L16 27 L8 18 L20 19 L18 8 L28 14 Z" fill="#FFE27A" opacity=".9"></path><rect x="14" y="22" width="36" height="26" rx="6" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><rect x="24" y="16" width="14" height="8" rx="2.5" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><circle cx="32" cy="35" r="8" fill="#6E7BBF" stroke="#14122A" stroke-width="3"></circle><circle cx="34.5" cy="32.5" r="2.4" fill="#fff" opacity=".85"></circle><rect x="42" y="26" width="5" height="3.5" rx="1.2" fill="#FFC94A"></rect></svg>`,
+  frenzy: () => `<svg width="78" height="78" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4 L36 14 L46 8 L44 19 L56 18 L48 27 L58 32 L48 37 L56 46 L44 45 L46 56 L36 50 L32 60 L28 50 L18 56 L20 45 L8 46 L16 37 L6 32 L16 27 L8 18 L20 19 L18 8 L28 14 Z" fill="#FFE27A" opacity=".9"></path><rect x="14" y="22" width="36" height="26" rx="6" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><rect x="24" y="16" width="14" height="8" rx="2.5" fill="#2B2742" stroke="#14122A" stroke-width="3"></rect><circle cx="32" cy="35" r="8" fill="#6E7BBF" stroke="#14122A" stroke-width="3"></circle><circle cx="34.5" cy="32.5" r="2.4" fill="#fff" opacity=".85"></circle><rect x="42" y="26" width="5" height="3.5" rx="1.2" fill="#FFC94A"></rect></svg>`,
   moon: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 42A20 20 0 1 1 26 12a15 15 0 0 0 18 30z" fill="#FFE08A" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><circle cx="48" cy="16" r="2.5" fill="#fff"></circle><circle cx="54" cy="28" r="1.8" fill="#fff"></circle></svg>`,
   mic: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="22" y="6" width="20" height="32" rx="10" fill="#FFC94A" stroke="#14122A" stroke-width="3"></rect><path d="M26 14h12M26 20h12M26 26h12" stroke="#C8901A" stroke-width="2.5" stroke-linecap="round"></path><path d="M14 30a18 18 0 0 0 36 0" fill="none" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M32 48v10M22 58h20" stroke="#14122A" stroke-width="4" stroke-linecap="round"></path><path d="M26 10v8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"></path></svg>`,
   gift: (box = '#FF6FAE', lid = '#FF8FC0', rib = '#FFC94A') => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="${box}" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="${lid}" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="${rib}" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="${rib}" stroke="#14122A" stroke-width="2.5"></path>${box === '#FF6FAE' ? '' : `<polygon points="${starPts(20, 40, 6)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon><polygon points="${starPts(44, 44, 4.5)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon>`}</svg>`,
@@ -3951,10 +3954,10 @@ function openTab(tab) {
     const resetIn = (() => { const ms = Date.parse(wk.id + 'T00:00:00Z') + 7 * 864e5 - Date.now(), h = Math.floor(ms / 36e5); return h >= 24 ? Math.floor(h / 24) + 'd ' + (h % 24) + 'h' : h + 'h ' + Math.floor(ms % 36e5 / 6e4) + 'm'; })();
     const list = Charts.rows.map((r, i) => { const me = r.friend_code === c.code;
       if (weekly) return `<div class="crow ${me ? 'me' : ''}" data-prof="${me ? 'me' : i}" role="button" tabindex="0" aria-label="See ${esc(r.name)}'s profile"><span class="cr">${i + 1}</span>
-        <span class="rt"><b><i class="ondot ${isOnline(r) ? 'on' : ''}" data-seen="${r.seen_at || ''}" title="Recently active"></i>${esc(r.name)}${me ? ' (you)' : ''}</b><span>${titleTag(r.albums, r.profile ? r.profile.loc : 0)}${r.country ? ' · ' + r.country : ''} · ${fmt(r.week_earned || 0)} this week</span></span>
-        <span class="ca">${r.week_albums || 0}<small>this week</small></span></div>`;
+        <span class="rt"><b><span class="nm">${esc(r.name)}${me ? ' (you)' : ''}</span><i class="ondot ${isOnline(r) ? 'on' : ''}" data-seen="${r.seen_at || ''}" title="Recently active" aria-label="${isOnline(r) ? 'Recently active' : ''}"></i></b><span>${titleTag(r.albums, r.profile ? r.profile.loc : 0)}${r.country ? ' · ' + r.country : ''} · ${fmt(r.week_earned || 0)} earned</span></span>
+        <span class="ca">${r.week_albums || 0}<small>${(r.week_albums || 0) === 1 ? 'album' : 'albums'}<br>this week</small></span></div>`;
       return `<div class="crow ${me ? 'me' : ''}" data-prof="${me ? 'me' : i}" role="button" tabindex="0" aria-label="See ${esc(r.name)}'s profile"><span class="cr">${i + 1}</span>
-        <span class="rt"><b><i class="ondot ${isOnline(r) ? 'on' : ''}" data-seen="${r.seen_at || ''}" title="Recently active"></i>${esc(r.name)}${me ? ' (you)' : ''}</b><span>${titleTag(r.albums, r.profile ? r.profile.loc : 0)}${r.country ? ' · ' + r.country : ''} · ${fmt(r.lifetime)}</span></span>
+        <span class="rt"><b><span class="nm">${esc(r.name)}${me ? ' (you)' : ''}</span><i class="ondot ${isOnline(r) ? 'on' : ''}" data-seen="${r.seen_at || ''}" title="Recently active" aria-label="${isOnline(r) ? 'Recently active' : ''}"></i></b><span>${titleTag(r.albums, r.profile ? r.profile.loc : 0)}${r.country ? ' · ' + r.country : ''} · ${fmt(r.lifetime)}</span></span>
         <span class="ca">${r.albums}<small>albums</small></span></div>`; }).join('');
     let body;
     if (Charts.status === 'offline') body = `<p class="cnote">${inPreview ? "The Charts can't load inside this preview. Open the real game link to see them." : "Couldn't reach the charts. Check your connection, then try again."}</p><button class="ghost" data-chart-retry>Try again</button>`;
@@ -3963,12 +3966,12 @@ function openTab(tab) {
     else body = list || `<p class="cnote">${Charts.tab === 'friends' ? 'Add a friend with their code to start a friends chart.' : 'No artists here yet. Drop an album to get on the chart.'}</p>`;
     openSheet(`<div class="sheet-head"><h2>The Charts</h2>${closeBtn()}</div>
       <div class="stabs period-tabs">${[['week', 'This week'], ['all', 'All time']].map(([k, l]) => `<button class="stab ${Charts.period === k ? 'on' : ''}" data-period="${k}">${l}</button>`).join('')}</div>
-      ${Charts.period === 'week' ? (Charts.hasWeek === false ? `<p class="cnote">Weekly Charts need a quick database update. Showing all-time until then.</p>` : `<p class="cnote">Most albums dropped this week wins. New week in <b>${resetIn}</b>.</p>`) : ''}
+      ${Charts.period === 'week' ? (Charts.hasWeek === false ? `<p class="cnote">Weekly Charts need a quick database update. Showing all-time until then.</p>` : `<p class="cnote">Ranked by albums dropped this week. Ties go to cash earned this week. New week in <b>${resetIn}</b>.</p>`) : ''}
       <div class="row chartme" data-prof="me" role="button" tabindex="0" aria-label="See your profile"><span class="rank">${Charts.rank ? '#' + Charts.rank : '–'}</span><span class="rt"><b>${esc(cleanName(S.name))}</b><span>${titleTag(S.albums, S.maxLoc)} · ${fmt(weekly ? wk.earned : S.stats.lifetime)}${weekly ? ' this week' : ''}</span></span><span class="xv">${weekly ? wk.albums : S.albums || 0} <small>${weekly ? 'this week' : 'albums'}</small></span></div>
       ${Charts.syncError ? `<p class="cerr">Not saved to the charts yet: ${esc(Charts.syncError)} <button class="hire" data-chart-retry>Retry</button></p>` : ''}
       <div class="stabs charts-tabs">${tabs.map(([k, l]) => `<button class="stab ${Charts.tab === k ? 'on' : ''}" data-ctab="${k}">${esc(l)}</button>`).join('')}</div>
       <div class="clist ${Charts.status === 'loading' && Charts.rows.length ? 'dim' : ''}">${body}</div>
-      ${Charts.hasSeen !== false && Online.ok !== false ? '<p class="cnote onlegend"><i class="ondot on"></i> Recently active · within 5 minutes <button class="oninfo" data-online-info aria-label="About the green dot">i</button></p>' : ''}
+      ${Charts.hasSeen !== false && Online.ok !== false ? '<p class="cnote onlegend"><i class="ondot on"></i> Recently active · within 5 minutes <button class="oninfo" data-online-info aria-label="About the green dot"><span>i</span></button></p>' : ''}
       ${Charts.tab === 'friends' ? `<div class="sec"><h3>Friends</h3>
         <div class="row"><span class="rt"><b>Your friend code</b><span>Share it so friends can add you</span></span><span class="fcode">${c.code || '······'}</span><button class="hire" data-copy-code ${c.code ? '' : 'disabled'}>Copy</button></div>
         <div class="addf"><label class="lbl" for="friendInput">Add a friend's code</label><div class="addrow"><input id="friendInput" class="nameinput" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="ABC123"><button class="hire" data-add-friend>Add</button></div></div></div>` : ''}
@@ -4015,7 +4018,7 @@ function openTab(tab) {
   } else if (tab === 'pass') {
     const p = pass(), T = passTier(), into = p.stars - T * PASS_STEP, maxed = T >= PASS_TIERS, any = passClaimable(), vt = passTotals('gold'), jacket = itemById(PASS_JACKET);
     const freshOpen = !(!$('scrim').hidden && sheetKey === 'pass') && !backNav;
-    const icon = r => r.item ? `<span class="pjk">${itemArt(jacket, 44)}</span>` : r.skips ? '<img src="art/shop/boost-60.svg" width="30" height="31" alt="">' : r.frenzy ? '<span class="pf">' + ART.frenzy().replace('width="84" height="84"', 'width="34" height="34"') + '</span>' : '<img src="art/gem.webp" width="30" height="25" alt="">';
+    const icon = r => r.item ? `<span class="pjk">${itemArt(jacket, 44)}</span>` : r.skips ? '<img src="art/shop/boost-60.svg" width="30" height="31" alt="">' : r.frenzy ? '<span class="pf">' + ART.frenzy().replace('width="78" height="78"', 'width="34" height="34"') + '</span>' : '<img src="art/gem.webp" width="30" height="25" alt="">';
     const tile = (side, n) => { const r = side === 'free' ? passFree(n) : passGold(n), got = p[side][n], open = n <= T, vip = side === 'gold' && !p.owned, ready = open && !got && !vip;
       const state = got ? '<span class="pst ok">Claimed</span>' : ready ? `<button class="hire" data-pclaim="${side}:${n}">Claim</button>` : vip ? '<span class="pst vip">Requires VIP</span>' : `<span class="pst">Locked · tier ${n}</span>`;
       return `<div class="ptile ${side} ${got ? 'got' : ''} ${ready ? 'ready' : ''} ${vip ? 'needvip' : ''} ${!open && !got ? 'locked' : ''} ${r.item ? 'big' : ''}">${icon(r)}<b>${rewardLine(r)}</b>${state}</div>`; };
@@ -4146,7 +4149,7 @@ function openTab(tab) {
       ${(() => { // one-time perks get their own section and leave the shop once owned (like outfits)
         const perks = [['monitors', ART.monitors(), '+25% income<br>forever'], ['nightOwl', ART.moon(), '8h offline<br>earnings']].filter(([id]) => !S.perks[id]);
         return perks.length ? `<div class="banner">Permanent upgrades</div><div class="cards two ${perks.length === 1 ? 'solo' : ''}">${perks.map(([id, art, t]) => card(id, art, t, '', 'gold perk').replace('<span class="wall', '<span class="tag qtag">Forever</span><span class="wall')).join('')}</div>` : ''; })()}
-      <div class="banner">Spend Gems</div>
+      <div class="banner">Boosts</div>
       <div class="cards two boosts">
         ${card('skip15', ART.clock(0), 'Skip 15 min', '+' + fmt(skipValue(900)), 'gold spend')}
         ${card('skip1', ART.clock(4), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold spend', 'Best value')}
