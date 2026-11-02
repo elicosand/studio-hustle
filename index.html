@@ -334,7 +334,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .card.green .art { background: radial-gradient(circle at 50% 45%, #B4F5BE 0%, transparent 65%); border-radius: 16px 16px 0 0; }
 .card .qty { z-index: 2; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; font: 400 12px var(--display); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
 .card .price { margin-top: auto; min-height: 36px; padding: 0 4px; font: 400 15px/1 var(--display); display: flex; align-items: center; justify-content: center; gap: 4px; }
-.card.gold { background: #FFD866; } .card.gold .price { background: #F0A81E; color: var(--deep); }
+.card.gold { background: #8FD3F7; } .card.gold .price { background: #2466B8; color: #fff; }
 .card.green { background: #8BE39A; } .card.green .price { background: #1D7F35; color: #fff; }
 .card.outfit { background: #D9CCFF; } .card.outfit .price { background: #6A45C8; color: #fff; }
 .card:disabled { opacity: .65; }
@@ -1634,7 +1634,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 107, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 108, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1814,16 +1814,19 @@ const OFFERS = {
 };
 // limited-time deals: 3 at a time, each lasts 3 days, staggered so one changes every day. Around 8-10x the value of plain gems.
 const DEALS = [
-  { id: 'dealOpen', line: 'A quick boost to get rolling', name: 'Opening Act', money: '$0.99', price: 0.99, gems: 800, skipH: 2, frenzyMin: 30, color: '#9BEBB4' },
-  { id: 'dealWeekend', line: 'Make the most of your weekend', name: 'Weekend Hustle', money: '$1.99', price: 1.99, gems: 1600, skipH: 2, frenzyMin: 60, color: '#8FD8F5' },
-  { id: 'dealMixtape', line: 'Gems and a fast-forward', name: 'Mixtape Bundle', money: '$2.99', price: 2.99, gems: 2500, skipH: 4, frenzyMin: 60, color: '#C9B3FF' },
-  { id: 'dealWardrobe', line: 'Fresh fit, plus gems', name: 'Wardrobe Drop', money: '$4.99', price: 4.99, gems: 3500, skipH: 3, outfit: true, color: '#FF9CC8' },
-  { id: 'dealTour', line: 'Fuel for the whole tour', name: 'Tour Bus Deal', money: '$4.99', price: 4.99, gems: 4800, skipH: 6, frenzyMin: 60, color: '#FFC27A' },
-  { id: 'dealPlat', line: 'A platinum-sized stack', name: 'Platinum Drop', money: '$9.99', price: 9.99, gems: 9500, skipH: 10, frenzyMin: 120, color: '#E4E7F0' },
-  { id: 'dealVault', line: 'The biggest deal in the shop', name: 'Headliner Vault', money: '$19.99', price: 19.99, gems: 20000, skipH: 20, frenzyMin: 180, color: '#FFD866' },
+  { id: 'dealOpen', line: 'A quick boost to get rolling', name: 'Opening Act', money: '$0.99', price: 0.99, gems: 180, skipH: 1, frenzyMin: 30, color: '#9BEBB4' },
+  { id: 'dealWeekend', line: 'Make the most of your weekend', name: 'Weekend Hustle', money: '$1.99', price: 1.99, gems: 240, skipH: 2, frenzyMin: 30, color: '#8FD8F5' },
+  { id: 'dealMixtape', line: 'Gems and a fast-forward', name: 'Mixtape Bundle', money: '$2.99', price: 2.99, gems: 380, skipH: 2, frenzyMin: 60, color: '#C9B3FF' },
+  { id: 'dealWardrobe', line: 'Fresh fit, plus gems', name: 'Wardrobe Drop', money: '$4.99', price: 4.99, gems: 700, skipH: 3, outfit: true, color: '#FF9CC8' },
+  { id: 'dealTour', line: 'Fuel for the whole tour', name: 'Tour Bus Deal', money: '$4.99', price: 4.99, gems: 660, skipH: 3, frenzyMin: 60, color: '#FFA3A3' },
+  { id: 'dealPlat', line: 'A platinum-sized stack', name: 'Platinum Drop', money: '$9.99', price: 9.99, gems: 1400, skipH: 5, frenzyMin: 60, color: '#E4E7F0' },
+  { id: 'dealVault', line: 'The biggest deal in the shop', name: 'Headliner Vault', money: '$19.99', price: 19.99, gems: 4200, skipH: 15, frenzyMin: 180, color: '#9DB8FF' },
 ];
 const DEAL_DAYS = 3, DEAL_SLOTS = 3;
-const dealValue = d => Math.round((d.gems + d.skipH * 30 + (d.frenzyMin || 0) / 30 * 20 + (d.outfit ? 400 : 0)) / (d.price * 100));
+const PACK_GEMS = [80, 500, 1200, 2500, 6500, 14000];   // the shop's gem packs, smallest to biggest
+const packArtFor = g => { const i = PACK_GEMS.findIndex(x => x >= g); return i < 0 ? 6 : i + 1; };
+// value vs the $0.99 pack (80 gems per dollar), counting extras at their shop prices: 1h skip 30 gems, Fan Frenzy 20, an outfit 400. Deals stay 2-3x
+const dealValue = d => Math.round((d.gems + d.skipH * 30 + (d.frenzyMin || 0) / 30 * 20 + (d.outfit ? 400 : 0)) / (d.price * 80));
 const dealSub = d => [d.gems.toLocaleString('en-US') + ' gems', d.skipH ? `${d.skipH}x Skip 1 hour` : '', d.frenzyMin ? `${d.frenzyMin / 30}x Fan Frenzy` : '', d.outfit ? 'a new outfit' : ''].filter(Boolean);
 DEALS.forEach(d => { OFFERS[d.id] = { name: d.name, sub: dealSub(d).join(', '), line: d.line, money: d.money, deal: d }; });
 const localDay = (t = Date.now()) => Math.floor((t - new Date(t).getTimezoneOffset() * 60000) / 86400000);
@@ -3109,7 +3112,7 @@ const ART = {
   // gem packs (art made outside the game): one gem → two gems → a pile → a bag → a case → a case with a side case
   // each image is trimmed to its art; --w sets how much of the card it fills so the tiers read as growing
   gems: n => { n = Math.min(6, Math.max(1, n)); const h = [302, 277, 295, 278, 309, 270][n - 1];
-    return `<img class="gempack${n === 1 ? ' solo' : ''}" src="art/gems/gems-${n}.webp" width="360" height="${h}" style="animation-delay:-${(n * .45).toFixed(2)}s" alt="" decoding="async" draggable="false">`; },
+    return `<img class="gempack${n === 1 ? ' solo' : ''}" src="art/gems/gems-${n}.webp" width="360" height="${h}" alt="" decoding="async" draggable="false">`; },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
   bolt: () => `<span class="hype-tile"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>`,
@@ -3731,7 +3734,7 @@ function openTab(tab) {
       <div class="banner">Limited-time deals</div>
       ${activeDeals().map(({ deal: d, ends }) => {
         const left = Math.max(0, ends - Date.now()), dd = Math.floor(left / 864e5), hh = Math.floor(left % 864e5 / 36e5);
-        const art = d.outfit ? ART.gift('#FF6FAE', '#FFB3D4', '#FFC94A') : ART.gems(d.gems >= 9000 ? 6 : d.gems >= 3500 ? 5 : 4);
+        const art = d.outfit ? ART.gift('#FF6FAE', '#FFB3D4', '#FFC94A') : ART.gems(packArtFor(d.gems));
         return offer(d.id, art, d.color, `${dealValue(d)}x value`, `<span class="dealtime">Ends in ${dd ? dd + 'd ' : ''}${hh}h</span>` + dealSub(d).map(x => `<span>${x}</span>`).join(''));
       }).join('')}
       <div class="banner">Special offers</div>
