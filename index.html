@@ -2130,7 +2130,7 @@ function applyPan() {
   wrap.classList.toggle('panned', panY > 2);
 }
 function setPan(v) { panY = Math.max(0, Math.min(OUT_H, v)); applyPan(); }
-wrap.addEventListener('pointerdown', e => { if (S && S.tut != null && S.tut < TUT.length) return; panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; });
+wrap.addEventListener('pointerdown', e => { if (S && S.tut != null && S.tut < TUT.length && S.loc === 0 && !$('tut').hidden) return; panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; });
 wrap.addEventListener('pointermove', e => {
   if (!panDrag || e.pointerId !== panDrag.id) return;
   const dy = e.clientY - panDrag.y;
@@ -3831,7 +3831,9 @@ function start(data) {
   // map-clear rewards arrived in build 36: pay players for the maps they had already cleared
   if (S.mapPaid == null) { S.mapPaid = S.maxLoc || 0; const g = MAP_GEMS.slice(0, S.mapPaid).reduce((a, b) => a + b, 0);
     if (g) { S.gems += g; setTimeout(() => toast(`+${g} gems for the maps you've already cleared`), 1500); } }
-  if (S.tutV !== 2) { if (S.tut != null && S.tut >= 4) S.tut = TUT.length; S.tutV = 2; }   // players past the old tips don't get the new Hype tip
+  if ((S.tutV || 0) < 2) { if (S.tut != null && S.tut >= 4) S.tut = TUT.length; S.tutV = 2; }
+  // the tips grew from 7 to 9 steps: anyone who finished the old ones (or left the apartment) is done
+  if (S.tutV < 3) { if (S.tut != null && (S.tut >= 7 || S.loc > 0 || S.albums > 0)) S.tut = TUT.length; S.tutV = 3; }   // players past the old tips don't get the new Hype tip
   if (S.tut == null) S.tut = (S.stats.hires > 0 || S.loc > 0 || S.albums > 0) ? TUT.length : 0;
   S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
   applyLook(); buildRoom(); fit();
