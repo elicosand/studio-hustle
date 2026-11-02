@@ -1612,7 +1612,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 105, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 106, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -3324,7 +3324,7 @@ async function backup(force, leaving, mine) {   // mine: this device's copy wins
       const r = await supa('/rest/v1/saves?on_conflict=id', { method: 'POST', auth: true, body: row, keepalive: leaving && str.length < 60000, headers: { Prefer: 'resolution=merge-duplicates,return=minimal' } });
       if (r.status === 401 && !i) { c.exp = 0; c.at = null; await ensureAuth(); continue; }
       if (!r.ok) throw new Error(`Backup failed (${r.status}) ${why(r.data)}`);
-      Cloud.sig = sig; c.backedAt = Date.now(); c.lastUp = now.getTime(); Cloud.err = ''; save(); Cloud.busy = false; return true;
+      Cloud.sig = sig; c.backedAt = Date.now(); c.lastUp = now.getTime(); Cloud.err = ''; save(); { const el = $('csStatus'); if (el) el.innerHTML = csStatus(); } Cloud.busy = false; return true;
     }
   } catch (e) { Cloud.err = /Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message; }
   Cloud.busy = false; return false;
@@ -3424,12 +3424,18 @@ async function cloudKeep() {
   if (!p.sameUser) { await dropGuest(p.old); setSession(p.d); c.email = p.email; c.created = false; c.synced = -1; }
   save(); await backup(true, false, true); syncChart(true); sfx('bling'); toast(p.sameUser ? 'Kept this device\'s save' : 'Progress protected'); closeSheet(); track('cloud-kept');
 }
+function csStatus() {
+  const c = cloud();
+  const when = c.backedAt ? 'Backed up ' + agoTxt(c.backedAt) : Cloud.err ? 'Backup paused · ' + Cloud.err : 'Backing up now…';
+  const status = c.email ? `<b>Protected</b><span>${maskEmail(c.email)} · ${when.charAt(0).toLowerCase() + when.slice(1)}</span>`
+    : `<b>${c.backedAt ? when : Cloud.err ? 'Backup paused' : 'Backing up now…'}</b><span>${!c.backedAt && Cloud.err ? Cloud.err : 'Saved to this device\'s guest account'}</span>`;
+  return status;
+}
 function cloudSec() {
   const c = cloud();
   if (TEST) return '';
-  const status = Cloud.err && !c.backedAt ? `<b>Not backed up yet</b><span>${Cloud.err}</span>` : `<b>${c.email ? 'Protected' : 'Backed up ' + agoTxt(c.backedAt)}</b><span>${c.email ? maskEmail(c.email) + ' · backed up ' + agoTxt(c.backedAt) : 'Saved to this device\'s guest account'}</span>`;
   return `<div class="sec"><h3>Cloud save</h3>
-    <div class="cs-card"><div class="ic">${CLOUD_IC}</div><div>${status}</div></div>
+    <div class="cs-card"><div class="ic">${CLOUD_IC}</div><div id="csStatus">${csStatus()}</div></div>
     ${c.email ? `<p>Sign in with this email on any device to pick up where you left off.</p><button class="ghost" data-cloud-out>Sign out of this device</button>`
       : `<p>Add your email so you can get your career back on a new phone or if this browser gets cleared.</p>
     <button class="cta" data-cloud-go="link">Protect my progress</button><button class="cs-link" data-cloud-go="login">Already protected? Load my career</button>`}</div>`;
