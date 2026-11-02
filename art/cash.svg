@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 44 44">
+  <title>Studio Hustle — Refined Cash Icon</title>
+  <defs>
+    <radialGradient id="face" gradientUnits="userSpaceOnUse" cx="15" cy="12" r="32">
+      <stop offset="0" stop-color="#AEFFBB"/>
+      <stop offset=".52" stop-color="#87F49A"/>
+      <stop offset="1" stop-color="#50D66C"/>
+    </radialGradient>
+    <clipPath id="coin"><circle cx="22" cy="22" r="19"/></clipPath>
+  </defs>
+  <circle cx="22" cy="22" r="20.5" fill="#14122A"/>
+  <g clip-path="url(#coin)">
+    <circle cx="22" cy="22" r="19" fill="#39AA53"/>
+    <circle cx="21.5" cy="20.4" r="18.7" fill="url(#face)"/>
+    <path d="M37.1 11.8C40.5 24.1 31.1 36.5 16.1 35.4C10.8 35 6.7 32.5 4 29.1C7.7 40.6 28.1 45.1 37.8 31C41.7 25.4 41.7 18.1 37.1 11.8Z" fill="#42BF5F" opacity=".48"/>
+    <circle cx="21.6" cy="20.8" r="16.7" fill="none" stroke="#A7FFB5" stroke-width=".7"/>
+    <path d="M6.1 25.2A16.7 16.7 0 0 1 33.1 8.7" fill="none" stroke="#57D872" stroke-width=".42" stroke-linecap="round"/>
+    <path d="M10.1 16.4C11 12.5 14.1 9.4 17 9.1C19.1 8.9 19.5 10.5 17.9 12C15.4 14.2 13.6 17.3 11.9 18C10.6 18.5 9.8 17.9 10.1 16.4Z" fill="#D3FFDA" opacity=".8"/>
+  </g>
+  <path transform="translate(15.5 29.2) scale(.02 -.02)" fill="#14122A" d="M441 2V-54Q441 -90 405 -90H260Q224 -90 224 -54V0H87Q51 0 51 36V153Q51 189 87 189H356Q369 189 375.5 197.5Q382 206 382 218Q382 235 375.5 243.0Q369 251 356 252L206 273Q136 284 93.5 319.5Q51 355 51 439V544Q51 622 96.5 666.5Q142 711 224 718V774Q224 810 260 810H405Q441 810 441 774V720H538Q574 720 574 684V565Q574 529 538 529H305Q278 529 278 499Q278 470 305 467L454 447Q501 440 536.0 422.5Q571 405 590.5 371.0Q610 337 610 281V176Q610 99 565.5 54.5Q521 10 441 2Z"/>
+</svg>

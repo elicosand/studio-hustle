@@ -65,7 +65,9 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .hud-ic { position: absolute; left: -18px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; display: grid; place-items: center; z-index: 1; }
 .coin { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #C7FFD2 0%, #8BF0A0 45%, #4FC46A 100%); border: 3px solid #14122A; box-sizing: border-box;
   box-shadow: inset 0 -3px 0 rgba(20,18,42,.25); color: #14122A; font: 400 20px/1 var(--display); }
-.gemic svg { filter: drop-shadow(0 2px 0 rgba(20,18,42,.35)); }
+.coin, .coin-s { background: url("art/cash.svg") center / contain no-repeat !important; border: 0 !important; box-shadow: none !important; color: transparent !important; overflow: hidden; }
+.gemic svg, .gemic img { filter: drop-shadow(0 2px 0 rgba(20,18,42,.35)); }
+.gemic img { width: 34px; height: auto; display: block; -webkit-user-drag: none; }
 .cash-col, .gem-col { position: relative; flex: 1 1 auto; min-width: 0; display: flex; justify-content: center; align-items: center; }
 .cash-num, .gem-num { font: 400 19px/1 var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cash-rate { display: none; }
@@ -294,7 +296,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .chips span { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.6); border-radius: 999px; padding: 2px 8px; }
 .paybtn { display: flex; align-items: center; justify-content: center; min-width: 78px; height: 44px; padding: 0 12px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px/1 var(--display); box-sizing: border-box; }
 .offer:disabled .paybtn { background: rgba(20,18,42,.35); }
-.banner { margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); padding: 9px 12px; background: var(--panel-2); text-align: center; font: 400 15px var(--display); letter-spacing: .02em; }
+.banner { margin-inline: calc(-1 * max(18px, env(safe-area-inset-left, 0px))); padding: 9px 12px; background: var(--panel-2); text-align: center; font: 400 15px var(--display); letter-spacing: .02em; text-transform: uppercase; }
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
 .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .cards.two.solo { grid-template-columns: minmax(0, 1fr); max-width: calc(50% - 5px); margin-inline: auto; width: 100%; }
@@ -336,7 +338,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .card.green { background: #8BE39A; } .card.green .price { background: #1D7F35; color: #fff; }
 .card.outfit { background: #D9CCFF; } .card.outfit .price { background: #6A45C8; color: #fff; }
 .card:disabled { opacity: .65; }
-i.g { display: inline-block; width: 17px; height: 17px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-3 -2 30 28'%3E%3Cpath d='M6 0h12l6 8-12 16L0 8z' fill='%23FFC94A'/%3E%3Cpath d='M0 8h24l-12 16z' fill='%23F0A81E'/%3E%3Cpath d='M6 0h12l6 8H0z' fill='%23FFE08A'/%3E%3Cpath d='M6 0h12l6 8-12 16L0 8z' fill='none' stroke='%2314122A' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M8 2.5h4l-2 4z' fill='%23fff' opacity='.9'/%3E%3C/svg%3E") center / contain no-repeat; border: none; flex: none; }
+i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem.webp") center / contain no-repeat; border: none; flex: none; }
 .namebar { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--panel-2); border-radius: 14px; min-height: 46px; font: 400 17px var(--display); }
 .namebar button { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--deep); display: grid; place-items: center; }
 .wardrobe { display: grid; grid-template-columns: 58px minmax(0, 1fr) 58px; gap: 8px; align-items: center; }
@@ -391,7 +393,27 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .speeds { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .testsec { border: 2px dashed #F0453A; border-radius: 16px; padding: 12px; }
 .crewart { display: grid; place-items: center; transform: scale(1.3); }
-.gemcard { animation: gemglow 3s ease-in-out infinite; }
+.cards.gems { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; row-gap: 16px; padding-top: 6px; }
+.card.gemcard { background: radial-gradient(ellipse at 50% 36%, #8FEA8C 0%, #66D86E 58%, #52CC61 100%); box-shadow: 0 4px 0 rgba(20,18,42,.35); }
+.gemcard .wall.stars { opacity: .13; }
+.gemcard .gbody { position: relative; z-index: 1; flex: 1 1 auto; aspect-ratio: 345 / 390; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 0 4px; box-sizing: border-box; }
+.gemcard .art { position: relative; z-index: 1; width: 100%; aspect-ratio: 112 / 76; height: auto; display: flex; justify-content: center; align-items: flex-end; background: none !important; }
+.glow > .gempack { position: relative; animation: floaty 3s ease-in-out infinite; }
+.gemcard .art .gempack { position: absolute; left: 3%; top: 0; width: 94%; height: 100%; object-fit: contain; object-position: 50% 100%; display: block; margin: 0; -webkit-user-drag: none; user-select: none; pointer-events: none; animation: floaty 3s ease-in-out infinite; }
+/* Bungee sits a hair high in its line box: nudge the digits to the optical center */
+.gemcard .amount b span { display: block; transform: translateY(.5px); }
+/* the amount sits in a black pill tucked over the bottom edge of the art; same height and baseline on every card */
+.gemcard .art .gempack.solo { top: 9%; height: 91%; }   /* the single gem reads big at full height: 9% smaller, still sitting on the pill */
+.gemcard .amount { position: relative; z-index: 2; height: 21px; padding: 0; margin-top: -9px; display: flex; justify-content: center; }
+.gemcard .amount b { display: flex; align-items: center; justify-content: center; box-sizing: border-box; height: 21px; min-width: 44px; background: #0E0D14; color: #fff; font: 400 14px/1 var(--display); letter-spacing: .01em; padding: 0 10px; border-radius: 999px; text-align: center; font-variant-numeric: tabular-nums; }
+.card.gemcard .price { background: #177A2F; color: #fff; font: 400 15px/1 var(--display); min-height: 34px; height: 34px; display: flex; align-items: center; justify-content: center; padding: 2px 4px 0; box-sizing: border-box; }
+.gemcard .spk { background: #FFF7C2; width: 10px; height: 10px; z-index: 0; }
+.gemcard > .burst { z-index: 3; }
+.gemcard .burst { width: 34px; height: 34px; top: -6px; left: -4px; filter: drop-shadow(0 2px 0 rgba(20,18,42,.35)); }
+.gemcard .rib.small { animation: none; top: -8px; right: 4px; left: auto; box-sizing: border-box; height: 18px; display: flex; align-items: center; white-space: nowrap; background: #EE3338; box-shadow: 0 2px 0 rgba(20,18,42,.4); font: 400 9.5px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; padding: 1px 7px 0; border-radius: 6px 6px 2px 6px; transform: rotate(3deg); transform-origin: 100% 50%; }
+.gemcard .rib.small.long { font-size: 7.6px; padding: 1px 6px 0; }   /* "Recommended" is long: 20% smaller text so it weighs the same as "Best value" */
+.gemcard .burst-in { font-size: 9px; } .gemcard .burst-in small { font-size: 5px; }
+.offer-art .gempack { width: 88px; height: 72px; object-fit: contain; }
 @keyframes gemglow { 50% { box-shadow: 0 4px 0 rgba(20,18,42,.35), 0 0 20px rgba(139,240,160,.75); } }
 .rays { position: absolute; left: 50%; top: 50%; width: 112px; height: 112px; margin: -56px 0 0 -56px; border-radius: 50%; pointer-events: none; z-index: 0; opacity: .5;
   background: repeating-conic-gradient(rgba(255,255,255,.6) 0 9deg, rgba(255,255,255,0) 9deg 30deg);
@@ -401,7 +423,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
   background: repeating-conic-gradient(rgba(255,255,255,.6) 0 9deg, rgba(255,255,255,0) 9deg 30deg);
   -webkit-mask: radial-gradient(circle, #000 20%, transparent 66%); mask: radial-gradient(circle, #000 20%, transparent 66%); animation: spin 16s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.gemcard .art > svg { margin-top: 18px; }
+
 .burst { position: absolute; z-index: 3; top: -2px; left: -2px; width: 46px; height: 46px; filter: drop-shadow(0 3px 0 rgba(20,18,42,.45)) drop-shadow(0 0 7px rgba(200,150,255,.95)); transform: rotate(-10deg); animation: burstpop 1.8s ease-in-out infinite; }
 .burst-in { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; background: linear-gradient(135deg, #C29BFF, #8B4DFF); color: #fff; font: 400 11px/1 var(--display);
   clip-path: polygon(50.0% 0.0%, 61.1% 8.5%, 75.0% 6.7%, 80.4% 19.6%, 93.3% 25.0%, 91.5% 38.9%, 100.0% 50.0%, 91.5% 61.1%, 93.3% 75.0%, 80.4% 80.4%, 75.0% 93.3%, 61.1% 91.5%, 50.0% 100.0%, 38.9% 91.5%, 25.0% 93.3%, 19.6% 80.4%, 6.7% 75.0%, 8.5% 61.1%, 0.0% 50.0%, 8.5% 38.9%, 6.7% 25.0%, 19.6% 19.6%, 25.0% 6.7%, 38.9% 8.5%); }
@@ -642,7 +664,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .gempack, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 
@@ -808,7 +830,7 @@ html, body { background: var(--bar) !important; }
       </div>
     </div>
     <div class="pill gem-pill">
-      <span class="hud-ic gemic"><svg width="40" height="40" viewBox="-3 -2 30 28" aria-hidden="true"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A"></path><path d="M0 8h24l-12 16z" fill="#F0A81E"></path><path d="M6 0h12l6 8H0z" fill="#FFE08A"></path><path d="M6 0h12l6 8-12 16L0 8z" fill="none" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M8 2.5h4l-2 4z" fill="#fff" opacity=".85"></path></svg></span>
+      <span class="hud-ic gemic"><img src="art/gem.webp" width="34" height="28" alt="" draggable="false"></span>
       <span class="gem-col"><span class="gem-num" id="gems">25</span></span>
       <button class="round-btn" id="buyGems" aria-label="Open the shop">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
@@ -1612,7 +1634,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 106, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 107, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1783,12 +1805,12 @@ const OFFERS = {
   skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
   hypeRefill: { name: 'Hype Refill', sub: 'Fill your 2x Hype all the way to its cap, no ads', gems: 25 },
   fanFrenzy: { name: 'Fan Frenzy', sub: 'Fans and paparazzi show up 3x as often for 30 minutes', gems: 20 },
-  gems100: { name: 'Handful of Gems', sub: '100 gems', money: '$0.99', gemsOut: 100 },
-  gems550: { name: 'Bag of Gems', sub: '550 gems · 10% bonus', money: '$4.99', gemsOut: 550 },
-  gems1200: { name: 'Chest of Gems', sub: '1,200 gems · 20% bonus', money: '$9.99', gemsOut: 1200 },
-  gems2600: { name: 'Vault of Gems', sub: '2,600 gems · 30% bonus', money: '$19.99', gemsOut: 2600 },
-  gems7000: { name: 'Treasure Chest', sub: '7,000 gems · 40% bonus', money: '$49.99', gemsOut: 7000 },
-  gems15000: { name: 'Golden Vault', sub: '15,000 gems · 50% bonus', money: '$99.99', gemsOut: 15000 },
+  gems100: { name: 'Handful of Gems', sub: '80 gems', money: '$0.99', gemsOut: 80 },
+  gems550: { name: 'Bag of Gems', sub: '500 gems · 25% bonus', money: '$4.99', gemsOut: 500 },
+  gems1200: { name: 'Chest of Gems', sub: '1,200 gems · 50% bonus', money: '$9.99', gemsOut: 1200 },
+  gems2600: { name: 'Vault of Gems', sub: '2,500 gems · 56% bonus', money: '$19.99', gemsOut: 2500 },
+  gems7000: { name: 'Treasure Chest', sub: '6,500 gems · 63% bonus', money: '$49.99', gemsOut: 6500 },
+  gems15000: { name: 'Golden Vault', sub: '14,000 gems · 75% bonus', money: '$99.99', gemsOut: 14000 },
 };
 // limited-time deals: 3 at a time, each lasts 3 days, staggered so one changes every day. Around 8-10x the value of plain gems.
 const DEALS = [
@@ -2986,7 +3008,7 @@ function ratTick(dt) {
 const FAN_MIN = 30, FAN_MAX = 90, FAN_WALK = 11000, FAN_CASH_SECS = 60, FAN_GEMS = 3, FAN_GEM_CAP = 15, FAN_GEM_ODDS = 0.12;
 let fanAcc = 0, fanNext = FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN), fanEl = null;
 const CAM_SVG = `<svg class="cam" viewBox="0 0 22 18" aria-hidden="true"><rect x="1" y="4" width="20" height="13" rx="3" fill="#2B2742" stroke="#14122A" stroke-width="1.5"></rect><rect x="6" y="1" width="8" height="4" rx="1.5" fill="#2B2742" stroke="#14122A" stroke-width="1.5"></rect><circle cx="11" cy="10.5" r="4.2" fill="#6E7BBF" stroke="#14122A" stroke-width="1.5"></circle><circle cx="12.3" cy="9.3" r="1.3" fill="#fff" opacity=".8"></circle><rect x="16" y="6" width="3" height="2" rx=".8" fill="#FFE27A"></rect></svg>`;
-const GEM_MINI = `<svg width="22" height="22" viewBox="-3 -2 30 28" aria-hidden="true"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A"></path><path d="M0 8h24l-12 16z" fill="#F0A81E"></path><path d="M6 0h12l6 8H0z" fill="#FFE08A"></path><path d="M6 0h12l6 8-12 16L0 8z" fill="none" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M8 2.5h4l-2 4z" fill="#fff" opacity=".85"></path></svg>`;
+const GEM_MINI = `<img src="art/gem.webp" width="22" height="18" alt="" draggable="false" style="display:block">`;
 const COIN_MINI = `<span class="coin fcoin">$</span>`;
 function fanGemsToday() { const d = new Date().toDateString(); if (!S.fanDay || S.fanDay.d !== d) S.fanDay = { d, gems: 0 }; return S.fanDay; }
 function fanTick(dt) {
@@ -3084,36 +3106,10 @@ function bigArtist(eq = S.equip, bt = S.bt, lk = myLook(bt)) {
 // ---------- shop and wardrobe artwork ----------
 const gemPath = (x, y, k) => `<g transform="translate(${x},${y}) scale(${k})"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M0 8h24l-12 16z" fill="#F0A81E"></path><path d="M6 0h12l6 8H0z" fill="#FFE08A"></path><path d="M6 0h12l6 8-12 16L0 8z" fill="none" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M8 2.5h4l-2 4z" fill="#fff" opacity=".85"></path></g>`;
 const ART = {
-  // gem packs grow from a single gem to a pile, a bag, a chest and a golden vault (like the bigger bundles in other idle games)
-  gems: n => {
-    const pile = { 1: [[14, 10, 1.5]], 2: [[4, 16, 1.25], [26, 8, 1.4]], 3: [[16, 2, 1.3], [2, 20, 1.2], [32, 20, 1.2]] }[n];
-    if (pile) return `<svg width="104" height="92" viewBox="-2 -2 66 58" aria-hidden="true">${pile.map(([x, y, k]) => gemPath(x, y, k)).join('')}</svg>`;
-    const g = (x, y, k) => gemPath(x, y, k);
-    if (n === 4) return `<svg width="104" height="92" viewBox="-6 -8 74 72" aria-hidden="true">
-      <ellipse cx="31" cy="20" rx="17" ry="5" fill="#3E7DAE" stroke="#14122A" stroke-width="2.4"></ellipse>
-      ${g(17, 6, .7)}${g(31, 4, .7)}${g(24, 2, .78)}
-      <path d="M14 20 Q22 25 31 25 Q40 25 48 20 Q54 30 54 40 Q54 54 31 54 Q8 54 8 40 Q8 30 14 20 Z" fill="#5FA8D8" stroke="#14122A" stroke-width="2.6" stroke-linejoin="round"></path>
-      <path d="M14 20 Q22 25 31 25 Q40 25 48 20" fill="none" stroke="#8FC6EA" stroke-width="2.4"></path>
-      <path d="M22 27 Q19 32 16 34 M40 27 Q43 32 46 33" fill="none" stroke="#8C5A2E" stroke-width="2.6" stroke-linecap="round"></path>
-      <path d="M13 34 Q11 42 15 49" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"></path>
-      ${g(40, 14, .6)}${g(-2, 40, .72)}${g(46, 42, .66)}${g(6, 47, .5)}</svg>`;
-    // open chest: lid behind, a heap of gems inside, the front panel in front, a few tumbling over the rim and onto the floor
-    const chest = (x, y, k, body, dark, trim, heap) => `<g transform="translate(${x},${y}) scale(${k})">
-      <path d="M2 16 L6 0 H38 L42 16 Z" fill="${dark}" stroke="#14122A" stroke-width="2.6" stroke-linejoin="round"></path>
-      <path d="M8 3 H36" stroke="#fff" stroke-opacity=".25" stroke-width="2"></path>
-      ${heap}
-      <rect x="0" y="16" width="44" height="24" rx="3" fill="${body}" stroke="#14122A" stroke-width="2.6"></rect>
-      <path d="M0 22 H44" stroke="${dark}" stroke-width="3"></path><rect x="18" y="20" width="8" height="10" rx="2" fill="${trim}" stroke="#14122A" stroke-width="2"></rect>
-      <path d="M3 34 H20" stroke="#fff" stroke-opacity=".3" stroke-width="2.5" stroke-linecap="round"></path></g>`;
-    const heap = `${g(2, 4, .62)}${g(26, 3, .62)}${g(14, 0, .7)}${g(8, 8, .58)}${g(22, 9, .58)}`;
-    if (n === 5) return `<svg width="104" height="92" viewBox="-6 -8 74 72" aria-hidden="true">
-      ${chest(9, 13, 1, '#8FB9D9', '#5F8BAE', '#C9E3F2', heap)}
-      ${g(40, 22, .55)}${g(4, 44, .62)}${g(46, 46, .55)}</svg>`;
-    return `<svg width="104" height="92" viewBox="-6 -8 74 72" aria-hidden="true">
-      ${chest(-3, 27, .6, '#8FB9D9', '#5F8BAE', '#C9E3F2', `${g(4, 6, .62)}${g(20, 5, .62)}${g(12, 2, .66)}`)}
-      ${chest(14, 6, 1.1, '#FFC94A', '#D9A441', '#FFF1C2', heap + `${g(15, -6, .68)}`)}
-      ${g(46, 22, .52)}${g(40, 48, .55)}${g(24, 50, .5)}${g(56, 44, .45)}</svg>`;
-  },
+  // gem packs (art made outside the game): one gem → two gems → a pile → a bag → a case → a case with a side case
+  // each image is trimmed to its art; --w sets how much of the card it fills so the tiers read as growing
+  gems: n => { n = Math.min(6, Math.max(1, n)); const h = [302, 277, 295, 278, 309, 270][n - 1];
+    return `<img class="gempack${n === 1 ? ' solo' : ''}" src="art/gems/gems-${n}.webp" width="360" height="${h}" style="animation-delay:-${(n * .45).toFixed(2)}s" alt="" decoding="async" draggable="false">`; },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
   bolt: () => `<span class="hype-tile"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>`,
@@ -3718,9 +3714,10 @@ function openTab(tab) {
         <span class="ttl">${title}</span><span class="price">${price}</span></button>`; };
     const gemCard = (id, n, amount, bonus, ribbon, sp) => { const o = OFFERS[id];
       return `<button class="card green gemcard" data-buy="${id}" aria-label="${amount} gems${bonus ? ', ' + bonus + ' bonus' : ''}, ${o.money}">
-        ${ribbon ? `<span class="rib small">${ribbon}</span>` : ''}
-        <span class="wall stars"></span><span class="art glow ${bonus ? 'has-burst' : ''}">${sparks(sp, n * 7)}${ART.gems(n)}${bonus ? `<span class="burst"><span class="burst-in">${bonus}<small>bonus</small></span></span>` : ''}</span>
-        <span class="amount">${amount}</span><span class="price">${o.money}</span></button>`; };
+        ${ribbon ? `<span class="rib small${ribbon.length > 10 ? ' long' : ''}">${ribbon}</span>` : ''}
+        <span class="wall stars"></span>${bonus ? `<span class="burst"><span class="burst-in">${bonus}<small>bonus</small></span></span>` : ''}
+        <span class="gbody">${sparks(sp, n * 7)}<span class="art">${ART.gems(n)}</span><span class="amount"><b><span>${amount}</span></b></span></span>
+        <span class="price">${o.money}</span></button>`; };
     const slotName = { top: 'Top', hat: 'Hat', neck: 'Necklace', face: 'Glasses' };
     const outfit = it => { const [rn, rc] = rarity(it);
       return `<button class="card outfit ${it.rar === 'mythic' ? 'mythic' : ''}" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
@@ -3760,13 +3757,13 @@ function openTab(tab) {
       <div class="cards">${ITEMS.filter(i => i.gems && !S.owned[i.id]).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot) || RAR_ORDER.indexOf(b.rar) - RAR_ORDER.indexOf(a.rar) || b.gems - a.gems).map(outfit).join('')}</div>
       <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
       <div class="banner">Gems</div>
-      <div class="cards two">
-        ${gemCard('gems100', 1, '100', '', '', 5)}
-        ${gemCard('gems550', 2, '550', '+10%', 'Popular', 8)}
-        ${gemCard('gems1200', 3, '1,200', '+20%', '', 10)}
-        ${gemCard('gems2600', 4, '2,600', '+30%', '', 12)}
-        ${gemCard('gems7000', 5, '7,000', '+40%', '', 14)}
-        ${gemCard('gems15000', 6, '15,000', '+50%', 'Best value', 16)}
+      <div class="cards gems">
+        ${gemCard('gems100', 1, '80', '', '', 4)}
+        ${gemCard('gems550', 2, '500', '', 'Recommended', 5)}
+        ${gemCard('gems1200', 3, '1,200', '', '', 6)}
+        ${gemCard('gems2600', 4, '2,500', '', '', 7)}
+        ${gemCard('gems7000', 5, '6,500', '', '', 8)}
+        ${gemCard('gems15000', 6, '14,000', '', 'Best value', 9)}
       </div>`);
   } else if (tab.startsWith('pay:')) {
     const id = tab.slice(4), o = OFFERS[id];
