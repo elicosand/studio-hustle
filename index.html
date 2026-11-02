@@ -625,7 +625,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .event-chip, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .flag, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 
@@ -742,6 +742,14 @@ html, body { background: var(--bar) !important; }
 .evweek div { border-radius: 10px; background: var(--panel-2); padding: 6px 2px; text-align: center; font-size: 10px; font-weight: 700; color: var(--muted); display: flex; flex-direction: column; gap: 4px; align-items: center; }
 .evweek div.today { outline: 3px solid var(--accent); color: var(--text); }
 .evweek i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #14122A; display: block; }
+.sbtn.events { position: absolute; top: 70px; right: 66px; }
+.sbtn.events.live { box-shadow: 0 4px 0 rgba(20,18,42,.35), 0 0 0 3px var(--evc), 0 0 14px 2px var(--evc); }
+.ev-hero { position: relative; height: 150px; border-radius: 18px; overflow: hidden; border: 3px solid #14122A; display: flex; align-items: flex-end; justify-content: center; }
+.ev-hero .rays { width: 380px; height: 380px; margin: -190px 0 0 -190px; top: 55%; opacity: .5; background: repeating-conic-gradient(rgba(255,255,255,.35) 0 9deg, rgba(255,255,255,0) 9deg 24deg); }
+.ev-hero .ev-art { position: relative; width: 150px; height: 150px; overflow: hidden; }
+.ev-hero .ev-art > svg { position: absolute; left: 50%; top: 4px; width: 172px; height: auto; transform: translateX(-50%); }
+.ev-hero .flag { position: absolute; left: calc(50% + 46px); bottom: 0; width: 84px; height: 130px; transform-origin: 10% 100%; animation: flagwave 2.4s ease-in-out infinite alternate; }
+@keyframes flagwave { from { transform: rotate(-4deg); } to { transform: rotate(5deg); } }
 </style>
 </head>
 <body>
@@ -798,7 +806,6 @@ html, body { background: var(--bar) !important; }
   <div class="room-wrap" id="roomWrap">
     <div class="test-chip" id="testChip" hidden>TEST MODE</div>
     <div class="frenzy-chip" id="frenzyChip" hidden></div>
-    <button class="event-chip" id="eventChip" hidden></button>
     <div class="loc-title" id="locTitle" hidden><b id="locTitleName"></b><span id="locTitleSub"></span></div>
     <div class="side side-l">
       <button class="sbtn crate" id="crateBtn" aria-label="Free crate">
@@ -818,6 +825,10 @@ html, body { background: var(--bar) !important; }
       <button class="sbtn charts" id="chartsBtn" aria-label="The Charts">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"></path></svg>
         <span class="cap">Charts</span>
+      </button>
+      <button class="sbtn events" id="eventsBtn" aria-label="Events">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 4h13l-2.5 4.5L18 13H5"></path></svg>
+        <span class="cap">Events</span><span class="bang evdot" id="eventsBang" hidden>!</span>
       </button>
     </div>
     <div class="stage" id="stage">
@@ -2202,9 +2213,9 @@ function flushOwed() {
 // run on the phone's own calendar: Music Monday every week, the Wednesday Challenge every week, and a weekend event
 // that rotates through five so each weekend feels different (a steady rhythm plus variety)
 const EVENTS = {
-  monday: { name: 'Music Monday', short: 'Crates pay 3x cash and 2x gems', color: '#FF6FAE' },
+  monday: { name: 'Music Monday', short: 'Crates pay 2x cash and 2x gems, and the daily gem caps for ads and fans are doubled', color: '#FF6FAE' },
   wed: { name: 'Wednesday Challenge', short: 'One big goal for a big gem prize', color: '#6FD3FF' },
-  fans: { name: 'Fan Weekend', short: 'Fans show up 3x as often, with double the gem cap', color: '#FFC94A' },
+  fans: { name: 'Fan Weekend', short: 'Fans show up 2x as often, with double the daily gem cap', color: '#FFC94A' },
   gems: { name: 'Gem Rush', short: 'Album drops, ads and fans give double gems', color: '#B18CFF' },
   tour: { name: 'Tour Rush', short: 'Every map goal is 25% lower', color: '#8BF0A0' },
   crates: { name: 'Crate Party', short: 'Free crates every 5 minutes, paying 2x', color: '#FF9E57' },
@@ -2221,18 +2232,19 @@ function eventOn(t = Date.now()) {
 }
 const ev = () => (S && S.test && S.test.event) || eventOn();
 const evEnds = () => { const w = new Date().getDay(), d = localDay(); return dayStartMs(d + (w === 6 ? 2 : 1)); };
+// each one is about 30 minutes of active play
 const WED_POOL = [
-  { text: 'Buy 400 upgrades', stat: 'upgrades', target: 400 },
-  { text: 'Open 8 crates', stat: 'crates', target: 8 },
-  { text: 'Tap 15 fans', stat: 'fans', target: 15 },
-  { text: 'Hire 8 crew members', stat: 'hires', target: 8 },
-  { text: 'Turn on 2x Hype 4 times', stat: 'hypes', target: 4 },
+  { text: 'Buy 800 upgrades', stat: 'upgrades', target: 800 },
+  { text: 'Tap 25 fans', stat: 'fans', target: 25 },
+  { text: 'Spend 30 minutes in the studio', stat: 'playSec', target: 1800, mins: true },
+  { text: 'Hire 10 crew members', stat: 'hires', target: 10 },
+  { text: 'Open 4 crates', stat: 'crates', target: 4 },
 ];
 const WED_GEMS = 75;
 function wedChallenge() {
   const c = WED_POOL[weekIdx() % WED_POOL.length], day = dayKey();
   if (!S.wed || S.wed.day !== day) S.wed = { day, base: S.stats[c.stat] || 0, got: false };
-  const v = Math.max(0, (S.stats[c.stat] || 0) - S.wed.base);
+  const v = Math.floor(Math.max(0, (S.stats[c.stat] || 0) - S.wed.base));
   return Object.assign({}, c, { v: Math.min(v, c.target), ready: v >= c.target, got: S.wed.got });
 }
 function nextEvents() {
@@ -2359,7 +2371,8 @@ function addHype() {
 }
 let adTimer = null;
 const AD_GEMS = 5, AD_GEM_LIMIT = 8;   // 40 gems a day from ads (daily tasks add 20); ads past the limit still give their normal reward
-const adGemsLeft = () => (S.adGems && S.adGems.day === dayKey()) ? AD_GEM_LIMIT - S.adGems.n : AD_GEM_LIMIT;
+const adGemLimit = () => AD_GEM_LIMIT * (ev() === 'monday' ? 2 : 1);
+const adGemsLeft = () => (S.adGems && S.adGems.day === dayKey()) ? adGemLimit() - S.adGems.n : adGemLimit();
 function payAdGems() {
   S.stats.ads++;
   if (adGemsLeft() <= 0) return '';
@@ -2387,10 +2400,10 @@ function watchAd(onDone) {
 $('dailyBtn').addEventListener('click', () => openTab('daily'));
 $('tutSkip').addEventListener('click', () => { if (S.tut != null && S.tut >= TUT.length - 1 || S.loc > 0) S.coach = { move1: true, album1: true }; S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
-$('eventChip').addEventListener('click', e => { e.stopPropagation(); openTab('events'); });
+$('eventsBtn').addEventListener('click', () => openTab('events'));
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
-  const e = ev(), cx = e === 'monday' ? 3 : e === 'crates' ? 2 : 1, cg = e === 'monday' ? 6 : 3, cd = e === 'crates' ? 300 : CRATE_CD;
+  const e = ev(), cx = e === 'monday' || e === 'crates' ? 2 : 1, cg = e === 'monday' ? 6 : 3, cd = e === 'crates' ? 300 : CRATE_CD;
   const v = Math.max(25, skipValue(180)) * (S.owned.lucky ? 2 : 1) * cx;   // about 3 minutes of income (more during events)
   earn(v); S.gems += cg; owe('cash'); owe('gems'); S.stats.crates++; S.crateReady = Date.now() + cd * 1000; sfx('reward');
   pendingBonus = v;
@@ -2945,13 +2958,13 @@ const COIN_MINI = `<span class="coin fcoin">$</span>`;
 function fanGemsToday() { const d = new Date().toDateString(); if (!S.fanDay || S.fanDay.d !== d) S.fanDay = { d, gems: 0 }; return S.fanDay; }
 function fanTick(dt) {
   if (fanEl || document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
-  fanAcc += dt * (frenzyOn() || ev() === 'fans' ? 3 : 1);
+  fanAcc += dt * (frenzyOn() ? 3 : ev() === 'fans' ? 2 : 1);
   if (fanAcc < fanNext) return;
   fanAcc = 0; fanNext = FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN);
   spawnFan();
 }
 function spawnFan() {
-  const left = Math.random() < 0.5, gem = fanGemsToday().gems < FAN_GEM_CAP * (ev() === 'fans' ? 2 : 1) && Math.random() < FAN_GEM_ODDS;
+  const left = Math.random() < 0.5, gem = fanGemsToday().gems < FAN_GEM_CAP * (ev() === 'fans' || ev() === 'monday' ? 2 : 1) && Math.random() < FAN_GEM_ODDS;
   const el = document.createElement('button');
   el.className = 'fan' + (left ? ' left' : '') + (gem ? ' gemfan' : ''); el.setAttribute('aria-label', 'A fan is taking pictures: tap for a bonus');
   el.dataset.gem = gem ? '1' : '';
@@ -3114,7 +3127,7 @@ const LIVE = {
     + '|' + dailyTasks().map(t => t.id + (t.got ? 'x' : t.ready ? '!' : Math.floor(t.v / t.target * 20))).join(',') + (S.dt.bonus ? 'b' : '') + '|' + new Date().getMinutes(),
   hype: () => Math.ceil(Math.max(0, S.hypeUntil - Date.now()) / 1000) + '|' + S.gems,
   career: () => Math.floor(movePct()) + '|' + albumReady(),
-  events: () => (S.wed ? wedChallenge().v : 0) + '|' + Math.floor((evEnds() - Date.now()) / 1000),
+  events: () => (S.wed ? Math.floor(wedChallenge().v / (wedChallenge().mins ? 60 : 1)) : 0) + '|' + Math.floor((evEnds() - Date.now()) / 1000),
 };
 let liveSig = '';
 function refreshLive() {
@@ -3441,10 +3454,11 @@ function openTab(tab) {
     const e = ev(), E = e && EVENTS[e], w = wedChallenge();
     const dot = k => k ? `<i style="background:${EVENTS[k].color}"></i>` : '<i style="background:transparent;border-style:dashed;opacity:.4"></i>';
     openSheet(`<div class="sheet-head"><h2>Events</h2>${closeBtn()}</div>
+      <div class="ev-hero" style="background:${E ? E.color : '#6FD3FF'}"><span class="rays"></span><span class="ev-art">${bigArtist()}</span><svg class="flag" viewBox="0 0 84 130" aria-hidden="true"><path d="M8 128 V8" stroke="#14122A" stroke-width="6" stroke-linecap="round"></path><path d="M8 128 V8" stroke="#C9C3DE" stroke-width="2.5" stroke-linecap="round"></path><circle cx="8" cy="7" r="5" fill="#FFC94A" stroke="#14122A" stroke-width="2.5"></circle><g transform="translate(10 12)"><path d="M0 0 Q18 -6 36 0 T72 0 V44 Q54 38 36 44 T0 44 Z" fill="#fff" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path><rect x="0" y="0" width="12" height="11" fill="#14122A"/><rect x="24" y="0" width="12" height="11" fill="#14122A"/><rect x="48" y="0" width="12" height="11" fill="#14122A"/><rect x="12" y="11" width="12" height="11" fill="#14122A"/><rect x="36" y="11" width="12" height="11" fill="#14122A"/><rect x="60" y="11" width="12" height="11" fill="#14122A"/><rect x="0" y="22" width="12" height="11" fill="#14122A"/><rect x="24" y="22" width="12" height="11" fill="#14122A"/><rect x="48" y="22" width="12" height="11" fill="#14122A"/><rect x="12" y="33" width="12" height="11" fill="#14122A"/><rect x="36" y="33" width="12" height="11" fill="#14122A"/><rect x="60" y="33" width="12" height="11" fill="#14122A"/></g></svg></div>
       ${E ? `<div class="evcard" style="background:${E.color}"><small>Live now · ends in ${hms(evEnds() - Date.now())}</small><b>${E.name}</b><span>${E.short}</span></div>`
         : `<div class="evcard" style="background:var(--panel-2);color:var(--text)"><small>No event today</small><b>Next up: ${EVENTS[nextEvents().find(x => x.e && x.day !== 'Today').e].name}</b></div>`}
       ${e === 'wed' ? `<div class="sec"><h3>This week's challenge</h3>
-        <div class="row ${w.got ? 'done' : ''}"><span class="rt"><b>${w.text}</b><span>${w.got ? 'Done' : `${w.v} / ${w.target}`} · ${WED_GEMS} gems</span></span>
+        <div class="row ${w.got ? 'done' : ''}"><span class="rt"><b>${w.text}</b><span>${w.got ? 'Done' : w.mins ? `${Math.floor(w.v / 60)} / ${w.target / 60} min` : `${w.v} / ${w.target}`} · ${WED_GEMS} gems</span></span>
         <button class="hire" data-wed ${w.ready && !w.got ? '' : 'disabled'}>${w.got ? 'Claimed' : 'Claim'}</button></div></div>` : ''}
       <div class="sec"><h3>This week</h3><div class="evweek">${nextEvents().map(x => `<div class="${x.day === 'Today' ? 'today' : ''}">${x.day}${dot(x.e)}</div>`).join('')}</div>
         <p class="cnote">Music Monday and the Wednesday Challenge happen every week. Weekends rotate between ${WEEKEND.map(k => EVENTS[k].name).join(', ')}.</p></div>`);
@@ -3771,8 +3785,9 @@ function render() {
   const now = Date.now();
   const hb = $('hypeBtn');
   $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x Hype';
-  { const e = ev(), c = $('eventChip'); c.hidden = !e || !S.onboarded || (S.tut != null && S.tut < TUT.length && S.loc === 0);
-    if (e) { const t = EVENTS[e].name + ' · ' + hms(evEnds() - now); if (c.textContent !== t) c.textContent = t; c.style.background = EVENTS[e].color; } }
+  { const e = ev(), b = $('eventsBtn'), w = e === 'wed' && wedChallenge();
+    b.hidden = !S.onboarded; b.style.setProperty('--evc', e ? EVENTS[e].color : 'transparent'); b.classList.toggle('live', !!e);
+    $('eventsBang').hidden = !(w && w.ready && !w.got); }
   const fz = frenzyOn(); $('frenzyChip').hidden = !fz; if (fz) $('frenzyChip').textContent = 'Fan Frenzy ' + hms(S.frenzyUntil - now);
   $('hypeBtn').classList.toggle('active', hypeOn());
   const cb = $('crateBtn'), crateWait = now < S.crateReady;
