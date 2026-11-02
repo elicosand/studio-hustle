@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Studio Hustle">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 html { height: 100%; background: #2A2A33; }
 body { margin: 0; font: 14px system-ui, sans-serif; }
@@ -246,6 +246,8 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .sbtn.crate { background: var(--gem); isolation: isolate; }
 .sbtn.crate::after, .tab-hype .orb::after, .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.6) 48%, transparent 60%) no-repeat; background-size: 250% 100%; animation: sheen 4.5s ease-in-out infinite; }
+.card::after, .offer::after { will-change: background-position; transform: translateZ(0); }
+.gempack, .glow > svg, .spk { will-change: transform; backface-visibility: hidden; }
 .card::after, .offer::after, .sbtn.crate::after, .tab-hype .orb::after, .tab.shop .ticon::after { animation-duration: 4.5s !important; animation-delay: var(--shine-at, 0s) !important; }
 .sbtn.crate:disabled::after { opacity: .4; }
 .card { border-radius: 16px; }
@@ -308,12 +310,13 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .wall { position: absolute; left: 0; right: 0; top: 0; bottom: 0; overflow: hidden; pointer-events: none; z-index: -1; border-radius: 18px; opacity: .3; background-repeat: repeat; }
 .card .wall { bottom: 36px; border-radius: 16px 16px 0 0; z-index: 0; }
 .card .art, .card .ttl, .card .price, .card .amount { position: relative; z-index: 1; }
-.wall.bubbles { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='30' cy='34' r='22'/%3E%3Ccircle cx='120' cy='22' r='9'/%3E%3Ccircle cx='150' cy='90' r='26'/%3E%3Ccircle cx='70' cy='110' r='12'/%3E%3Ccircle cx='24' cy='152' r='8'/%3E%3Ccircle cx='112' cy='160' r='16'/%3E%3Ccircle cx='84' cy='60' r='6'/%3E%3C/g%3E%3C/svg%3E"); background-size: 180px 180px; animation: drift-dl 26s linear infinite; }
-.wall.arrows { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M18.0 5.9 L31.0 22.0 L22.7 22.0 L22.7 36.5 L13.3 36.5 L13.3 22.0 L5.0 22.0 Z'/%3E%3Cpath d='M54.0 41.9 L67.0 58.0 L58.7 58.0 L58.7 72.5 L49.3 72.5 L49.3 58.0 L41.0 58.0 Z'/%3E%3Cpath d='M54.0 -30.1 L67.0 -14.0 L58.7 -14.0 L58.7 0.5 L49.3 0.5 L49.3 -14.0 L41.0 -14.0 Z'/%3E%3Cpath d='M18.0 77.9 L31.0 94.0 L22.7 94.0 L22.7 108.5 L13.3 108.5 L13.3 94.0 L5.0 94.0 Z'/%3E%3C/g%3E%3C/svg%3E"); background-size: 72px 72px; animation: drift-up 7s linear infinite; opacity: .42; }
-.wall.stars { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='5' stroke-linejoin='round'%3E%3Cpolygon points='20.2,11.1 24.9,18.5 33.7,18.3 28.1,25.1 31.0,33.4 22.9,30.2 15.9,35.5 16.4,26.7 9.2,21.7 17.7,19.5'/%3E%3Cpolygon points='94.2,7.3 95.3,13.2 101.0,15.4 95.7,18.3 95.4,24.3 91.0,20.2 85.1,21.8 87.7,16.3 84.4,11.2 90.4,12.0'/%3E%3Cpolygon points='119.5,56.1 122.5,65.0 131.7,67.1 124.1,72.7 125.0,82.1 117.3,76.7 108.6,80.4 111.4,71.4 105.2,64.3 114.6,64.2'/%3E%3Cpolygon points='55.2,64.4 59.6,69.5 66.3,68.4 62.8,74.2 65.9,80.2 59.3,78.6 54.6,83.4 54.0,76.7 48.0,73.7 54.2,71.0'/%3E%3Cpolygon points='19.1,103.5 19.6,109.6 25.0,112.3 19.4,114.7 18.5,120.7 14.5,116.1 8.5,117.0 11.7,111.8 8.9,106.5 14.8,107.8'/%3E%3Cpolygon points='83.1,109.0 87.3,116.7 96.1,117.1 90.1,123.5 92.4,132.0 84.4,128.2 77.1,133.0 78.2,124.3 71.4,118.9 80.0,117.2'/%3E%3C/g%3E%3C/svg%3E"); background-size: 140px 140px; animation: drift-dl 20s linear infinite; opacity: .3; }
-@keyframes drift-dl { from { background-position: 0 0; } to { background-position: -180px 180px; } }
-.wall.stars { animation-name: drift-dl-s; } @keyframes drift-dl-s { from { background-position: 0 0; } to { background-position: -140px 140px; } }
-@keyframes drift-up { from { background-position: 0 0; } to { background-position: 0 -72px; } }
+.wall.bubbles::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='30' cy='34' r='22'/%3E%3Ccircle cx='120' cy='22' r='9'/%3E%3Ccircle cx='150' cy='90' r='26'/%3E%3Ccircle cx='70' cy='110' r='12'/%3E%3Ccircle cx='24' cy='152' r='8'/%3E%3Ccircle cx='112' cy='160' r='16'/%3E%3Ccircle cx='84' cy='60' r='6'/%3E%3C/g%3E%3C/svg%3E"); background-size: 180px 180px; animation: drift-dl 26s linear infinite;  }
+.wall.arrows { opacity: .42; } .wall.arrows::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M18.0 5.9 L31.0 22.0 L22.7 22.0 L22.7 36.5 L13.3 36.5 L13.3 22.0 L5.0 22.0 Z'/%3E%3Cpath d='M54.0 41.9 L67.0 58.0 L58.7 58.0 L58.7 72.5 L49.3 72.5 L49.3 58.0 L41.0 58.0 Z'/%3E%3Cpath d='M54.0 -30.1 L67.0 -14.0 L58.7 -14.0 L58.7 0.5 L49.3 0.5 L49.3 -14.0 L41.0 -14.0 Z'/%3E%3Cpath d='M18.0 77.9 L31.0 94.0 L22.7 94.0 L22.7 108.5 L13.3 108.5 L13.3 94.0 L5.0 94.0 Z'/%3E%3C/g%3E%3C/svg%3E"); background-size: 72px 72px; animation: drift-up 7s linear infinite; }
+.wall.stars { opacity: .3; } .wall.stars::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='5' stroke-linejoin='round'%3E%3Cpolygon points='20.2,11.1 24.9,18.5 33.7,18.3 28.1,25.1 31.0,33.4 22.9,30.2 15.9,35.5 16.4,26.7 9.2,21.7 17.7,19.5'/%3E%3Cpolygon points='94.2,7.3 95.3,13.2 101.0,15.4 95.7,18.3 95.4,24.3 91.0,20.2 85.1,21.8 87.7,16.3 84.4,11.2 90.4,12.0'/%3E%3Cpolygon points='119.5,56.1 122.5,65.0 131.7,67.1 124.1,72.7 125.0,82.1 117.3,76.7 108.6,80.4 111.4,71.4 105.2,64.3 114.6,64.2'/%3E%3Cpolygon points='55.2,64.4 59.6,69.5 66.3,68.4 62.8,74.2 65.9,80.2 59.3,78.6 54.6,83.4 54.0,76.7 48.0,73.7 54.2,71.0'/%3E%3Cpolygon points='19.1,103.5 19.6,109.6 25.0,112.3 19.4,114.7 18.5,120.7 14.5,116.1 8.5,117.0 11.7,111.8 8.9,106.5 14.8,107.8'/%3E%3Cpolygon points='83.1,109.0 87.3,116.7 96.1,117.1 90.1,123.5 92.4,132.0 84.4,128.2 77.1,133.0 78.2,124.3 71.4,118.9 80.0,117.2'/%3E%3C/g%3E%3C/svg%3E"); background-size: 140px 140px; animation: drift-dl 20s linear infinite; }
+.wall::before { content: ""; position: absolute; top: -200px; left: -200px; right: -200px; bottom: -200px; background-repeat: repeat; will-change: transform; transform: translateZ(0); }
+@keyframes drift-dl { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-180px, 180px, 0); } }
+.wall.stars::before { animation-name: drift-dl-s; } @keyframes drift-dl-s { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-140px, 140px, 0); } }
+@keyframes drift-up { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -72px, 0); } }
 .card.outfit .art { overflow: hidden; border-radius: 16px 16px 0 0; }
 .card.outfit .rays { top: 46%; width: 112px; height: 112px; margin: -56px 0 0 -56px; opacity: .85; }
 
@@ -664,7 +667,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .gempack, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .wall::before, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .gempack, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 
@@ -749,6 +752,8 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 
 /* status bar area takes the page background on iPhone, so it matches the bar */
 html, body { background: var(--bar) !important; }
+/* the status bar area above the game (iPhone home-screen app draws the page under it) */
+.app::before { content: ""; position: fixed; left: 0; right: 0; top: 0; height: env(safe-area-inset-top, 0px); background: var(--bar); z-index: 8; pointer-events: none; }
 /* money bar: contents centered top to bottom; the multiplier rides as a small tag on the cash box */
 .hud { padding-block: 16px 16px; }
 .mult { top: calc(100% - 1px); background: #14122A; border-radius: 999px; padding: 2px 7px; font-size: 11px; text-shadow: none; }
@@ -818,6 +823,11 @@ html, body { background: var(--bar) !important; }
   <div class="splash-bar"><i></i></div>
   <p class="splash-tip">Music by Elijah Gray</p>
 </div>
+<script>
+// paint the phone's status bar the splash color while it shows, then back to the top-bar gray
+(() => { const m = document.querySelector('meta[name="theme-color"]'); if (!m) return; const was = m.content;
+  m.content = '#56C1F0'; setTimeout(() => { m.content = was; }, 2450); })();
+</script>
 <div class="app" id="app">
   <header class="hud">
     <div class="hud-pills">
@@ -1634,7 +1644,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 108, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 109, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -2460,6 +2470,8 @@ $('crateBtn').addEventListener('click', () => {
 });
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openTab(t.dataset.tab)));
 // soft click for navigation buttons (money actions have their own sounds)
+// Back buttons reopen the previous sheet at the spot you left it
+document.addEventListener('click', e => { if (e.target.closest('.close.back')) { backNav = true; setTimeout(() => { backNav = false; }, 0); } }, true);
 document.addEventListener('click', e => { if (e.target.closest('.tab, .tab-hype, .close, .sbtn, #mult, #chartsBtn, #settings, #buyGems, .ghost, #tutSkip, .sw, .stab, .slot, #popClose, #modeBtn')) sfx('click'); }, true);
 $('buyGems').addEventListener('click', () => openTab('shop'));
 $('chartsBtn').addEventListener('click', () => { openTab('charts'); refreshCharts(); });
@@ -2535,7 +2547,8 @@ const closeBtn = () => '<button class="close" data-close aria-label="Close"><svg
 // a back arrow that sits beside the X on screens opened from another screen
 const backBtn = attr => `<button class="close back" ${attr} aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>`;
 const headBtns = attr => `<span class="headbtns">${backBtn(attr)}${closeBtn()}</span>`;
-let sheetKey = null, nextSheetKey = null;
+let sheetKey = null, nextSheetKey = null, backNav = false;
+const sheetScroll = {};   // last scroll position of each sheet, so Back returns to the same spot
 // every shine in the game runs off the same 4.5s clock, so they all sweep together
 function syncShine(root) {
   const t = (performance.now() / 1000) % 4.5;
@@ -2545,7 +2558,8 @@ function openSheet(html) {
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
   $('sheet').classList.toggle('shopmode', nextSheetKey === 'shop');
   const sh = $('sheet'), refresh = !$('scrim').hidden && nextSheetKey && nextSheetKey === sheetKey;
-  const keep = refresh ? sh.scrollTop : 0;
+  if (sheetKey && !$('scrim').hidden && !refresh) sheetScroll[sheetKey] = sh.scrollTop;
+  const keep = refresh ? sh.scrollTop : backNav ? (sheetScroll[nextSheetKey] || 0) : 0; backNav = false;
   if (owedArmed && !refresh) flushOwed();
   if (owed.cash || owed.gems) owedArmed = true;
   sheetKey = nextSheetKey; nextSheetKey = null;
@@ -3857,7 +3871,7 @@ function openTab(tab) {
       return `<div class="row ${t.got ? 'done' : ''}"><span class="rt"><b>${t.text}</b><span>${t.got ? 'Done' : prog} · ${TASK_GEMS} gems</span>
         <span class="mile" style="margin-top:6px"><i style="width:${t.v / t.target * 100}%;background:${t.ready ? 'var(--cash)' : 'var(--gem)'}"></i></span></span>
         ${t.got ? `<span class="hired">${svgIc('star', '#8BF0A0', 16)}</span>` : `<button class="hire" data-task="${t.id}" ${t.ready ? '' : 'disabled'}>${t.ready ? 'Claim' : 'Working'}</button>`}</div>`; }).join('');
-    const bonus = `<div class="row tbonus ${S.dt.bonus ? 'done' : ''}"><span class="ric">${ART.gems(1).replace('width="104" height="92"', 'width="30" height="27"')}</span><span class="rt"><b>Finish all 3</b><span>${S.dt.bonus ? 'Claimed. New tasks tomorrow' : `+${TASK_BONUS} bonus gems`}</span></span>
+    const bonus = `<div class="row tbonus ${S.dt.bonus ? 'done' : ''}"><span class="ric"><img src="art/gem.webp" width="28" height="23" alt="" draggable="false" style="display:block"></span><span class="rt"><b>Finish all 3</b><span>${S.dt.bonus ? 'Claimed. New tasks tomorrow' : `+${TASK_BONUS} bonus gems`}</span></span>
       ${S.dt.bonus ? '' : `<button class="hire" data-task-bonus ${allGot ? '' : 'disabled'}>${allGot ? 'Claim' : ts.filter(t => t.got).length + ' / 3'}</button>`}</div>`;
     openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>
       <div class="sec"><h3>Today <small class="h3note">new tasks in ${left}</small></h3>${tRows}${bonus}</div>
