@@ -414,6 +414,11 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .gemcard > .burst { z-index: 3; }
 .gemcard .burst { width: 34px; height: 34px; top: -6px; left: -4px; filter: drop-shadow(0 2px 0 rgba(20,18,42,.35)); }
 .gemcard .rib.small { animation: none; top: -8px; right: 4px; left: auto; box-sizing: border-box; height: 18px; display: flex; align-items: center; white-space: nowrap; background: #EE3338; box-shadow: 0 2px 0 rgba(20,18,42,.4); font: 400 9.5px/1 var(--display); text-transform: uppercase; letter-spacing: .03em; padding: 1px 7px 0; border-radius: 6px 6px 2px 6px; transform: rotate(3deg); transform-origin: 100% 50%; }
+.card.skipcard { background: radial-gradient(ellipse at 50% 36%, #9EDCFB 0%, #63BDF0 58%, #4AA9E6 100%); }
+.card.skipcard .price { background: #2466B8; }
+.skipcard .gempack { overflow: visible; }
+.skipbar { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 10px 10px 10px 14px; font-size: 13px; line-height: 1.35; color: var(--muted); }
+.skipbar span { flex: 1; min-width: 0; } .skipbar b { color: #fff; font-family: var(--display); font-weight: 400; }
 .gemcard .rib.small.long { font-size: 7.6px; padding: 1px 6px 0; }   /* "Recommended" is long: 20% smaller text so it weighs the same as "Best value" */
 .gemcard .burst-in { font-size: 9px; } .gemcard .burst-in small { font-size: 5px; }
 .offer-art .gempack { width: 88px; height: 72px; object-fit: contain; }
@@ -758,6 +763,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 /* status bar area takes the page background on iPhone, so it matches the bar */
 html, body { background: var(--bar) !important; }
 /* the status bar area above the game (iPhone home-screen app draws the page under it) */
+.ios-full .app, .ios-full .splash, .ios-full .upload { bottom: auto; height: var(--full-h); }
 .app::before { content: ""; position: fixed; left: 0; right: 0; top: 0; height: env(safe-area-inset-top, 0px); background: var(--bar); z-index: 8; pointer-events: none; }
 /* money bar: contents centered top to bottom; the multiplier rides as a small tag on the cash box */
 .hud { padding-block: 16px 16px; }
@@ -829,6 +835,12 @@ html, body { background: var(--bar) !important; }
   <p class="splash-tip">Music by Elijah Gray</p>
 </div>
 <script>
+// iPhone home-screen app drawing under the status bar: iOS reports a screen that is short by the status bar's height,
+// so anything pinned to the bottom ended up floating above a gap. Size the full-screen layers to the real screen instead.
+(() => { const fit = () => { const sh = Math.max(screen.width, screen.height), short = sh - innerHeight, root = document.documentElement;
+    const on = navigator.standalone && innerHeight > innerWidth && short > 20 && short < 90;
+    root.classList.toggle('ios-full', !!on); if (on) root.style.setProperty('--full-h', sh + 'px'); };
+  fit(); addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 300)); })();
 // paint the phone's status bar the splash color while it shows, then back to the top-bar gray
 (() => { const m = document.querySelector('meta[name="theme-color"]'); if (!m) return; const was = m.content;
   m.content = '#56C1F0'; setTimeout(() => { m.content = was; }, 2450); })();
@@ -1649,7 +1661,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 110, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 111, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1826,6 +1838,10 @@ const OFFERS = {
   gems2600: { name: 'Vault of Gems', sub: '2,500 gems · 56% bonus', money: '$19.99', gemsOut: 2500 },
   gems7000: { name: 'Treasure Chest', sub: '6,500 gems · 63% bonus', money: '$49.99', gemsOut: 6500 },
   gems15000: { name: 'Golden Vault', sub: '14,000 gems · 75% bonus', money: '$99.99', gemsOut: 14000 },
+  // time skip packs: real money buys one-hour skips to keep and use any time (1 skip = 30 gems in the shop)
+  skips5: { name: '5 Time Skips', sub: '5 one-hour skips, use any time', money: '$1.99', skipsOut: 5 },
+  skips20: { name: '20 Time Skips', sub: '20 one-hour skips, use any time', money: '$5.99', skipsOut: 20 },
+  skips60: { name: '60 Time Skips', sub: '60 one-hour skips, use any time', money: '$14.99', skipsOut: 60 },
 };
 // limited-time deals: 3 at a time, each lasts 3 days, staggered so one changes every day. Around 8-10x the value of plain gems.
 const DEALS = [
@@ -2585,6 +2601,7 @@ function grant(id) {
   const o = OFFERS[id]; if (!o) return;
   if (o.once) S.perks[id] = true;
   if (o.gemsOut) { S.gems += o.gemsOut; owe('gems'); }
+  if (o.skipsOut) S.skips = (S.skips || 0) + o.skipsOut;
   if (o.skip) { const v = skipValue(o.skip); earn(v); owe('cash'); toast('+' + fmt(v) + ' from the time skip'); }
   if (id === 'autoCrew') { applyAutoCrew(); buildRoom(); }
   if (id === 'hypeRefill') S.hypeUntil = Date.now() + hypeCap() * 1000;
@@ -2660,6 +2677,7 @@ $('scrim').addEventListener('click', e => {
   if (e.target.closest('[data-cloud-keep]')) { cloudKeep(); return; }
   if (e.target.closest('[data-cloud-out]')) return openTab('cloud-out');
   if (e.target.closest('[data-cloud-out-yes]')) { cloudSignOut(); return; }
+  if (e.target.closest('[data-use-skip]')) { if ((S.skips || 0) > 0) { S.skips--; const v = skipValue(3600); earn(v); owe('cash'); track('use-skip'); sfx('bling'); save(); render(); toast('+' + fmt(v) + ' from a time skip'); openTab('shop'); } return; }
   if (e.target.closest('[data-discord]')) { track('discord-click'); return; }
   { const so = e.target.closest('[data-social]'); if (so) { track('social-' + so.dataset.social); return; } }
   if (e.target.closest('[data-fb-send]')) { sendFeedback(); return; }
@@ -3132,6 +3150,9 @@ const ART = {
   // each image is trimmed to its art; --w sets how much of the card it fills so the tiers read as growing
   gems: n => { n = Math.min(6, Math.max(1, n)); const h = [302, 277, 295, 278, 309, 270][n - 1];
     return `<img class="gempack${n === 1 ? ' solo' : ''}" src="art/gems/gems-${n}.webp" width="360" height="${h}" alt="" decoding="async" draggable="false">`; },
+  skips: n => { const ck = (x, y, k, r) => `<g transform="translate(${x} ${y}) rotate(${r}) scale(${k})"><circle r="24" fill="#fff" stroke="#14122A" stroke-width="3.5"></circle><circle r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="150 1" transform="rotate(-90)"></circle><circle r="17" fill="#EAF7FF"></circle><path d="M0 -12v12l8 6" stroke="#14122A" stroke-width="3.6" stroke-linecap="round" fill="none"></path><circle r="2.6" fill="#14122A"></circle><path d="M-9 -27h18" stroke="#14122A" stroke-width="5" stroke-linecap="round"></path></g>`;
+    const set = { 1: [[60, 52, 1.55, -6]], 2: [[38, 60, 1.05, -14], [84, 60, 1.05, 12], [60, 46, 1.3, 0]], 3: [[26, 66, .9, -18], [94, 66, .9, 16], [44, 52, 1.0, -8], [78, 52, 1.0, 8], [60, 40, 1.2, 0]] }[Math.min(3, Math.max(1, n))];
+    return `<svg class="gempack" viewBox="0 0 120 98" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><defs><filter id="sk${n}" x="-10%" y="-10%" width="120%" height="120%"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d"></feMorphology><feFlood flood-color="#fff"></feFlood><feComposite in2="d" operator="in" result="w"></feComposite><feMerge><feMergeNode in="w"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g filter="url(#sk${n})">${set.map(c => ck(...c)).join('')}</g></svg>`; },
   clock: t => `<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#14122A" stroke-width="3"></circle><circle cx="32" cy="32" r="24" fill="none" stroke="#6FD3FF" stroke-width="5" stroke-dasharray="${t === 4 ? '150 1' : '38 200'}" transform="rotate(-90 32 32)"></circle><path d="M32 18v14l9 6" stroke="#14122A" stroke-width="3.5" stroke-linecap="round" fill="none"></path></svg>`,
   monitors: () => `<svg width="84" height="84" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><rect x="36" y="14" width="22" height="36" rx="4" fill="#2C2F48" stroke="#14122A" stroke-width="3"></rect><circle cx="17" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="47" cy="38" r="7" fill="#8BF0A0"></circle><circle cx="17" cy="23" r="3" fill="#8BF0A0"></circle><circle cx="47" cy="23" r="3" fill="#8BF0A0"></circle></svg>`,
   bolt: () => `<span class="hype-tile"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>`,
@@ -3740,6 +3761,12 @@ function openTab(tab) {
         <span class="wall stars"></span>${bonus ? `<span class="burst"><span class="burst-in">${bonus}<small>bonus</small></span></span>` : ''}
         <span class="gbody">${sparks(sp, n * 7)}<span class="art">${ART.gems(n)}</span><span class="amount"><b><span>${amount}</span></b></span></span>
         <span class="price">${o.money}</span></button>`; };
+    const skipCard = (id, n, amount, ribbon, sp) => { const o = OFFERS[id];
+      return `<button class="card gemcard skipcard" data-buy="${id}" aria-label="${amount} one-hour time skips, ${o.money}">
+        ${ribbon ? `<span class="rib small${ribbon.length > 10 ? ' long' : ''}">${ribbon}</span>` : ''}
+        <span class="wall stars"></span>
+        <span class="gbody">${sparks(sp, n * 11)}<span class="art">${ART.skips(n)}</span><span class="amount"><b><span>${amount}</span></b></span></span>
+        <span class="price">${o.money}</span></button>`; };
     const slotName = { top: 'Top', hat: 'Hat', neck: 'Necklace', face: 'Glasses' };
     const outfit = it => { const [rn, rc] = rarity(it);
       return `<button class="card outfit ${it.rar === 'mythic' ? 'mythic' : ''}" data-buy-item="${it.id}" data-from="shop" ${S.owned[it.id] ? 'disabled' : ''} aria-label="${it.name}, ${S.owned[it.id] ? 'owned' : it.gems + ' gems'}">
@@ -3773,6 +3800,13 @@ function openTab(tab) {
         ${card('skip1', ART.clock(4), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold', 'Best deal')}
         ${card('hypeRefill', ART.bolt(), 'Hype Refill<br>fill to max', hypeLeftToFill() > 60000 ? '+' + hms(hypeLeftToFill()) : 'Full', 'gold')}
         ${card('fanFrenzy', ART.frenzy(), 'Fan Frenzy<br>3x fans', frenzyOn() ? hms(S.frenzyUntil - Date.now()) + ' left' : '30 min', 'gold')}
+      </div>
+      <div class="banner">Time Skips</div>
+      <div class="skipbar"><span>${(S.skips || 0) ? `You have <b>${S.skips}</b> one-hour skip${S.skips === 1 ? '' : 's'}. Each pays ${fmt(skipValue(3600))} right now.` : 'Buy skips now, use them whenever you want an hour of cash.'}</span>${(S.skips || 0) ? '<button class="hire" data-use-skip>Use 1</button>' : ''}</div>
+      <div class="cards gems skips">
+        ${skipCard('skips5', 1, '5', '', 3)}
+        ${skipCard('skips20', 2, '20', '', 4)}
+        ${skipCard('skips60', 3, '60', 'Best value', 5)}
       </div>
       <div class="banner">Outfits</div>
       ${ITEMS.some(i => i.gems && !S.owned[i.id]) ? '' : '<p class="testnote">You own every outfit in the shop. Nice collection!</p>'}
