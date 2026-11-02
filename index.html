@@ -401,6 +401,9 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .gemcard .wall.stars { opacity: .32; }
 .gemcard .gbody { position: relative; z-index: 1; flex: 1 1 auto; aspect-ratio: 345 / 390; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 0 4px; box-sizing: border-box; }
 .gemcard .art { position: relative; z-index: 1; width: 100%; aspect-ratio: 112 / 76; height: auto; display: flex; justify-content: center; align-items: flex-end; background: none !important; }
+.shopart { position: relative; z-index: 1; display: block; height: 76px; width: auto; max-width: 92%; object-fit: contain; -webkit-user-drag: none; user-select: none; pointer-events: none; }
+.glow > .shopart { animation: floaty 3s ease-in-out infinite; }
+.buyart .shopart, .offer-art .shopart { height: 64px; }
 .glow > .gempack { position: relative; animation: floaty 3s ease-in-out infinite; }
 .gemcard .art .gempack { position: absolute; left: 3%; top: 0; width: 94%; height: 100%; object-fit: contain; object-position: 50% 100%; display: block; margin: 0; -webkit-user-drag: none; user-select: none; pointer-events: none; animation: floaty 3s ease-in-out infinite; }
 /* Bungee sits a hair high in its line box: nudge the digits to the optical center */
@@ -417,6 +420,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .card.skipcard { background: radial-gradient(ellipse at 50% 36%, #9EDCFB 0%, #63BDF0 58%, #4AA9E6 100%); }
 .card.skipcard .price { background: #2466B8; }
 .skipcard .gempack { overflow: visible; }
+.vpinfo { font-size: 11px; opacity: .55; margin-top: -6px; }
 .skipbar { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 10px 10px 10px 14px; font-size: 13px; line-height: 1.35; color: var(--muted); }
 .skipbar span { flex: 1; min-width: 0; } .skipbar b { color: #fff; font-family: var(--display); font-weight: 400; }
 .gemcard .rib.small.long { font-size: 7.6px; padding: 1px 6px 0; }   /* "Recommended" is long: 20% smaller text so it weighs the same as "Best value" */
@@ -672,7 +676,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .wall::before, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .gempack, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
+  .artist { transition: none; } .sbtn.crate::after, .tab-hype .orb::after, .card::after, .tab.shop .ticon, .tab.shop .ticon::before, .tab.shop .ticon::after, .tab-hype .orb, .tab-hype .orb::before, .tab .ticon.wt::after, .buyart::after, .rays, .wall, .wall::before, .glow > .hype-tile, .fan::before, .fan .bub, .fan .flash, .burst, .dresser .spot, .item.album::after, .item.mythic, .gemcard, .gemcard .rays, .rib.small, .offer .rib, .card.mythic, .artist.mythic::before, .offer::after, .glow::before, .glow > svg, .gempack, .shopart, .spk, .loc-title, .cloud, .birds, .tw, .ev-hero .rays, .outside .car, .outside .car .cb, .cloud2, .sheet.shopmode, .bcoin, .bcoin .coin, .album-stage .arays, .album-pop .amt, .founder-pill.grind, .founder-pill.grind::after, .crowd, .cflash, .gl, .rec, .rat svg, .artist.working svg, .crew svg, .dresser svg, .tut-ptr, .station.idle.sel .tap-hint, .act.ready, .tab-pct.full { animation: none; }
   .floater { animation-duration: .01s; }
 }
 
@@ -763,8 +767,10 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 /* status bar area takes the page background on iPhone, so it matches the bar */
 html, body { background: var(--bar) !important; }
 /* the status bar area above the game (iPhone home-screen app draws the page under it) */
-.ios-full .app, .ios-full .splash, .ios-full .upload { bottom: auto; height: var(--full-h); }
-.app::before { content: ""; position: fixed; left: 0; right: 0; top: 0; height: env(safe-area-inset-top, 0px); background: var(--bar); z-index: 8; pointer-events: none; }
+.ios-full, .ios-full body { height: var(--full-h) !important; min-height: var(--full-h); overflow: hidden; }
+.ios-full .app, .ios-full .splash, .ios-full .upload { top: 0 !important; bottom: auto !important; height: var(--full-h) !important; }
+/* the HUD reaches up under the status bar and paints it itself */
+.app { padding-top: 0 !important; } .hud { padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important; }
 /* money bar: contents centered top to bottom; the multiplier rides as a small tag on the cash box */
 .hud { padding-block: 16px 16px; }
 .mult { top: calc(100% - 1px); background: #14122A; border-radius: 999px; padding: 2px 7px; font-size: 11px; text-shadow: none; }
@@ -837,10 +843,12 @@ html, body { background: var(--bar) !important; }
 <script>
 // iPhone home-screen app drawing under the status bar: iOS reports a screen that is short by the status bar's height,
 // so anything pinned to the bottom ended up floating above a gap. Size the full-screen layers to the real screen instead.
-(() => { const fit = () => { const sh = Math.max(screen.width, screen.height), short = sh - innerHeight, root = document.documentElement;
-    const on = navigator.standalone && innerHeight > innerWidth && short > 20 && short < 90;
-    root.classList.toggle('ios-full', !!on); if (on) root.style.setProperty('--full-h', sh + 'px'); };
-  fit(); addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 300)); })();
+(() => { const fit = () => { const root = document.documentElement, portrait = innerHeight >= innerWidth;
+    const on = !!navigator.standalone && portrait;
+    root.classList.toggle('ios-full', on);
+    if (on) root.style.setProperty('--full-h', Math.max(screen.width, screen.height, innerHeight) + 'px');
+    window.__vp = `view ${innerWidth}x${innerHeight} · screen ${screen.width}x${screen.height} · vv ${visualViewport ? Math.round(visualViewport.height) : '-'} · app ${on ? 'full' : 'normal'}`; };
+  fit(); addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 300)); addEventListener('load', () => setTimeout(fit, 100)); })();
 // paint the phone's status bar the splash color while it shows, then back to the top-bar gray
 (() => { const m = document.querySelector('meta[name="theme-color"]'); if (!m) return; const was = m.content;
   m.content = '#56C1F0'; setTimeout(() => { m.content = was; }, 2450); })();
@@ -1661,7 +1669,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 111, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 112, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -3144,6 +3152,8 @@ function bigArtist(eq = S.equip, bt = S.bt, lk = myLook(bt)) {
 
 
 // ---------- shop and wardrobe artwork ----------
+// shop art made outside the game (SVG files trimmed to their visible bounds)
+const shopArt = (f, w, h, cls = 'shopart') => `<img class="${cls}" src="art/shop/${f}.svg" width="${w}" height="${h}" alt="" decoding="async" draggable="false">`;
 const gemPath = (x, y, k) => `<g transform="translate(${x},${y}) scale(${k})"><path d="M6 0h12l6 8-12 16L0 8z" fill="#FFC94A" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M0 8h24l-12 16z" fill="#F0A81E"></path><path d="M6 0h12l6 8H0z" fill="#FFE08A"></path><path d="M6 0h12l6 8-12 16L0 8z" fill="none" stroke="#14122A" stroke-width="2" stroke-linejoin="round"></path><path d="M8 2.5h4l-2 4z" fill="#fff" opacity=".85"></path></g>`;
 const ART = {
   // gem packs (art made outside the game): one gem → two gems → a pile → a bag → a case → a case with a side case
@@ -3950,6 +3960,7 @@ function openTab(tab) {
         <div class="row"><span class="rt"><b>Free gems</b><span>For trying the shop</span></span><button class="hire" data-test-gems>+1,000</button></div>
         <button class="ghost" data-test-exit>Back to my real career</button></div>` : ''}
       <p data-build-tap>Studio Hustle · Build ${BUILD} · Music by Elijah Gray</p>
+      <p class="vpinfo">${window.__vp || ""}</p>
       <p>${cloud().email ? 'Starting over wipes everything on this device and in your cloud save, including albums and fame.' : 'Starting over wipes everything, including albums and fame.'}</p>
       <button class="ghost" data-reset-ask>Start a new career</button>`);
   } else if (tab === 'feedback') {
