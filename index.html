@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Studio Hustle">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <style>
 html { height: 100%; background: #2A2A33; }
 body { margin: 0; font: 14px system-ui, sans-serif; }
@@ -295,6 +295,54 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .offer-body > span { font-size: 14px; font-weight: 600; line-height: 1.3; color: rgba(20,18,42,.78); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.ofilters .stab { height: 34px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+.sbtn.gpass { background: linear-gradient(160deg, #FFE48A, #FFB938); }
+.phero { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 16px 14px; border-radius: 18px; background: linear-gradient(160deg, #FFE48A, #FFB938); color: var(--deep); box-shadow: 0 4px 0 rgba(20,18,42,.35); }
+.phero small { font-size: 12px; font-weight: 700; opacity: .75; }
+.pbar { position: relative; width: 100%; height: 14px; border-radius: 999px; background: rgba(20,18,42,.2); border: 3px solid var(--deep); overflow: hidden; box-sizing: content-box; }
+.pbar i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(180deg, #A9F5B8, #4FC46A); }
+.pnext { font-size: 13px; font-weight: 700; } .pseason { font-size: 12px; font-weight: 700; opacity: .7; }
+.howto { background: var(--panel-2); border-radius: 14px; padding: 0 14px; } .howto summary { cursor: pointer; padding: 12px 0; font-weight: 700; list-style: none; } .howto summary::-webkit-details-marker { display: none; }
+.howto summary::after { content: "+"; float: right; font: 400 18px/1 var(--display); } .howto[open] summary::after { content: "–"; }
+.howto ul { margin: 0 0 8px; padding-left: 18px; line-height: 1.6; font-size: 14px; } .howto p { margin: 0 0 12px; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.invrow { display: flex; align-items: center; gap: 12px; background: var(--panel-2); border-radius: 16px; padding: 10px 10px 10px 12px; } .invrow.empty { opacity: .65; }
+.invrow .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; } .invrow .rt b { font-size: 15px; } .invrow .rt b small { font-size: 12px; color: var(--muted); font-weight: 700; margin-left: 4px; } .invrow .rt span { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.invic { position: relative; flex: none; width: 56px; height: 56px; display: grid; place-items: center; } .invic img, .invic svg { width: 48px; height: auto; }
+.invic b { position: absolute; right: -6px; bottom: -4px; background: var(--deep); color: #fff; font: 400 12px/1 var(--display); padding: 4px 6px; border-radius: 999px; }
+.invconf { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; } .invconf .invic { width: 84px; height: 84px; } .invconf .invic img, .invconf .invic svg { width: 76px; }
+.invconf .amt { font: 400 30px var(--display); color: var(--cash); } .invconf p { margin: 0; }
+.invct { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: var(--deep); color: #fff; font: 400 11px/20px var(--display); text-align: center; border: 2px solid var(--text); } .pval { font-size: 12px; font-weight: 600; opacity: .75; max-width: 280px; }
+.pown { font: 400 13px var(--display); background: var(--deep); color: #FFE27A; padding: 6px 12px; border-radius: 999px; }
+.cta.gold { width: 100%; background: var(--deep); color: #FFE27A; box-shadow: 0 3px 0 rgba(20,18,42,.4); }
+.ptrack { display: flex; flex-direction: column; }
+.phead { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 8px; padding: 0 2px 8px; font: 400 13px var(--display); color: var(--muted); text-align: center; } .phead .g { color: #FFC94A; }
+.prow { position: relative; display: grid; grid-template-columns: 1fr 44px 1fr; gap: 8px; align-items: center; padding: 5px 0; }
+.pnode { position: relative; align-self: stretch; display: grid; place-items: center; }
+.pnode::before { content: ""; position: absolute; top: -6px; bottom: -6px; left: 50%; width: 6px; margin-left: -3px; background: var(--panel-2); }
+.prow.done .pnode::before { background: #FFC94A; }
+.pnode i { position: relative; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--panel-2); color: var(--muted); font: 400 13px var(--display); font-style: normal; border: 3px solid var(--panel); }
+.prow.done .pnode i { background: #FFC94A; color: var(--deep); } .prow.next .pnode i { box-shadow: 0 0 0 3px #FFC94A; }
+.ptile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 92px; padding: 8px 6px; border-radius: 14px; background: var(--panel-2); text-align: center; box-sizing: border-box; }
+.ptile img, .ptile .pf { display: block; height: 30px; width: auto; } .ptile .pf svg { width: 34px; height: 34px; margin-top: -2px; }
+.ptile b { font-size: 12px; font-weight: 700; line-height: 1.2; } .ptile .pst { font-size: 11px; font-weight: 700; color: var(--muted); }
+.ptile .hire { height: 28px; padding: 0 12px; font-size: 12px; }
+.ptile.gold { background: linear-gradient(160deg, #5A4A2A, #3A3060); box-shadow: inset 0 0 0 2px rgba(255,201,74,.55); }
+.ptile.locked { opacity: .7; } .ptile .pst.vip { color: #FFC94A; } .ptile .pst.ok { color: #8BF0A0; }
+.ptile.needvip { opacity: .85; } .ptile.big { min-height: 110px; } .ptile .pjk { display: block; height: 44px; }
+.pprize { display: flex; align-items: center; gap: 12px; width: 100%; background: rgba(20,18,42,.88); color: #fff; border-radius: 14px; padding: 6px 12px 6px 6px; box-sizing: border-box; text-align: left; margin: 4px 0 2px; }
+.pdress { flex: none; width: 74px; height: 86px; overflow: hidden; display: grid; place-items: end center; }
+.pdress .dresser, .pdress svg { width: 74px !important; height: auto !important; }
+.ptext { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .ptext em { font: 700 10px var(--body); font-style: normal; text-transform: uppercase; letter-spacing: .07em; color: #FFC94A; }
+.ptext b { font: 400 18px/1.1 var(--display); } .ptext span { font-size: 12px; opacity: .8; line-height: 1.3; }
+.ptier { font: 400 26px/1 var(--display); } .ptier span { font-size: 15px; opacity: .7; }
+.ptile.ready { box-shadow: inset 0 0 0 2px #8BF0A0; } .ptile.got { background: rgba(74,66,133,.45); } .ptile.got img, .ptile.got .pf, .ptile.got .pjk { opacity: .45; } .ptile.got b { color: #E6E1F7; }
+.passoffer .paybtn { background: var(--deep); color: #FFE27A; }
+.olabel { align-self: flex-start; font: 700 10px/1 var(--body); font-style: normal; text-transform: uppercase; letter-spacing: .07em; color: rgba(20,18,42,.62); background: rgba(255,255,255,.5); border-radius: 999px; padding: 4px 8px 3px; }
+.onote { font-size: 12px; font-weight: 600; color: rgba(20,18,42,.6); }
+.card .tag.qtag { background: rgba(255,255,255,.75); color: #A8275C; text-transform: uppercase; letter-spacing: .06em; font-size: 9px; }
+.ofilters { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -2px; padding: 2px; } .ofilters::-webkit-scrollbar { display: none; }
+.ofilters .stab { flex: none; padding: 0 12px; } .ofilters .stab small { opacity: .6; font-size: 11px; }
+.viewall { width: 100%; }
 .chips span { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.6); border-radius: 999px; padding: 2px 8px; }
 .paybtn { display: flex; align-items: center; justify-content: center; min-width: 78px; height: 44px; padding: 0 12px; border-radius: 12px; background: var(--deep); color: #fff; font: 400 16px/1 var(--display); box-sizing: border-box; }
 .offer:disabled .paybtn { background: rgba(20,18,42,.35); }
@@ -311,9 +359,11 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .card .wall { bottom: 36px; border-radius: 16px 16px 0 0; z-index: 0; }
 .card .art, .card .ttl, .card .price, .card .amount { position: relative; z-index: 1; }
 .wall.bubbles::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='30' cy='34' r='22'/%3E%3Ccircle cx='120' cy='22' r='9'/%3E%3Ccircle cx='150' cy='90' r='26'/%3E%3Ccircle cx='70' cy='110' r='12'/%3E%3Ccircle cx='24' cy='152' r='8'/%3E%3Ccircle cx='112' cy='160' r='16'/%3E%3Ccircle cx='84' cy='60' r='6'/%3E%3C/g%3E%3C/svg%3E"); background-size: 180px 180px; animation: drift-dl 26s linear infinite;  }
-.wall.arrows { opacity: .42; } .wall.arrows::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M18.0 5.9 L31.0 22.0 L22.7 22.0 L22.7 36.5 L13.3 36.5 L13.3 22.0 L5.0 22.0 Z'/%3E%3Cpath d='M54.0 41.9 L67.0 58.0 L58.7 58.0 L58.7 72.5 L49.3 72.5 L49.3 58.0 L41.0 58.0 Z'/%3E%3Cpath d='M54.0 -30.1 L67.0 -14.0 L58.7 -14.0 L58.7 0.5 L49.3 0.5 L49.3 -14.0 L41.0 -14.0 Z'/%3E%3Cpath d='M18.0 77.9 L31.0 94.0 L22.7 94.0 L22.7 108.5 L13.3 108.5 L13.3 94.0 L5.0 94.0 Z'/%3E%3C/g%3E%3C/svg%3E"); background-size: 72px 72px; animation: drift-up 7s linear infinite; }
+.wall.arrows { opacity: .3; } .wall.arrows::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M18.0 5.9 L31.0 22.0 L22.7 22.0 L22.7 36.5 L13.3 36.5 L13.3 22.0 L5.0 22.0 Z'/%3E%3Cpath d='M54.0 41.9 L67.0 58.0 L58.7 58.0 L58.7 72.5 L49.3 72.5 L49.3 58.0 L41.0 58.0 Z'/%3E%3Cpath d='M54.0 -30.1 L67.0 -14.0 L58.7 -14.0 L58.7 0.5 L49.3 0.5 L49.3 -14.0 L41.0 -14.0 Z'/%3E%3Cpath d='M18.0 77.9 L31.0 94.0 L22.7 94.0 L22.7 108.5 L13.3 108.5 L13.3 94.0 L5.0 94.0 Z'/%3E%3C/g%3E%3C/svg%3E"); background-size: 72px 72px; animation: drift-up 7s linear infinite; }
 .wall.stars { opacity: .3; } .wall.stars::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='5' stroke-linejoin='round'%3E%3Cpolygon points='20.2,11.1 24.9,18.5 33.7,18.3 28.1,25.1 31.0,33.4 22.9,30.2 15.9,35.5 16.4,26.7 9.2,21.7 17.7,19.5'/%3E%3Cpolygon points='94.2,7.3 95.3,13.2 101.0,15.4 95.7,18.3 95.4,24.3 91.0,20.2 85.1,21.8 87.7,16.3 84.4,11.2 90.4,12.0'/%3E%3Cpolygon points='119.5,56.1 122.5,65.0 131.7,67.1 124.1,72.7 125.0,82.1 117.3,76.7 108.6,80.4 111.4,71.4 105.2,64.3 114.6,64.2'/%3E%3Cpolygon points='55.2,64.4 59.6,69.5 66.3,68.4 62.8,74.2 65.9,80.2 59.3,78.6 54.6,83.4 54.0,76.7 48.0,73.7 54.2,71.0'/%3E%3Cpolygon points='19.1,103.5 19.6,109.6 25.0,112.3 19.4,114.7 18.5,120.7 14.5,116.1 8.5,117.0 11.7,111.8 8.9,106.5 14.8,107.8'/%3E%3Cpolygon points='83.1,109.0 87.3,116.7 96.1,117.1 90.1,123.5 92.4,132.0 84.4,128.2 77.1,133.0 78.2,124.3 71.4,118.9 80.0,117.2'/%3E%3C/g%3E%3C/svg%3E"); background-size: 140px 140px; animation: drift-dl 20s linear infinite; }
 .wall::before { content: ""; position: absolute; top: -200px; left: -200px; right: -200px; bottom: -200px; background-repeat: repeat; will-change: transform; transform: translateZ(0); }
+@keyframes drift-bub { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-130px, 130px, 0); } }
+.wall.bubbles::before { background-size: 130px 130px !important; animation-name: drift-bub !important; }
 @keyframes drift-dl { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-180px, 180px, 0); } }
 .wall.stars::before { animation-name: drift-dl-s; } @keyframes drift-dl-s { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-140px, 140px, 0); } }
 @keyframes drift-up { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -72px, 0); } }
@@ -338,6 +388,9 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .card .qty { z-index: 2; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); background: var(--deep); color: #fff; font: 400 12px var(--display); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
 .card .price { margin-top: auto; min-height: 36px; padding: 0 4px; font: 400 15px/1 var(--display); display: flex; align-items: center; justify-content: center; gap: 4px; }
 .card.gold { background: #8FD3F7; } .card.gold .price { background: #2466B8; color: #fff; }
+.card.gold.perk { background: #F9CFDC; } .card.gold.perk .price { background: #A8275C; }
+.card.gold.spend { background: #E6DDFF; } .card.gold.spend .price { background: #7340D0; }
+.card .wall { overflow: hidden; }   /* patterns stay inside each card's rounded top */
 .card.green { background: #8BE39A; } .card.green .price { background: #1D7F35; color: #fff; }
 .card.outfit { background: #D9CCFF; } .card.outfit .price { background: #6A45C8; color: #fff; }
 .card:disabled { opacity: .65; }
@@ -770,7 +823,7 @@ html, body { background: var(--bar) !important; }
 .ios-full, .ios-full body { height: var(--full-h) !important; min-height: var(--full-h); overflow: hidden; }
 .ios-full .app, .ios-full .splash, .ios-full .upload { top: 0 !important; bottom: auto !important; height: var(--full-h) !important; }
 /* the HUD reaches up under the status bar and paints it itself */
-.app { padding-top: 0 !important; } .hud { padding-top: calc(28px + env(safe-area-inset-top, 0px)) !important; }   /* clear of iOS's status-bar shading */
+.app { padding-top: 0 !important; } .hud { padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important; }
 /* money bar: contents centered top to bottom; the multiplier rides as a small tag on the cash box */
 .hud { padding-block: 16px 16px; }
 .mult { top: calc(100% - 1px); background: #14122A; border-radius: 999px; padding: 2px 7px; font-size: 11px; text-shadow: none; }
@@ -799,6 +852,27 @@ html, body { background: var(--bar) !important; }
 @keyframes evpulse { 50% { transform: translateX(-50%) scale(1.06); } }
 .evcard { border-radius: 18px; padding: 14px; color: #14122A; display: flex; flex-direction: column; gap: 4px; border: 3px solid #14122A; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
 .evcard b { font: 400 20px var(--display); } .evcard small { font-weight: 700; opacity: .8; }
+.evstrip { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px 8px 8px; border-radius: 14px; background: var(--panel-2); border: 2px solid var(--c); text-align: left; box-sizing: border-box; }
+.evstrip .evdotic { flex: none; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--c); border: 2px solid #14122A; }
+.evstrip .t { flex: 1; min-width: 0; display: flex; flex-direction: column; } .evstrip small { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: #8BF0A0; } .evstrip.quiet small { color: #FFC94A; }
+.evstrip b { font: 400 15px/1.15 var(--display); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; } .evstrip .cdx { flex: none; font-size: 12px; font-weight: 700; color: var(--muted); }
+.evweek2 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.evd { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0 8px; border-radius: 12px; background: var(--panel-2); color: var(--muted); min-height: 76px; box-sizing: border-box; border: 2px solid transparent; }
+.evd small { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; } .evd b { font: 400 16px/1.1 var(--display); color: var(--text); }
+.evd .evic { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--c); border: 2px solid #14122A; margin-top: 2px; } .evd .evic.none { background: none; border: 2px dashed rgba(218,212,242,.3); }
+.evd.today small { color: #8BF0A0; } .evd.today::after { content: ""; position: absolute; bottom: 3px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #8BF0A0; }
+.evd.sel { background: var(--text); border-color: var(--text); } .evd.sel small { color: var(--deep); } .evd.sel b { color: var(--deep); }
+.evd.wk6 { border-top-right-radius: 4px; border-bottom-right-radius: 4px; } .evd.wk0 { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
+.evd.wk6:not(.sel), .evd.wk0:not(.sel) { background: linear-gradient(180deg, var(--panel-2), color-mix(in srgb, var(--c) 18%, var(--panel-2))); }
+.evdet { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 18px; background: var(--panel-2); border: 3px solid var(--c, transparent); overflow: hidden; }
+.evdet.quiet { border-style: dashed; border-color: rgba(218,212,242,.3); }
+.evhead { display: flex; align-items: center; gap: 12px; } .evbig { flex: none; width: 76px; height: 76px; border-radius: 16px; display: grid; place-items: center; background: color-mix(in srgb, var(--c, #fff) 30%, var(--panel)); overflow: hidden; }
+.evbig > svg, .evbig > img { width: 60px; height: 60px; object-fit: contain; } .evbig.none { background: var(--panel); }
+.evhead .t { min-width: 0; display: flex; flex-direction: column; gap: 3px; } .evhead small { font-size: 11px; font-weight: 700; color: var(--muted); } .evhead b { font: 400 20px/1.1 var(--display); } .evhead .t > span { font-size: 14px; font-weight: 700; }
+.evhead .live { color: #8BF0A0; }
+.evtags { display: flex; flex-wrap: wrap; gap: 6px; } .evtags span { background: var(--c); color: #14122A; font-size: 13px; font-weight: 800; padding: 5px 10px; border-radius: 999px; border: 2px solid #14122A; }
+.evauto { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
+.evobj { display: flex; flex-direction: column; gap: 6px; } .evobj b { font-size: 16px; } .evprog { font-size: 13px; color: var(--muted); font-weight: 600; }
 .evweek { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
 .evweek div { cursor: pointer; border-radius: 10px; background: var(--panel-2); padding: 6px 2px; text-align: center; font-size: 10px; font-weight: 700; color: var(--muted); display: flex; flex-direction: column; gap: 4px; align-items: center; }
 .evweek div.today { outline: 3px solid var(--accent); color: var(--text); }
@@ -844,14 +918,16 @@ html, body { background: var(--bar) !important; }
 // iPhone home-screen app drawing under the status bar: iOS reports a screen that is short by the status bar's height,
 // so anything pinned to the bottom ended up floating above a gap. Size the full-screen layers to the real screen instead.
 (() => { const fit = () => { const root = document.documentElement, portrait = innerHeight >= innerWidth;
-    const on = !!navigator.standalone && portrait;
+    const probe = document.createElement('div'); probe.style.cssText = 'position:fixed;top:0;height:env(safe-area-inset-top,0px);visibility:hidden';
+    document.documentElement.appendChild(probe); const insetTop = probe.offsetHeight; probe.remove();
+    const on = !!navigator.standalone && portrait && insetTop > 0;   // only when the page is drawn under the status bar
     root.classList.toggle('ios-full', on);
     if (on) root.style.setProperty('--full-h', Math.max(screen.width, screen.height, innerHeight) + 'px');
     window.__vp = `view ${innerWidth}x${innerHeight} · screen ${screen.width}x${screen.height} · vv ${visualViewport ? Math.round(visualViewport.height) : '-'} · app ${on ? 'full' : 'normal'}`; };
   fit(); addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 300)); addEventListener('load', () => setTimeout(fit, 100)); })();
 // paint the phone's status bar the splash color while it shows, then back to the top-bar gray
 (() => { const m = document.querySelector('meta[name="theme-color"]'); if (!m) return; const was = m.content;
-  m.content = '#56C1F0'; setTimeout(() => { m.content = was; }, 2450); })();
+  m.content = '#4FBDEE'; setTimeout(() => { m.content = was; }, 2450); })();
 </script>
 <div class="app" id="app">
   <header class="hud">
@@ -890,6 +966,10 @@ html, body { background: var(--bar) !important; }
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
         <span class="cap">Goals</span><span class="bang" id="goalsDot" hidden>!</span>
       </button>
+      <button class="sbtn gpass" id="passBtn" aria-label="Backstage Pass">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2l5 7 5-7"></path><rect x="5" y="9" width="14" height="13" rx="2.5"></rect><path d="M10 9h4"></path><path d="M9 17h6"></path><circle cx="12" cy="13.5" r="1.4"></circle></svg>
+        <span class="cap">Pass</span><span class="bang" id="passDot" hidden>!</span>
+      </button>
     </div>
     <div class="side side-r">
       <button class="sbtn" id="dailyBtn" aria-label="Daily reward">
@@ -903,6 +983,10 @@ html, body { background: var(--bar) !important; }
       <button class="sbtn events" id="eventsBtn" aria-label="Events">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 4h13l-2.5 4.5L18 13H5"></path></svg>
         <span class="cap">Events</span><span class="bang evdot" id="eventsBang" hidden>!</span>
+      </button>
+      <button class="sbtn" id="invBtn" aria-label="Inventory">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7V5a4 4 0 0 1 8 0v2"></path><rect x="4" y="7" width="16" height="14" rx="3"></rect><path d="M4 12h16M11 12v2h2v-2"></path></svg>
+        <span class="cap">Inventory</span><span class="invct" id="invCt" hidden></span>
       </button>
     </div>
     <div class="stage" id="stage">
@@ -1628,6 +1712,7 @@ const ITEMS = [
   { id: 'bucket', rar: 'epic', slot: 'hat', name: 'Bucket Hat', album: 10, bonus: 0.08, look: { color: '#E2D3B0', style: 'bucket' } },
   { id: 'starshades', rar: 'epic', slot: 'face', name: 'Star Shades', album: 20, bonus: 0.08, look: { color: '#FF6FAE', style: 'star' } },
   { id: 'crown', rar: 'mythic', slot: 'hat', name: 'Diamond Crown', album: 30, bonus: 0.25, look: { color: '#FFC94A', style: 'crown' } },
+  { id: 'backstage', rar: 'vip', slot: 'top', name: 'Backstage Jacket', gift: true, bonus: 0, perk: 'VIP · November', look: { style: 'varsity', body: '#1C1A2E', sleeve: '#FFC94A', trim: '#FFC94A' } },
   { id: 'founder', rar: 'founder', slot: 'top', name: 'Founder Tee', gift: true, bonus: 0, look: { style: 'tee', body: '#7C4FE0', trim: '#FFC94A', graphic: 'founder' } },
   { id: 'mixtape', rar: 'rare', slot: 'top', name: 'Mixtape Tee', album: 2, bonus: 0.04, look: { style: 'tee', body: '#F4F1EA', trim: '#C9C3DE', graphic: 'cassette' } },
   { id: 'latenight', rar: 'epic', slot: 'top', name: 'Late Night Hoodie', album: 4, bonus: 0.08, look: { style: 'hoodie', body: '#2A3570', trim: '#FFC94A', emblem: 'moon' } },
@@ -1669,7 +1754,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 113, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 115, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1828,12 +1913,12 @@ const titleOf = (albums, loc) => TITLES.filter(([a, l]) => (albums || 0) >= a &&
 const titleTag = (albums, loc) => { const t = titleOf(albums, loc); return `<span class="ttl" style="color:${t[3]}">${t[2]}</span>`; };
 // money: real-money price shown (test purchase in this build). gems: gem price.
 const OFFERS = {
-  goldenMic: { name: 'Golden Mic', sub: 'Permanent 2x income now. Free players earn it at album 10', money: '$4.99', once: true },
+  goldenMic: { name: 'Golden Mic', sub: 'Double income on everything, forever', line: 'Double income on everything, forever', note: 'Free players unlock it at album 10', money: '$4.99', once: true },
   starter: { name: 'Starter Pack', sub: 'A one-time deal for new artists', money: '$2.99', once: true },
   rising: { name: 'Rising Star Pack', sub: 'For artists with an album out', money: '$4.99', once: true },
   headliner: { name: 'Headliner Pack', sub: 'For established stars', money: '$9.99', once: true },
-  adFree: { name: 'Ad-Free Rewards', sub: 'Get every ad reward instantly, forever', money: '$6.99', once: true },
-  autoCrew: { name: 'Day-One Crew', sub: 'Your first station runs itself on every map, forever', money: '$2.99', once: true },
+  adFree: { name: 'Ad-Free Rewards', sub: 'Every ad reward instantly, forever', line: 'Every ad reward instantly, forever', money: '$6.99', once: true },
+  autoCrew: { name: 'Day-One Crew', sub: 'Your first station runs itself on every map', line: 'Your first station runs itself on every map', money: '$2.99', once: true },
   monitors: { name: 'Pro Monitors', sub: 'Permanent +25% income', gems: 300, once: true },
   nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
   skip15: { name: 'Time Skip · 15 min', sub: 'Instant cash', gems: 10, skip: 900 },
@@ -1847,6 +1932,7 @@ const OFFERS = {
   gems7000: { name: 'Treasure Chest', sub: '6,500 gems · 63% bonus', money: '$49.99', gemsOut: 6500 },
   gems15000: { name: 'Golden Vault', sub: '14,000 gems · 75% bonus', money: '$99.99', gemsOut: 14000 },
   // time skip packs: real money buys one-hour skips to keep and use any time (1 skip = 30 gems in the shop)
+  goldPass: { name: 'Backstage Pass VIP', sub: 'A second, bigger reward on every tier this season', money: '$5.99' },
   skips5: { name: '5 Time Skips', sub: '5 one-hour skips, use any time', money: '$1.99', skipsOut: 5 },
   skips20: { name: '20 Time Skips', sub: '20 one-hour skips, use any time', money: '$5.99', skipsOut: 20 },
   skips60: { name: '60 Time Skips', sub: '60 one-hour skips, use any time', money: '$14.99', skipsOut: 60 },
@@ -1862,6 +1948,63 @@ const DEALS = [
   { id: 'dealVault', line: 'The biggest deal in the shop', name: 'Headliner Vault', money: '$19.99', price: 19.99, gems: 4200, skipH: 15, frenzyMin: 180, color: '#9DB8FF' },
 ];
 const DEAL_DAYS = 3, DEAL_SLOTS = 3;
+// ---------- Backstage Pass: a monthly season of 30 tiers. Stars from daily tasks, goals, albums and the Wednesday Challenge move you up.
+// Every tier has a Free reward; VIP ($5.99) adds a second reward on every tier. Each tier has exactly one reward per track (no stacking rules).
+const PASS_TIERS = 30;
+// stars per tier follow the month's length and round DOWN, so a full month of daily tasks (40 stars a day) always clears all 30 tiers:
+// 28 days -> 37 per tier (1,110 of 1,120), 29 -> 38 (1,140 of 1,160), 30 -> 40 (1,200 of 1,200), 31 -> 41 (1,230 of 1,240)
+const monthDays = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); };
+let PASS_STEP = 40;
+const passStepFor = (days = monthDays()) => Math.floor(days * 40 / 30);
+const PASS_STARS = { task: 10, taskSet: 10, goal: 10, album: 30, wed: 20 };
+const PASS_JACKET = 'backstage';
+const passFree = t => t === 30 ? { gems: 50, skips: 1 } : t % 5 === 0 ? { skips: 1 } : { gems: 10 };
+const passGold = t => t === 30 ? { item: PASS_JACKET, gems: 200 } : t % 5 === 0 ? { skips: 3 } : t % 7 === 0 ? { frenzy: 2 } : { gems: 25 };
+// season totals, worked out from the table above
+const passTotals = side => { const o = { gems: 0, skips: 0, frenzy: 0 }; for (let t = 1; t <= PASS_TIERS; t++) { const r = side === 'free' ? passFree(t) : passGold(t); o.gems += r.gems || 0; o.skips += r.skips || 0; o.frenzy += r.frenzy || 0; } return o; };
+const seasonId = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); };
+const seasonEnds = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime(); };
+const seasonName = () => new Date().toLocaleString('en-US', { month: 'long' });
+const seasonLastDay = () => new Date(seasonEnds() - 1).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const seasonRollover = () => new Date(seasonEnds()).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+function pass() {   // the current season's progress; a new month delivers anything earned but unclaimed, then starts fresh
+  if (!S.pass || S.pass.season !== seasonId()) {
+    if (S.pass && S.pass.season) PASS_STEP = S.pass.step || 40;   // last season's tiers, worked out with last season's step
+    if (S.pass && S.pass.season) { const old = S.pass, T = Math.min(PASS_TIERS, Math.floor(old.stars / PASS_STEP)), sum = { gems: 0, skips: 0, frenzy: 0 }; let item = null;
+      for (let n = 1; n <= T; n++) for (const side of ['free', 'gold']) if (!old[side][n] && (side === 'free' || old.owned)) { const r = side === 'free' ? passFree(n) : passGold(n); payReward(r, `pass:${old.season}:${side}:${n}`);
+        sum.gems += r.gems || 0; sum.skips += r.skips || 0; sum.frenzy += r.frenzy || 0; if (r.item) item = r.item; }
+      if (sum.gems || sum.skips || sum.frenzy || item) S.passRecap = { gems: sum.gems, skips: sum.skips, frenzy: sum.frenzy, item }; }
+    S.pass = { season: seasonId(), stars: 0, free: {}, gold: {}, owned: false, step: passStepFor() };
+  }
+  if (!S.pass.step) S.pass.step = passStepFor();
+  PASS_STEP = S.pass.step;
+  return S.pass;
+}
+const passTier = () => Math.min(PASS_TIERS, Math.floor(pass().stars / PASS_STEP));
+function passStars(kind) { const before = passTier(); pass().stars += PASS_STARS[kind] || 0;
+  if (passTier() > before) setTimeout(() => toast('Backstage Pass tier ' + passTier() + ' reached'), 900); }
+const passClaimable = () => { const p = pass(), t = passTier(); for (let i = 1; i <= t; i++) if (!p.free[i] || (p.owned && !p.gold[i])) return true; return false; };
+const rewardLine = r => [r.item ? itemById(r.item).name : '', r.gems ? r.gems + ' gems' : '', r.skips ? r.skips + (r.skips === 1 ? ' skip' : ' skips') : '', r.frenzy ? r.frenzy + 'x Fan Frenzy' : ''].filter(Boolean).join(' + ');
+// ---------- inventory: stored time skips and Fan Frenzies. Whole numbers, never below zero, saved with the career ----------
+const INV = { skips: { name: 'Time Skip', icon: () => '<img src="art/shop/boost-60.svg" width="44" height="45" alt="">', time: '1 hour', what: () => `Instantly earn 1 hour of cash: ${fmt(skipValue(3600))} at your current income.` },
+  frenzies: { name: 'Fan Frenzy', icon: () => ART.frenzy().replace('width="84" height="84"', 'width="48" height="48"'), time: '30 minutes', what: () => 'Fans and paparazzi show up 3x as often for 30 minutes. Stacks with a Frenzy already running.' } };
+// every grant and every use is an entry with its own id. Counts are the sum of entries, so merging two copies of a career
+// (another tab, another phone) can't duplicate a reward or bring back a spent item.
+function invLog() { if (!S.invLog) { S.invLog = {}; for (const k of ['skips', 'frenzies']) if (S[k] > 0) S.invLog['legacy:' + k] = [k, Math.floor(S[k])]; } return S.invLog; }
+const invQty = k => { let n = 0; for (const [kk, d] of Object.values(invLog())) if (kk === k) n += d; return Math.max(0, n); };
+const syncInv = () => { S.skips = invQty('skips'); S.frenzies = invQty('frenzies'); };
+const uid = p => p + ':' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function addInv(k, n, id) { n = Math.max(0, Math.floor(n || 0)); if (!n) return; const L = invLog(), key = id || uid('g'); if (L[key]) return; L[key] = [k, n]; syncInv(); }
+let invLock = 0;
+function useInv(k) {
+  if (Date.now() < invLock || invQty(k) < 1) return false;   // guards against double taps and empty stock
+  invLock = Date.now() + 700; bumpRev(); invLog()[uid('use')] = [k, -1]; syncInv();
+  if (k === 'skips') { const v = skipValue(3600); earn(v); owe('cash'); toast('+' + fmt(v) + ' from a time skip'); }
+  if (k === 'frenzies') { S.frenzyUntil = Math.max(Date.now(), S.frenzyUntil || 0) + 30 * 60000; toast('Fan Frenzy on for 30 minutes'); }
+  track('use/' + k); sfx('bling'); save(); render(); return true;
+}
+function payReward(r, id) { bumpRev(); if (r.item && !S.owned[r.item]) { S.owned[r.item] = true; S.newItems = [...(S.newItems || []), r.item]; } if (r.gems) { S.gems += r.gems; owe('gems'); } if (r.skips) addInv('skips', r.skips, id && id + ':s');
+  if (r.frenzy) addInv('frenzies', r.frenzy, id && id + ':f'); }
 const PACK_GEMS = [80, 500, 1200, 2500, 6500, 14000];   // the shop's gem packs, smallest to biggest
 const packArtFor = g => { const i = PACK_GEMS.findIndex(x => x >= g); return i < 0 ? 6 : i + 1; };
 // value vs the $0.99 pack (80 gems per dollar), counting extras at their shop prices: 1h skip 30 gems, Fan Frenzy 20, an outfit 400. Deals stay 2-3x
@@ -2061,7 +2204,10 @@ function load() {
 }
 let saveTimer = null;
 const saveSoon = () => { clearTimeout(saveTimer); saveTimer = setTimeout(save, 800); };
-let leaving = false;   // set right before a reload that swaps the save, so the outgoing page can't write the old one back
+let leaving = false;
+// rewards and item use bump S.rev; if another tab of the game records one, this tab reloads instead of writing its older copy back
+addEventListener('storage', e => { if (e.key !== KEY || leaving || !e.newValue) return; try { const o = JSON.parse(e.newValue); if (S && (o.rev || 0) > (S.rev || 0)) { leaving = true; location.reload(); } } catch (err) {} });
+const bumpRev = () => { S.rev = (S.rev || 0) + 1; };   // set right before a reload that swaps the save, so the outgoing page can't write the old one back
 function save() { if (leaving) return; S.last = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 let S;
 
@@ -2304,6 +2450,19 @@ const EVENTS = {
   hype: { name: 'Hype Weekend', short: 'All weekend: every Hype ad gives twice the time', color: '#FF6FAE' },
 };
 const WEEKEND = ['fans', 'gems', 'tour', 'crates', 'hype'];
+const EV_TAGS = { monday: ['2× crate cash', '2× crate gems', '2× daily gem caps'], wed: [], fans: ['2× fan visits', '2× fan gem cap'], gems: ['2× album gems', '2× ad gems', '2× fan gems'],
+  tour: ['Map goals 25% lower'], crates: ['Free crate every 5 min', '2× crate cash'], hype: ['2× Hype time per ad'] };
+const EV_IC = { monday: 'M9 18V6l10-2v12M9 18a3 3 0 1 1-3-3 3 3 0 0 1 3 3zM19 16a3 3 0 1 1-3-3 3 3 0 0 1 3 3z', wed: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z',
+  fans: 'M4 8h3l2-3h6l2 3h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', gems: 'M7 4h10l4 5-9 11L3 9zM3 9h18M9 4l3 16M15 4l-3 16', tour: 'M5 21V4M5 4h12l-2.5 4.5L17 13H5',
+  crates: 'M3 9h18v12H3zM3 13h18M12 9v12M7 9a3 3 0 0 1 5-3 3 3 0 0 1 5 3', hype: 'M13 2 3 14h9l-1 8 10-12h-9z' };
+const evIcon = (k, size = 18, color = '#14122A') => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${EV_IC[k]}"></path></svg>`;
+const evArt = k => k === 'monday' ? ART.gift('#FF6FAE', '#FF8FC0', '#FFC94A') : k === 'crates' ? ART.gift('#FF9E57', '#FFC08F', '#FFE27A') : k === 'fans' ? ART.frenzy() : k === 'gems' ? '<img src="art/gems/gems-3.webp" width="84" height="69" alt="">'
+  : k === 'hype' ? '<svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="8" width="48" height="48" rx="14" fill="#FF6FAE" stroke="#14122A" stroke-width="3.5"></rect><path d="M35 14 20 35h11l-2 15 15-21H33z" fill="#fff" stroke="#14122A" stroke-width="3" stroke-linejoin="round"></path></svg>'
+  : `<svg width="64" height="64" viewBox="0 0 24 24" fill="#fff" stroke="#14122A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${EV_IC[k]}"></path></svg>`;
+// the event on day k (0 = today), with the real start and end of that event (a weekend runs Saturday 00:00 to Monday 00:00)
+function evDay(k) { const d = localDay() + k, t = dayStartMs(d) + 3600e3, e = eventOn(t), w = new Date(t).getDay();
+  const start = dayStartMs(e && w === 0 ? d - 1 : d), end = dayStartMs(d + (e && w === 6 ? 2 : 1));
+  return { k, d, t, e, w, start, end, label: k === 0 ? 'Today' : new Date(t).toLocaleDateString('en-US', { weekday: 'short' }), date: new Date(t).getDate() }; }
 let evPick = 0;
 const weekIdx = (t = Date.now()) => Math.floor((localDay(t) + 3) / 7);   // weeks start on Monday
 function eventOn(t = Date.now()) {
@@ -2483,6 +2642,8 @@ function watchAd(onDone) {
 $('dailyBtn').addEventListener('click', () => openTab('daily'));
 $('tutSkip').addEventListener('click', () => { if (S.tut != null && S.tut >= TUT.length - 1 || S.loc > 0) S.coach = { move1: true, album1: true }; S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
 $('goalsBtn').addEventListener('click', () => openTab('goals'));
+$('passBtn').addEventListener('click', () => openTab('pass'));
+$('invBtn').addEventListener('click', () => openTab('inv'));
 $('eventsBtn').addEventListener('click', () => { evPick = 0; S.evSeen = dayKey(); save(); openTab('events'); });
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
@@ -2547,6 +2708,7 @@ function albumUpload(n, done) {
 function dropAlbum() {
   if (!albumReady()) return;
   S.albums = (S.albums || 0) + 1;
+  passStars('album');
   thisWeek().albums++;
   S.clears = clearsOf(); S.clears[lastLoc()]++;
   const plaqueGems = (S.mapPaid || 0) <= lastLoc() ? (MAP_GEMS[lastLoc()] || 0) : 0;
@@ -2576,7 +2738,7 @@ const closeBtn = () => '<button class="close" data-close aria-label="Close"><svg
 // a back arrow that sits beside the X on screens opened from another screen
 const backBtn = attr => `<button class="close back" ${attr} aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>`;
 const headBtns = attr => `<span class="headbtns">${backBtn(attr)}${closeBtn()}</span>`;
-let sheetKey = null, nextSheetKey = null, backNav = false;
+let sheetKey = null, nextSheetKey = null, backNav = false, outfitFilter = 'featured';
 const sheetScroll = {};   // last scroll position of each sheet, so Back returns to the same spot
 // every shine in the game runs off the same 4.5s clock, so they all sweep together
 function syncShine(root) {
@@ -2606,10 +2768,11 @@ function currentPack() {
   return has('starter') ? null : 'starter';
 }
 function grant(id) {
-  const o = OFFERS[id]; if (!o) return;
+  const o = OFFERS[id]; if (!o) return; bumpRev();
   if (o.once) S.perks[id] = true;
   if (o.gemsOut) { S.gems += o.gemsOut; owe('gems'); }
-  if (o.skipsOut) S.skips = (S.skips || 0) + o.skipsOut;
+  if (o.skipsOut) addInv('skips', o.skipsOut);
+  if (id === 'goldPass') pass().owned = true;
   if (o.skip) { const v = skipValue(o.skip); earn(v); owe('cash'); toast('+' + fmt(v) + ' from the time skip'); }
   if (id === 'autoCrew') { applyAutoCrew(); buildRoom(); }
   if (id === 'hypeRefill') S.hypeUntil = Date.now() + hypeCap() * 1000;
@@ -2628,9 +2791,9 @@ function grant(id) {
   if (o.deal) {
     const d = o.deal, a = activeDeals().find(x => x.deal.id === id);
     if (a) S.deals = Object.assign({}, S.deals, { [a.key]: true });
-    S.gems += d.gems; owe('gems'); if (d.skipH) owe('cash');
-    if (d.skipH) earn(skipValue(d.skipH * 3600));
-    if (d.frenzyMin) S.frenzyUntil = Math.max(Date.now(), S.frenzyUntil || 0) + d.frenzyMin * 60000;
+    S.gems += d.gems; owe('gems');
+    if (d.skipH) addInv('skips', d.skipH, a && 'deal:' + a.key + ':s');
+    if (d.frenzyMin) addInv('frenzies', d.frenzyMin / 30, a && 'deal:' + a.key + ':f');
     if (d.outfit) { const it = ITEMS.filter(i => i.gems && !S.owned[i.id] && i.rar !== 'mythic').sort((x, y) => y.gems - x.gems)[0]; if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; } else S.gems += 400; }
   }
   if (!o.skip) toast(o.name + (o.gemsOut ? ' added' : ' unlocked'));
@@ -2685,7 +2848,16 @@ $('scrim').addEventListener('click', e => {
   if (e.target.closest('[data-cloud-keep]')) { cloudKeep(); return; }
   if (e.target.closest('[data-cloud-out]')) return openTab('cloud-out');
   if (e.target.closest('[data-cloud-out-yes]')) { cloudSignOut(); return; }
-  if (e.target.closest('[data-use-skip]')) { if ((S.skips || 0) > 0) { S.skips--; const v = skipValue(3600); earn(v); owe('cash'); track('use-skip'); sfx('bling'); save(); render(); toast('+' + fmt(v) + ' from a time skip'); openTab('shop'); } return; }
+  { const iu = e.target.closest('[data-inv-ask]'); if (iu) return openTab('inv-use:' + iu.dataset.invAsk); }
+  { const ic = e.target.closest('[data-inv-use]'); if (ic) { ic.disabled = true; useInv(ic.dataset.invUse); return openTab('inv'); } }
+  { const of = e.target.closest('[data-ofilter]'); if (of) { outfitFilter = of.dataset.ofilter; sfx('tap'); return openTab('shop'); } }
+  { const pc = e.target.closest('[data-pclaim]'); if (pc) { const [side, t] = pc.dataset.pclaim.split(':'), n = +t, p = pass();
+      if (n <= passTier() && !p[side][n] && (side === 'free' || p.owned)) { p[side][n] = true; const r = side === 'free' ? passFree(n) : passGold(n); payReward(r, `pass:${p.season}:${side}:${n}`);
+        if (r.gems) flurry('gems', lastTap.x, lastTap.y, Math.min(12, 4 + r.gems / 25)); sfx(side === 'gold' ? 'bling' : 'gems'); toast('+' + rewardLine(r)); track('pass/' + side + '/' + n); save(); render(); }
+      return openTab('pass'); } }
+  if (e.target.closest('[data-pass-all]')) { const p = pass(), T = passTier(); let g = 0, sk = 0, fr = 0, it = null;
+    for (let n = 1; n <= T; n++) for (const side of ['free', 'gold']) if (!p[side][n] && (side === 'free' || p.owned)) { p[side][n] = true; const r = side === 'free' ? passFree(n) : passGold(n); payReward(r, `pass:${p.season}:${side}:${n}`); g += r.gems || 0; sk += r.skips || 0; fr += r.frenzy || 0; if (r.item) it = r.item; }
+    if (g) flurry('gems', lastTap.x, lastTap.y, 12); sfx('bling'); toast('+' + rewardLine({ item: it, gems: g, skips: sk, frenzy: fr })); save(); render(); return openTab('pass'); }
   if (e.target.closest('[data-discord]')) { track('discord-click'); return; }
   { const so = e.target.closest('[data-social]'); if (so) { track('social-' + so.dataset.social); return; } }
   if (e.target.closest('[data-fb-send]')) { sendFeedback(); return; }
@@ -2710,16 +2882,17 @@ $('scrim').addEventListener('click', e => {
   }
   const gc = e.target.closest('[data-goal]');
   if (gc) { const g = GOALS.find(x => x.id === gc.dataset.goal); if (g && goalReady(g) && !S.goalsDone[g.id]) {
-      S.goalsDone[g.id] = true; S.gems += g.gems; flurry('gems', lastTap.x, lastTap.y, 8); track('goal/' + g.id);
+      S.goalsDone[g.id] = true; passStars('goal'); S.gems += g.gems; flurry('gems', lastTap.x, lastTap.y, 8); track('goal/' + g.id);
       if (g.reward && g.reward.phones) { S.phonesX = Object.assign({}, S.phonesX, { [g.reward.phones]: true }); S.phones = PHONES_X[g.reward.phones][1]; applyLook(); }
       if (g.reward && g.reward.title) S.badges = [...new Set([...(S.badges || []), g.reward.title])];
       sfx(g.reward ? 'bling' : 'reward'); toast('+' + g.gems + ' gems' + (g.reward ? ' + ' + rewardText(g.reward) : '')); save(); render(); if (g.reward) syncChart(true); }
     const sc = $('sheet').scrollTop; openTab('goals'); $('sheet').scrollTop = sc; return; }
+  if (e.target.closest('[data-ev-crate]')) { if (Date.now() >= S.crateReady) { closeSheet(); setTimeout(() => $('crateBtn').click(), 60); } return; }
   const evd = e.target.closest('[data-evday]'); if (evd) { evPick = +evd.dataset.evday; sfx('tap'); return openTab('events'); }
-  if (e.target.closest('[data-wed]')) { const w = wedChallenge(); if (w.ready && !w.got && ev() === 'wed') { S.wed.got = true; S.gems += WED_GEMS; flurry('gems', lastTap.x, lastTap.y, 12); sfx('bling'); toast('Challenge complete! +' + WED_GEMS + ' gems'); save(); render(); } return openTab('events'); }
+  if (e.target.closest('[data-wed]')) { const w = wedChallenge(); if (w.ready && !w.got && ev() === 'wed') { S.wed.got = true; passStars('wed'); S.gems += WED_GEMS; flurry('gems', lastTap.x, lastTap.y, 12); sfx('bling'); toast('Challenge complete! +' + WED_GEMS + ' gems'); save(); render(); } return openTab('events'); }
   const tk = e.target.closest('[data-task]');
-  if (tk) { const t = dailyTasks().find(x => x.id === tk.dataset.task); if (t && t.ready && !t.got) { S.dt.got[t.id] = true; S.gems += TASK_GEMS; flurry('gems', lastTap.x, lastTap.y, 6); sfx('gems'); toast('+' + TASK_GEMS + ' gems'); save(); render(); } return openTab('goals'); }
-  if (e.target.closest('[data-task-bonus]')) { if (dailyTasks().every(t => t.got) && !S.dt.bonus) { S.dt.bonus = true; S.stats.taskSets = (S.stats.taskSets || 0) + 1; S.gems += TASK_BONUS; flurry('gems', lastTap.x, lastTap.y, 10); sfx('bling'); toast('All done today! +' + TASK_BONUS + ' gems'); save(); render(); } return openTab('goals'); }
+  if (tk) { const t = dailyTasks().find(x => x.id === tk.dataset.task); if (t && t.ready && !t.got) { S.dt.got[t.id] = true; passStars('task'); S.gems += TASK_GEMS; flurry('gems', lastTap.x, lastTap.y, 6); sfx('gems'); toast('+' + TASK_GEMS + ' gems'); save(); render(); } return openTab('goals'); }
+  if (e.target.closest('[data-task-bonus]')) { if (dailyTasks().every(t => t.got) && !S.dt.bonus) { S.dt.bonus = true; passStars('taskSet'); S.stats.taskSets = (S.stats.taskSets || 0) + 1; S.gems += TASK_BONUS; flurry('gems', lastTap.x, lastTap.y, 10); sfx('bling'); toast('All done today! +' + TASK_BONUS + ' gems'); save(); render(); } return openTab('goals'); }
   const pf = e.target.closest('[data-prof]');
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
@@ -3196,7 +3369,7 @@ function plaqueRow(cl) {
 }
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // Common ~+2% · Rare +3–5% · Epic +6–10% · Legendary +12–18% · Mythic +25% and up
-const RARITY = { founder: ['Founder', '#C9871A'], common: ['Common', '#7F7A99'], rare: ['Rare', '#2F7FE8'], epic: ['Epic', '#7C4FE0'], legendary: ['Legendary', '#E5650F'], mythic: ['Mythic', '#E0307A'] };
+const RARITY = { vip: ['VIP', '#B8860B'], founder: ['Founder', '#C9871A'], common: ['Common', '#7F7A99'], rare: ['Rare', '#2F7FE8'], epic: ['Epic', '#7C4FE0'], legendary: ['Legendary', '#E5650F'], mythic: ['Mythic', '#E0307A'] };
 const rarity = it => RARITY[it.rar] || RARITY.common;
 const RAR_ORDER = ['common', 'rare', 'epic', 'legendary', 'mythic'];
 // a figure wearing just this item, zoomed on the part it changes
@@ -3215,7 +3388,7 @@ const LIVE = {
     + '|' + dailyTasks().map(t => t.id + (t.got ? 'x' : t.ready ? '!' : Math.floor(t.v / t.target * 20))).join(',') + (S.dt.bonus ? 'b' : '') + '|' + new Date().getMinutes(),
   hype: () => Math.ceil(Math.max(0, S.hypeUntil - Date.now()) / 1000) + '|' + S.gems,
   career: () => Math.floor(movePct()) + '|' + albumReady(),
-  events: () => (S.wed ? Math.floor(wedChallenge().v / (wedChallenge().mins ? 60 : 1)) : 0) + '|' + ev() + '|' + (evPick || 0) + '|' + dayKey(),
+  events: () => (S.wed ? Math.floor(wedChallenge().v / (wedChallenge().mins ? 60 : 1)) : 0) + '|' + ev() + '|' + (evPick || 0) + '|' + dayKey() + '|' + (Date.now() >= S.crateReady) + '|' + (S.wed && S.wed.got),
 };
 let liveSig = '';
 function refreshLive() {
@@ -3461,12 +3634,34 @@ async function dropGuest(old) {
   if (!old || !old.uid || !old.at) return;
   try { await supa(`/rest/v1/charts?id=eq.${old.uid}`, { method: 'DELETE', token: old.at }); await supa(`/rest/v1/saves?id=eq.${old.uid}`, { method: 'DELETE', token: old.at }); } catch (e) {}
 }
+function mergeCareer(keep, other) {
+  if (!other || typeof other !== 'object') return keep;
+  keep.invLog = Object.assign({}, other.invLog || {}, keep.invLog || {});
+  keep.skips = 0; keep.frenzies = 0;
+  for (const [kk, d] of Object.values(keep.invLog)) { if (kk === 'skips') keep.skips += d; if (kk === 'frenzies') keep.frenzies += d; }
+  keep.skips = Math.max(0, keep.skips); keep.frenzies = Math.max(0, keep.frenzies);
+  const kp = keep.pass, op = other.pass;
+  keep.rev = Math.max(keep.rev || 0, other.rev || 0) + 1;
+  if (kp && op && kp.season === op.season) {
+    for (const side of ['free', 'gold']) for (const n of Object.keys(op[side] || {})) if (!kp[side][n]) { kp[side][n] = true; const r = side === 'free' ? passFree(+n) : passGold(+n); keep.gems += r.gems || 0; if (r.item) keep.owned[r.item] = true; }
+    kp.owned = kp.owned || op.owned; kp.stars = Math.max(kp.stars, op.stars);
+  }
+  keep.deals = Object.assign({}, other.deals || {}, keep.deals || {});
+  keep.perks = Object.assign({}, other.perks || {}, keep.perks || {});
+  keep.owned = Object.assign({}, other.owned || {}, keep.owned || {});
+  for (const id of Object.keys(other.goalsDone || {})) if (!(keep.goalsDone || {})[id]) { keep.goalsDone[id] = true; const g = GOALS.find(x => x.id === id); if (g) keep.gems += g.gems; }
+  if (keep.dt && other.dt && keep.dt.day === other.dt.day) { for (const id of Object.keys(other.dt.got || {})) if (!keep.dt.got[id]) { keep.dt.got[id] = true; keep.gems += TASK_GEMS; }
+    if (other.dt.bonus && !keep.dt.bonus) { keep.dt.bonus = true; keep.gems += TASK_BONUS; } }
+  if (keep.wed && other.wed && keep.wed.day === other.wed.day && other.wed.got && !keep.wed.got) { keep.wed.got = true; keep.gems += WED_GEMS; }
+  return keep;
+}
 async function cloudLoad() {
   const p = Cloud.pend; if (!p || !p.row) return;
   const c = cloud(), n = Object.assign(fresh(), p.row.data), keepCode = (p.row.data.cloud || {}).code;
   if (p.sameUser) n.cloud = Object.assign({}, c, { code: keepCode || c.code, friends: (p.row.data.cloud || {}).friends || c.friends, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at), created: false, synced: -1 });
   else { await dropGuest(p.old);
     n.cloud = { uid: p.d.user.id, at: p.d.access_token, rt: p.d.refresh_token, exp: Date.now() + (p.d.expires_in || 3600) * 1000, email: p.email, code: keepCode || null, friends: (p.row.data.cloud || {}).friends || [], created: false, synced: -1, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at) }; }
+  if (p.sameUser) mergeCareer(n, JSON.parse(JSON.stringify(S)));   // the same career on two devices: keep every claim and item use from both
   if (!LOCATIONS[n.loc]) n.loc = 0;
   n.last = Date.now();   // no offline earnings for the time spent on the other device
   track('cloud-loaded');
@@ -3477,6 +3672,7 @@ async function cloudKeep() {
   const p = Cloud.pend; Cloud.pend = null; if (!p) return;
   const c = cloud();
   if (!p.sameUser) { await dropGuest(p.old); setSession(p.d); c.email = p.email; c.created = false; c.synced = -1; }
+  else if (p.row && p.row.data) { mergeCareer(S, p.row.data); render(); }
   save(); await backup(true, false, true); syncChart(true); sfx('bling'); toast(p.sameUser ? 'Kept this device\'s save' : 'Progress protected'); closeSheet(); track('cloud-kept');
 }
 function csStatus() {
@@ -3715,22 +3911,71 @@ function openTab(tab) {
       </div></div>
       ${me ? '<button class="cta" data-tab-go="style">Change my look</button>' : ''}
       `);
+  } else if (tab === 'inv') {
+    const row = k => { const it = INV[k], q = invQty(k);
+      return `<div class="invrow ${q ? '' : 'empty'}"><span class="invic">${it.icon()}<b>×${q}</b></span><span class="rt"><b>${it.name} <small>${it.time}</small></b><span>${it.what()}</span></span>
+        <button class="hire" data-inv-ask="${k}" ${q ? '' : 'disabled'}>Use</button></div>`; };
+    openSheet(`<div class="sheet-head"><h2>Inventory</h2>${closeBtn()}</div>
+      <p class="cnote">Items from the shop, deals and the Backstage Pass wait here until you use them.</p>
+      ${row('skips')}${row('frenzies')}
+      <button class="ghost" data-tab-go="shop">Get more in the Shop</button>`);
+  } else if (tab.startsWith('inv-use:')) {
+    const k = tab.slice(8), it = INV[k]; if (!it) return;
+    openSheet(`<div class="sheet-head"><h2>Use a ${it.name}?</h2>${headBtns('data-tab-go="inv"')}</div>
+      <div class="invconf"><span class="invic">${it.icon()}</span>${k === 'skips' ? `<b class="amt">+${fmt(skipValue(3600))}</b><p>Added to your cash right now. That's 1 hour at your current income.</p>` : `<b class="amt">30 min</b><p>Fans and paparazzi show up 3x as often${frenzyOn() ? '. Adds 30 minutes to the Frenzy already running' : ''}.</p>`}
+      <p class="cnote">You have ${invQty(k)}. This uses 1.</p></div>
+      <button class="cta" data-inv-use="${k}">Use 1 ${it.name}</button><button class="ghost" data-tab-go="inv">Cancel</button>`);
+  } else if (tab === 'pass') {
+    const p = pass(), T = passTier(), into = p.stars - T * PASS_STEP, maxed = T >= PASS_TIERS, any = passClaimable(), vt = passTotals('gold'), jacket = itemById(PASS_JACKET);
+    const freshOpen = !(!$('scrim').hidden && sheetKey === 'pass') && !backNav;
+    const icon = r => r.item ? `<span class="pjk">${itemArt(jacket, 44)}</span>` : r.skips ? '<img src="art/shop/boost-60.svg" width="30" height="31" alt="">' : r.frenzy ? '<span class="pf">' + ART.frenzy().replace('width="84" height="84"', 'width="34" height="34"') + '</span>' : '<img src="art/gem.webp" width="30" height="25" alt="">';
+    const tile = (side, n) => { const r = side === 'free' ? passFree(n) : passGold(n), got = p[side][n], open = n <= T, vip = side === 'gold' && !p.owned, ready = open && !got && !vip;
+      const state = got ? '<span class="pst ok">Claimed</span>' : ready ? `<button class="hire" data-pclaim="${side}:${n}">Claim</button>` : vip ? '<span class="pst vip">Requires VIP</span>' : `<span class="pst">Locked · tier ${n}</span>`;
+      return `<div class="ptile ${side} ${got ? 'got' : ''} ${ready ? 'ready' : ''} ${vip ? 'needvip' : ''} ${!open && !got ? 'locked' : ''} ${r.item ? 'big' : ''}">${icon(r)}<b>${rewardLine(r)}</b>${state}</div>`; };
+    const rows = Array.from({ length: PASS_TIERS }, (_, k) => k + 1).map(n => `<div class="prow ${n <= T ? 'done' : ''} ${n === T + 1 ? 'next' : ''}" ${n === Math.max(1, T) ? 'data-pnow' : ''}>${tile('free', n)}<span class="pnode"><i>${n}</i></span>${tile('gold', n)}</div>`).join('');
+    openSheet(`<div class="sheet-head"><h2>Backstage Pass</h2>${closeBtn()}</div>
+      <div class="phero"><small>${seasonName()} Season · ends ${seasonLastDay()} · <span data-cd="${seasonEnds()}">${hms(seasonEnds() - Date.now())}</span> left</small>
+        <div class="pprize"><span class="pdress">${bigArtist(Object.assign({}, S.equip, { top: PASS_JACKET }))}</span><span class="ptext"><em>Tier ${PASS_TIERS} VIP reward</em><b>${jacket.name}</b><span>Look-only jacket. Your wardrobe bonus stays the same.</span></span></div>
+        <b class="ptier">Tier ${T} <span>of ${PASS_TIERS}</span></b>
+        <span class="pbar"><i style="width:${maxed ? 100 : Math.round(into / PASS_STEP * 100)}%"></i></span>
+        <span class="pnext">${maxed ? 'Every tier reached. Nice season!' : `${into} / ${PASS_STEP} stars to the next tier`}</span>
+        <span class="pseason">Season progress: ${Math.min(p.stars, PASS_TIERS * PASS_STEP).toLocaleString()} / ${(PASS_TIERS * PASS_STEP).toLocaleString()} stars</span>
+        ${p.owned ? '<span class="pown">VIP active</span>' : `<button class="cta gold" data-buy="goldPass">Unlock VIP · ${OFFERS.goldPass.money}</button><span class="pval">Complete all 30 tiers to earn ${vt.gems.toLocaleString()} gems, ${vt.skips} one-hour skips, ${vt.frenzy} Fan Frenzies, and the ${jacket.name}. VIP unlocks the rewards for tiers you've already reached right away; the rest you earn by playing.</span><span class="pval"><b>Season ends ${seasonRollover()} (your phone's time).</b></span>`}</div>
+      <details class="howto"><summary>How to earn stars</summary>
+        <ul><li>Daily task: +${PASS_STARS.task}</li><li>Finish all three daily tasks: +${PASS_STARS.taskSet}</li><li>Career goal: +${PASS_STARS.goal}</li><li>Wednesday Challenge: +${PASS_STARS.wed}</li><li>Drop an album: +${PASS_STARS.album}</li></ul>
+        <p>Doing your daily tasks every day clears all ${PASS_TIERS} tiers this month. Time skips and Fan Frenzies go to your Inventory. Anything earned but not claimed is delivered when the season ends.</p></details>
+      ${any ? '<button class="cta" data-pass-all>Claim All</button>' : ''}
+      <div class="ptrack"><div class="phead"><span>Free</span><span></span><span class="g">VIP</span></div>${rows}</div>`);
+    if (freshOpen) { const r = $('sheet').querySelector('[data-pnow]'); if (r && T > 2) $('sheet').scrollTop = r.offsetTop - 160; }
   } else if (tab === 'events') {
-    const e = ev(), E = e && EVENTS[e], w = wedChallenge();
-    const dot = k => k ? `<i style="background:${EVENTS[k].color}"></i>` : '<i style="background:transparent;border-style:dashed;opacity:.4"></i>';
+    const e = ev(), now = Date.now(), days = Array.from({ length: 7 }, (_, k) => evDay(k)), sel = days[evPick || 0], w = wedChallenge();
+    const cd = t => `<span data-cd="${t}">${hms(Math.max(0, t - now))}</span>`;
+    const nextOn = days.find(x => x.k > 0 && x.e && x.start > now);
+    // live strip: what's on now (tap to come back to today), or what's next
+    const strip = e ? `<button class="evstrip" data-evday="0" style="--c:${EVENTS[e].color}"><span class="evdotic">${evIcon(e, 16)}</span><span class="t"><small>Live now</small><b>${EVENTS[e].name}</b></span><span class="cdx">ends in ${cd(evEnds())}</span></button>`
+      : nextOn ? `<button class="evstrip quiet" data-evday="${nextOn.k}" style="--c:${EVENTS[nextOn.e].color}"><span class="evdotic">${evIcon(nextOn.e, 16)}</span><span class="t"><small>Up next</small><b>${EVENTS[nextOn.e].name}</b></span><span class="cdx">starts in ${cd(nextOn.start)}</span></button>` : '';
+    const week = days.map(x => `<button class="evd ${x.k === 0 ? 'today' : ''} ${x.k === (evPick || 0) ? 'sel' : ''} ${x.e && (x.w === 6 || x.w === 0) ? 'wk wk' + x.w : ''}" data-evday="${x.k}" style="--c:${x.e ? EVENTS[x.e].color : 'transparent'}" aria-label="${x.label} ${x.date}${x.e ? ', ' + EVENTS[x.e].name : ', no event'}">
+      <small>${x.label}</small><b>${x.date}</b><span class="evic ${x.e ? '' : 'none'}">${x.e ? evIcon(x.e, 15) : ''}</span></button>`).join('');
+    let detail;
+    if (!sel.e) { const nx = days.find(x => x.k > sel.k && x.e);
+      detail = `<div class="evdet quiet"><div class="evhead"><span class="evbig none">${svgIc('star', '#8C86A6', 30)}</span><span class="t"><small>${sel.k ? sel.label + ' ' + sel.date : 'Today'}</small><b>No scheduled event</b><span>${nx ? `Next: ${EVENTS[nx.e].name}, ${nx.k === sel.k + 1 ? 'the day after' : nx.label}` : ''}</span></span></div></div>`; }
+    else { const E = EVENTS[sel.e], live = sel.e === e && sel.start <= now && now < sel.end, wkend = sel.w === 6 || sel.w === 0;
+      const when = live ? `<span class="live">Live now</span> · ends in ${cd(sel.end)}` : `Starts in ${cd(sel.start)}`;
+      const span = wkend ? 'Saturday + Sunday, one weekend event' : new Date(sel.t).toLocaleDateString('en-US', { weekday: 'long' }) + ', all day';
+      let body = '';
+      if (sel.e === 'wed') { const c = WED_POOL[weekIdx(sel.t) % WED_POOL.length];
+        body = live ? `<div class="evobj"><b>${w.text}</b><span class="mile"><i style="width:${w.v / w.target * 100}%;background:${w.ready ? 'var(--cash)' : 'var(--gem)'}"></i></span>
+            <span class="evprog">${w.mins ? `${Math.floor(w.v / 60)} / ${w.target / 60} min` : `${w.v} / ${w.target}`} · ${WED_GEMS} gems</span></div>
+            <button class="cta" data-wed ${w.ready && !w.got ? '' : 'disabled'}>${w.got ? 'Claimed' : w.ready ? `Claim ${WED_GEMS} gems` : 'In progress'}</button>`
+          : `<div class="evobj"><b>${c.text}</b><span class="evprog">Reward: ${WED_GEMS} gems · progress counts from the start of the day</span></div>`; }
+      else { body = `<div class="evtags">${EV_TAGS[sel.e].map(t => `<span>${t}</span>`).join('')}</div><p class="evauto">${live ? 'Automatically active. Nothing to turn on.' : 'Turns on automatically when it starts.'}</p>`;
+        if (live && (sel.e === 'monday' || sel.e === 'crates')) body += now >= S.crateReady ? '<button class="cta" data-ev-crate>Open your free crate</button>' : `<p class="evauto">Next free crate in ${cd(S.crateReady)}</p>`; }
+      detail = `<div class="evdet" style="--c:${E.color}"><div class="evhead"><span class="evbig">${evArt(sel.e)}</span><span class="t"><small>${span}</small><b>${E.name}</b><span>${when}</span></span></div>${body}</div>`; }
     openSheet(`<div class="sheet-head"><h2>Events</h2>${closeBtn()}</div>
-      <div class="ev-hero" style="background:#9FD8F2"><span class="rays"></span><svg class="flag" viewBox="0 0 110 150" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M12 150 V6" stroke="#14122A" stroke-width="7" stroke-linecap="round"/><path d="M12 150 V6" stroke="#C9C3DE" stroke-width="3" stroke-linecap="round"/><polygon fill="#fff" points="14.0,14.0 15.9,14.2 17.8,14.2 19.8,14.2 21.7,14.2 23.6,14.0 25.5,13.8 27.4,13.5 29.3,13.1 31.2,12.8 33.2,12.4 35.1,12.1 37.0,11.8 38.9,11.5 40.8,11.4 42.8,11.3 44.7,11.4 46.6,11.6 48.5,11.9 50.4,12.3 52.3,12.9 54.2,13.5 56.2,14.2 58.1,15.0 60.0,15.8 61.9,16.6 63.8,17.3 65.8,18.0 67.7,18.6 69.6,19.0 71.5,19.2 73.4,19.3 75.3,19.2 77.2,18.9 79.2,18.3 81.1,17.6 83.0,16.7 84.9,15.6 86.8,14.5 88.8,13.3 90.7,12.0 92.6,10.7 94.5,9.6 96.4,8.5 98.3,7.6 100.2,6.9 102.2,6.4 104.1,6.2 106.0,6.2 106.0,52.2 104.1,52.2 102.2,52.4 100.2,52.9 98.3,53.6 96.4,54.5 94.5,55.6 92.6,56.7 90.7,58.0 88.8,59.3 86.8,60.5 84.9,61.6 83.0,62.7 81.1,63.6 79.2,64.3 77.2,64.9 75.3,65.2 73.4,65.3 71.5,65.2 69.6,65.0 67.7,64.6 65.8,64.0 63.8,63.3 61.9,62.6 60.0,61.8 58.1,61.0 56.2,60.2 54.2,59.5 52.3,58.9 50.4,58.3 48.5,57.9 46.6,57.6 44.7,57.4 42.8,57.3 40.8,57.4 38.9,57.5 37.0,57.8 35.1,58.1 33.2,58.4 31.2,58.8 29.3,59.1 27.4,59.5 25.5,59.8 23.6,60.0 21.7,60.2 19.8,60.2 17.8,60.2 15.9,60.2 14.0,60.0"/><polygon fill="#14122A" points="14.0,14.0 15.9,14.2 17.8,14.2 19.8,14.2 21.7,14.2 23.6,14.0 25.5,13.8 25.5,25.3 23.6,25.5 21.7,25.7 19.8,25.7 17.8,25.7 15.9,25.7 14.0,25.5"/><polygon fill="#14122A" points="14.0,37.0 15.9,37.2 17.8,37.2 19.8,37.2 21.7,37.2 23.6,37.0 25.5,36.8 25.5,48.3 23.6,48.5 21.7,48.7 19.8,48.7 17.8,48.7 15.9,48.7 14.0,48.5"/><polygon fill="#14122A" points="25.5,25.3 27.4,25.0 29.3,24.6 31.2,24.3 33.2,23.9 35.1,23.6 37.0,23.3 37.0,34.8 35.1,35.1 33.2,35.4 31.2,35.8 29.3,36.1 27.4,36.5 25.5,36.8"/><polygon fill="#14122A" points="25.5,48.3 27.4,48.0 29.3,47.6 31.2,47.3 33.2,46.9 35.1,46.6 37.0,46.3 37.0,57.8 35.1,58.1 33.2,58.4 31.2,58.8 29.3,59.1 27.4,59.5 25.5,59.8"/><polygon fill="#14122A" points="37.0,11.8 38.9,11.5 40.8,11.4 42.8,11.3 44.7,11.4 46.6,11.6 48.5,11.9 48.5,23.4 46.6,23.1 44.7,22.9 42.8,22.8 40.8,22.9 38.9,23.0 37.0,23.3"/><polygon fill="#14122A" points="37.0,34.8 38.9,34.5 40.8,34.4 42.8,34.3 44.7,34.4 46.6,34.6 48.5,34.9 48.5,46.4 46.6,46.1 44.7,45.9 42.8,45.8 40.8,45.9 38.9,46.0 37.0,46.3"/><polygon fill="#14122A" points="48.5,23.4 50.4,23.8 52.3,24.4 54.2,25.0 56.2,25.7 58.1,26.5 60.0,27.3 60.0,38.8 58.1,38.0 56.2,37.2 54.2,36.5 52.3,35.9 50.4,35.3 48.5,34.9"/><polygon fill="#14122A" points="48.5,46.4 50.4,46.8 52.3,47.4 54.2,48.0 56.2,48.7 58.1,49.5 60.0,50.3 60.0,61.8 58.1,61.0 56.2,60.2 54.2,59.5 52.3,58.9 50.4,58.3 48.5,57.9"/><polygon fill="#14122A" points="60.0,15.8 61.9,16.6 63.8,17.3 65.8,18.0 67.7,18.6 69.6,19.0 71.5,19.2 71.5,30.7 69.6,30.5 67.7,30.1 65.8,29.5 63.8,28.8 61.9,28.1 60.0,27.3"/><polygon fill="#14122A" points="60.0,38.8 61.9,39.6 63.8,40.3 65.8,41.0 67.7,41.6 69.6,42.0 71.5,42.2 71.5,53.7 69.6,53.5 67.7,53.1 65.8,52.5 63.8,51.8 61.9,51.1 60.0,50.3"/><polygon fill="#14122A" points="71.5,30.7 73.4,30.8 75.3,30.7 77.2,30.4 79.2,29.8 81.1,29.1 83.0,28.2 83.0,39.7 81.1,40.6 79.2,41.3 77.2,41.9 75.3,42.2 73.4,42.3 71.5,42.2"/><polygon fill="#14122A" points="71.5,53.7 73.4,53.8 75.3,53.7 77.2,53.4 79.2,52.8 81.1,52.1 83.0,51.2 83.0,62.7 81.1,63.6 79.2,64.3 77.2,64.9 75.3,65.2 73.4,65.3 71.5,65.2"/><polygon fill="#14122A" points="83.0,16.7 84.9,15.6 86.8,14.5 88.8,13.3 90.7,12.0 92.6,10.7 94.5,9.6 94.5,21.1 92.6,22.2 90.7,23.5 88.8,24.8 86.8,26.0 84.9,27.1 83.0,28.2"/><polygon fill="#14122A" points="83.0,39.7 84.9,38.6 86.8,37.5 88.8,36.3 90.7,35.0 92.6,33.7 94.5,32.6 94.5,44.1 92.6,45.2 90.7,46.5 88.8,47.8 86.8,49.0 84.9,50.1 83.0,51.2"/><polygon fill="#14122A" points="94.5,21.1 96.4,20.0 98.3,19.1 100.2,18.4 102.2,17.9 104.1,17.7 106.0,17.7 106.0,29.2 104.1,29.2 102.2,29.4 100.2,29.9 98.3,30.6 96.4,31.5 94.5,32.6"/><polygon fill="#14122A" points="94.5,44.1 96.4,43.0 98.3,42.1 100.2,41.4 102.2,40.9 104.1,40.7 106.0,40.7 106.0,52.2 104.1,52.2 102.2,52.4 100.2,52.9 98.3,53.6 96.4,54.5 94.5,55.6"/><polygon fill="none" stroke="#14122A" stroke-width="3" stroke-linejoin="round" points="14.0,14.0 15.9,14.2 17.8,14.2 19.8,14.2 21.7,14.2 23.6,14.0 25.5,13.8 27.4,13.5 29.3,13.1 31.2,12.8 33.2,12.4 35.1,12.1 37.0,11.8 38.9,11.5 40.8,11.4 42.8,11.3 44.7,11.4 46.6,11.6 48.5,11.9 50.4,12.3 52.3,12.9 54.2,13.5 56.2,14.2 58.1,15.0 60.0,15.8 61.9,16.6 63.8,17.3 65.8,18.0 67.7,18.6 69.6,19.0 71.5,19.2 73.4,19.3 75.3,19.2 77.2,18.9 79.2,18.3 81.1,17.6 83.0,16.7 84.9,15.6 86.8,14.5 88.8,13.3 90.7,12.0 92.6,10.7 94.5,9.6 96.4,8.5 98.3,7.6 100.2,6.9 102.2,6.4 104.1,6.2 106.0,6.2 106.0,52.2 104.1,52.2 102.2,52.4 100.2,52.9 98.3,53.6 96.4,54.5 94.5,55.6 92.6,56.7 90.7,58.0 88.8,59.3 86.8,60.5 84.9,61.6 83.0,62.7 81.1,63.6 79.2,64.3 77.2,64.9 75.3,65.2 73.4,65.3 71.5,65.2 69.6,65.0 67.7,64.6 65.8,64.0 63.8,63.3 61.9,62.6 60.0,61.8 58.1,61.0 56.2,60.2 54.2,59.5 52.3,58.9 50.4,58.3 48.5,57.9 46.6,57.6 44.7,57.4 42.8,57.3 40.8,57.4 38.9,57.5 37.0,57.8 35.1,58.1 33.2,58.4 31.2,58.8 29.3,59.1 27.4,59.5 25.5,59.8 23.6,60.0 21.7,60.2 19.8,60.2 17.8,60.2 15.9,60.2 14.0,60.0"/><circle cx="12" cy="6" r="6" fill="#FFC94A" stroke="#14122A" stroke-width="2.5"/></svg><span class="ev-art" style="--skin:#8D5A36;--phones:#FF6FAE">${bigArtist({}, 'a', { hs: 'buzz', hc: '#231A17', fd: null, ph: true })}</span><span class="ev-art pal" style="--skin:#FFE0C4;--phones:#6FD3FF">${bigArtist({ top: 'varsity' }, 'b', { hs: 'long', hc: '#6E4A2E', fd: null, ph: true })}</span></div>
-      ${(() => { const days = nextEvents(), k = evPick || 0, d = days[k], P = d.e && EVENTS[d.e];
-        const cd = t => `<span data-cd="${t}">${hms(t - Date.now())}</span>`;
-        const when = k === 0 ? (P ? `Live now · ends in ${cd(evEnds())}` : 'No event today') : `${P ? 'Starts' : 'Next day'} in ${cd(dayStartMs(localDay() + k))}`;
-        return P ? `<div class="evcard" style="background:${P.color}"><small>${k ? d.day + ' · ' : ''}${when}</small><b>${P.name}</b><span>${P.short}</span></div>`
-          : `<div class="evcard" style="background:var(--panel-2);color:var(--text)"><small>${k ? d.day + ' · ' : ''}${when}</small><b>No event${k ? ' that day' : ' today'}</b><span>Next up: ${EVENTS[days.find((x, n) => x.e && n > k).e].name}</span></div>`; })()}
-      ${e === 'wed' ? `<div class="sec"><h3>This week's challenge</h3>
-        <div class="row ${w.got ? 'done' : ''}"><span class="rt"><b>${w.text}</b><span>${w.got ? 'Done' : w.mins ? `${Math.floor(w.v / 60)} / ${w.target / 60} min` : `${w.v} / ${w.target}`} · ${WED_GEMS} gems</span></span>
-        <button class="hire" data-wed ${w.ready && !w.got ? '' : 'disabled'}>${w.got ? 'Claimed' : 'Claim'}</button></div></div>` : ''}
-      <div class="sec"><h3>This week</h3><div class="evweek">${nextEvents().map((x, n) => `<div class="${n === (evPick || 0) ? 'today' : ''}" data-evday="${n}">${x.day}${dot(x.e)}</div>`).join('')}</div>
-        <p class="cnote">Tap a day to see what's coming.</p>
-        <p class="cnote">Music Monday and the Wednesday Challenge happen every week. Weekends rotate between ${WEEKEND.map(k => EVENTS[k].name).join(', ')}.</p></div>`);
+      ${strip}
+      <div class="evweek2">${week}</div>
+      ${detail}
+      <details class="howto"><summary>How events work</summary><p>Music Monday and the Wednesday Challenge happen every week. Weekends (Saturday and Sunday) run one event that rotates between ${WEEKEND.map(k => EVENTS[k].name).join(', ')}. Events follow your phone's calendar and start at midnight.</p></details>`);
   } else if (tab === 'boosts') {
     const h = hypeOn(), g = gearMult(), f = fame();
     const row = (on, ic, name, x, how) => `<div class="row mrow ${on ? '' : 'off'}"><span class="ric">${ic}</span>
@@ -3760,10 +4005,10 @@ function openTab(tab) {
     // deterministic sparkle positions so they don't jump around on every refresh
     const sparks = (n, seed = 1) => Array.from({ length: n }, (_, i) => { const a = (i * 137 + seed * 53) % 100, b = (i * 71 + seed * 29) % 100;
       return `<i class="spk" style="left:${8 + a * .84}%;top:${6 + b * .7}%;animation-delay:-${((i * .63 + seed * .37) % 2.4).toFixed(2)}s;--k:${(.6 + (i % 3) * .25).toFixed(2)}"></i>`; }).join('');
-    const offer = (id, art, color, ribbon, perks) => { const o = OFFERS[id], own = o.deal ? dealOwned(id) : owned(id);
-      return `<button class="offer" data-buy="${id}" ${own ? 'disabled' : ''} style="background:${color}" aria-label="${o.name}, ${own ? 'owned' : o.money}"><span class="rib">${ribbon}</span>
+    const offer = (id, art, color, ribbon, perks, label) => { const o = OFFERS[id], own = o.deal ? dealOwned(id) : owned(id);
+      return `<button class="offer" data-buy="${id}" ${own ? 'disabled' : ''} style="background:${color}" aria-label="${o.name}, ${own ? 'owned' : o.money}">${ribbon ? `<span class="rib">${ribbon}</span>` : ''}
         <span class="wall bubbles"></span><span class="offer-art glow">${sparks(5, id.length)}${art}</span>
-        <span class="offer-body"><b>${o.name}</b><span>${o.line || o.sub}</span>${perks ? `<span class="chips">${perks}</span>` : ''}</span>
+        <span class="offer-body">${label ? `<em class="olabel">${label}</em>` : ''}<b>${o.name}</b><span>${o.line || o.sub}</span>${o.note ? `<small class="onote">${o.note}</small>` : ''}${perks ? `<span class="chips">${perks}</span>` : ''}</span>
         <span class="paybtn">${own ? 'Owned' : o.money}</span></button>`; };
     const card = (id, art, title, pill, theme, ribbon, n = 3) => { const o = OFFERS[id], own = owned(id);
       const price = own ? 'Owned' : o.money ? o.money : `<i class="g"></i>${o.gems}`;
@@ -3800,33 +4045,43 @@ function openTab(tab) {
         return offer(d.id, art, d.color, `${dealValue(d)}x value`, `<span class="dealtime">Ends in ${dd ? dd + 'd ' : ''}${hh}h</span>` + dealSub(d).map(x => `<span>${x}</span>`).join(''));
       }).join('')}
       <div class="banner">Special offers</div>
-      ${offer('goldenMic', ART.mic(), '#FFD866', 'Best seller', '<span>2x income</span><span>Forever</span><span>Stacks with Hype</span>')}
+      <button class="offer passoffer" data-tab-go="pass" style="background:linear-gradient(135deg,#FFE48A,#FFC94A)" aria-label="Backstage Pass"><span class="wall bubbles"></span><span class="offer-art glow"><svg width="64" height="64" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 1.5l5 7.5 5-7.5" fill="none" stroke="#14122A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><rect x="5" y="8.5" width="14" height="13.5" rx="2.5" fill="#FFF3C4" stroke="#14122A" stroke-width="1.8"></rect><rect x="5" y="8.5" width="14" height="4" rx="2" fill="#14122A"></rect><text x="12" y="11.6" text-anchor="middle" font-size="2.8" font-weight="900" fill="#FFC94A" font-family="sans-serif">VIP</text><circle cx="12" cy="16" r="2" fill="#E0307A"></circle><path d="M8.5 19.5h7" stroke="#14122A" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
+        <span class="offer-body"><em class="olabel">${seasonName()} Season</em><b>Backstage Pass</b><span>${pass().owned ? 'VIP active. Claim your rewards' : 'VIP rewards on all 30 tiers, plus the Backstage Jacket'}</span></span>
+        <span class="paybtn">${pass().owned ? 'Open' : OFFERS.goldPass.money}</span></button>
+      ${offer('goldenMic', ART.mic(), '#FFD866', '', '<span>Stacks with Hype</span>', 'Forever')}
       ${(() => { const p = currentPack();
         return p === 'starter' ? offer('starter', ART.gift(), '#FF9CC8', '2x value', '<span>Flame Hoodie</span><span>450 gems</span><span>Night Owl</span>')
           : p === 'rising' ? offer('rising', ART.gift('#9B6BFF', '#C9B3FF', '#FFC94A'), '#C9B3FF', '2x value', '<span>Varsity Jacket</span><span>750 gems</span><span>Hype upgrades</span>')
           : p === 'headliner' ? offer('headliner', ART.gift('#FFC94A', '#FFE08A', '#FF6FAE'), '#FFC27A', '2x value', '<span>Puffer Jacket</span><span>1,500 gems</span><span>Pro Monitors</span>') : ''; })()}
-      ${offer('adFree', ART.noAds(), '#8FD8F5', 'No waiting', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>')}
-      ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', 'Hands-free', '<span>No tapping</span><span>Every map</span><span>Forever</span>')}
+      ${offer('adFree', ART.noAds(), '#8FD8F5', '', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>', 'No waiting')}
+      ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', '', '', 'Hands-free · Forever')}
       ${(() => { // one-time perks get their own section and leave the shop once owned (like outfits)
         const perks = [['monitors', ART.monitors(), '+25% income<br>forever'], ['nightOwl', ART.moon(), '8h offline<br>earnings']].filter(([id]) => !S.perks[id]);
-        return perks.length ? `<div class="banner">Permanent upgrades</div><div class="cards two ${perks.length === 1 ? 'solo' : ''}">${perks.map(([id, art, t]) => card(id, art, t, '', 'gold', 'Forever')).join('')}</div>` : ''; })()}
-      <div class="banner">Boosts</div>
+        return perks.length ? `<div class="banner">Permanent upgrades</div><div class="cards two ${perks.length === 1 ? 'solo' : ''}">${perks.map(([id, art, t]) => card(id, art, t, '', 'gold perk').replace('<span class="wall', '<span class="tag qtag">Forever</span><span class="wall')).join('')}</div>` : ''; })()}
+      <div class="banner">Spend Gems</div>
       <div class="cards two boosts">
-        ${card('skip15', ART.clock(0), 'Skip 15 min', '+' + fmt(skipValue(900)), 'gold')}
-        ${card('skip1', ART.clock(4), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold', 'Best deal')}
-        ${card('hypeRefill', ART.bolt(), 'Hype Refill<br>fill to max', hypeLeftToFill() > 60000 ? '+' + hms(hypeLeftToFill()) : 'Full', 'gold')}
-        ${card('fanFrenzy', ART.frenzy(), 'Fan Frenzy<br>3x fans', frenzyOn() ? hms(S.frenzyUntil - Date.now()) + ' left' : '30 min', 'gold')}
+        ${card('skip15', ART.clock(0), 'Skip 15 min', '+' + fmt(skipValue(900)), 'gold spend')}
+        ${card('skip1', ART.clock(4), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold spend', 'Best value')}
+        ${card('hypeRefill', ART.bolt(), 'Hype Refill<br>fill to max', hypeLeftToFill() > 60000 ? '+' + hms(hypeLeftToFill()) : 'Full', 'gold spend')}
+        ${card('fanFrenzy', ART.frenzy(), 'Fan Frenzy<br>3x fans', frenzyOn() ? hms(S.frenzyUntil - Date.now()) + ' left' : '30 min', 'gold spend')}
       </div>
-      <div class="banner">Time Skips</div>
-      <div class="skipbar"><span>${(S.skips || 0) ? `You have <b>${S.skips}</b> one-hour skip${S.skips === 1 ? '' : 's'}. Each pays ${fmt(skipValue(3600))} right now.` : 'Buy skips now, use them whenever you want an hour of cash.'}</span>${(S.skips || 0) ? '<button class="hire" data-use-skip>Use 1</button>' : ''}</div>
+      <div class="banner">Time Skip Packs</div>
+      <div class="skipbar"><span>Each skip grants 1 hour of cash.</span><button class="hire" data-tab-go="inv">Inventory${invQty('skips') + invQty('frenzies') ? ' · ' + (invQty('skips') + invQty('frenzies')) : ''}</button></div>
+
       <div class="cards gems skips">
-        ${skipCard('skips5', 1, '5', '', 3)}
-        ${skipCard('skips20', 2, '20', '', 4)}
-        ${skipCard('skips60', 3, '60', 'Best value', 5)}
+        ${skipCard('skips5', 1, '5 skips', '', 3)}
+        ${skipCard('skips20', 2, '20 skips', '', 4)}
+        ${skipCard('skips60', 3, '60 skips', 'Best value', 5)}
       </div>
       <div class="banner">Outfits</div>
       ${ITEMS.some(i => i.gems && !S.owned[i.id]) ? '' : '<p class="testnote">You own every outfit in the shop. Nice collection!</p>'}
-      <div class="cards">${ITEMS.filter(i => i.gems && !S.owned[i.id]).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot) || RAR_ORDER.indexOf(b.rar) - RAR_ORDER.indexOf(a.rar) || b.gems - a.gems).map(outfit).join('')}</div>
+      ${(() => { const all = ITEMS.filter(i => i.gems && !S.owned[i.id]).sort((a, b) => order.indexOf(a.slot) - order.indexOf(b.slot) || RAR_ORDER.indexOf(b.rar) - RAR_ORDER.indexOf(a.rar) || b.gems - a.gems);
+        const f = outfitFilter, filters = [['featured', 'Featured'], ['all', 'All'], ['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Necklaces'], ['face', 'Glasses']];
+        // featured: the best piece in each slot, then the next best tops, six in all
+        const featured = (() => { const pick = order.map(sl => all.find(i => i.slot === sl)).filter(Boolean); for (const i of all) { if (pick.length >= 6) break; if (!pick.includes(i)) pick.push(i); } return pick.slice(0, 6); })();
+        const list = f === 'featured' ? featured : f === 'all' ? all : all.filter(i => i.slot === f);
+        return all.length ? `<div class="ofilters">${filters.map(([k, l]) => `<button class="stab ${f === k ? 'on' : ''}" data-ofilter="${k}">${l}${k === 'featured' ? '' : ` <small>${k === 'all' ? all.length : all.filter(i => i.slot === k).length}</small>`}</button>`).join('')}</div>
+          <div class="cards">${list.map(outfit).join('')}</div>${f === 'featured' && all.length > 6 ? `<button class="ghost viewall" data-ofilter="all">View all ${all.length} outfits</button>` : ''}` : ''; })()}
       <p class="testnote">Album exclusives can't be bought. Drop albums to unlock them.</p>
       <div class="banner">Gems</div>
       <div class="cards gems">
@@ -4066,6 +4321,8 @@ function render() {
   if (TEST) $('testChip').textContent = `TEST · ${S.test.speed}x${S.test.hype ? ' · Hype' : ''}`;
   if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; if (S.stats.days <= 30) track('days-played/' + S.stats.days); }
   $('goalsDot').hidden = !(activeGoals().some(goalReady) || tasksClaimable());
+  $('passDot').hidden = !passClaimable();
+  { const n = invQty('skips') + invQty('frenzies'), c = $('invCt'); c.hidden = !n; c.textContent = n > 99 ? '99+' : n; }
   $('crewBang').hidden = !LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= x.crewCost);
   $('styleBang').hidden = !(S.newItems && S.newItems.length);
   const m = totalMult();
@@ -4217,6 +4474,8 @@ function start(data) {
     else if (dailyReady()) { if ($('scrim').hidden) openTab('daily'); else pendingDaily = true; }
     if (S.onboarded) setTimeout(() => syncChart(true), 1500);
   }
+  pass();   // a new month delivers last season's unclaimed rewards
+  if (S.passRecap) { const r = S.passRecap; S.passRecap = null; setTimeout(() => toast('Backstage Pass season ended. Delivered: ' + rewardLine(r)), 3200); }
   render(); save(); startTracking();
   setTimeout(cloudBoot, 2500); setInterval(() => backup(), 180000);   // back up every 3 minutes when something changed
   requestAnimationFrame(t => { lastT = t; requestAnimationFrame(tick); });
