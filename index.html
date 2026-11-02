@@ -588,6 +588,23 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("data:im
 .lbl { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .cta { height: 52px; border-radius: 16px; background: var(--cash); color: var(--deep); font-family: var(--display); font-size: 17px; box-shadow: 0 3px 0 #4FA864; flex: none; }
 .cta:disabled { background: var(--line); color: var(--muted); box-shadow: none; cursor: default; }
+.cta.discord { background: #5865F2; color: #fff; box-shadow: 0 3px 0 #3C45B8; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+.cs-card { display: flex; align-items: center; gap: 12px; background: var(--panel-2); border-radius: 16px; padding: 12px; }
+.cs-card .ic { width: 40px; height: 40px; border-radius: 12px; background: #9FE6FF; display: grid; place-items: center; flex: none; }
+.cs-card b { display: block; font-size: 15px; } .cs-card span { font-size: 13px; color: var(--muted); }
+.cs-link { background: none; color: #9FE6FF; font-weight: 700; font-size: 14px; text-decoration: underline; padding: 4px; align-self: center; }
+.otp { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.otp input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; border: 0; z-index: 1; }
+.otp i { height: 56px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); display: grid; place-items: center; font: 400 26px var(--display); font-style: normal; }
+.otp:focus-within i.on, .otp:focus-within i:first-of-type:empty { border-color: #FFC94A; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cmp > div { background: var(--panel-2); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px; border: 2px solid transparent; }
+.cmp > div.win { border-color: #8BF0A0; } .cmp h4 { margin: 0; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.cmp p { margin: 0; font-size: 14px; } .cmp p b { font-family: var(--display); font-weight: 400; font-size: 20px; } .cmp .when { color: var(--muted); font-size: 12px; }
+.tagw { align-self: flex-start; background: #8BF0A0; color: #14122A; font-size: 11px; font-weight: 800; border-radius: 99px; padding: 2px 8px; }
+.cs-note { font-size: 12px; color: var(--muted); text-align: center; margin: 0; }
+.socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.soc { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 9px; border-radius: 14px; background: #fff; color: var(--deep); box-shadow: 0 3px 0 #B9B4CC; font-size: 13px; font-weight: 700; text-decoration: none; }
 .cta.pink { background: var(--accent); box-shadow: 0 3px 0 #B84778; }
 .ghost { height: 50px; border-radius: 16px; background: var(--panel-2); font-size: 15px; font-weight: 700; flex: none; }
 .welcome { display: flex; flex-direction: column; gap: 8px; text-align: center; align-items: center; }
@@ -1595,7 +1612,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 104, CONTACT = 'elicosand@gmail.com';
+const BUILD = 105, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1980,7 +1997,8 @@ function load() {
 }
 let saveTimer = null;
 const saveSoon = () => { clearTimeout(saveTimer); saveTimer = setTimeout(save, 800); };
-function save() { S.last = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+let leaving = false;   // set right before a reload that swaps the save, so the outgoing page can't write the old one back
+function save() { if (leaving) return; S.last = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 let S;
 
 // ---------- economy ----------
@@ -2590,6 +2608,16 @@ $('scrim').addEventListener('click', e => {
   }
   const fbo = e.target.closest('[data-fb]');
   if (fbo) { const d = fbDraft(); d[fbo.dataset.fb] = fbo.dataset.v; save(); fbo.parentNode.querySelectorAll('.fbo').forEach(b => b.classList.toggle('on', b === fbo)); sfx('tap'); return; }
+  { const cg = e.target.closest('[data-cloud-go]'); if (cg) { Cloud.flow = { mode: cg.dataset.cloudGo, email: (Cloud.flow || {}).email || '' }; return openTab('cloud-email'); } }
+  { const cs = e.target.closest('[data-cloud-send]'); if (cs) { cloudSend($('cloudEmail').value, cs.dataset.cloudSend); return; } }
+  if (e.target.closest('[data-cloud-verify]')) { cloudVerify($('otpIn').value.trim()); return; }
+  if (e.target.closest('[data-cloud-resend]')) { const f = Cloud.flow; if (f) { if (Date.now() - f.sent < 60000) { sfx('denied'); return toast('Wait a minute before sending another code'); } cloudSend(f.email, f.mode); } return; }
+  if (e.target.closest('[data-cloud-load]')) { cloudLoad(); return; }
+  if (e.target.closest('[data-cloud-keep]')) { cloudKeep(); return; }
+  if (e.target.closest('[data-cloud-out]')) return openTab('cloud-out');
+  if (e.target.closest('[data-cloud-out-yes]')) { cloudSignOut(); return; }
+  if (e.target.closest('[data-discord]')) { track('discord-click'); return; }
+  { const so = e.target.closest('[data-social]'); if (so) { track('social-' + so.dataset.social); return; } }
   if (e.target.closest('[data-fb-send]')) { sendFeedback(); return; }
   if (e.target.closest('[data-redeem]')) { redeem($('codeInput').value); return; }
   const pd = e.target.closest('[data-period]');
@@ -2697,6 +2725,9 @@ $('scrim').addEventListener('change', e => {
 });
 $('scrim').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'friendInput') addFriend(e.target.value); if (e.key === 'Enter' && e.target.id === 'codeInput') redeem(e.target.value); });
 $('scrim').addEventListener('input', e => {
+  if (e.target.id === 'otpIn') { const v = e.target.value.replace(/\D/g, '').slice(0, 6); e.target.value = v;
+    e.target.parentNode.querySelectorAll('i').forEach((b, i) => { b.textContent = v[i] || ''; b.classList.toggle('on', i === Math.min(v.length, 5)); });
+    const btn = document.querySelector('[data-cloud-verify]'); if (btn) btn.disabled = v.length < 6; if (v.length === 6) cloudVerify(v); return; }
   if (e.target.dataset && e.target.dataset.fbt) { fbDraft()[e.target.dataset.fbt] = e.target.value.slice(0, 400); saveSoon(); return; }
   const k = e.target.dataset && e.target.dataset.vol; if (!k) return;
   S.vol = Object.assign({ master: 80, music: 20, sfx: 80 }, S.vol, { [k]: +e.target.value }); S.volV = 3;
@@ -3183,10 +3214,10 @@ function cloud() {   // fills in missing fields on the same object so every call
   return S.cloud;
 }
 
-async function supa(path, { method = 'GET', body, auth = false, headers = {} } = {}) {
+async function supa(path, { method = 'GET', body, auth = false, token = null, keepalive = false, headers = {} } = {}) {
   const h = Object.assign({ apikey: SUPA_KEY, 'Content-Type': 'application/json' }, headers);
-  if (auth) h.Authorization = 'Bearer ' + cloud().at;
-  const r = await fetch(SUPA_URL + path, { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+  if (auth || token) h.Authorization = 'Bearer ' + (token || cloud().at);
+  const r = await fetch(SUPA_URL + path, { method, headers: h, keepalive, body: body ? JSON.stringify(body) : undefined });
   const text = await r.text(); let data = null; try { data = text ? JSON.parse(text) : null; } catch (e) {}
   return { ok: r.ok, status: r.status, data, range: r.headers.get('content-range') };
 }
@@ -3266,6 +3297,174 @@ async function loadChart() {
     Charts.status = 'ok';
   } catch (e) { Charts.status = 'offline'; }
 }
+// ---------- cloud saves: every career backs up to its player account; an email lets players restore it on any device ----------
+const Cloud = { sig: '', busy: false, err: '', pend: null, flow: null, ready: false };
+const CLOUD_IC = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 18h10.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.6 9.2 4.4 4.4 0 0 0 7 18z" fill="#fff" stroke="#14122A" stroke-width="2" stroke-linejoin="round"/><path d="M9.3 13.4l2 2 3.6-3.8" fill="none" stroke="#3FA35A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const agoTxt = t => { if (!t) return 'not yet'; const s = (Date.now() - t) / 1000; return s < 60 ? 'just now' : s < 3600 ? Math.floor(s / 60) + ' min ago' : s < 86400 ? Math.floor(s / 3600) + 'h ago' : Math.floor(s / 86400) === 1 ? 'yesterday' : Math.floor(s / 86400) + ' days ago'; };
+const maskEmail = e => { const [u, d] = (e || '').split('@'); return u ? u[0] + '••@' + d : ''; };
+const goodEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+// the save copy keeps the friend code and friends, never the sign-in tokens
+function savePayload() { const d = JSON.parse(JSON.stringify(S)); const c = d.cloud || {}; d.cloud = { code: c.code || null, friends: c.friends || [] }; return d; }
+async function backup(force, leaving, mine) {   // mine: this device's copy wins even if another device saved since
+  if (TEST || leaving || !S.onboarded || Cloud.pend || (!Cloud.ready && !force)) return false;
+  if (Cloud.busy) return false;
+  const data = savePayload(), str = JSON.stringify(data), sig = str.replace(/"last":\d+,?/, '');
+  if (!force && sig === Cloud.sig) return true;
+  Cloud.busy = true;
+  try {
+    await ensureAuth(); const c = cloud();
+    // a protected career can be open on two devices: never overwrite progress another device saved since our last backup
+    if (c.email && !mine) {
+      const r0 = await supa(`/rest/v1/saves?id=eq.${c.uid}&select=updated_at`, { auth: true });
+      const t0 = r0.ok && r0.data && r0.data[0] ? Date.parse(r0.data[0].updated_at) : 0;
+      if (t0 && c.lastUp && t0 !== c.lastUp) { Cloud.busy = false; return conflict(); }
+    }
+    const now = new Date(); const row = { id: c.uid, data, albums: S.albums || 0, lifetime: Math.floor(S.stats.lifetime), build: BUILD, updated_at: now.toISOString() };
+    for (let i = 0; i < 2; i++) {
+      const r = await supa('/rest/v1/saves?on_conflict=id', { method: 'POST', auth: true, body: row, keepalive: leaving && str.length < 60000, headers: { Prefer: 'resolution=merge-duplicates,return=minimal' } });
+      if (r.status === 401 && !i) { c.exp = 0; c.at = null; await ensureAuth(); continue; }
+      if (!r.ok) throw new Error(`Backup failed (${r.status}) ${why(r.data)}`);
+      Cloud.sig = sig; c.backedAt = Date.now(); c.lastUp = now.getTime(); Cloud.err = ''; save(); Cloud.busy = false; return true;
+    }
+  } catch (e) { Cloud.err = /Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message; }
+  Cloud.busy = false; return false;
+}
+async function fetchSave(uid, token) {
+  const r = await supa(`/rest/v1/saves?id=eq.${uid}&select=data,albums,lifetime,updated_at`, { auth: true, token });
+  if (!r.ok) throw new Error(`Couldn't read the cloud save (${r.status})`);
+  return (r.data || [])[0] || null;
+}
+// another device saved this career since this one last did: ask which to keep
+async function conflict() {
+  try { const row = await fetchSave(cloud().uid); if (!row || !row.data) return false;
+    if (JSON.stringify(savePayload()).replace(/"last":\d+,?/, '') === JSON.stringify(row.data).replace(/"last":\d+,?/, '')) { cloud().lastUp = Date.parse(row.updated_at); return false; }
+    Cloud.pend = { row, sameUser: true }; openTab('cloud-found'); } catch (e) {}
+  return false;
+}
+async function cloudBoot() {
+  const c = cloud();
+  try {
+    if (c.email && c.uid && c.lastUp && !TEST) {
+      await ensureAuth();
+      const r0 = await supa(`/rest/v1/saves?id=eq.${c.uid}&select=updated_at`, { auth: true });
+      const t0 = r0.ok && r0.data && r0.data[0] ? Date.parse(r0.data[0].updated_at) : 0;
+      if (t0 && t0 !== c.lastUp) { Cloud.ready = true; return conflict(); }
+    }
+  } catch (e) {}
+  Cloud.ready = true; backup();
+}
+// +1 when the cloud career is further along than this device's, -1 when behind
+const aheadOf = (row, s) => Math.sign(((row.albums || 0) - (s.albums || 0)) || ((row.lifetime || 0) - Math.floor((s.stats && s.stats.lifetime) || 0)));
+const authErr = (r, fallback) => { const m = why(r.data) || ''; const code = (r.data && (r.data.error_code || r.data.code)) || '';
+  if (r.status === 429 || /rate limit|security purposes/i.test(m)) return 'Too many tries. Wait a minute, then try again.';
+  if (/expired|invalid|otp/i.test(m + code)) return "That code didn't work. Check it or send a new one.";
+  return fallback + (m ? ` (${m})` : ''); };
+// step 1: send the code. A guest adds an email to its own account; "load my career" signs in to an existing one
+async function cloudSend(email, mode) {
+  email = (email || '').trim().toLowerCase();
+  if (!goodEmail(email)) { sfx('denied'); return toast('Enter a real email address'); }
+  if (Cloud.busy) return; Cloud.busy = true; toast('Sending code…');
+  try {
+    let r;
+    if (mode === 'link') {
+      await ensureAuth();
+      r = await supa('/auth/v1/user', { method: 'PUT', auth: true, body: { email } });
+      if (!r.ok && (r.status === 422 || /already|exists/i.test(why(r.data)))) mode = 'login';   // that email already has a career: sign in to it instead
+      else if (!r.ok) throw new Error(authErr(r, "Couldn't send the code"));
+    }
+    if (mode === 'login') {
+      r = await supa('/auth/v1/otp', { method: 'POST', body: { email, create_user: false } });
+      if (!r.ok && /signup|not found|not allowed/i.test(why(r.data) + (r.data && r.data.error_code || ''))) throw new Error('No saved career uses that email. Use "Protect my progress" instead.');
+      if (!r.ok) throw new Error(authErr(r, "Couldn't send the code"));
+    }
+    Cloud.flow = { email, mode, sent: Date.now() }; track('cloud-code-' + mode);
+    Cloud.busy = false; document.querySelectorAll('.toast').forEach(t => t.remove()); openTab('cloud-code');
+  } catch (e) { Cloud.busy = false; sfx('denied'); toast(/Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message); }
+}
+// step 2: check the code
+async function cloudVerify(token) {
+  const f = Cloud.flow; if (!f || Cloud.busy) return;
+  Cloud.busy = true;
+  try {
+    const r = await supa('/auth/v1/verify', { method: 'POST', body: { type: f.mode === 'link' ? 'email_change' : 'email', email: f.email, token } });
+    if (!r.ok || !r.data || !r.data.access_token) throw new Error(authErr(r, "Couldn't confirm the code"));
+    const d = r.data, c = cloud(), newUid = d.user && d.user.id;
+    Cloud.flow = null; Cloud.busy = false;
+    if (f.mode === 'link' || newUid === c.uid) {
+      setSession(d); c.email = f.email; save(); track('cloud-protected'); sfx('bling');
+      await backup(true, false, true); toast('Progress protected'); return openTab('settings');
+    }
+    // signed in to a different account: see whether it already has a career
+    const row = await fetchSave(newUid, d.access_token);
+    Cloud.pend = { row, d, email: f.email, old: { uid: c.uid, at: c.at } };
+    if (row && row.data) return openTab('cloud-found');
+    await cloudKeep();
+  } catch (e) { Cloud.busy = false; sfx('denied'); toast(/Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message); }
+}
+// the guest career this device was using goes away once it joins an email account, so it doesn't show twice on The Charts
+async function dropGuest(old) {
+  if (!old || !old.uid || !old.at) return;
+  try { await supa(`/rest/v1/charts?id=eq.${old.uid}`, { method: 'DELETE', token: old.at }); await supa(`/rest/v1/saves?id=eq.${old.uid}`, { method: 'DELETE', token: old.at }); } catch (e) {}
+}
+async function cloudLoad() {
+  const p = Cloud.pend; if (!p || !p.row) return;
+  const c = cloud(), n = Object.assign(fresh(), p.row.data), keepCode = (p.row.data.cloud || {}).code;
+  if (p.sameUser) n.cloud = Object.assign({}, c, { code: keepCode || c.code, friends: (p.row.data.cloud || {}).friends || c.friends, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at), created: false, synced: -1 });
+  else { await dropGuest(p.old);
+    n.cloud = { uid: p.d.user.id, at: p.d.access_token, rt: p.d.refresh_token, exp: Date.now() + (p.d.expires_in || 3600) * 1000, email: p.email, code: keepCode || null, friends: (p.row.data.cloud || {}).friends || [], created: false, synced: -1, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at) }; }
+  if (!LOCATIONS[n.loc]) n.loc = 0;
+  n.last = Date.now();   // no offline earnings for the time spent on the other device
+  track('cloud-loaded');
+  leaving = true; try { localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {}
+  location.reload();
+}
+async function cloudKeep() {
+  const p = Cloud.pend; Cloud.pend = null; if (!p) return;
+  const c = cloud();
+  if (!p.sameUser) { await dropGuest(p.old); setSession(p.d); c.email = p.email; c.created = false; c.synced = -1; }
+  save(); await backup(true, false, true); syncChart(true); sfx('bling'); toast(p.sameUser ? 'Kept this device\'s save' : 'Progress protected'); closeSheet(); track('cloud-kept');
+}
+function cloudSec() {
+  const c = cloud();
+  if (TEST) return '';
+  const status = Cloud.err && !c.backedAt ? `<b>Not backed up yet</b><span>${Cloud.err}</span>` : `<b>${c.email ? 'Protected' : 'Backed up ' + agoTxt(c.backedAt)}</b><span>${c.email ? maskEmail(c.email) + ' · backed up ' + agoTxt(c.backedAt) : 'Saved to this device\'s guest account'}</span>`;
+  return `<div class="sec"><h3>Cloud save</h3>
+    <div class="cs-card"><div class="ic">${CLOUD_IC}</div><div>${status}</div></div>
+    ${c.email ? `<p>Sign in with this email on any device to pick up where you left off.</p><button class="ghost" data-cloud-out>Sign out of this device</button>`
+      : `<p>Add your email so you can get your career back on a new phone or if this browser gets cleared.</p>
+    <button class="cta" data-cloud-go="link">Protect my progress</button><button class="cs-link" data-cloud-go="login">Already protected? Load my career</button>`}</div>`;
+}
+function cloudSheet(tab) {
+  const f = Cloud.flow || {}, p = Cloud.pend;
+  if (tab === 'cloud-email') {
+    const login = f.mode === 'login';
+    return openSheet(`<div class="sheet-head"><h2>${login ? 'Load my career' : 'Protect your progress'}</h2>${closeBtn()}</div>
+      <div class="sec"><p>${login ? 'Enter the email you protected your career with. We\'ll send it a 6-digit code.' : 'We\'ll send a 6-digit code to your email. No password, and we never send anything else.'}</p>
+      <input id="cloudEmail" class="nameinput" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@email.com" value="${f.email || ''}">
+      <button class="cta" data-cloud-send="${login ? 'login' : 'link'}">Send code</button></div>`);
+  }
+  if (tab === 'cloud-code') return openSheet(`<div class="sheet-head"><h2>Enter your code</h2>${closeBtn()}</div>
+      <div class="sec"><p>We sent a code to <b>${f.email}</b>. It can take a minute, so check spam too.</p>
+      <label class="otp"><input id="otpIn" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="6-digit code">${'<i></i>'.repeat(6)}</label>
+      <button class="cta" data-cloud-verify disabled>Confirm</button><button class="cs-link" data-cloud-resend>Resend code</button></div>`);
+  if (tab === 'cloud-found' && p && p.row) {
+    const r = p.row, a = r.data, win = aheadOf(r, S);
+    const card = (h, al, loc, when, w, tag) => `<div class="${w ? 'win' : ''}">${w ? `<span class="tagw">${tag}</span>` : ''}<h4>${h}</h4><p><b>${al}</b> album${al === 1 ? '' : 's'}</p><p>${(LOCATIONS[loc] || LOCATIONS[0]).name}</p><p class="when">${when}</p></div>`;
+    return openSheet(`<div class="welcome"><h2>Cloud save found</h2><p>${p.sameUser ? 'Your career moved ahead on another device. Which one do you want to play?' : 'This email has a career saved. Which one do you want to play?'}</p></div>
+      <div class="cmp">${card('Cloud', r.albums || 0, a.maxLoc || a.loc || 0, 'Saved ' + agoTxt(Date.parse(r.updated_at)), win >= 0, p.sameUser && win === 0 ? 'NEWER' : 'FURTHER ALONG')}${card('This device', S.albums || 0, S.maxLoc || S.loc || 0, 'Playing now', win < 0, 'FURTHER ALONG')}</div>
+      <button class="cta" data-cloud-load>Load cloud save</button><button class="ghost" data-cloud-keep>Keep this device's save</button>
+      <p class="cs-note">The one you don't pick is replaced.</p>`);
+  }
+  if (tab === 'cloud-out') return openSheet(`<div class="welcome"><h2>Sign out?</h2><p>Your career is backed up to <b>${maskEmail(cloud().email)}</b>. This device goes back to a brand-new career, and you can load yours again any time with your email.</p></div>
+      <button class="cta pink" data-cloud-out-yes>Sign out</button><button class="ghost" data-close>Cancel</button>`);
+  closeSheet();
+}
+async function cloudSignOut() {
+  if (!(await backup(true))) { sfx('denied'); return toast("Couldn't back up first. Check your connection and try again."); }
+  track('cloud-signout');
+  leaving = true; try { localStorage.removeItem(KEY); } catch (e) {}
+  location.reload();
+}
 // the public profile card: look, maps cleared and a few career stats
 const bestItem = owned => ITEMS.filter(i => owned[i.id] && i.bonus > 0).sort((a, b) => b.bonus - a.bonus || (b.album ? 1 : 0) - (a.album ? 1 : 0))[0];
 function myProfile() {
@@ -3284,6 +3483,7 @@ function cleanProfile(p) {
     founder: !!p.founder, badges: Array.isArray(p.badges) ? p.badges.filter(b => ['Lifer', 'Grinder'].includes(b)) : [], clears: Array.isArray(p.clears) ? p.clears.slice(0, 6).map(x => n(x, 1e6)) : null, fast: n(p.fast, 1e9), play: n(p.play, 1e10), days: n(p.days, 1e5), items: n(p.items, ITEMS.length), best: best ? best.id : null };
 }
 
+const DISCORD = 'https://discord.gg/sbCgktutnd';
 // ---------- playtest feedback: 7 quick questions, saved to the database (email as a fallback) ----------
 const FB_QS = [
   { k: 'fun', q: 'How fun is it so far?', opts: ['1', '2', '3', '4', '5'] },
@@ -3333,6 +3533,7 @@ async function addFriend(code) {
 }
 
 function openTab(tab) {
+  if (tab.startsWith('cloud-')) { nextSheetKey = tab; return cloudSheet(tab); }
   nextSheetKey = tab;
   liveSig = LIVE[tab] ? LIVE[tab]() : '';
   const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') ? 'shop' : tab;
@@ -3672,8 +3873,13 @@ function openTab(tab) {
       <div class="vols">${[['master', 'Master'], ['music', 'Music'], ['sfx', 'Sound effects']].map(([k, l]) => `
         <div class="vol"><label for="vol-${k}">${l}</label><input type="range" id="vol-${k}" data-vol="${k}" min="0" max="100" step="1" value="${Math.round(volOf(k) * 100)}"><output id="out-${k}">${Math.round(volOf(k) * 100)}</output></div>`).join('')}
       </div>
+      ${cloudSec()}
       <div class="sec"><h3>Redeem a code</h3>
         <div class="addrow"><input id="codeInput" class="nameinput" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="Enter code"><button class="hire" data-redeem>Redeem</button></div></div>
+      <div class="sec"><h3>Community</h3>
+        <p>Chat with other players, share your best runs and get a first look at new updates. Follow us @playstudiohustle.</p>
+        <a class="cta discord" href="${DISCORD}" target="_blank" rel="noopener" data-discord><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z" fill="#fff" stroke="#14122A" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="9.6" r="1.4" fill="#14122A"/><circle cx="15" cy="9.6" r="1.4" fill="#14122A"/></svg>Join our Discord</a>
+        <div class="socials">${[['ig', 'Instagram', 'https://www.instagram.com/playstudiohustle/', '<rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16.8" cy="7.2" r="1.3" fill="currentColor"/>'], ['tt', 'TikTok', 'https://www.tiktok.com/@playstudiohustle', '<path d="M10 9.5v6.2a2.6 2.6 0 1 1-2.6-2.6M10 15.7V4h3.2a4.2 4.2 0 0 0 4.3 4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'], ['mail', 'Email us', 'mailto:' + CONTACT, '<rect x="3.5" y="6" width="17" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 7.5l7.5 5.5 7.5-5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>']].map(([k, l, u, d]) => `<a class="soc" href="${u}" target="_blank" rel="noopener" data-social="${k}"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">${d}</svg><span>${l}</span></a>`).join('')}</div></div>
       <div class="sec"><h3>Playtest feedback</h3>
         <p>Help shape the game: ${FB_QS.length} quick questions.</p>
         <button class="cta" data-tab-go="feedback">Give feedback</button>
@@ -3685,7 +3891,7 @@ function openTab(tab) {
         <div class="row"><span class="rt"><b>Free gems</b><span>For trying the shop</span></span><button class="hire" data-test-gems>+1,000</button></div>
         <button class="ghost" data-test-exit>Back to my real career</button></div>` : ''}
       <p data-build-tap>Studio Hustle · Build ${BUILD} · Music by Elijah Gray</p>
-      <p>Progress saves in this browser. Starting over wipes everything, including albums and fame.</p>
+      <p>${cloud().email ? 'Starting over wipes everything on this device and in your cloud save, including albums and fame.' : 'Starting over wipes everything, including albums and fame.'}</p>
       <button class="ghost" data-reset-ask>Start a new career</button>`);
   } else if (tab === 'feedback') {
     const d = fbDraft();
@@ -3936,10 +4142,11 @@ function start(data) {
     if (S.onboarded) setTimeout(() => syncChart(true), 1500);
   }
   render(); save(); startTracking();
+  setTimeout(cloudBoot, 2500); setInterval(() => backup(), 180000);   // back up every 3 minutes when something changed
   requestAnimationFrame(t => { lastT = t; requestAnimationFrame(tick); });
 }
-document.addEventListener('visibilitychange', () => { if (document.hidden) save(); else if (S && S.onboarded) syncChart(); });
-window.addEventListener('pagehide', save);
+document.addEventListener('visibilitychange', () => { if (document.hidden) { save(); backup(false, true); } else if (S && S.onboarded) syncChart(); });
+window.addEventListener('pagehide', () => { save(); backup(false, true); });
 window.claude?.hot?.snapshot?.(() => ({ state: S }));
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
 })();
