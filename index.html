@@ -770,7 +770,7 @@ html, body { background: var(--bar) !important; }
 .ios-full, .ios-full body { height: var(--full-h) !important; min-height: var(--full-h); overflow: hidden; }
 .ios-full .app, .ios-full .splash, .ios-full .upload { top: 0 !important; bottom: auto !important; height: var(--full-h) !important; }
 /* the HUD reaches up under the status bar and paints it itself */
-.app { padding-top: 0 !important; } .hud { padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important; }
+.app { padding-top: 0 !important; } .hud { padding-top: calc(28px + env(safe-area-inset-top, 0px)) !important; }   /* clear of iOS's status-bar shading */
 /* money bar: contents centered top to bottom; the multiplier rides as a small tag on the cash box */
 .hud { padding-block: 16px 16px; }
 .mult { top: calc(100% - 1px); background: #14122A; border-radius: 999px; padding: 2px 7px; font-size: 11px; text-shadow: none; }
@@ -1669,7 +1669,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 112, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 113, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -3172,6 +3172,12 @@ const ART = {
   gift: (box = '#FF6FAE', lid = '#FF8FC0', rib = '#FFC94A') => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="24" width="44" height="32" rx="4" fill="${box}" stroke="#14122A" stroke-width="3"></rect><rect x="6" y="16" width="52" height="12" rx="3" fill="${lid}" stroke="#14122A" stroke-width="3"></rect><path d="M32 16v40" stroke="${rib}" stroke-width="6"></path><path d="M32 16c-6-10-16-8-14-2 2 4 10 2 14 2zm0 0c6-10 16-8 14-2-2 4-10 2-14 2z" fill="${rib}" stroke="#14122A" stroke-width="2.5"></path>${box === '#FF6FAE' ? '' : `<polygon points="${starPts(20, 40, 6)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon><polygon points="${starPts(44, 44, 4.5)}" fill="#fff" stroke="#14122A" stroke-width="1.5"></polygon>`}</svg>`,
   noAds: () => `<svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="14" width="48" height="36" rx="8" fill="#fff" stroke="#14122A" stroke-width="3"></rect><path d="M27 24v16l13-8z" fill="#2E9CF0"></path><path d="M12 54 52 10" stroke="#F0453A" stroke-width="5" stroke-linecap="round"></path></svg>`,
 };
+Object.assign(ART, {
+  skips: n => shopArt('skips-' + Math.min(3, Math.max(1, n)), 360, 360, 'gempack'),
+  clock: t => shopArt(t === 4 ? 'boost-60' : 'boost-15', 76, 78),
+  moon: () => shopArt('moon', 76, 88),
+  monitors: () => shopArt('monitors', 96, 70),
+});
 // a framed record for each map you've cleared; one color per map
 const PLAQUE = ['#C9CED9', '#FFC94A', '#9FE6FF', '#FF6FAE', '#8BF0A0', '#C9A6FF'];
 function plaqueArt(i, n, size = 46) {

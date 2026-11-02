@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="608" height="702" viewBox="55.8 40.2 152.0 175.5">
+<title>Studio Hustle — Offline Earnings Moon</title>
+<defs>
+<path id="crescent" d="M157 47C111 39 66 72 62 119C57 166 91 207 138 210C162 211 185 202 201 185C204 181 201 177 196 179C159 191 124 169 116 136C107 102 125 72 157 55C162 52 162 48 157 47Z"/>
+<clipPath id="moonClip"><use xlink:href="#crescent"/></clipPath>
+</defs>
+<use xlink:href="#crescent" fill="#FFF0C7"/>
+<g clip-path="url(#moonClip)">
+<path d="M71 146C88 190 144 209 191 180L212 185L179 222L101 225L57 179Z" fill="#E6D3A4"/>
+</g>
+<use xlink:href="#crescent" fill="none" stroke="#14122A" stroke-width="8" stroke-linejoin="round"/>
+</svg>
