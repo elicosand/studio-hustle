@@ -110,6 +110,8 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .badge { position: absolute; display: flex; align-items: center; gap: 4px; background: var(--text); color: var(--deep);
   border-radius: 999px; padding: 3px 9px 3px 3px; font-size: 13px; font-weight: 700; z-index: 3; white-space: nowrap; transition: background .2s; }
 .station.sel .badge { background: var(--accent); }
+.station.boosting .prog i { background: linear-gradient(90deg, #8BF0A0, #FFE27A); box-shadow: 0 0 6px rgba(255,226,122,.85); }   /* holding: bar runs 1.5x, warm glow */
+.station.boosting .sel-ring { opacity: 1; border-color: #FFD84D !important; box-shadow: 0 0 12px rgba(255,216,77,.75), inset 0 0 8px rgba(255,216,77,.35) !important; }
 .badge .ic { width: 24px; height: 24px; border-radius: 50%; background: var(--deep); display: grid; place-items: center; }
 .badge .up { width: 18px; height: 18px; border-radius: 50%; background: var(--go); display: grid; place-items: center; margin-left: 2px; }
 .prog { position: absolute; height: 7px; border-radius: 999px; background: rgba(20,18,42,.75); overflow: hidden; z-index: 3; }
@@ -756,6 +758,31 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .mcard button.mok { min-width: 64px; background: #6B45C9; color: #fff; }
 .mtail { position: absolute; left: -8px; top: var(--ty, 50%); width: 12px; height: 12px; background: #FFF8EC; border-left: 2px solid #E9D7AE; border-bottom: 2px solid #E9D7AE; transform: rotate(45deg); }
 .mcard.tail-right .mtail { left: auto; right: -8px; transform: rotate(-135deg); }
+.chapter { display: flex; align-items: stretch; justify-content: center; gap: 8px; margin: 6px 0 10px; }
+.ch-card { flex: 1 1 0; max-width: 140px; background: rgba(255,255,255,.06); border-radius: 14px; padding: 10px 6px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.ch-card.next { background: rgba(139,240,160,.12); box-shadow: inset 0 0 0 2px rgba(139,240,160,.5); }
+.ch-card b { font: 400 13px/1.15 var(--display); } .ch-card small { font-size: 11px; color: var(--muted); font-weight: 700; }
+.ch-arrow { align-self: center; color: var(--muted); }
+.ch-reward { text-align: center; font-size: 13px; color: var(--muted); margin: 0 0 8px; } .ch-reward b { color: var(--gem); }
+.upload.travel { z-index: 2147483000; background: radial-gradient(circle at 50% 40%, #1F6B5C, #0C2420 75%); transition: opacity .28s ease; }   /* the album screen's layout, in deep teal */
+.upload.travel.off { opacity: 0; }
+.upload.travel .car { width: 240px; margin-bottom: 10px; height: auto; overflow: visible; }
+.upload.travel .car .body { animation: carbob .32s ease-in-out infinite alternate; }
+.upload.travel .car .wheel { animation: carspin .45s linear infinite; }
+.upload.travel .car .lines { animation: carlines .4s linear infinite; }
+@keyframes carbob { to { transform: translateY(-2px); } } @keyframes carspin { to { transform: rotate(360deg); } } @keyframes carlines { 0% { transform: translateX(6px); opacity: .9; } 100% { transform: translateX(-10px); opacity: 0; } }
+.upload.travel .ustep { color: #CFEDE6; } .upload.travel .upbar i { background: linear-gradient(90deg, #8BF0A0, #FFC94A); animation-duration: 3.5s; }
+.upload.travel .plats span { background: #1C4A42; }
+.welcome.arrive .ar-title { display: flex; flex-direction: column; align-items: center; gap: 2px; } .ar-title small { font: inherit; font-size: .62em; opacity: .75; }
+.travel p { margin: 14px 0 0; font: 700 15px/1 var(--body, inherit); opacity: .8; } .travel b { font: 400 22px/1.15 var(--display); text-align: center; padding: 0 16px; }
+.confetti-sky { position: absolute; inset: 0; z-index: 40; pointer-events: none; overflow: hidden; }
+.confetti-sky i { position: absolute; width: 8px; height: 12px; border-radius: 2px; opacity: 0; animation: confsky 2.5s ease-out forwards; }
+@keyframes confsky { 0% { opacity: 0; transform: translate(0,0) rotate(var(--r0)) scale(.2); } 8% { opacity: 1; transform: translate(0,0) rotate(var(--r0)) scale(1.15); } 14% { transform: translate(0,4px) rotate(var(--r0)) scale(1); }
+  40% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--d)) rotate(calc(var(--r0) + var(--r))) scale(.9); } }
+.confetti { position: absolute; left: 50%; top: 42%; width: 0; height: 0; z-index: 40; pointer-events: none; }
+.confetti i { position: absolute; width: 8px; height: 12px; border-radius: 2px; opacity: 0; animation: confet 1.25s cubic-bezier(.15,.7,.3,1) forwards; }
+@keyframes confet { 0% { opacity: 1; transform: translate(0,0) rotate(0); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 260px)) rotate(var(--r)); } }
+@media (prefers-reduced-motion: reduce) { .upload.travel { transition: none; } .upload.travel .car *, .upload.travel .car .body { animation: none !important; } }
 .maya-note { display: flex; align-items: flex-end; gap: 6px; margin: 10px 0 4px; text-align: left; }
 .maya-note .mfig { flex: none; width: 92px; height: 124px; overflow: hidden; position: relative; }
 .maya-note .mfig img { position: absolute; left: 0; top: 0; width: 92px; height: auto; }
@@ -1404,7 +1431,7 @@ const LOCATIONS = [
   {
     id: 'loft', name: 'Downtown Loft', track: 'music/beat3.mp3', floor: '#BDB8C4', plank: '#A8A2B0', tiles: true, wall: '#5E3027', goal: 60000000000, decor: LOFT_DECOR, home: [160, 284],
     stations: [
-      { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.13, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
+      { id: 'decks', name: 'DJ Decks', icon: 'disc', unlock: 0, base: 2500, cycle: 1.6, cost: 15000, growth: 1.12, crew: 'Resident DJ', crewCost: 225000, spot: [140, 160],
         pos: [24, 112, 128, 100],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="100" viewBox="0 0 128 100" aria-hidden="true">
 <ellipse cx="64" cy="91.5" rx="60" ry="4" fill="#000" opacity=".3"/>
@@ -1417,7 +1444,7 @@ const LOCATIONS = [
 <circle cx="64" cy="22" r="2.4" fill="#FFC94A"/><circle cx="64" cy="30" r="2.4" fill="#8BF0A0"/>
 <path d="M64 38 V50" stroke="#4A4466" stroke-width="3" stroke-linecap="round"/><rect x="60" y="42" width="8" height="5" rx="1.5" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/>
 <path d="M8 12 H54" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'merch', name: 'Merch Table', icon: 'shirt', unlock: 200000, base: 15000, cycle: 3.2, cost: 137500, growth: 1.14, crew: 'Merch Manager', crewCost: 2250000, spot: [214, 180],
+      { id: 'merch', name: 'Merch Table', icon: 'shirt', unlock: 200000, base: 15000, cycle: 3.2, cost: 137500, growth: 1.13, crew: 'Merch Manager', crewCost: 2250000, spot: [214, 180],
         pos: [218, 112, 148, 104],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="148" height="104" viewBox="0 0 148 104" aria-hidden="true">
 <ellipse cx="74" cy="93.5" rx="70" ry="4" fill="#000" opacity=".3"/>
@@ -1432,7 +1459,7 @@ const LOCATIONS = [
 <rect x="104" y="40" width="26" height="12" rx="2" fill="#4E6B57" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M110 44 H124" stroke="#8BF0A0" stroke-width="2" stroke-linecap="round"/>
 <rect x="132" y="28" width="12" height="16" rx="2" fill="#FFF7E0" stroke="#1B1830" stroke-width="2" transform="rotate(8 138 36)"/><path d="M135 34 H141 M135 38 H140" stroke="#C2683A" stroke-width="1.6" transform="rotate(8 138 36)"/>
 <path d="M12 44 H60" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'stream', name: 'Livestream Rig', icon: 'monitor', unlock: 1500000, base: 80000, cycle: 6.5, cost: 1000000, growth: 1.15, crew: 'Stream Mod', crewCost: 12500000, spot: [140, 398],
+      { id: 'stream', name: 'Livestream Rig', icon: 'monitor', unlock: 1500000, base: 80000, cycle: 6.5, cost: 1000000, growth: 1.14, crew: 'Stream Mod', crewCost: 12500000, spot: [140, 398],
         pos: [24, 384, 128, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="150" viewBox="0 0 128 150" aria-hidden="true">
 <path d="M10 124 H118 L116 132 H12 Z" fill="#000" opacity=".1"/><ellipse cx="12.5" cy="137.5" rx="7.5" ry="3" fill="#000" opacity=".3"/><ellipse cx="115.5" cy="137.5" rx="7.5" ry="3" fill="#000" opacity=".3"/><ellipse cx="64" cy="133.5" rx="14" ry="3" fill="#000" opacity=".3"/>
@@ -1457,7 +1484,7 @@ const LOCATIONS = [
 <path d="M50 90 V130 M78 90 V130" stroke="#8E2639" stroke-width="3"/>
 <path d="M42 92 H70" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
 <path d="M64 134 V142 M52 144 H76" stroke="#1B1830" stroke-width="3" stroke-linecap="round"/></g></svg>` },
-      { id: 'rooftop', name: 'Rooftop Show', icon: 'star', unlock: 8750000, base: 400000, cycle: 11, cost: 5500000, growth: 1.16, crew: 'Promoter', crewCost: 62500000, spot: [178, 408],
+      { id: 'rooftop', name: 'Rooftop Show', icon: 'star', unlock: 8750000, base: 400000, cycle: 11, cost: 5500000, growth: 1.15, crew: 'Promoter', crewCost: 62500000, spot: [178, 408],
         pos: [236, 384, 130, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
 <ellipse cx="65" cy="139.5" rx="61" ry="4" fill="#000" opacity=".3"/>
@@ -1476,7 +1503,7 @@ const LOCATIONS = [
   {
     id: 'pro', name: 'Pro Studio', track: 'music/beat2.mp3', floor: '#454A5C', plank: '#363A48', wall: '#232838', goal: 4000000000000, decor: PRO_DECOR, home: [160, 284],
     stations: [
-      { id: 'console', name: 'Studio Console', icon: 'sliders', unlock: 0, base: 125000, cycle: 1.8, cost: 750000, growth: 1.13, crew: 'Head Engineer', crewCost: 11250000, spot: [140, 160],
+      { id: 'console', name: 'Studio Console', icon: 'sliders', unlock: 0, base: 125000, cycle: 1.8, cost: 750000, growth: 1.12, crew: 'Head Engineer', crewCost: 11250000, spot: [140, 160],
         pos: [24, 112, 128, 100],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="100" viewBox="0 0 128 100" aria-hidden="true">
 <ellipse cx="64" cy="89.5" rx="64" ry="4" fill="#000" opacity=".34"/>
@@ -1488,7 +1515,7 @@ const LOCATIONS = [
 <path d="M20 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="17" y="58" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="20" cy="38" r="2" fill="#FF6FAE"/><path d="M29 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="26" y="52" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="29" cy="38" r="2" fill="#6FD3FF"/><path d="M38 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="35" y="62" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="38" cy="38" r="2" fill="#6FD3FF"/><path d="M47 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="44" y="54" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="47" cy="38" r="2" fill="#FFC94A"/><path d="M56 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="53" y="50" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="56" cy="38" r="2" fill="#8BF0A0"/><path d="M65 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="62" y="60" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="65" cy="38" r="2" fill="#FF6FAE"/><path d="M74 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="71" y="56" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="74" cy="38" r="2" fill="#6FD3FF"/><path d="M83 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="80" y="52" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="83" cy="38" r="2" fill="#FFC94A"/><path d="M92 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="89" y="64" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="92" cy="38" r="2" fill="#8BF0A0"/><path d="M101 46 V70" stroke="#2A2540" stroke-width="3.4" stroke-linecap="round"/><rect x="98" y="55" width="6" height="5" rx="1.2" fill="#E8E2F4" stroke="#1B1830" stroke-width="1.2"/><circle cx="101" cy="38" r="2" fill="#6FD3FF"/>
 <path d="M20 34 H70" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
 <path d="M30 80 H98" stroke="#8BF0A0" stroke-opacity=".7" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 4"/></svg>` },
-      { id: 'liveroom', name: 'Live Room', icon: 'guitar', unlock: 10000000, base: 750000, cycle: 3.4, cost: 6875000, growth: 1.14, crew: 'Session Band', crewCost: 112500000, spot: [214, 180],
+      { id: 'liveroom', name: 'Live Room', icon: 'guitar', unlock: 10000000, base: 750000, cycle: 3.4, cost: 6875000, growth: 1.13, crew: 'Session Band', crewCost: 112500000, spot: [214, 180],
         pos: [212, 112, 154, 132], ring: 96, hint: 40,
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="154" height="132" viewBox="0 0 154 132" aria-hidden="true">
 <ellipse cx="74" cy="112" rx="58" ry="4" fill="#000" opacity=".1"/><ellipse cx="18" cy="111" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="22" cy="113" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="40" cy="113" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="44" cy="113" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="96" cy="113" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="104" cy="113" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="128" cy="113" rx="4.5" ry="2" fill="#000" opacity=".34"/><ellipse cx="94" cy="115.5" rx="6" ry="2.2" fill="#000" opacity=".34"/>
@@ -1504,7 +1531,7 @@ const LOCATIONS = [
 <rect x="18" y="62" width="26" height="14" rx="3" fill="#C9C3DE" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="31" cy="62" rx="13" ry="4" fill="#F4F1EA" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M31 76 V110 M31 98 L22 112 M31 98 L40 112" stroke="#1B1830" stroke-width="2.6" stroke-linecap="round"/>
 </g></svg>` },
-      { id: 'playlist', name: 'Playlist Push', icon: 'phone', unlock: 75000000, base: 4000000, cycle: 7, cost: 50000000, growth: 1.15, crew: 'Playlist Curator', crewCost: 625000000, spot: [140, 398],
+      { id: 'playlist', name: 'Playlist Push', icon: 'phone', unlock: 75000000, base: 4000000, cycle: 7, cost: 50000000, growth: 1.14, crew: 'Playlist Curator', crewCost: 625000000, spot: [140, 398],
         pos: [24, 384, 128, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="150" viewBox="0 0 128 150" aria-hidden="true">
 <ellipse cx="64" cy="143.5" rx="27" ry="3" fill="#000" opacity=".34"/>
@@ -1519,7 +1546,7 @@ const LOCATIONS = [
 <rect x="34" y="64" width="10" height="10" rx="2" fill="#FF6FAE" stroke="#1B1830" stroke-width="1.2"/><path d="M50 67 H82 M50 72 H70" stroke="#E8E2F4" stroke-opacity="1" stroke-width="2.2" stroke-linecap="round"/><rect x="34" y="79" width="10" height="10" rx="2" fill="#6FD3FF" stroke="#1B1830" stroke-width="1.2"/><path d="M50 82 H78 M50 87 H67" stroke="#E8E2F4" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round"/><rect x="34" y="94" width="10" height="10" rx="2" fill="#FFC94A" stroke="#1B1830" stroke-width="1.2"/><path d="M50 97 H74 M50 102 H64" stroke="#E8E2F4" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round"/><rect x="34" y="109" width="10" height="10" rx="2" fill="#8BF0A0" stroke="#1B1830" stroke-width="1.2"/><path d="M50 112 H70 M50 117 H61" stroke="#E8E2F4" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round"/>
 <rect x="36" y="118" width="56" height="3" rx="1.5" fill="#3A3558"/><rect x="36" y="118" width="30" height="3" rx="1.5" fill="#8BF0A0"/>
 <path d="M30 20 V50" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'labeldeal', name: 'Label Deal', icon: 'star', unlock: 75000000, base: 4000000, cycle: 7, cost: 50000000, growth: 1.15, crew: 'A&R Exec', crewCost: 625000000, spot: [178, 408],
+      { id: 'labeldeal', name: 'Label Deal', icon: 'star', unlock: 75000000, base: 4000000, cycle: 7, cost: 50000000, growth: 1.14, crew: 'A&R Exec', crewCost: 625000000, spot: [178, 408],
         pos: [236, 384, 130, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
 <ellipse cx="65" cy="139.5" rx="62" ry="4" fill="#000" opacity=".32"/>
@@ -1544,7 +1571,7 @@ const LOCATIONS = [
   {
     id: 'mansion', name: 'Hillside Mansion', track: 'music/beat3.mp3', floor: '#EDE6D6', plank: '#D8CDB8', tiles: true, wall: '#F1EADB', goal: 400000000000000, decor: MANSION_DECOR, home: [160, 284],
     stations: [
-      { id: 'piano', name: 'Piano Suite', icon: 'note', unlock: 0, base: 6250000, cycle: 2, cost: 37500000, growth: 1.13, crew: 'Songwriter', crewCost: 562500000, spot: [140, 160],
+      { id: 'piano', name: 'Piano Suite', icon: 'note', unlock: 0, base: 6250000, cycle: 2, cost: 37500000, growth: 1.12, crew: 'Songwriter', crewCost: 562500000, spot: [140, 160],
         pos: [24, 112, 128, 100],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="100" viewBox="0 0 128 100" aria-hidden="true">
 <path d="M14 84 H118 L116 92 H16 Z" fill="#000" opacity=".08"/><ellipse cx="21" cy="95" rx="7" ry="2.6" fill="#000" opacity=".28"/><ellipse cx="111" cy="95" rx="7" ry="2.6" fill="#000" opacity=".28"/>
@@ -1559,7 +1586,7 @@ const LOCATIONS = [
 <path d="M16 82 H26 L24 94 H18 Z M106 82 H116 L114 94 H108 Z" fill="#F7F4EE" stroke="#1B1830" stroke-width="2.6" stroke-linejoin="round"/>
 <path d="M17 92 H25 M107 92 H115" stroke="#C9A15A" stroke-width="2"/>
 <path d="M14 43 H60" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'podcast', name: 'Podcast Room', icon: 'mic', unlock: 500000000, base: 37500000, cycle: 3.6, cost: 343750000, growth: 1.14, crew: 'Podcast Producer', crewCost: 5625000000, spot: [214, 180],
+      { id: 'podcast', name: 'Podcast Room', icon: 'mic', unlock: 500000000, base: 37500000, cycle: 3.6, cost: 343750000, growth: 1.13, crew: 'Podcast Producer', crewCost: 5625000000, spot: [214, 180],
         pos: [212, 112, 154, 132], ring: 96, hint: 40,
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="154" height="132" viewBox="0 0 154 132" aria-hidden="true">
 <ellipse cx="77" cy="116" rx="54" ry="4" fill="#000" opacity=".08"/><ellipse cx="24" cy="119" rx="5" ry="2.2" fill="#000" opacity=".28"/><ellipse cx="130" cy="119" rx="5" ry="2.2" fill="#000" opacity=".28"/><ellipse cx="77" cy="121" rx="6" ry="2.4" fill="#000" opacity=".28"/>
@@ -1574,7 +1601,7 @@ const LOCATIONS = [
 <path d="M34 70 V52 L42 44" fill="none" stroke="#1B1830" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="34" cy="71" rx="8" ry="3" fill="#2C2840" stroke="#1B1830" stroke-width="2"/><rect x="36" y="26" width="12" height="22" rx="6" fill="#2C2840" stroke="#1B1830" stroke-width="2.4"/><path d="M39 32 H45 M39 37 H45" stroke="#6E6890" stroke-width="1.6"/><rect x="38" y="44" width="8" height="5" rx="1.5" fill="#C9A15A" stroke="#1B1830" stroke-width="1.4"/><path d="M120 70 V52 L112 44" fill="none" stroke="#1B1830" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="120" cy="71" rx="8" ry="3" fill="#2C2840" stroke="#1B1830" stroke-width="2"/><rect x="106" y="26" width="12" height="22" rx="6" fill="#2C2840" stroke="#1B1830" stroke-width="2.4"/><path d="M109 32 H115 M109 37 H115" stroke="#6E6890" stroke-width="1.6"/><rect x="108" y="44" width="8" height="5" rx="1.5" fill="#C9A15A" stroke="#1B1830" stroke-width="1.4"/>
 <rect x="66" y="66" width="10" height="10" rx="2" fill="#F7F4EE" stroke="#1B1830" stroke-width="2"/><path d="M76 68 Q80 68 80 71 Q80 74 76 74" fill="none" stroke="#1B1830" stroke-width="1.8"/>
 <rect x="84" y="70" width="16" height="10" rx="1.5" fill="#26223A" stroke="#1B1830" stroke-width="1.8"/><rect x="86" y="72" width="12" height="6" fill="#6FD3FF" opacity=".7"/></svg>` },
-      { id: 'brand', name: 'Brand Collab', icon: 'shirt', unlock: 3750000000, base: 200000000, cycle: 7.5, cost: 2500000000, growth: 1.15, crew: 'Brand Manager', crewCost: 31250000000, spot: [140, 398],
+      { id: 'brand', name: 'Brand Collab', icon: 'shirt', unlock: 3750000000, base: 200000000, cycle: 7.5, cost: 2500000000, growth: 1.14, crew: 'Brand Manager', crewCost: 31250000000, spot: [140, 398],
         pos: [24, 384, 128, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="150" viewBox="0 0 128 150" aria-hidden="true">
 <ellipse cx="10" cy="113.5" rx="9" ry="2.4" fill="#000" opacity=".26"/><ellipse cx="118" cy="113.5" rx="9" ry="2.4" fill="#000" opacity=".26"/><ellipse cx="64" cy="139.5" rx="35" ry="3.6" fill="#000" opacity=".28"/><ellipse cx="112" cy="139.5" rx="10" ry="2.6" fill="#000" opacity=".28"/>
@@ -1589,7 +1616,7 @@ const LOCATIONS = [
 <path d="M44 86 H80" stroke="#F7F4EE" stroke-width="2.4"/><path d="M58 80 L62 76" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
 <path d="M102 108 H122 L120 138 H104 Z" fill="#C9A15A" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M107 108 Q107 100 112 100 Q117 100 117 108" fill="none" stroke="#1B1830" stroke-width="2.2"/>
 <path d="M36 104 H60" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'docu', name: 'Documentary', icon: 'camera', unlock: 21875000000, base: 1000000000, cycle: 13, cost: 13750000000, growth: 1.16, crew: 'Film Crew', crewCost: 156250000000, spot: [178, 408],
+      { id: 'docu', name: 'Documentary', icon: 'camera', unlock: 21875000000, base: 1000000000, cycle: 13, cost: 13750000000, growth: 1.15, crew: 'Film Crew', crewCost: 156250000000, spot: [178, 408],
         pos: [236, 384, 130, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
 <ellipse cx="36" cy="141" rx="4.5" ry="2" fill="#000" opacity=".28"/><ellipse cx="72" cy="141" rx="4.5" ry="2" fill="#000" opacity=".28"/><ellipse cx="54" cy="139" rx="4.5" ry="2" fill="#000" opacity=".28"/><ellipse cx="84" cy="141" rx="4.5" ry="2" fill="#000" opacity=".28"/><ellipse cx="124" cy="141" rx="4.5" ry="2" fill="#000" opacity=".28"/><ellipse cx="118" cy="137" rx="4.5" ry="2" fill="#000" opacity=".28"/>
@@ -1610,7 +1637,7 @@ const LOCATIONS = [
   {
     id: 'stadium', name: 'Stadium Tour', track: 'music/beat1.mp3', floor: '#34303F', plank: '#2C2836', wall: '#0E0C1C', goal: 25000000000000000, decor: STADIUM_DECOR, home: [160, 284],
     stations: [
-      { id: 'mainstage', name: 'Main Stage', icon: 'mic', unlock: 0, base: 312500000, cycle: 2.2, cost: 1875000000, growth: 1.13, crew: 'Stage Manager', crewCost: 28125000000, spot: [140, 160],
+      { id: 'mainstage', name: 'Main Stage', icon: 'mic', unlock: 0, base: 312500000, cycle: 2.2, cost: 1875000000, growth: 1.12, crew: 'Stage Manager', crewCost: 28125000000, spot: [140, 160],
         pos: [24, 112, 128, 100],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="100" viewBox="0 0 128 100" aria-hidden="true">
 <ellipse cx="64" cy="91.5" rx="62" ry="4" fill="#000" opacity=".38"/>
@@ -1623,7 +1650,7 @@ const LOCATIONS = [
 <path d="M64 70 V36 L72 30" fill="none" stroke="#1B1830" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="64" cy="70" rx="8" ry="2.6" fill="#2C2840" stroke="#1B1830" stroke-width="2"/>
 <rect x="68" y="20" width="8" height="13" rx="4" fill="#C9C3DE" stroke="#1B1830" stroke-width="2.2" transform="rotate(-30 72 27)"/>
 <path d="M16 70 L20 60 H38 L40 70 Z M88 70 L90 60 H108 L112 70 Z" fill="#2C2840" stroke="#1B1830" stroke-width="2.4" stroke-linejoin="round"/></svg>` },
-      { id: 'lightrig', name: 'Light Show', icon: 'star', unlock: 25000000000, base: 1875000000, cycle: 3.8, cost: 17187500000, growth: 1.14, crew: 'Lighting Director', crewCost: 281250000000, spot: [214, 180],
+      { id: 'lightrig', name: 'Light Show', icon: 'star', unlock: 25000000000, base: 1875000000, cycle: 3.8, cost: 17187500000, growth: 1.13, crew: 'Lighting Director', crewCost: 281250000000, spot: [214, 180],
         pos: [212, 112, 154, 132], ring: 96, hint: 40,
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="154" height="132" viewBox="0 0 154 132" aria-hidden="true">
 <ellipse cx="10" cy="115.5" rx="9" ry="2.4" fill="#000" opacity=".38"/><ellipse cx="144" cy="115.5" rx="9" ry="2.4" fill="#000" opacity=".38"/><ellipse cx="77" cy="119.5" rx="44" ry="3.6" fill="#000" opacity=".38"/>
@@ -1633,7 +1660,7 @@ const LOCATIONS = [
 <path d="M10 4 H144 M10 12 H144" stroke="#1B1830" stroke-width="7" stroke-linecap="round"/><path d="M10 4 H144 M10 12 H144" stroke="#8C86A6" stroke-width="3" stroke-linecap="round"/><path d="M12 4 L20 12" stroke="#8C86A6" stroke-width="2"/><path d="M24 4 L32 12" stroke="#8C86A6" stroke-width="2"/><path d="M36 4 L44 12" stroke="#8C86A6" stroke-width="2"/><path d="M48 4 L56 12" stroke="#8C86A6" stroke-width="2"/><path d="M60 4 L68 12" stroke="#8C86A6" stroke-width="2"/><path d="M72 4 L80 12" stroke="#8C86A6" stroke-width="2"/><path d="M84 4 L92 12" stroke="#8C86A6" stroke-width="2"/><path d="M96 4 L104 12" stroke="#8C86A6" stroke-width="2"/><path d="M108 4 L116 12" stroke="#8C86A6" stroke-width="2"/><path d="M120 4 L128 12" stroke="#8C86A6" stroke-width="2"/><path d="M132 4 L140 12" stroke="#8C86A6" stroke-width="2"/><rect x="22" y="14" width="16" height="12" rx="3" fill="#2C2840" stroke="#1B1830" stroke-width="2.2"/><ellipse cx="30" cy="25" rx="5" ry="2.4" fill="#FF6FAE"/><rect x="46" y="14" width="16" height="12" rx="3" fill="#2C2840" stroke="#1B1830" stroke-width="2.2"/><ellipse cx="54" cy="25" rx="5" ry="2.4" fill="#6FD3FF"/><rect x="70" y="14" width="16" height="12" rx="3" fill="#2C2840" stroke="#1B1830" stroke-width="2.2"/><ellipse cx="78" cy="25" rx="5" ry="2.4" fill="#FFC94A"/><rect x="94" y="14" width="16" height="12" rx="3" fill="#2C2840" stroke="#1B1830" stroke-width="2.2"/><ellipse cx="102" cy="25" rx="5" ry="2.4" fill="#8BF0A0"/><rect x="118" y="14" width="16" height="12" rx="3" fill="#2C2840" stroke="#1B1830" stroke-width="2.2"/><ellipse cx="126" cy="25" rx="5" ry="2.4" fill="#B18CFF"/>
 <path d="M40 92 H114 L120 104 H34 Z" fill="#3A3360" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M34 104 H120 V114 Q120 118 116 118 H38 Q34 118 34 114 Z" fill="#1E1B2E" stroke="#1B1830" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 <rect x="46" y="95" width="5" height="6" rx="1" fill="#FF6FAE"/><rect x="55" y="95" width="5" height="6" rx="1" fill="#6FD3FF"/><rect x="64" y="95" width="5" height="6" rx="1" fill="#FFC94A"/><rect x="73" y="95" width="5" height="6" rx="1" fill="#8BF0A0"/><rect x="82" y="95" width="5" height="6" rx="1" fill="#B18CFF"/><rect x="91" y="95" width="5" height="6" rx="1" fill="#FF6FAE"/><rect x="100" y="95" width="5" height="6" rx="1" fill="#6FD3FF"/><rect x="109" y="95" width="5" height="6" rx="1" fill="#FFC94A"/></svg>` },
-      { id: 'jumbotron', name: 'Jumbotron', icon: 'monitor', unlock: 187500000000, base: 10000000000, cycle: 8, cost: 125000000000, growth: 1.15, crew: 'Broadcast Crew', crewCost: 1562500000000, spot: [140, 398],
+      { id: 'jumbotron', name: 'Jumbotron', icon: 'monitor', unlock: 187500000000, base: 10000000000, cycle: 8, cost: 125000000000, growth: 1.14, crew: 'Broadcast Crew', crewCost: 1562500000000, spot: [140, 398],
         pos: [24, 384, 128, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="128" height="150" viewBox="0 0 128 150" aria-hidden="true">
 <ellipse cx="28" cy="141.5" rx="11" ry="2.6" fill="#000" opacity=".38"/><ellipse cx="100" cy="141.5" rx="11" ry="2.6" fill="#000" opacity=".38"/>
@@ -1653,7 +1680,7 @@ const LOCATIONS = [
 <rect x="14" y="18" width="22" height="9" rx="2" fill="#FF4F6A"/><path d="M18 22.5 H32" stroke="#fff" stroke-width="2" stroke-dasharray="2 1.2"/>
 <path d="M9 93 H119" stroke="#1B1830" stroke-opacity=".3" stroke-width="1"/>
 <path d="M8 10 H60" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/></svg>` },
-      { id: 'worldtour', name: 'World Tour', icon: 'disc', unlock: 1093750000000, base: 50000000000, cycle: 14, cost: 687500000000, growth: 1.16, crew: 'Tour Manager', crewCost: 7812500000000, spot: [178, 408],
+      { id: 'worldtour', name: 'World Tour', icon: 'disc', unlock: 1093750000000, base: 50000000000, cycle: 14, cost: 687500000000, growth: 1.15, crew: 'Tour Manager', crewCost: 7812500000000, spot: [178, 408],
         pos: [236, 384, 130, 150],
         furn: `<svg class="abs" style="left:0;top:0;overflow:visible" width="130" height="150" viewBox="0 0 130 150" aria-hidden="true">
 <ellipse cx="65" cy="140" rx="58" ry="3" fill="#000" opacity=".15"/><ellipse cx="32" cy="142.5" rx="9" ry="2.6" fill="#000" opacity=".4"/><ellipse cx="100" cy="142.5" rx="9" ry="2.6" fill="#000" opacity=".4"/>
@@ -1837,7 +1864,7 @@ const TIPS = [
   { id: 'album1', text: () => say('celebrating', 'Your tour is complete! Open Career to drop your first album and earn a permanent income boost.'), show: () => !(S.albums > 0) && albumReady(), target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
   { id: 'goals', text: () => say('celebrating', 'You finished a goal! Open Goals to claim your gems.'), show: () => goalsClaimable(), target: () => $('goalsBtn'), done: () => sheetKey === 'goals' },
   { id: 'daily', text: () => say('explaining', "Your daily reward is ready! You'll find Daily Rewards inside Goals."), show: () => dailyReady() && S.daily.last, target: () => $('goalsBtn'), done: () => sheetKey === 'daily' },
-  { id: 'crate', text: () => say('celebrating', 'A free crate is ready! Open it for cash and gems.'), show: () => !$('crateBtn').disabled && !$('crateBang').hidden, target: () => $('crateBtn'), done: () => sheetKey != null && !$('scrim').hidden },
+  { id: 'crate', text: () => say('celebrating', 'A free crate is ready! Open it for cash and gems.'), show: () => !$('crateBtn').disabled && !$('crateBang').hidden, target: () => $('crateBtn'), done: () => Date.now() < S.crateReady },   // the crate is cooling down: it was opened
   { id: 'hype', text: () => say('explaining', 'Want a boost? 2x Hype doubles your earnings for a while. Use it whenever you like.'), show: () => S.stats.lifetime > 2000 && !(S.hypeUntil > Date.now()), target: () => $('hypeBtn').querySelector('.orb'), done: () => S.hypeUntil > Date.now() || sheetKey === 'hype', info: 'Got it' },
   { id: 'inv', text: () => say('explaining', "Looking for your items? Open Shop, then Inventory. They'll wait there until you use them."), show: () => invQty('skips') + invQty('frenzies') > 0, target: () => tabTile('shop'), done: () => sheetKey === 'inv' },
   { id: 'style', text: () => say('celebrating', 'You unlocked a new look! Try it on in Style.'), show: () => S.newItems && S.newItems.length > 0, target: () => tabTile('style'), done: () => sheetKey === 'style' },
@@ -2327,6 +2354,7 @@ const SFX = {
   hype: () => tone(220, 0.35, 'sawtooth', 0.04, 0, 880),
   move: () => [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, i === 4 ? 0.5 : 0.16, 'square', 0.035, i * 0.11)),
   tap: () => tone(660, 0.04, 'sine', 0.03),
+  pop: () => { tone(520, 0.09, 'sine', 0.05, 0, 1040); tone(1568, 0.14, 'sine', 0.025, 0.05); chaNoise(0.06, 0.03); },
   click: () => { tone(900, 0.025, 'triangle', 0.035); tone(1350, 0.02, 'sine', 0.015, 0.012); },
   denied: () => tone(180, 0.12, 'square', 0.025),
 };
@@ -2586,11 +2614,12 @@ function buildRoom() {
     b.addEventListener('click', () => tapStation(st));
     // hold to keep producing: the press itself starts a track, and while the finger stays down each finished track starts the next
     b.addEventListener('pointerdown', () => {
+      if (lvl(st.id) && S.crew[st.id]) { boostPress = st.id; boostWasHeld = false; setTimeout(() => { if (boostPress === st.id && !panMoved) { boostSt = st.id; boostWasHeld = true; } }, 220); return; }   // crewed: hold to run it faster
       if (!lvl(st.id) || S.crew[st.id]) return;
       holdSt = st.id;
       setTimeout(() => { if (holdSt === st.id && !panMoved && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); } }, 220);
     });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => b.addEventListener(ev, () => { if (holdSt === st.id) holdSt = null; }));
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => b.addEventListener(ev, () => { if (holdSt === st.id) holdSt = null; if (boostPress === st.id) { boostPress = null; boostSt = null; } }));
     b.addEventListener('contextmenu', e => e.preventDefault());
   });
   moveArtist(def(S.selected));
@@ -2714,7 +2743,7 @@ wrap.addEventListener('pointermove', e => {
   if (!panDrag || e.pointerId !== panDrag.id) return;
   const dy = e.clientY - panDrag.y;
   if (!panMoved && Math.abs(dy) < 10) return;
-  if (!panMoved) { panMoved = true; holdSt = null; closePop(); try { wrap.setPointerCapture(e.pointerId); } catch (err) {} }
+  if (!panMoved) { panMoved = true; holdSt = null; clearBoost(); closePop(); try { wrap.setPointerCapture(e.pointerId); } catch (err) {} }
   setPan(panDrag.start + dy / fitS);
   const now = performance.now(); panSamples.push([now, panY]); while (panSamples.length > 2 && now - panSamples[0][0] > 100) panSamples.shift();
 });
@@ -2950,6 +2979,7 @@ function tapStation(st) {
     render(); return;
   }
   tutTapped++;
+  if (S.crew[st.id] && !panMoved && !boostWasHeld) { boostTapSt = st.id; boostTapUntil = Date.now() + BOOST_TAP_MS; }
   const wasOpen = popOpen && S.selected === st.id;
   S.selected = st.id;
   let started = false;
@@ -2962,7 +2992,14 @@ function tapStation(st) {
 }
 // upgrade card that pops out of the tapped station
 let popOpen = false, holdSt = null;
-window.addEventListener('blur', () => { holdSt = null; });
+// holding a crewed station runs it at BOOST_SPEED; one station at a time. A quick tap counts as BOOST_TAP_MS of holding, and taps never stack
+// past the hold speed, so tapping fast can't beat simply holding.
+const BOOST_SPEED = 1.5, BOOST_TAP_MS = 500;
+let boostSt = null, boostPress = null, boostTapSt = null, boostTapUntil = 0, boostWasHeld = false;
+const boostedId = () => boostSt || (Date.now() < boostTapUntil ? boostTapSt : null);
+function clearBoost() { boostSt = null; boostPress = null; boostTapSt = null; boostTapUntil = 0; }
+window.addEventListener('blur', () => { holdSt = null; clearBoost(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) clearBoost(); });
 function closePop() { popOpen = false; $('pop').hidden = true; }
 $('popClose').addEventListener('click', closePop);
 $('roomWrap').addEventListener('click', e => { if (!e.target.closest('.station, .sbtn, .pop')) closePop(); });
@@ -3080,9 +3117,11 @@ function applyAutoCrew() {
   const first = LOC().stations[0];
   if (lvl(first.id) && !S.crew[first.id]) { S.crew[first.id] = true; S.running[first.id] = true; }
 }
+let moving = false;
 function moveUp() {
   const next = S.loc + 1;
-  if (!LOCATIONS[next] || movePct() < 100) return;
+  if (moving || !LOCATIONS[next] || movePct() < 100) return;
+  moving = true;
   const cleared = S.loc, firstTime = (S.mapPaid || 0) <= cleared;
   S.clears = clearsOf(); S.clears[cleared]++;
   Object.assign(S, runState(next));
@@ -3091,12 +3130,64 @@ function moveUp() {
   let gems = 0;
   if (firstTime) { gems = MAP_GEMS[cleared] || 0; S.gems += gems; if (gems) owe('gems'); S.mapPaid = next; track(`reach/${LOC().id}/${hrs(S.stats.playSec)}`); }
   applyAutoCrew();
-  buildRoom(); save(); render(); sfx(firstTime ? 'bling' : 'move'); syncChart(true);
-  const loc = LOC();
-  openSheet(`<div class="welcome"><h2>Welcome to the ${loc.name}</h2>
-    ${firstTime ? `<div class="plaque-win">${plaqueArt(cleared, 1, 92)}<span><b>${LOCATIONS[cleared].name} cleared</b><em>Plaque earned · +${gems} gems</em></span></div>` : `<p>${LOCATIONS[cleared].name} cleared ${S.clears[cleared]} times.${[3, 5, 10, 20].includes(S.clears[cleared]) ? ` Its plaque is now <b style="color:${plaqueTier(S.clears[cleared])[2]}">${plaqueTier(S.clears[cleared])[1]}</b>!` : ''}</p>`}
-    <p>New space, bigger money. Your ${loc.stations[0].name} is ready. Tap it to start earning, then unlock the rest.</p></div>
-    <button class="cta" data-close>Let's go</button>`);
+  // the move itself is done and saved here, once; what follows is only presentation and resumes safely after a reload
+  S.arrival = { loc: next, from: cleared, first: firstTime, gems, clears: S.clears[cleared] };
+  closeSheet();
+  buildRoom(); save(); render(); sfx('move'); syncChart(true);
+  travelTo(LOC().name, () => { moving = false; showArrival(); });
+}
+const ARRIVE_LINES = { studio: 'Your own Home Studio! Real gear, real sessions. Let\u2019s make some noise.', loft: 'Downtown Loft! The city can hear you now. Let\u2019s fill this place.',
+  pro: 'A Pro Studio, booked under your name. Time to sound like a headliner.', mansion: 'Hillside Mansion! You built this one track at a time. Enjoy the view.',
+  stadium: 'The Stadium Tour. Thousands of fans, one stage. This is your moment!' };
+function travelTo(name, done) {
+  const el = document.createElement('div'); el.className = 'upload travel';
+  const ic = ['<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFC94A" stroke-width="2.4" stroke-linejoin="round"><path d="M3 8l9-4 9 4v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/></svg>',
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BF0A0" stroke-width="2.4" stroke-linecap="round"><path d="M4 20 9 4M20 20 15 4M12 6v2M12 11v2M12 16v2"/></svg>',
+    '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 22s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" fill="#FF6FAE"/><circle cx="12" cy="10" r="2.6" fill="#14122A"/></svg>',
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>'];
+  el.innerHTML = `<svg class="car" width="200" height="112" viewBox="0 0 200 112" aria-hidden="true">    <ellipse cx="104" cy="101" rx="78" ry="6" fill="#14122A" opacity=".18"/>    <g class="lines" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity=".85"><path d="M8 52h22M2 66h26M12 80h18"/></g>    <g class="body">      <path d="M36 86 V66 Q36 56 48 54 L70 50 L88 30 Q92 26 98 26 H134 Q141 26 145 31 L160 50 L172 53 Q184 56 184 68 V86 Z" fill="#FFC94A" stroke="#14122A" stroke-width="5" stroke-linejoin="round"/>      <path d="M78 50 L93 33 Q95 31 98 31 H114 V50 Z" fill="#BFF0FF" stroke="#14122A" stroke-width="4" stroke-linejoin="round"/>      <path d="M120 31 H133 Q137 31 140 34 L153 50 H120 Z" fill="#BFF0FF" stroke="#14122A" stroke-width="4" stroke-linejoin="round"/>      <path d="M96 36 l8 -2" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/>      <path d="M117 52 V82" stroke="#14122A" stroke-width="3" opacity=".55"/>      <path d="M44 64 H178" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".35"/>      <rect x="172" y="60" width="10" height="8" rx="3" fill="#FFE27A" stroke="#14122A" stroke-width="3"/>      <rect x="36" y="62" width="8" height="7" rx="2" fill="#FF4D6D" stroke="#14122A" stroke-width="3"/>      <rect x="126" y="58" width="12" height="4" rx="2" fill="#14122A" opacity=".6"/>    </g>    <g class="wheel" style="transform-origin:70px 88px"><circle cx="70" cy="88" r="14" fill="#2A2740" stroke="#14122A" stroke-width="5"/><circle cx="70" cy="88" r="5.5" fill="#D9D6E8"/><path d="M70 78v20M60 88h20" stroke="#D9D6E8" stroke-width="2.5" opacity=".6"/></g>    <g class="wheel" style="transform-origin:152px 88px"><circle cx="152" cy="88" r="14" fill="#2A2740" stroke="#14122A" stroke-width="5"/><circle cx="152" cy="88" r="5.5" fill="#D9D6E8"/><path d="M152 78v20M142 88h20" stroke="#D9D6E8" stroke-width="2.5" opacity=".6"/></g>  </svg><h2>${name}</h2><p class="ustep">Packing up the gear\u2026</p><div class="upbar"><i></i></div><div class="plats">${ic.map(i => `<span>${i}</span>`).join('')}</div>`;
+  document.body.appendChild(el);
+  const steps = ['Packing up the gear\u2026', 'Hitting the road\u2026', 'Pulling up outside\u2026', 'Moving in!'], T = 3500, t0 = performance.now();
+  steps.forEach((t, i) => setTimeout(() => { el.querySelector('.ustep').textContent = t; el.querySelectorAll('.plats span').forEach((p, k) => p.classList.toggle('on', k <= i)); }, i * T / 4));
+  const finish = () => { el.classList.add('off'); setTimeout(() => el.remove(), 280); done(); };
+  // 3.5 s; if the new room's art is still decoding, wait for it (capped)
+  const imgs = [...document.querySelectorAll('#roomArt img')].filter(i => !i.complete);
+  Promise.race([Promise.all(imgs.map(i => new Promise(r => { i.onload = i.onerror = r; }))), new Promise(r => setTimeout(r, 6000))])
+    .then(() => setTimeout(finish, Math.max(0, T - (performance.now() - t0))));
+}
+let pendingArrive = false;
+function showArrival() {
+  const a = S.arrival; if (!a || a.loc !== S.loc) { delete S.arrival; return; }
+  const loc = LOC(), stage = loc.id === 'stadium';
+  nextSheetKey = 'arrive';
+  openSheet(`<div class="welcome arrive"><h2 class="ar-title"><small>Welcome to the</small><span>${loc.name}</span></h2>
+    ${a.first ? `<div class="plaque-win">${plaqueArt(a.from, 1, 64)}<span><b>${LOCATIONS[a.from].name} cleared</b><em>Plaque earned \u00b7 +${a.gems} gems</em></span></div>` : `<p>${LOCATIONS[a.from].name} cleared ${a.clears} times.${[3, 5, 10, 20].includes(a.clears) ? ` Its plaque is now <b style="color:${plaqueTier(a.clears)[2]}">${plaqueTier(a.clears)[1]}</b>!` : ''}</p>`}
+    <div class="maya-note"><span class="mfig"><img src="art/maya-celebrating.webp?v=124" alt="" draggable="false"></span><div class="mcard"><span class="mname">Maya \u00b7 Your manager</span><p>${ARRIVE_LINES[loc.id] || 'New space, bigger money. Let\u2019s get to work!'}</p><i class="mtail" aria-hidden="true"></i></div></div></div>
+    <button class="cta" data-arrive>${stage ? 'Take the Stage' : 'Open Studio'}</button>`);
+}
+function finishArrival() {
+  if (!S.arrival) return;
+  delete S.arrival; save();
+  closeSheet(); sfx('pop'); confetti();
+}
+function confetti() {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = document.createElement('div'); box.className = 'confetti'; box.setAttribute('aria-hidden', 'true');
+  const cols = ['#FF6FAE', '#FFC94A', '#8BF0A0', '#6FD3FF', '#B18CFF', '#FFFFFF'];
+  for (let i = 0; i < 44; i++) {
+    const c = document.createElement('i'), ang = (Math.random() * 140 + 200) * Math.PI / 180, d = 140 + Math.random() * 190;
+    c.style.cssText = `background:${cols[i % cols.length]};--x:${Math.cos(ang) * d * 1.3}px;--y:${Math.sin(ang) * d}px;--r:${Math.random() * 720 - 360}deg;animation-delay:${Math.random() * 60}ms`;
+    box.appendChild(c);
+  }
+  $('app').appendChild(box); setTimeout(() => box.remove(), 1600);
+  // a full-screen layer: every piece pops in together, drifts a little and fades out together
+  const sky = document.createElement('div'); sky.className = 'confetti-sky'; sky.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < 120; i++) {
+    const c = document.createElement('i');
+    c.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 100}%;background:${cols[i % cols.length]};--d:${30 + Math.random() * 50}px;--dx:${Math.random() * 30 - 15}px;--r0:${Math.random() * 360}deg;--r:${Math.random() * 300 - 150}deg`;
+    sky.appendChild(c);
+  }
+  $('app').appendChild(sky); setTimeout(() => sky.remove(), 2700);
 }
 // the album 'upload': a few seconds of anticipation before the big pop-up
 const PLAT_IC = ['<svg width="20" height="20" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12" fill="none" stroke="#FFC94A" stroke-width="2.4" stroke-linejoin="round"></path><circle cx="7" cy="18" r="3" fill="#FFC94A"></circle><circle cx="17" cy="16" r="3" fill="#FFC94A"></circle></svg>',
@@ -3162,6 +3253,7 @@ function syncShine(root) {
 function moreBelow() { const sh = $('sheet'); $('scrim').classList.toggle('more-below', !!sh.querySelector('.album-pop') && sh.scrollHeight - sh.clientHeight - sh.scrollTop > 6); }
 $('sheet').addEventListener('scroll', moreBelow, { passive: true });
 function openSheet(html) {
+  clearBoost();
   $('scrim').classList.remove('more-below');
   try { setHudH(); } catch (e) {}
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
@@ -3228,6 +3320,7 @@ function closeSheet() {
   flushOwed();
   $('scrim').hidden = true; sheetKey = null;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === 'studio'));
+  if (pendingArrive) { pendingArrive = false; return showArrival(); }
   if (pendingWelcome) { pendingWelcome = false; return openTab('welcome'); }
   if (pendingDaily) { pendingDaily = false; if (dailyReady()) openTab('daily'); }
 }
@@ -3246,7 +3339,7 @@ function claimDaily() {
 }
 $('scrim').addEventListener('click', e => {
   if ((e.target === $('scrim') || e.target.closest('[data-close]')) && sheetKey === 'confirm-buy') { const pb = pendingBuy; pendingBuy = null; return pb ? backFromBuy(pb) : closeSheet(); }
-  if ((e.target === $('scrim') || e.target.closest('[data-close]')) && sheetKey !== 'welcome') return closeSheet();
+  if ((e.target === $('scrim') || e.target.closest('[data-close]')) && sheetKey !== 'welcome' && sheetKey !== 'arrive') return closeSheet();
   const hire = e.target.closest('[data-hire]');
   if (hire) {
     const st = def(hire.dataset.hire);
@@ -3388,6 +3481,7 @@ $('scrim').addEventListener('click', e => {
   if (sw) { if (sw.dataset.skin) S.skin = sw.dataset.skin; if (sw.dataset.phones) S.phones = sw.dataset.phones; applyLook(); save(); if (S.onboarded) syncChart(true); openTab('style'); return; }
   if (e.target.closest('[data-move-ask]')) return openTab('move-confirm');
   if (e.target.closest('[data-move]')) return moveUp();
+  if (e.target.closest('[data-arrive]')) return finishArrival();
   if (e.target.closest('[data-album-ask]')) return openTab('album-confirm');
   if (e.target.closest('[data-album]')) return dropAlbum();
   if (e.target.closest('[data-reset-ask]')) return openTab('reset');
@@ -4479,10 +4573,15 @@ function openTab(tab) {
       <div class="row mrow ${g > 1 ? '' : 'off'}"><span class="ric">${svgIc('shirt', '#B18CFF', 20)}</span><span class="rt"><b>Wardrobe</b><span>${g > 1 ? `Your best item in each slot${S.owned.lucky ? ' · crates pay 2x' : ''}` : 'Collect items in Style for a bonus'}</span></span><span class="xv">+${Math.round((g - 1) * 100)}%</span></div>
       <p class="cnote">Outfits add profit to every payout on top of your multiplier.</p>`);
   } else if (tab === 'move-confirm') {
-    openSheet(`<div class="sheet-head"><h2>Move to the ${next.name}?</h2>${closeBtn()}</div>
+    const firstTime = (S.mapPaid || 0) <= S.loc, gemsNext = MAP_GEMS[S.loc] || 0;
+    openSheet(`<div class="sheet-head"><h2>Your next chapter</h2>${closeBtn()}</div>
+      <div class="chapter"><div class="ch-card"><span class="ch-art">${plaqueArt(S.loc, 1, 64)}</span><b>${LOC().name}</b><small>Now</small></div>
+        <span class="ch-arrow" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5l9 7-9 7z" fill="currentColor"></path></svg></span>
+        <div class="ch-card next"><span class="ch-art">${plaqueArt(S.loc + 1, 1, 64)}</span><b>${next.name}</b><small>Next</small></div></div>
+      ${firstTime && gemsNext ? `<p class="ch-reward">First move here: <b>+${gemsNext} gems</b> and the ${LOC().name} plaque</p>` : ''}
       <div class="keeps"><div><b>You keep</b>Your style, gems and fame</div><div><b>You start fresh</b>Cash, stations and crew</div></div>
       <p>The ${next.name} earns about 50 times more per tap, so you'll be past your old income within a few minutes.</p>
-      <button class="cta" data-move>Move in</button><button class="ghost" data-close>Not yet</button>`);
+      <button class="cta" data-move>Move Up</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'album-confirm') {
     openSheet(`<div class="sheet-head"><h2>Drop album #${(S.albums || 0) + 1}?</h2>${closeBtn()}</div>
       <div class="keeps"><div><b>You gain</b>Fame x${fmtX(fame() + fameNext())} on every station, forever, plus ${GEMS_PER_ALBUM} gems</div><div><b>You restart</b>Back in the apartment with $0</div></div>
@@ -4907,7 +5006,9 @@ function tick(t) {
     if (!lvl(st.id) || !els[st.id]) return;
     const auto = !!S.crew[st.id];
     if (!auto && !S.running[st.id]) { els[st.id].bar.style.width = '0%'; return; }
-    S.prog[st.id] = (S.prog[st.id] || 0) + dt / cycleTime(st);
+    const boosted = auto && boostedId() === st.id;
+    els[st.id].b.classList.toggle('boosting', boosted);
+    S.prog[st.id] = (S.prog[st.id] || 0) + dt / cycleTime(st) * (boosted ? BOOST_SPEED : 1);
     if (S.prog[st.id] >= 1) {
       const n = auto ? Math.floor(S.prog[st.id]) : 1;
       S.stats.payouts += n;
@@ -4981,6 +5082,7 @@ function start(data) {
   applyLook(); buildRoom(); fit();
   if (!(data && data.state)) {
     offline();
+    if (S.arrival) { if ($('scrim').hidden) showArrival(); else pendingArrive = true; }
     if (!S.onboarded && S.name && S.name !== 'New Artist') S.onboarded = true;
     if (!S.onboarded) { if (dailyReady()) pendingDaily = true; if ($('scrim').hidden) openTab('welcome'); else pendingWelcome = true; }
     else if (dailyReady()) { if ($('scrim').hidden) openTab('daily'); else pendingDaily = true; }
