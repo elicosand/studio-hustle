@@ -530,7 +530,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .tab-hype { position: relative; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; color: var(--accent); font-size: 11px; font-weight: 700; }
 .tab-hype .orb { position: absolute; top: -30px; width: 60px; height: 60px; z-index: 0; border-radius: 18px; color: var(--deep); border: 4px solid var(--ink); box-sizing: border-box; isolation: isolate;
   background: linear-gradient(160deg, #FF9CCB 0%, #FF4F9A 100%); display: grid; place-items: center; box-shadow: 0 4px 0 #B84778; animation: hypewiggle 6s ease-in-out infinite; animation-delay: -3s; }
-.tab-hype .orb::before { content: ""; position: absolute; inset: -10px; border-radius: 26px; z-index: -1; background: radial-gradient(circle, rgba(255,111,174,.75) 0%, rgba(255,111,174,0) 70%); animation: pulseglow 2.4s ease-in-out infinite; }
+.tab-hype .orb::before { display: none; content: ""; position: absolute; inset: -10px; border-radius: 26px; z-index: -1; background: radial-gradient(circle, rgba(255,111,174,.75) 0%, rgba(255,111,174,0) 70%); animation: pulseglow 2.4s ease-in-out infinite; }
 .tab-hype .orb svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 0 rgba(20,18,42,.25)); }
 .tab-hype .orb .spk { width: 10px; height: 10px; top: -6px; right: -6px; z-index: 2; }
 .tab-hype .orb .spk + .spk { top: auto; bottom: -4px; left: -7px; right: auto; animation-delay: -1.2s; width: 8px; height: 8px; }
@@ -776,11 +776,11 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .splash { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding-bottom: 9vh; box-sizing: border-box;
   background: radial-gradient(circle at 50% 38%, var(--brand-a), var(--brand-b) 75%); }
 .splash.done { animation: splashout .35s ease-in forwards; }
-/* the supplied artwork (title, headphone icon, character), cropped to its artwork. The title's axis is centred on the screen with the
-   loading bar right under it; the character hangs off to the right. Sized so the character side keeps a 16px margin and the piece
-   takes at most about half the screen height. */
-.splash-art { position: relative; width: min(calc((100vw - 32px) * .8264), calc(52vh / .7464), 520px); animation: logopop .6s cubic-bezier(.2,1.6,.4,1) both; }
-.splash-art img { display: block; width: 100%; height: auto; transform: translateX(10.51%); }
+/* the supplied artwork (icon, title, character), cropped to its artwork; the whole composition is centred over the loading bar.
+   It keeps the supplied, smaller presentation: drawn at the same scale per source pixel as the Build 122 art (no extra reduction),
+   so it's about 80% as wide; the same limits keep it inside small phones. */
+.splash-art { position: relative; width: calc(min(calc((100vw - 32px) * .8264), calc(52vh / .7464), 520px) * .8025); animation: logopop .6s cubic-bezier(.2,1.6,.4,1) both; }
+.splash-art img { display: block; width: 100%; height: auto; }
 .splash-dots { position: absolute; inset: 0; opacity: .16; -webkit-mask: radial-gradient(ellipse 62% 44% at 50% 42%, transparent 35%, #000 100%); mask: radial-gradient(ellipse 62% 44% at 50% 42%, transparent 35%, #000 100%); background-image: radial-gradient(#fff 0 9px, transparent 10px), radial-gradient(#fff 0 5px, transparent 6px); background-size: 120px 120px, 70px 70px; background-position: 10px 20px, 50px 80px; }
 .splash-logo { position: relative; width: 190px; height: auto; filter: drop-shadow(0 10px 0 rgba(13,11,30,.3)); animation: logopop .6s cubic-bezier(.2,1.6,.4,1) both; }
 /* title: a white face over one solid blue extrusion, both outlined in navy, drawn as two stacked copies so every letter gets the same depth on every phone */
@@ -931,14 +931,16 @@ html, body { background: var(--bar) !important; }
 
 <div class="splash" id="splash" aria-hidden="true">
   <div class="splash-dots"></div>
-  <div class="splash-art"><img src="art/splash-logo.webp?v=122" width="1266" height="945" alt="Studio Hustle" draggable="false" decoding="sync" fetchpriority="high"></div>
+  <div class="splash-art"><img src="art/splash-logo.webp?v=123" width="1016" height="823" alt="Studio Hustle" draggable="false" decoding="sync" fetchpriority="high"></div>
   <div class="splash-bar"><i></i></div>
   <p class="splash-tip">Music by Elijah Gray</p>
   <script>
   // the bar follows real start-up: page parsed, game state and room built, fonts in, this map's room art decoded. Then it fades out.
-  (() => { const sp = document.getElementById('splash'), bar = sp.querySelector('.splash-bar i'); let p = 0, done = false;
+  (() => { const sp = document.getElementById('splash'), bar = sp.querySelector('.splash-bar i'), shown = performance.now(); let p = 0, done = false;
+    // a cold launch keeps the splash up for about 2 s from when it appeared (longer only if start-up needs it); the bar stays real and
+    // may sit full for a moment. The page doesn't reload when coming back from the background, so this never replays then.
     window.splashProgress = v => { if (done) return; p = Math.max(p, v); bar.style.setProperty('--p', p.toFixed(3));
-      if (p >= 1) { done = true; setTimeout(() => { sp.classList.add('done'); dispatchEvent(new Event('splashdone')); }, 300); } };   // 300ms = the bar's own fill transition
+      if (p >= 1) { done = true; setTimeout(() => { sp.classList.add('done'); dispatchEvent(new Event('splashdone')); }, Math.max(300, 2000 - (performance.now() - shown))); } };
     splashProgress(.15);
     setTimeout(() => splashProgress(1), 9000);   // safety net: never keep the game behind the splash if something hangs
   })();
@@ -1744,7 +1746,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 122, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 123, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -2399,7 +2401,7 @@ function buildRoom() {
   if (shownLoc !== S.loc) { shownLoc = S.loc; showLocTitle(); }
   placeStations(loc);
   if (fanEl) { fanEl.remove(); fanEl = null; }
-  if (shownPanLoc !== S.loc) { shownPanLoc = S.loc; panY = 0; applyPan(); }
+  if (shownPanLoc !== S.loc) { shownPanLoc = S.loc; if (typeof stopGlide === 'function') stopGlide(); panY = 0; applyPan(); }
   setTimeout(startTraffic, 0);
   $('roomArt').innerHTML = (SCENES[loc.id] || '') + loc.decor + loc.stations.map(st => {
     const [l, t, w, h] = st.pos;
@@ -2548,18 +2550,36 @@ function applyPan() {
   wrap.classList.toggle('panned', panY > 2);
 }
 function setPan(v) { panY = Math.max(panMin, Math.min(OUT_H, v)); applyPan(); }
-wrap.addEventListener('pointerdown', e => { if (S && S.tut != null && S.tut < TUT.length && S.loc === 0 && !$('tut').hidden) return; panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; });
+// the room follows the finger 1:1 while dragging; on release it glides on briefly and eases to a stop (no bounce, same scroll range)
+let panGlide = 0, panSamples = [];
+const stopGlide = () => { if (panGlide) cancelAnimationFrame(panGlide); panGlide = 0; };
+function glidePan(v) {   // v in stage units per ms
+  let last = performance.now();
+  const step = now => { const dt = Math.min(40, now - last); last = now;
+    const before = panY; setPan(panY + v * dt); v *= Math.exp(-dt / 150);
+    panGlide = (Math.abs(v) > .015 && panY !== before) ? requestAnimationFrame(step) : 0; };
+  panGlide = requestAnimationFrame(step);
+}
+wrap.addEventListener('pointerdown', e => { stopGlide(); if (S && S.tut != null && S.tut < TUT.length && S.loc === 0 && !$('tut').hidden) return; panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; panSamples = [[performance.now(), panY]]; });
 wrap.addEventListener('pointermove', e => {
   if (!panDrag || e.pointerId !== panDrag.id) return;
   const dy = e.clientY - panDrag.y;
   if (!panMoved && Math.abs(dy) < 10) return;
   if (!panMoved) { panMoved = true; holdSt = null; closePop(); try { wrap.setPointerCapture(e.pointerId); } catch (err) {} }
   setPan(panDrag.start + dy / fitS);
+  const now = performance.now(); panSamples.push([now, panY]); while (panSamples.length > 2 && now - panSamples[0][0] > 100) panSamples.shift();
 });
-['pointerup', 'pointercancel'].forEach(ev => wrap.addEventListener(ev, () => { panDrag = null; }));
+wrap.addEventListener('pointerup', e => {
+  if (panDrag && panMoved && e.pointerId === panDrag.id && panSamples.length > 1) {
+    const now = performance.now(), [t0, p0] = panSamples[0], [t1, p1] = panSamples[panSamples.length - 1];
+    if (now - t1 < 60 && t1 - t0 > 8) { const v = Math.max(-1.5, Math.min(1.5, (p1 - p0) / (t1 - t0))); if (Math.abs(v) > .05) glidePan(v); }   // only a moving release glides
+  }
+  panDrag = null;
+});
+wrap.addEventListener('pointercancel', () => { panDrag = null; });
 // a drag shouldn't also count as a tap on whatever it started on
 wrap.addEventListener('click', e => { if (panMoved) { e.stopPropagation(); e.preventDefault(); panMoved = false; } }, true);
-wrap.addEventListener('wheel', e => { setPan(panY - e.deltaY / fitS); }, { passive: true });
+wrap.addEventListener('wheel', e => { stopGlide(); setPan(panY - e.deltaY / fitS); }, { passive: true });
 new ResizeObserver(fit).observe(wrap);
 // remember where the money/gems bar ends so pop-ups can start right below it
 const hudEl = document.querySelector('.hud');
@@ -3727,7 +3747,9 @@ function cloud() {   // fills in missing fields on the same object so every call
 async function supa(path, { method = 'GET', body, auth = false, token = null, keepalive = false, headers = {} } = {}) {
   const h = Object.assign({ apikey: SUPA_KEY, 'Content-Type': 'application/json' }, headers);
   if (auth || token) h.Authorization = 'Bearer ' + (token || cloud().at);
-  const r = await fetch(SUPA_URL + path, { method, headers: h, keepalive, body: body ? JSON.stringify(body) : undefined });
+  const ctl = typeof AbortController === 'function' ? new AbortController() : null, to = ctl && setTimeout(() => ctl.abort(), 15000);   // give up on a stalled request
+  let r; try { r = await fetch(SUPA_URL + path, { method, headers: h, keepalive, body: body ? JSON.stringify(body) : undefined, signal: ctl ? ctl.signal : undefined }); }
+  catch (e) { throw new Error(e && e.name === 'AbortError' ? 'NetworkError: timed out' : (e && e.message) || 'NetworkError'); } finally { if (to) clearTimeout(to); }
   const text = await r.text(); let data = null; try { data = text ? JSON.parse(text) : null; } catch (e) {}
   return { ok: r.ok, status: r.status, data, range: r.headers.get('content-range') };
 }
@@ -4802,7 +4824,8 @@ function start(data) {
     Promise.all([fonts, ...art]).then(() => splashProgress(1));
   }
 }
-document.addEventListener('visibilitychange', () => { if (document.hidden) { save(); backup(false, true); } else if (S && S.onboarded) syncChart(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { save(); backup(false, true); }
+  else if (S && S.onboarded) { if (Date.now() - (S.last || Date.now()) >= 30000) { offline(); save(); render(); } syncChart(); } });
 window.addEventListener('pagehide', () => { save(); backup(false, true); });
 window.claude?.hot?.snapshot?.(() => ({ state: S }));
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
