@@ -177,7 +177,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 /* depth: top-row stations (1) < their crew (2) < fans walking the middle (3) < bottom-row stations (4) < bottom crew (5) < artist (6) */
 .station.rt { z-index: 1; } .crew.rt { z-index: 2; } .station.rb { z-index: 4; }
 .crew svg { animation: bob .6s ease-in-out infinite alternate; }
-.artist { position: absolute; width: 70px; height: 96px; z-index: 6; transition: left .55s ease, top .55s ease; pointer-events: none; scale: .92; transform-origin: 50% 100%; }
+.artist { position: absolute; left: 0; top: 0; width: 70px; height: 96px; z-index: 6; transition: translate .55s ease; pointer-events: none; scale: .92; transform-origin: 50% 100%; will-change: translate; }
 .artist.working svg { animation: bob .45s ease-in-out infinite alternate; }
 @keyframes bob { from { transform: translateY(0) } to { transform: translateY(-4px) } }
 .skin { fill: var(--skin); } .phones { fill: var(--phones); }
@@ -232,8 +232,13 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .mult .info { position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); width: 13px; height: 13px; box-sizing: border-box; border: 2px solid var(--gem); border-radius: 50%;
   color: var(--gem); font: 700 9px/9px var(--body); font-style: normal; text-align: center; text-shadow: none; box-shadow: 0 1px 0 var(--deep); }
 .side { position: absolute; top: 10px; z-index: 5; transform: translateZ(0); will-change: transform; backface-visibility: hidden; isolation: isolate; display: flex; flex-direction: column; gap: 16px; }
-.side-l { left: max(10px, env(safe-area-inset-left, 0px)); }
-.side-r { right: max(10px, env(safe-area-inset-right, 0px)); }
+.side-l { left: env(safe-area-inset-left, 0px); }
+.side-r { right: env(safe-area-inset-right, 0px); }
+/* docked to the screen edge: nearly square outer corners, rounded inner ones; the label sits inside the tile; the notification
+   badge goes on the inner (room-facing) corner so the screen edge never clips it */
+.side-l .sbtn { border-radius: 4px 16px 16px 4px; }
+.side-r .sbtn { border-radius: 16px 4px 4px 16px; }
+.side-r .bang { right: auto; left: -6px; }
 .sbtn { position: relative; width: 54px; height: 54px; border-radius: 16px; background: var(--text); color: var(--deep); display: grid; place-items: center;
   box-shadow: 0 4px 0 rgba(20,18,42,.35); }
 .sbtn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(20,18,42,.35); }
@@ -769,7 +774,13 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 /* launch splash: shows on a fresh load only (a phone returning from the background doesn't reload the page) */
 :root { --brand-a: #9FE6FF; --brand-b: #3FB6EC; }
 .splash { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding-bottom: 9vh; box-sizing: border-box;
-  background: radial-gradient(circle at 50% 38%, var(--brand-a), var(--brand-b) 75%); animation: splashout .45s ease-in 2s forwards; }
+  background: radial-gradient(circle at 50% 38%, var(--brand-a), var(--brand-b) 75%); }
+.splash.done { animation: splashout .35s ease-in forwards; }
+/* the supplied artwork (title, headphone icon, character), cropped to its artwork. The title's axis is centred on the screen with the
+   loading bar right under it; the character hangs off to the right. Sized so the character side keeps a 16px margin and the piece
+   takes at most about half the screen height. */
+.splash-art { position: relative; width: min(calc((100vw - 32px) * .8264), calc(52vh / .7464), 520px); animation: logopop .6s cubic-bezier(.2,1.6,.4,1) both; }
+.splash-art img { display: block; width: 100%; height: auto; transform: translateX(10.51%); }
 .splash-dots { position: absolute; inset: 0; opacity: .16; -webkit-mask: radial-gradient(ellipse 62% 44% at 50% 42%, transparent 35%, #000 100%); mask: radial-gradient(ellipse 62% 44% at 50% 42%, transparent 35%, #000 100%); background-image: radial-gradient(#fff 0 9px, transparent 10px), radial-gradient(#fff 0 5px, transparent 6px); background-size: 120px 120px, 70px 70px; background-position: 10px 20px, 50px 80px; }
 .splash-logo { position: relative; width: 190px; height: auto; filter: drop-shadow(0 10px 0 rgba(13,11,30,.3)); animation: logopop .6s cubic-bezier(.2,1.6,.4,1) both; }
 /* title: a white face over one solid blue extrusion, both outlined in navy, drawn as two stacked copies so every letter gets the same depth on every phone */
@@ -778,7 +789,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .splash-title .st-ext { color: #2C86CF; transform: translateY(7px); }
 .splash-title .st-face { position: relative; z-index: 1; color: #fff; }
 .splash-bar { position: relative; width: 190px; height: 14px; border-radius: 999px; background: rgba(20,18,42,.35); border: 3px solid #14122A; overflow: hidden; margin-top: 8px; }
-.splash-bar i { position: absolute; inset: 0; background: linear-gradient(180deg, #A9F5B8, #4FC46A); transform-origin: 0 50%; transform: scaleX(0); animation: splashfill 1.9s cubic-bezier(.35,.1,.25,1) forwards; will-change: transform; }
+.splash-bar i { position: absolute; inset: 0; background: linear-gradient(180deg, #A9F5B8, #4FC46A); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); transition: transform .3s ease-out; will-change: transform; }
 .splash-bar i::after { content: ""; position: absolute; left: 4px; right: 4px; top: 2px; height: 3px; border-radius: 99px; background: rgba(255,255,255,.55); }
 .splash-tip { position: absolute; bottom: max(28px, env(safe-area-inset-bottom, 0px)); margin: 0; color: #14122A; font: 700 13px var(--body); opacity: .7; }
 @keyframes splashout { to { opacity: 0; visibility: hidden; } }
@@ -798,7 +809,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .upload .plats span { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: #2E2A4A; border: 3px solid #0B0B10; opacity: .35; transition: opacity .3s, transform .3s; }
 .upload .plats span.on { opacity: 1; transform: translateY(-3px); }
 @keyframes fadein { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .splash, .splash-logo, .splash-title, .upload .vinyl { animation-duration: .01s; } .splash { animation-delay: 1.2s; } }
+@media (prefers-reduced-motion: reduce) { .splash.done, .splash-art, .upload .vinyl { animation-duration: .01s; } .splash-bar i { transition: none; } }
 
 /* shop: a slow drifting headphones pattern behind the deals */
 .sheet.shopmode { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='54' viewBox='6 6 74 74'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.07' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M18 46a19 19 0 0 1 38 0'/%3E%3C/g%3E%3Cg fill='%23fff' fill-opacity='.07'%3E%3Crect x='12' y='42' width='12' height='18' rx='5'/%3E%3Crect x='50' y='42' width='12' height='18' rx='5'/%3E%3Ccircle cx='72' cy='16' r='4'/%3E%3C/g%3E%3C/svg%3E"); background-size: 54px 54px; animation: shopdrift 22s linear infinite; }
@@ -906,8 +917,13 @@ html, body { background: var(--bar) !important; }
 .ev-hero .ev-art { position: relative; z-index: 1; width: 120px; height: 140px; overflow: hidden; flex: none; }
 .ev-hero .ev-art > svg { position: absolute; left: 50%; top: 4px; width: 150px; height: auto; transform: translateX(-50%); }
 .ev-hero .flag { position: absolute; left: 50%; bottom: 0; width: 104px; height: 144px; margin-left: -34px; z-index: 0; }
-.side { gap: 13px; }
-.side .sbtn { width: 50px; height: 50px; }
+.side { gap: 10px; }
+.side .sbtn { width: 54px; height: 62px; padding-bottom: 14px; box-sizing: border-box; }
+.side .sbtn .cap { bottom: 4px; }
+.segtabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 14px; }
+.segtabs .stab { position: relative; height: 40px; font-weight: 700; font-size: 14px; }
+.segtabs .tdot { position: absolute; top: -6px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: #F0453A; color: #fff;
+  border: 2px solid var(--text); font: 700 11px/16px var(--body); font-style: normal; text-align: center; }
 </style>
 </head>
 <body>
@@ -915,27 +931,18 @@ html, body { background: var(--bar) !important; }
 
 <div class="splash" id="splash" aria-hidden="true">
   <div class="splash-dots"></div>
-  <svg class="splash-logo" viewBox="60 110 392 290" aria-hidden="true"><g transform="translate(0,4)">
-  <!-- green coin with arrow, centered under the headphones -->
-  <circle cx="256" cy="276" r="112" fill="#8BF0A0" stroke="#0D0B1E" stroke-width="14"/>
-  <ellipse cx="226" cy="226" rx="44" ry="24" fill="#FFFFFF" opacity="0.28" transform="rotate(-30 226 226)"/>
-  <path d="M256 340 V218 M204 268 L256 216 L308 268" fill="none" stroke="#14122A" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- headband: dark outline then white -->
-  <path d="M126 262 A130 130 0 0 1 386 262" fill="none" stroke="#0D0B1E" stroke-width="46" stroke-linecap="round"/>
-  <path d="M126 262 A130 130 0 0 1 386 262" fill="none" stroke="#F4F1EA" stroke-width="28" stroke-linecap="round"/>
-  <path d="M168 170 A118 118 0 0 1 300 140" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
-  <!-- left ear cup: cushion + shell, hugging the coin -->
-  <rect x="80" y="214" width="92" height="150" rx="40" fill="#F4F1EA" stroke="#0D0B1E" stroke-width="14"/>
-  <rect x="140" y="230" width="26" height="118" rx="13" fill="#000" opacity="0.14"/>
-  <ellipse cx="108" cy="262" rx="11" ry="26" fill="#FFFFFF" opacity="0.95"/>
-  <!-- right ear cup -->
-  <rect x="340" y="214" width="92" height="150" rx="40" fill="#F4F1EA" stroke="#0D0B1E" stroke-width="14"/>
-  <rect x="346" y="230" width="26" height="118" rx="13" fill="#000" opacity="0.14"/>
-  <ellipse cx="404" cy="262" rx="11" ry="26" fill="#FFFFFF" opacity="0.95"/>
-  </g></svg>
-  <h1 class="splash-title" aria-label="Studio Hustle"><span class="st-ext" aria-hidden="true">Studio<br>Hustle</span><span class="st-face" aria-hidden="true">Studio<br>Hustle</span></h1>
+  <div class="splash-art"><img src="art/splash-logo.webp?v=122" width="1266" height="945" alt="Studio Hustle" draggable="false" decoding="sync" fetchpriority="high"></div>
   <div class="splash-bar"><i></i></div>
   <p class="splash-tip">Music by Elijah Gray</p>
+  <script>
+  // the bar follows real start-up: page parsed, game state and room built, fonts in, this map's room art decoded. Then it fades out.
+  (() => { const sp = document.getElementById('splash'), bar = sp.querySelector('.splash-bar i'); let p = 0, done = false;
+    window.splashProgress = v => { if (done) return; p = Math.max(p, v); bar.style.setProperty('--p', p.toFixed(3));
+      if (p >= 1) { done = true; setTimeout(() => { sp.classList.add('done'); dispatchEvent(new Event('splashdone')); }, 300); } };   // 300ms = the bar's own fill transition
+    splashProgress(.15);
+    setTimeout(() => splashProgress(1), 9000);   // safety net: never keep the game behind the splash if something hangs
+  })();
+  </script>
 </div>
 <script>
 // iPhone home-screen app drawing under the status bar: iOS reports a screen that is short by the status bar's height,
@@ -950,7 +957,7 @@ html, body { background: var(--bar) !important; }
   fit(); addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 300)); addEventListener('load', () => setTimeout(fit, 100)); })();
 // paint the phone's status bar the splash color while it shows, then back to the top-bar gray
 (() => { const m = document.querySelector('meta[name="theme-color"]'); if (!m) return; const was = m.content;
-  m.content = '#4FBDEE'; setTimeout(() => { m.content = was; }, 2450); })();
+  m.content = '#4FBDEE'; addEventListener('splashdone', () => setTimeout(() => { m.content = was; }, 350), { once: true }); })();
 </script>
 <div class="app" id="app">
   <header class="hud">
@@ -995,10 +1002,6 @@ html, body { background: var(--bar) !important; }
       </button>
     </div>
     <div class="side side-r">
-      <button class="sbtn" id="dailyBtn" aria-label="Daily reward">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path><path d="m9 15 2 2 4-4"></path></svg>
-        <span class="cap">Daily</span><span class="bang" id="dailyDot" hidden>!</span>
-      </button>
       <button class="sbtn charts" id="chartsBtn" aria-label="The Charts">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"></path></svg>
         <span class="cap">Charts</span>
@@ -1007,14 +1010,10 @@ html, body { background: var(--bar) !important; }
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 4h13l-2.5 4.5L18 13H5"></path></svg>
         <span class="cap">Events</span><span class="bang evdot" id="eventsBang" hidden>!</span>
       </button>
-      <button class="sbtn" id="invBtn" aria-label="Inventory">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7V5a4 4 0 0 1 8 0v2"></path><rect x="4" y="7" width="16" height="14" rx="3"></rect><path d="M4 12h16M11 12v2h2v-2"></path></svg>
-        <span class="cap">Inventory</span><span class="invct" id="invCt" hidden></span>
-      </button>
     </div>
     <div class="stage" id="stage">
       <div id="roomArt"></div>
-      <div class="artist" id="artist" style="left:160px;top:214px">
+      <div class="artist" id="artist" style="translate:160px 214px">
         <svg width="70" height="96" viewBox="0 0 70 96" aria-hidden="true">
           <ellipse cx="35" cy="88" rx="24" ry="7" fill="#000" opacity="0.25"></ellipse>
           <ellipse cx="13" cy="62" rx="7" ry="9" fill="#E8E2F4"></ellipse>
@@ -1745,7 +1744,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 121, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 122, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 const TUT = [
   { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
@@ -1887,6 +1886,11 @@ function dailyTasks() {
     const v = Math.min(t.target, Math.max(0, (S.stats[t.stat] || 0) - (S.dt.base[t.stat] || 0)));
     return Object.assign({ v, ready: v >= t.target, got: !!S.dt.got[id] }, t); });
 }
+const goalsClaimable = () => activeGoals().some(goalReady) || tasksClaimable();
+// tab rows inside the Goals and Shop panels (Daily Rewards and Inventory used to have their own home buttons)
+const segTabs = (on, tabs) => `<div class="segtabs" role="tablist">${tabs.map(([k, label, dot]) => `<button class="stab ${k === on ? 'on' : ''}" role="tab" aria-selected="${k === on}" data-tab-go="${k}">${label}${dot ? `<i class="tdot">${dot}</i>` : ''}</button>`).join('')}</div>`;
+const goalsTabs = on => segTabs(on, [['goals', 'Goals', goalsClaimable() ? '!' : ''], ['daily', 'Daily Rewards', dailyReady() ? '!' : '']]);
+const shopTabs = on => { const n = invQty('skips') + invQty('frenzies'); return segTabs(on, [['shop', 'Shop', ''], ['inv', 'Inventory', n ? (n > 99 ? '99+' : String(n)) : '']]); };
 const tasksClaimable = () => { const ts = dailyTasks(); return ts.some(t => t.ready && !t.got) || (ts.every(t => t.got) && !S.dt.bonus); };
 
 // first time you move out of a map: gems plus a plaque for that map
@@ -2461,7 +2465,11 @@ function clearBadges() {
     bd.style.left = (x0 + Math.max(lo, Math.min(hi, dx)) / s) + 'px';
   });
 }
-setInterval(clearBadges, 500);   // badges widen when an upgrade arrow appears, and side-button dots come and go
+// badges widen when an upgrade arrow appears, and side-button dots come and go: re-check only when those change (no layout work otherwise)
+let badgeSig = '';
+setInterval(() => { if (!S || !LOC() || !els || document.hidden) return;
+  const sig = LOC().id + panMin + [...document.querySelectorAll('[id^=st-] .badge')].map(b => b.textContent.length + (b.querySelector('.up') || {}).hidden).join() + document.querySelectorAll('.side .bang:not([hidden]), .side .invct:not([hidden])').length;
+  if (sig !== badgeSig) { badgeSig = sig; clearBadges(); } }, 500);
 
 function fit() {
   const r = wrap.getBoundingClientRect();
@@ -2563,7 +2571,8 @@ new ResizeObserver(() => { $('cash').dataset.fit = ''; $('gems').dataset.fit = '
 
 function moveArtist(st) {
   const [x, y] = st ? st.spot : LOC().home;
-  artist.style.left = x + 'px'; artist.style.top = y + 'px';
+  artist.style.left = artist.style.top = '0px';   // the position lives in translate (compositor-animated), not left/top
+  artist.style.translate = x + 'px ' + y + 'px';
 }
 // ---------- reward flurry ----------
 // any tap that pays out a lump of cash or gems (welcome back, daily, crates, goals, shop...) sends coins or gems flying into the top bar
@@ -2865,11 +2874,9 @@ function watchAd(onDone) {
     if (left <= 0) { clearInterval(adTimer); done(); } else c.textContent = left;
   }, 1000);
 }
-$('dailyBtn').addEventListener('click', () => openTab('daily'));
 $('tutSkip').addEventListener('click', () => { if (S.tut != null && S.tut >= TUT.length - 1 || S.loc > 0) S.coach = { move1: true, album1: true }; S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
-$('goalsBtn').addEventListener('click', () => openTab('goals'));
+$('goalsBtn').addEventListener('click', () => openTab(dailyReady() && !goalsClaimable() ? 'daily' : 'goals'));   // opens on whichever tab has something to claim
 $('passBtn').addEventListener('click', () => openTab('pass'));
-$('invBtn').addEventListener('click', () => openTab('inv'));
 $('eventsBtn').addEventListener('click', () => { evPick = 0; S.evSeen = dayKey(); save(); openTab('events'); });
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
@@ -4072,7 +4079,7 @@ function openTab(tab) {
   if (tab.startsWith('cloud-')) { nextSheetKey = tab; return cloudSheet(tab); }
   nextSheetKey = tab;
   liveSig = LIVE[tab] ? LIVE[tab]() : '';
-  const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') ? 'shop' : tab;
+  const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') || tab === 'inv' ? 'shop' : tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tabName));
   const loc = LOC(), next = LOCATIONS[S.loc + 1];
   if (tab === 'studio') return closeSheet();
@@ -4195,8 +4202,8 @@ function openTab(tab) {
     const row = k => { const it = INV[k], q = invQty(k);
       return `<div class="invrow ${q ? '' : 'empty'}"><span class="invic">${it.icon()}<b>×${q}</b></span><span class="rt"><b>${it.name} <small>${it.time}</small></b><span>${it.what()}</span></span>
         <button class="hire" data-inv-ask="${k}" ${q ? '' : 'disabled'}>Use</button></div>`; };
-    openSheet(`<div class="sheet-head"><h2>Inventory</h2>${closeBtn()}</div>
-      <p class="cnote">Items from the shop, deals and the Backstage Pass wait here until you use them.</p>
+    openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>${shopTabs('inv')}
+      <p class="cnote">Items you own: from the shop, deals and the Backstage Pass wait here until you use them.</p>
       ${row('skips')}${row('frenzies')}
       <button class="ghost" data-tab-go="shop">Get more in the Shop</button>`);
   } else if (tab.startsWith('inv-use:')) {
@@ -4329,7 +4336,7 @@ function openTab(tab) {
         <span class="ttl">${it.name}<small>${slotName[it.slot]}${it.perk ? ' · ' + it.perk : ''}</small></span>
         <span class="price">${S.owned[it.id] ? 'Owned' : `<i class="g"></i>${it.gems}`}</span></button>`; };
     const order = ['top', 'hat', 'neck', 'face'];
-    openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>
+    openSheet(`<div class="sheet-head"><h2>Shop</h2>${closeBtn()}</div>${shopTabs('shop')}
       <p class="testnote">${TEST ? 'Test mode: real-money items are free.' : "Playtest: real-money items aren't for sale yet. Tap one to say if you'd buy it."}</p>
       ${(() => { const live = liveHols(), gift = liveHols(Date.now(), 'gift')[0]; if (!live.length && !gift) return '';
         const ends = t => { const left = Math.max(0, t - Date.now()), dd = Math.floor(left / 864e5), hh = Math.floor(left % 864e5 / 36e5); return `Ends in ${dd ? dd + 'd ' : ''}${hh}h`; };
@@ -4492,7 +4499,7 @@ function openTab(tab) {
         ${t.got ? `<span class="hired">${svgIc('star', '#8BF0A0', 16)}</span>` : `<button class="hire" data-task="${t.id}" ${t.ready ? '' : 'disabled'}>${t.ready ? 'Claim' : 'Working'}</button>`}</div>`; }).join('');
     const bonus = `<div class="row tbonus ${S.dt.bonus ? 'done' : ''}"><span class="ric"><img src="art/gem.webp" width="28" height="23" alt="" draggable="false" style="display:block"></span><span class="rt"><b>Finish all 3</b><span>${S.dt.bonus ? 'Claimed. New tasks tomorrow' : `+${TASK_BONUS} bonus gems`}</span></span>
       ${S.dt.bonus ? '' : `<button class="hire" data-task-bonus ${allGot ? '' : 'disabled'}>${allGot ? 'Claim' : ts.filter(t => t.got).length + ' / 3'}</button>`}</div>`;
-    openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>
+    openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>${goalsTabs('goals')}
       <div class="sec"><h3>Today <small class="h3note">new tasks in ${left}</small></h3>${tRows}${bonus}</div>
       <div class="sec"><h3>Career goals <small class="h3note">${done} of ${GOALS.length} done</small></h3>
       ${rows || '<p>You finished every goal. More arrive in future updates.</p>'}</div>`);
@@ -4503,7 +4510,7 @@ function openTab(tab) {
       const what = [r.min ? r.min + ' min cash' : '', r.gems ? r.gems + ' gems' : ''].filter(Boolean).join(' + ');
       return `<div class="day ${got ? 'got' : ''} ${ready && d === today ? 'today' : ''} ${d === 7 ? 'big' : ''}"><b>Day ${d}</b><span>${got ? 'Claimed' : what}</span></div>`;
     }).join('');
-    openSheet(`<div class="sheet-head"><h2>Daily Reward</h2>${closeBtn()}</div>
+    openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>${goalsTabs('daily')}
       <p>Log in every day to climb the streak. Cash rewards are worth that many minutes of your best income.</p>
       <div class="days">${cells}</div>
       <button class="cta" ${ready ? 'data-claim' : 'disabled'}>${ready ? 'Claim day ' + today : 'Come back tomorrow'}</button>`);
@@ -4624,14 +4631,12 @@ function render() {
   $('upCost').textContent = (S.buyMode === 1 ? '' : '+' + plan.n + ' ') + fmt(plan.cost);
   $('upBtn').disabled = S.cash < plan.cost;
   $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
-  $('dailyDot').hidden = !dailyReady();
   maybeGift();
   if (!TEST && !S.fbPrompted && S.stats.playSec > 2700 && $('scrim').hidden && S.onboarded) { S.fbPrompted = true; save(); openTab('feedback'); }
   if (TEST) $('testChip').textContent = `TEST · ${S.test.speed}x${S.test.hype ? ' · Hype' : ''}`;
   if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; if (S.stats.days <= 30) track('days-played/' + S.stats.days); }
-  $('goalsDot').hidden = !(activeGoals().some(goalReady) || tasksClaimable());
+  $('goalsDot').hidden = !(goalsClaimable() || dailyReady());
   $('passDot').hidden = !passClaimable();
-  { const n = invQty('skips') + invQty('frenzies'), c = $('invCt'); c.hidden = !n; c.textContent = n > 99 ? '99+' : n; }
   $('crewBang').hidden = !LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= x.crewCost);
   $('styleBang').hidden = !(S.newItems && S.newItems.length);
   const m = totalMult();
@@ -4790,6 +4795,12 @@ function start(data) {
   render(); save(); startTracking();
   setTimeout(cloudBoot, 2500); setInterval(() => backup(), 180000);   // back up every 3 minutes when something changed
   requestAnimationFrame(t => { lastT = t; requestAnimationFrame(tick); });
+  if (window.splashProgress) {   // game state and room are ready; wait for the fonts and this map's room art, nothing else
+    splashProgress(.55);
+    const fonts = document.fonts ? document.fonts.ready.then(() => splashProgress(.8)) : Promise.resolve();
+    const art = [...document.querySelectorAll('#roomArt img')].map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {}));
+    Promise.all([fonts, ...art]).then(() => splashProgress(1));
+  }
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden) { save(); backup(false, true); } else if (S && S.onboarded) syncChart(); });
 window.addEventListener('pagehide', () => { save(); backup(false, true); });
