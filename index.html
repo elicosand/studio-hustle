@@ -653,6 +653,8 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .csel { max-width: 50%; height: 40px; border-radius: 10px; background: var(--panel); color: var(--text); border: 2px solid var(--line); font: 600 14px var(--body); padding: 0 8px; }
 .tab-pct { position: absolute; top: 2px; right: 50%; margin-right: -36px; background: var(--accent); color: var(--deep); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 5px; }
 .tab-pct.full { background: var(--cash); animation: glow 1.6s ease-in-out infinite; }
+.newtag { font-style: normal; font-size: 9px; font-weight: 800; background: #FF6FAE; color: #fff; border-radius: 999px; padding: 1px 5px; margin-left: 4px; vertical-align: 2px; }
+.row.upg.got { opacity: .7; } .upg-done summary { cursor: pointer; font-weight: 700; color: var(--muted); padding: 10px 2px; }
 .tab-pct.album { background: var(--accent); color: #fff; animation: glow 1.2s ease-in-out infinite; }
 
 /* Sheets */
@@ -1755,12 +1757,43 @@ const GEMS_PER_ALBUM = 50;
 const lastLoc = () => LOCATIONS.length - 1;
 // album boost grows with the length of the tour: +25% with 3 maps, +50% once all 6 are in
 const FAME_PER_ALBUM = Math.round(LOCATIONS.length / 3 * 25) / 100;
-const albumReady = () => S.loc === lastLoc() && (tourMet() || S.earned >= goalOf(lastLoc()));
+const albumReady = () => S.loc === lastLoc() && movePct() >= 100;
 const DAILY = [
   { min: 2, gems: 0 }, { min: 3, gems: 0 }, { min: 0, gems: 10 }, { min: 5, gems: 0 },
   { min: 0, gems: 15 }, { min: 8, gems: 0 }, { min: 15, gems: 50 },
 ];
-const MILES = [10, 25, 50, 100, 200];
+const MILES = [25, 50, 75, 90], MILE_PAY = 3, LV_CAP = 100;   // Model B: x3 pay at each milestone, level 100 is MAX
+// Model B economy (build 133): per-map level price growth and the one-time Upgrades for each map. Same dataset as the balance simulator.
+const ECON = {"G":{"apartment":1.1368,"studio":1.1509,"loft":1.1344,"pro":1.1426,"mansion":1.1364,"stadium":1.1415},"UPG":{"apartment":[["Fresh headphones",4356.0,"profit","beats",2],["Busking permit",7411.0,"profit","busk",2],["Flyers on the block",12610.0,"fanfreq",null,1.25],["Faster laptop",21450.0,"speed","beats",1.5],["Fresh headphones II",36490.0,"profit","beats",2],["Pizza for the crew",62080.0,"crew",null,1.25],["Portable amp",105600.0,"speed","busk",1.5],["Busking permit II",179700.0,"profit","busk",2],["Merch giveaways",305700.0,"fanval",null,1.5],["Faster laptop II",520000.0,"speed","beats",1.5],["Local radio play",884700.0,"all",null,1.5],["Portable amp II",1505000.0,"speed","busk",1.5],["Fresh headphones III",2560000.0,"profit","beats",2],["Busking permit III",4356000.0,"profit","busk",2]],"studio":[["Studio monitors",669000.0,"profit","mixer",2],["Condenser mic",1004000.0,"profit","vocalpro",2],["Open studio night",1508000.0,"fanfreq",null,1.25],["Mix templates",2264000.0,"speed","mixer",1.5],["Studio monitors II",3399000.0,"profit","mixer",2],["Coffee machine",5103000.0,"crew",null,1.25],["Comping workflow",7661000.0,"speed","vocalpro",1.5],["Condenser mic II",11500000.0,"profit","vocalpro",2],["Signed posters",17270000.0,"fanval",null,1.5],["Mix templates II",25920000.0,"speed","mixer",1.5],["Playlist placement",38920000.0,"all",null,1.5],["Comping workflow II",58430000.0,"speed","vocalpro",1.5],["Studio monitors III",87720000.0,"profit","mixer",2],["Condenser mic III",131700000.0,"profit","vocalpro",2],["Open studio night II",197700000.0,"fanfreq",null,1.25],["Mix templates III",296800000.0,"speed","mixer",1.5],["Studio monitors IV",445600000.0,"profit","mixer",2],["Coffee machine II",669000000.0,"crew",null,1.25]],"loft":[["Fresh crates",67950000.0,"profit","decks",2],["Screen printer",94420000.0,"profit","merch",2],["Street team",131200000.0,"fanfreq",null,1.25],["Sync buttons",182300000.0,"speed","decks",1.5],["Webcam upgrade",253300000.0,"profit","stream",2],["Crew hoodies",352000000.0,"crew",null,1.25],["Card reader",489100000.0,"speed","merch",1.5],["Fresh crates II",679500000.0,"profit","decks",2],["VIP wristbands",944200000.0,"fanval",null,1.5],["Fiber internet",1312000000.0,"speed","stream",1.5],["Blog feature",1823000000.0,"all",null,1.5],["Sync buttons II",2533000000.0,"speed","decks",1.5],["Fresh crates III",3520000000.0,"profit","decks",2],["Screen printer II",4891000000.0,"profit","merch",2],["Street team II",6795000000.0,"fanfreq",null,1.25],["Sync buttons III",9442000000.0,"speed","decks",1.5],["Webcam upgrade II",13120000000.0,"profit","stream",2],["Crew hoodies II",18230000000.0,"crew",null,1.25],["Card reader II",25330000000.0,"speed","merch",1.5],["Fresh crates IV",35200000000.0,"profit","decks",2],["VIP wristbands II",48910000000.0,"fanval",null,1.5],["Fiber internet II",67950000000.0,"speed","stream",1.5]],"pro":[["Vintage console",6533000000.0,"profit","console",2],["Session players",8613000000.0,"profit","liveroom",2],["Radio interviews",11350000000.0,"fanfreq",null,1.25],["Session recall",14970000000.0,"speed","console",1.5],["Entertainment lawyer",19730000000.0,"profit","labeldeal",2],["Studio catering",26010000000.0,"crew",null,1.25],["Click track",34290000000.0,"speed","liveroom",1.5],["Vintage console II",45200000000.0,"profit","console",2],["Meet & greets",59590000000.0,"fanval",null,1.5],["A&R fast-track",78550000000.0,"speed","labeldeal",1.5],["Magazine cover",103500000000.0,"all",null,1.5],["Session recall II",136500000000.0,"speed","console",1.5],["Vintage console III",179900000000.0,"profit","console",2],["Session players II",237200000000.0,"profit","liveroom",2],["Radio interviews II",312700000000.0,"fanfreq",null,1.25],["Session recall III",412200000000.0,"speed","console",1.5],["Entertainment lawyer II",543400000000.0,"profit","labeldeal",2],["Studio catering II",716400000000.0,"crew",null,1.25],["Click track II",944400000000.0,"speed","liveroom",1.5],["Vintage console IV",1245000000000.0,"profit","console",2],["Meet & greets II",1641000000000.0,"fanval",null,1.5],["A&R fast-track II",2163000000000.0,"speed","labeldeal",1.5],["Magazine cover II",2852000000000.0,"all",null,1.5],["Session recall IV",3760000000000.0,"speed","console",1.5],["Vintage console V",4956000000000.0,"profit","console",2],["Session players III",6533000000000.0,"profit","liveroom",2]],"mansion":[["Grand piano",1150000000000.0,"profit","piano",2],["Guest booking",1460000000000.0,"profit","podcast",2],["Late-night TV spot",1852000000000.0,"fanfreq",null,1.25],["Grand piano II",2044000000000.0,"profit","piano",2],["Guest booking II",2330000000000.0,"profit","podcast",2],["Piano tech",2351000000000.0,"speed","piano",1.5],["Sneaker collab",2656000000000.0,"profit","brand",2],["Sneaker collab II",2983000000000.0,"profit","brand",2],["Film crew",3028000000000.0,"profit","docu",2],["Personal chef",3785000000000.0,"crew",null,1.25],["Remote guests",4803000000000.0,"speed","podcast",1.5],["Film crew II",6095000000000.0,"profit","docu",2],["Fan club perks",7734000000000.0,"fanval",null,1.5],["Brand manager",9814000000000.0,"speed","brand",1.5],["Award nomination",12450000000000.0,"all",null,1.5],["Second unit",15800000000000.0,"speed","docu",1.5],["Grand piano III",20050000000000.0,"profit","piano",2],["Guest booking III",25450000000000.0,"profit","podcast",2],["Late-night TV spot II",32290000000000.0,"fanfreq",null,1.25],["Piano tech II",40980000000000.0,"speed","piano",1.5],["Sneaker collab III",52000000000000.0,"profit","brand",2],["Personal chef II",65980000000000.0,"crew",null,1.25],["Remote guests II",83730000000000.0,"speed","podcast",1.5],["Film crew III",106300000000000.0,"profit","docu",2],["Fan club perks II",134800000000000.0,"fanval",null,1.5],["Brand manager II",171100000000000.0,"speed","brand",1.5],["Award nomination II",217100000000000.0,"all",null,1.5],["Second unit II",275500000000000.0,"speed","docu",1.5],["Grand piano IV",349600000000000.0,"profit","piano",2],["Guest booking IV",443600000000000.0,"profit","podcast",2],["Late-night TV spot III",563000000000000.0,"fanfreq",null,1.25],["Piano tech III",714400000000000.0,"speed","piano",1.5],["Sneaker collab IV",906500000000000.0,"profit","brand",2],["Personal chef III",1150000000000000.0,"crew",null,1.25]],"stadium":[["Bigger stage",86370000000000.0,"profit","mainstage",2],["Laser rig",106500000000000.0,"profit","lightrig",2],["Billboard campaign",131300000000000.0,"fanfreq",null,1.25],["Bigger stage II",149100000000000.0,"profit","mainstage",2],["Stage crew",161800000000000.0,"speed","mainstage",1.5],["Laser rig II",163500000000000.0,"profit","lightrig",2],["Fan cam",179400000000000.0,"profit","jumbotron",2],["Tour bus",196800000000000.0,"profit","worldtour",2],["Fan cam II",199500000000000.0,"profit","jumbotron",2],["Tour catering",246000000000000.0,"crew",null,1.25],["Lighting desk",303300000000000.0,"speed","lightrig",1.5],["Tour bus II",373900000000000.0,"profit","worldtour",2],["Deluxe vinyl drop",460900000000000.0,"fanval",null,1.5],["Live director",568300000000000.0,"speed","jumbotron",1.5],["Headline billing",700600000000000.0,"all",null,1.5],["Tour manager",863700000000000.0,"speed","worldtour",1.5],["Bigger stage III",1065000000000000.0,"profit","mainstage",2],["Laser rig III",1313000000000000.0,"profit","lightrig",2],["Billboard campaign II",1618000000000000.0,"fanfreq",null,1.25],["Stage crew II",1995000000000000.0,"speed","mainstage",1.5],["Fan cam III",2460000000000000.0,"profit","jumbotron",2],["Tour catering II",3033000000000000.0,"crew",null,1.25],["Lighting desk II",3739000000000000.0,"speed","lightrig",1.5],["Tour bus III",4609000000000000.0,"profit","worldtour",2],["Deluxe vinyl drop II",5683000000000000.0,"fanval",null,1.5],["Live director II",7006000000000000.0,"speed","jumbotron",1.5],["Headline billing II",8637000000000000.0,"all",null,1.5],["Tour manager II",1.065e+16,"speed","worldtour",1.5],["Bigger stage IV",1.313e+16,"profit","mainstage",2],["Laser rig IV",1.618e+16,"profit","lightrig",2],["Billboard campaign III",1.995e+16,"fanfreq",null,1.25],["Stage crew III",2.46e+16,"speed","mainstage",1.5],["Fan cam IV",3.033e+16,"profit","jumbotron",2],["Tour catering III",3.739e+16,"crew",null,1.25],["Lighting desk III",4.609e+16,"speed","lightrig",1.5],["Tour bus IV",5.683e+16,"profit","worldtour",2],["Deluxe vinyl drop III",7.006e+16,"fanval",null,1.5],["Live director III",8.637e+16,"speed","jumbotron",1.5]]}};
+const upgList = () => ECON.UPG[LOC().id] || [];
+const upgOwned = () => S.upg || (S.upg = []);
+let upgCache = null;
+function upgFx() {   // every bonus stacks by multiplying: two x2 pay upgrades give x4, two 1.5x speed upgrades give 2.25x
+  const key = S.loc + ':' + upgOwned().join(','); if (upgCache && upgCache.key === key) return upgCache;
+  const fx = { key, pay: {}, speed: {}, crew: 1, fanFreq: 1, fanVal: 1, all: 1 };
+  upgOwned().forEach(i => { const u = upgList()[i]; if (!u) return; const [, , kind, sid, x] = u;
+    if (kind === 'profit') fx.pay[sid] = (fx.pay[sid] || 1) * x; else if (kind === 'speed') fx.speed[sid] = (fx.speed[sid] || 1) * x;
+    else if (kind === 'crew') fx.crew *= x; else if (kind === 'all') fx.all *= x;
+    else if (kind === 'fanfreq') { fx.fanFreq *= x; fx.all *= 1.05; } else if (kind === 'fanval') { fx.fanVal *= x; fx.all *= 1.05; } });
+  return (upgCache = fx);
+}
+const upgCost = i => Math.ceil(upgList()[i][1] * goalScale());
+const unlockRank = st => [...LOC().stations].sort((a, b) => a.unlock - b.unlock).indexOf(st);
+const crewCostOf = st => Math.ceil(st.crewCost * (S.loc >= 2 && unlockRank(st) >= 2 ? 0.3 : 1));   // the top two crews on the Loft and later cost 70% less
+const upgAffordable = () => upgList().map((u, i) => i).filter(i => !upgOwned().includes(i) && S.cash >= upgCost(i));
+const upgNewAffordable = () => upgAffordable().some(i => !(S.upgSeen || []).includes(i));   // the Crew dot: something affordable you haven't looked at yet
+function buyUpg(i) {
+  const u = upgList()[i]; if (!u || upgOwned().includes(i) || S.cash < upgCost(i)) { sfx('denied'); return; }
+  S.cash -= upgCost(i); S.upg = [...upgOwned(), i]; S.stats.upgBuys = (S.stats.upgBuys || 0) + 1; upgCache = null;
+  sfx('milestone'); toast(u[0] + ': ' + upgText(u)); save(); render(); openTab('upgrades');
+}
+const upgText = ([, , kind, sid, x]) => { const nm = sid && (def(sid) || {}).name;
+  return kind === 'profit' ? `${nm} pays x${x}` : kind === 'speed' ? `${nm} runs ${x}x faster` : kind === 'crew' ? `Crewed stations run ${Math.round((x - 1) * 100)}% faster`
+    : kind === 'all' ? `All stations pay x${x}` : kind === 'fanfreq' ? `Fans visit ${Math.round((x - 1) * 100)}% more often · +5% all pay` : `Fans pay ${x}x · +5% all pay`; };
+const crewTabs = on => segTabs(on, [['crew', 'Crew', ''], ['upgrades', 'Upgrades' + (S.upgOpened ? '' : ' <em class="newtag">NEW</em>'), upgAffordable().length ? String(upgAffordable().length) : '']]);
+const growthOf = () => ECON.G[LOC().id] || 1.12;
+const stationsPct = cap => { const sts = LOC().stations; return sts.reduce((a, st) => a + Math.min(lvl(st.id), cap), 0) / (sts.length * cap) * 100; };
+const maxedCount = () => LOC().stations.filter(st => lvl(st.id) >= LV_CAP).length;
 const CRATE_CD = 600, OFFLINE_BASE = 2 * 3600, OFFLINE_OWL = 8 * 3600;
 const OFFLINE_RATE = 0.5;   // crew earn at half speed while you're away; the ad doubles it back to full, so playing stays the best way to earn
 const AD_SECONDS = 5;
@@ -1850,10 +1883,10 @@ const TUT = [
   { text: () => { const st = tutLocked(); return S.cash >= st.unlock ? say('explaining', `You're ready! Tap ${st.name} to unlock it.`) : say('thinking', `Let's save ${fmt(st.unlock)} to unlock ${st.name}. Keep earning!`); },
     target: () => stBtn(tutLocked()), skip: () => !tutLocked(), done: () => S.stats.unlocks > tutBase().unlocks },
   { text: () => { const st = tutHire(); if (sheetKey !== 'crew' || $('scrim').hidden) return say('explaining', "Let's get you some help! Open Crew to hire someone who keeps a station earning without tapping.");
-      return S.cash >= st.crewCost ? say('explaining', `Tap ${fmt(st.crewCost)} to hire. Your crew keeps earning while you're away, too.`) : say('thinking', `We need ${fmt(st.crewCost)} to hire your first crew member. Keep earning!`); },
+      return S.cash >= crewCostOf(st) ? say('explaining', `Tap ${fmt(crewCostOf(st))} to hire. Your crew keeps earning while you're away, too.`) : say('thinking', `We need ${fmt(crewCostOf(st))} to hire your first crew member. Keep earning!`); },
     target: () => (sheetKey === 'crew' && !$('scrim').hidden) ? ($('sheet').querySelector(`[data-hire="${(tutHire() || {}).id}"]`)) : tabTile('crew'),
     inSheet: 'crew', skip: () => !tutHire(), done: () => S.stats.hires > tutBase().hires },
-  { text: () => LOCATIONS[S.loc + 1] ? say('explaining', `Our next stop is the ${LOCATIONS[S.loc + 1].name}! Earn ${fmt(goalOf(S.loc))} to get there. You can track it in Career.`)
+  { text: () => LOCATIONS[S.loc + 1] ? say('explaining', `Our next stop is the ${LOCATIONS[S.loc + 1].name}! Max every station to get there. You can track it in Career.`)
       : say('explaining', "We've reached the stadium! Track the rest of your tour in Career."),
     target: () => tabTile('career'), done: () => sheetKey === 'career', info: 'Continue' },
 ];
@@ -1862,6 +1895,8 @@ const TUT = [
 const TIPS = [
   { id: 'boost', text: () => say('explaining', 'Pro tip: press and hold a station with crew to speed it up. Let go any time.'), show: () => LOC().stations.some(st => lvl(st.id) && S.crew[st.id]),
     target: () => stBtn(LOC().stations.find(st => lvl(st.id) && S.crew[st.id] && st.id === S.selected) || LOC().stations.find(st => lvl(st.id) && S.crew[st.id])), done: () => boostUsed, info: 'Got it' },
+  { id: 'upgrades', text: () => say('celebrating', 'New! Upgrades now live in Crew: big one-time boosts for this map. Open Crew, then Upgrades.'), show: () => upgAffordable().length > 0,
+    target: () => tabTile('crew'), done: () => sheetKey === 'upgrades' || S.upgOpened },
   { id: 'outside', text: () => say('explaining', 'Want a look around? Drag the room down to see outside.'), show: () => true, noTarget: true, info: 'Got it' },
   { id: 'move1', text: () => say('celebrating', `We did it! Open Career to move up to the ${LOCATIONS[S.loc + 1].name}.`), show: () => !(S.maxLoc > S.loc) && LOCATIONS[S.loc + 1] && movePct() >= 100, target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
   { id: 'album1', text: () => say('celebrating', 'Your tour is complete! Open Career to drop your first album and earn a permanent income boost.'), show: () => !(S.albums > 0) && albumReady(), target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
@@ -2291,10 +2326,26 @@ const UP = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="
 function runState(locIdx) {
   const loc = LOCATIONS[locIdx];
   const levels = {}; loc.stations.forEach((s, i) => levels[s.id] = i === 0 ? 1 : 0);
-  return { loc: locIdx, cash: 0, earned: 0, levels, crew: {}, prog: {}, running: {}, selected: loc.stations[0].id };
+  return { loc: locIdx, cash: 0, earned: 0, levels, crew: {}, prog: {}, running: {}, selected: loc.stations[0].id, upg: [], upgSeen: [] };
+}
+// Build 133: old saves move to the Model B economy without losing anything
+function migrateEcon() {
+  const OLD = [10, 25, 50, 100, 200], oldMul = L => Math.pow(2, OLD.filter(m => L >= m).length), newMul = L => Math.pow(MILE_PAY, MILES.filter(m => L >= m).length);
+  S.upg = []; S.upgSeen = []; upgCache = null;
+  LOC().stations.forEach(st => {   // levels never go down; a station that would earn less under the new rules is raised until it earns at least as much
+    const L = lvl(st.id); if (!L) return;
+    let n = Math.min(L, LV_CAP); const old = L * oldMul(L);
+    while (n < LV_CAP && n * newMul(n) < old) n++;
+    S.levels[st.id] = n;
+  });
+  const rate = Math.max(perSec(), bestRate()) * 60;   // Upgrades you'd buy instantly anyway (60 seconds of income or less) are free
+  upgList().forEach((u, i) => { if (upgCost(i) <= rate) S.upg.push(i); }); upgCache = null;
+  // the old money goal still works for the map you're on (and the album, on the last map), so nobody is stranded or slowed down
+  S.legacyGoal = S.loc; S.legacyAlbums = S.albums || 0;
+  S.econV = 2;
 }
 function fresh() {
-  return Object.assign(runState(0), { gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
+  return Object.assign(runState(0), { econV: 2, gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
     buyMode: 1, vol: { master: 80, music: 20, sfx: 80 }, volV: 3, daily: { last: '', streak: 0 }, last: Date.now() });
 }
 
@@ -2479,7 +2530,7 @@ const KEY = TEST ? 'artist-tycoon-test' : 'artist-tycoon-v1';   // save key kept
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(fresh(), JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }
+    if (raw) { const s = Object.assign(fresh(), { econV: 1 }, JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }   // a save without a version predates Model B
   } catch (e) {}
   return null;
 }
@@ -2497,7 +2548,7 @@ const LOC = () => LOCATIONS[S.loc];
 const def = id => LOC().stations.find(s => s.id === id);
 const lvl = id => S.levels[id] || 0;
 const milesHit = L => MILES.filter(m => L >= m).length;
-const cycleTime = st => st.cycle / Math.pow(2, milesHit(lvl(st.id)));
+const cycleTime = st => st.cycle / (upgFx().speed[st.id] || 1) / (S.crew[st.id] ? upgFx().crew : 1);   // fixed timer; Upgrades speed it up
 const FAME_LATE = 0.1, FAME_KNEE = 10;   // +50% per album up to album 10, then +10% per album so the multiplier never runs away
 const fameAt = a => 1 + FAME_PER_ALBUM * Math.min(a, FAME_KNEE) + FAME_LATE * Math.max(0, a - FAME_KNEE);
 const fame = () => fameAt(S.albums || 0);
@@ -2513,22 +2564,23 @@ const gearMult = () => 1 + SLOTS.reduce((a, [sl]) => { const it = bestInSlot(sl)
 const wearingMythic = () => SLOTS.some(([sl]) => { const it = itemById(S.equip && S.equip[sl]); return it && it.rar === 'mythic'; });
 const MIC_FREE_AT = 10;   // the Golden Mic is free at this album, so free players reach the same ceiling
 const boostMult = () => (S.perks.goldenMic ? 2 : 1) * (S.perks.monitors ? 1.25 : 1);
-const payout = st => st.base * lvl(st.id) * fame() * gearMult() * boostMult();
+const payout = st => st.base * lvl(st.id) * Math.pow(MILE_PAY, milesHit(lvl(st.id))) * (upgFx().pay[st.id] || 1) * upgFx().all * fame() * gearMult() * boostMult();
 const bestRate = () => LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), 0);
 const skipValue = secs => Math.round(Math.max(perSec(), bestRate()) * secs);
-const upCost = st => Math.ceil(st.cost * Math.pow(st.growth, lvl(st.id) - 1));
+const upCost = st => lvl(st.id) >= LV_CAP ? Infinity : Math.ceil(st.cost * goalScale() * Math.pow(growthOf(), lvl(st.id) - 1));
 // cost of buying n levels at once: geometric series from the current level's price
-const bulkCost = (st, n) => Math.ceil(upCost(st) * (Math.pow(st.growth, n) - 1) / (st.growth - 1));
+const bulkCost = (st, n) => { const g = growthOf(); return Math.ceil(upCost(st) * (Math.pow(g, n) - 1) / (g - 1)); };
 function buyPlan(st) {
   if (S.buyMode === 'max') {
-    const c0 = upCost(st), g = st.growth;
+    const left = LV_CAP - lvl(st.id); if (left <= 0) return { n: 0, cost: Infinity };
+    const c0 = upCost(st), g = growthOf();
     let n = Math.floor(Math.log(1 + S.cash * (g - 1) / c0) / Math.log(g));
-    n = Math.max(1, n);
+    n = Math.max(1, Math.min(left, n));
     while (n > 1 && bulkCost(st, n) > S.cash) n--;   // guard against float rounding
     return { n, cost: bulkCost(st, n) };
   }
-  const n = S.buyMode === 10 ? 10 : 1;
-  return { n, cost: bulkCost(st, n) };
+  const n = Math.min(S.buyMode === 10 ? 10 : 1, LV_CAP - lvl(st.id));
+  return n <= 0 ? { n: 0, cost: Infinity } : { n, cost: bulkCost(st, n) };
 }
 const hypeOn = () => Date.now() < S.hypeUntil;
 const hypeLeftToFill = () => Math.max(0, hypeCap() * 1000 - Math.max(0, S.hypeUntil - Date.now()));   // hypeCap is in seconds
@@ -2547,7 +2599,8 @@ function setFit(el, text, max, min) {
 const fmtX = n => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n >= 100 ? Math.round(n).toString() : n >= 10 ? (Math.round(n * 10) / 10).toString() : (Math.round(n * 100) / 100).toString();
 const mult = () => hypeOn() ? 2 : 1;
 const perSec = () => LOC().stations.reduce((a, st) => a + (lvl(st.id) && S.crew[st.id] ? payout(st) / cycleTime(st) : 0), 0);
-const movePct = () => tourMet() ? 100 : Math.min(100, S.earned / goalOf(S.loc) * 100);
+const legacyGoal = () => S.legacyGoal === S.loc && S.legacyAlbums === (S.albums || 0);
+const movePct = () => tourMet() ? 100 : Math.min(100, Math.max(stationsPct(ev() === 'tour' ? 90 : LV_CAP), legacyGoal() ? S.earned / goalOf(S.loc) * 100 : 0));
 
 function fmt(n) {
   if (n < 1000) return '$' + (n < 10 && n % 1 ? n.toFixed(1).replace(/\.0$/, '') : Math.floor(n));
@@ -2822,7 +2875,7 @@ const EVENTS = {
   friday: { name: 'Fan Friday', short: 'Fans show up 1.5x as often', color: '#8FE3DA' },
   fans: { name: 'Fan Weekend', short: 'All weekend (Sat + Sun): fans show up 2x as often, with double the daily fan gem limit', color: '#8FE3DA' },
   gems: { name: 'Gem Rush', short: 'All weekend: album drops, ads and fans give double gems', color: '#C9B0FF' },
-  tour: { name: 'Tour Rush', short: 'All weekend: every map goal is 25% lower', color: '#A9C1FF' },
+  tour: { name: 'Tour Rush', short: 'All weekend: move up once every station reaches level 90', color: '#A9C1FF' },
   crates: { name: 'Crate Party', short: 'All weekend: a free crate every 5 minutes instead of 10, with normal payouts', color: '#FFD978' },
   hype: { name: 'Hype Weekend', short: 'All weekend: every Hype ad gives twice the time, plus one free Hype boost', color: '#FFBFA0' },
 };
@@ -2830,7 +2883,7 @@ const EVENTS = {
 const WEEKEND = ['fans', 'gems', 'tour', 'crates', 'hype'];
 const EV_TAGS = { monday: ['2× crate cash', '2× crate gems', '2× ad gem limit', '2× fan gem limit'], wed: [], friday: ['1.5× fan visits'],
   fans: ['2× fan visits', '2× fan gem limit'], gems: ['2× album gems', '2× ad gems', '2× fan gems'],
-  tour: ['Map goals 25% lower'], crates: ['Free crate every 5 min', 'Normal crate payouts'], hype: ['2× Hype per ad', '1 free Hype boost'] };
+  tour: ['Move up at level 90'], crates: ['Free crate every 5 min', 'Normal crate payouts'], hype: ['2× Hype per ad', '1 free Hype boost'] };
 // the fine print: limits, what isn't affected, and how it ends
 const EV_NOTE = k => ({
   monday: 'Richer crates: each pays double. They still come every 10 minutes. Daily task and map rewards are unchanged.',
@@ -2970,7 +3023,10 @@ function toast(msg) {
   document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
   const hud = document.querySelector('.hud'), app = $('app');   // pinned just below the dark header bar, clear of cash and gems
-  if (hud) t.style.top = Math.round(hud.getBoundingClientRect().bottom - app.getBoundingClientRect().top + 8) + 'px';
+  let y = hud ? hud.getBoundingClientRect().bottom : 0;
+  if (!$('scrim').hidden) { const head = document.querySelector('#sheet .sheet-head'), sh = $('sheet').getBoundingClientRect();   // a panel is open: clear its title and close button
+    const hb = head ? head.getBoundingClientRect().bottom : 0; y = Math.max(y, hb > sh.top ? hb : sh.top); }
+  t.style.top = Math.round(y - app.getBoundingClientRect().top + 8) + 'px';
   app.appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 1850);
 }
 
@@ -3025,9 +3081,10 @@ function placePop() {
 function buyOnce(quiet) {
   const st = def(S.selected); const { n, cost } = buyPlan(st);
   if (S.cash < cost) { if (!quiet) sfx('denied'); return false; }
+  if (!n) return false;
   const before = milesHit(lvl(st.id));
   S.cash -= cost; S.levels[st.id] += n; S.stats.upgrades += n; S.stats.maxLevel = Math.max(S.stats.maxLevel, lvl(st.id));
-  if (milesHit(lvl(st.id)) > before) { sfx('milestone'); toast(st.name + ' hit Lv ' + lvl(st.id) + ': 2x speed'); }
+  if (milesHit(lvl(st.id)) > before) { sfx('milestone'); toast(st.name + (lvl(st.id) >= LV_CAP ? ' maxed out!' : ' hit Lv ' + lvl(st.id) + ': 3x pay')); }
   else sfx('upgrade');
   render();
   return true;
@@ -3348,7 +3405,7 @@ $('scrim').addEventListener('click', e => {
   const hire = e.target.closest('[data-hire]');
   if (hire) {
     const st = def(hire.dataset.hire);
-    if (st && S.cash >= st.crewCost && lvl(st.id)) { S.cash -= st.crewCost; S.crew[st.id] = true; S.running[st.id] = true; S.stats.hires++; sfx('unlock'); toast(st.crew + ' hired'); save(); render(); openTab('crew'); }
+    if (st && S.cash >= crewCostOf(st) && lvl(st.id)) { S.cash -= crewCostOf(st); S.crew[st.id] = true; S.running[st.id] = true; S.stats.hires++; sfx('unlock'); toast(st.crew + ' hired'); save(); render(); openTab('crew'); }
     return;
   }
   if (e.target.closest('[data-claim]')) return claimDaily();
@@ -3431,6 +3488,7 @@ $('scrim').addEventListener('click', e => {
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
   if (e.target.closest('[data-tut-replay]')) { startTutorial(); track('tutorial-replay'); return; }
+  const ub = e.target.closest('[data-upg]'); if (ub) return buyUpg(+ub.dataset.upg);
   const tg = e.target.closest('[data-tab-go]');
   if (tg) return openTab(tg.dataset.tabGo);
   const adb = e.target.closest('[data-ad]');
@@ -3775,7 +3833,7 @@ function fanTick(dt) {
   if (fanEl || document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
   fanAcc += dt * fanRate();
   if (fanAcc < fanNext) return;
-  fanAcc = 0; fanNext = FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN);
+  fanAcc = 0; fanNext = (FAN_MIN + Math.random() * (FAN_MAX - FAN_MIN)) / upgFx().fanFreq;
   spawnFan();
 }
 function spawnFan() {
@@ -3798,7 +3856,7 @@ function tapFan(el, walk) {
   walk.pause(); el.classList.add('got');
   let text;
   if (el.dataset.gem) { const fg = FAN_GEMS * (ev() === 'gems' ? 2 : 1); S.gems += fg; fanGemsToday().gems += FAN_GEMS; text = '+' + fg + ' gems'; }
-  else { const v = Math.max(50, skipValue(FAN_CASH_SECS)); earn(v); text = '+' + fmt(v); }
+  else { const v = Math.max(50, skipValue(FAN_CASH_SECS) * upgFx().fanVal); earn(v); text = '+' + fmt(v); }
   S.stats.fans = (S.stats.fans || 0) + 1;
   sfx('reward'); track('fan-tap');
   const f = document.createElement('span'); f.className = 'floater'; f.textContent = text;
@@ -3928,7 +3986,7 @@ function itemArt(it, size = 70) {
 let styleSlot = 'top', renameFrom = 'style';
 // popups that should change while open: refresh them when what they show changes
 const LIVE = {
-  crew: () => LOC().stations.map(x => (lvl(x.id) ? 1 : 0) + (S.crew[x.id] ? 2 : 0) + (S.cash >= x.crewCost ? 4 : 0)).join(''),
+  crew: () => LOC().stations.map(x => (lvl(x.id) ? 1 : 0) + (S.crew[x.id] ? 2 : 0) + (S.cash >= crewCostOf(x) ? 4 : 0)).join('') + '|' + upgAffordable().join(','),
   goals: () => GOALS.map(g => S.goalsDone[g.id] ? 'x' : goalReady(g) ? '!' : Math.floor(Math.min(g.val(), g.target) / g.target * 20)).join('')
     + '|' + dailyTasks().map(t => t.id + (t.got ? 'x' : t.ready ? '!' : Math.floor(t.v / t.target * 20))).join(',') + (S.dt.bonus ? 'b' : '') + '|' + new Date().getMinutes(),
   hype: () => Math.ceil(Math.max(0, S.hypeUntil - Date.now()) / 1000) + '|' + S.gems,
@@ -4229,7 +4287,7 @@ function mergeCareer(keep, other) {
 }
 async function cloudLoad() {
   const p = Cloud.pend; if (!p || !p.row) return;
-  const c = cloud(), n = Object.assign(fresh(), p.row.data), keepCode = (p.row.data.cloud || {}).code;
+  const c = cloud(), n = Object.assign(fresh(), { econV: 1 }, p.row.data), keepCode = (p.row.data.cloud || {}).code;
   if (p.sameUser) n.cloud = Object.assign({}, c, { code: keepCode || c.code, friends: (p.row.data.cloud || {}).friends || c.friends, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at), created: false, synced: -1 });
   else { await dropGuest(p.old);
     n.cloud = { uid: p.d.user.id, at: p.d.access_token, rt: p.d.refresh_token, exp: Date.now() + (p.d.expires_in || 3600) * 1000, email: p.email, code: keepCode || null, friends: (p.row.data.cloud || {}).friends || [], created: false, synced: -1, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at) }; }
@@ -4373,10 +4431,20 @@ function openTab(tab) {
     const rows = loc.stations.map(st => {
       const unlocked = lvl(st.id) > 0, hired = S.crew[st.id];
       const right = hired ? '<span class="hired">Working</span>'
-        : `<button class="hire" data-hire="${st.id}" ${!unlocked || S.cash < st.crewCost ? 'disabled' : ''}>${fmt(st.crewCost)}</button>`;
+        : `<button class="hire" data-hire="${st.id}" ${!unlocked || S.cash < crewCostOf(st) ? 'disabled' : ''}>${fmt(crewCostOf(st))}</button>`;
       return `<div class="row"><span class="ric">${svgIc(st.icon, '#F4F1EA', 20)}</span><span class="rt"><b>${st.crew}</b><span>${unlocked ? 'Runs ' + st.name + ' for you, even offline' : 'Unlock ' + st.name + ' first'}</span></span>${right}</div>`;
     }).join('');
-    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div><p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}`);
+    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('crew')}<p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}`);
+  } else if (tab === 'upgrades') {
+    S.upgOpened = true; S.upgSeen = upgAffordable(); save();
+    const list = upgList().map((u, i) => [u, i]), own = upgOwned();
+    const open = list.filter(([, i]) => !own.includes(i)).sort((a, b) => a[0][1] - b[0][1]), done = list.filter(([, i]) => own.includes(i));
+    const row = ([u, i], bought) => `<div class="row upg ${bought ? 'got' : ''}"><span class="ric">${svgIc(u[2] === 'profit' || u[2] === 'all' ? 'star' : u[2] === 'speed' || u[2] === 'crew' ? 'sliders' : 'phone', bought ? '#8BF0A0' : '#FFC94A', 20)}</span>
+      <span class="rt"><b>${u[0]}</b><span>${upgText(u)}</span></span>${bought ? '<span class="hired">Owned</span>' : `<button class="hire" data-upg="${i}" ${S.cash < upgCost(i) ? 'disabled' : ''}>${fmt(upgCost(i))}</button>`}</div>`;
+    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('upgrades')}
+      <p>One-time boosts for the ${LOC().name}. Buy any of them, in any order. They reset when you move up or drop an album.</p>
+      ${open.length ? open.map(x => row(x, false)).join('') : '<p class="cnote">Every Upgrade here is yours.</p>'}
+      ${done.length ? `<details class="upg-done"><summary>Owned (${done.length})</summary>${done.map(x => row(x, true)).join('')}</details>` : ''}`);
   } else if (tab === 'career') {
     const pct = movePct();
     const allLocs = [...LOCATIONS.map(l => l.name), ...FUTURE];
@@ -4387,15 +4455,15 @@ function openTab(tab) {
     openSheet(`<div class="sheet-head"><h2>Career</h2>${closeBtn()}</div>
       <div class="sec">
         <h3>Move Up</h3>
-        <p>${next ? `Earn ${fmt(goalOf(S.loc))} here to move into the ${next.name}.` : `This is the last stop on the tour. Earn ${fmt(goalOf(S.loc))} here to finish it and drop an album.`}</p>
+        <p>${next ? `Max every station here (level ${ev() === 'tour' ? '90 during Tour Rush' : LV_CAP}) to move into the ${next.name}.` : `This is the last stop on the tour. Max every station here${ev() === 'tour' ? ' (level 90 during Tour Rush)' : ''} to finish it and drop an album.`}${tourMet() ? ' Tour Rush already unlocked your move, and it stays unlocked.' : ''}${legacyGoal() ? ` Or earn ${fmt(goalOf(S.loc))} here, your goal from before the update.` : ''}</p>
         <div class="big-bar"><i style="width:${pct}%"></i></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${fmt(S.earned)} earned</span><span>${Math.floor(pct)}%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${maxedCount()} of ${LOC().stations.length} stations maxed</span><span>${Math.floor(pct)}%</span></div>
         <div style="display:flex;flex-direction:column;gap:10px">${allLocs.map((l, i) => `<div class="loc ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}"><span class="dot"></span>${l}${i === S.loc ? ' · you are here' : ''}</div>`).join('')}</div>
         ${moveBtn}
       </div>
       <div class="sec">
         <h3>Drop Album</h3>
-        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever (+${pctTxt(FAME_PER_ALBUM)} each up to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}), plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and earn ${fmt(goalOf(lastLoc()))} there.` : `Earn ${fmt(goalOf(lastLoc()))} in the ${last.name} first.`}</p>
+        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever (+${pctTxt(FAME_PER_ALBUM)} each up to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}), plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and max every station there.` : `Max every station in the ${last.name} first.`}</p>
         <div class="row"><span class="ric">${svgIc('note', '#FFC94A', 20)}</span><span class="rt"><b>Albums dropped: ${S.albums || 0}</b><span>Fame bonus x${fmtX(fame())}${nextExclusive() ? ` · next exclusive at album ${nextExclusive().album}` : ''}</span></span></div>
         <button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Locked'}</button>
       </div>
@@ -4908,7 +4976,7 @@ function render() {
     e.b.classList.toggle('sel', unlocked && S.selected === st.id);
     e.b.classList.toggle('idle', unlocked && !S.crew[st.id] && !S.running[st.id]);
     e.b.setAttribute('aria-label', unlocked ? `${st.name}, level ${L}` : `Unlock ${st.name} for ${fmt(st.unlock)}`);
-    if (unlocked) { e.lv.textContent = L; e.up.hidden = S.cash < upCost(st); }
+    if (unlocked) { e.lv.textContent = L >= LV_CAP ? 'MAX' : L; e.up.hidden = S.cash < upCost(st); }
   });
 
   const st = def(S.selected), L = lvl(st.id);
@@ -4919,12 +4987,12 @@ function render() {
   $('popPay').textContent = fmt(payout(st) * mult());
   $('popTime').textContent = (ct < 1 ? ct.toFixed(2) : ct.toFixed(1)) + 's';
   $('sbMile').style.width = next ? ((L - prev) / (next - prev) * 100) + '%' : '100%';
-  $('sbMileLabel').textContent = next ? `★ ${next}` : '★ Max';
-  $('sbMileLabel').title = next ? `2x speed at level ${next}` : 'Max speed';
+  $('sbMileLabel').textContent = next ? `★ ${next}` : L >= LV_CAP ? '★ MAX' : '★ 100';
+  $('sbMileLabel').title = next ? `3x pay at level ${next}` : 'Level 100 is the max';
   const plan = buyPlan(st);
   $('modeBtn').textContent = S.buyMode === 'max' ? 'MAX' : 'x' + S.buyMode;
-  $('upCost').textContent = (S.buyMode === 1 ? '' : '+' + plan.n + ' ') + fmt(plan.cost);
-  $('upBtn').disabled = S.cash < plan.cost;
+  $('upCost').textContent = !plan.n ? 'MAX' : (S.buyMode === 1 ? '' : '+' + plan.n + ' ') + fmt(plan.cost);
+  $('upBtn').disabled = !plan.n || S.cash < plan.cost;
   $('upBtn').setAttribute('aria-label', `Upgrade ${st.name} by ${plan.n} level${plan.n > 1 ? 's' : ''} for ${fmt(plan.cost)}`);
   maybeGift();
   if (!TEST && !S.fbPrompted && S.stats.playSec > 2700 && $('scrim').hidden && S.onboarded) { S.fbPrompted = true; save(); openTab('feedback'); }
@@ -4932,7 +5000,7 @@ function render() {
   if (S.stats.lastDay !== dayKey()) { S.stats.lastDay = dayKey(); S.stats.days = (S.stats.days || 0) + 1; if (S.stats.days <= 30) track('days-played/' + S.stats.days); }
   $('goalsDot').hidden = !(goalsClaimable() || dailyReady());
   $('passDot').hidden = !passClaimable();
-  $('crewBang').hidden = !LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= x.crewCost);
+  $('crewBang').hidden = !(LOC().stations.some(x => lvl(x.id) && !S.crew[x.id] && S.cash >= crewCostOf(x)) || upgNewAffordable());
   $('styleBang').hidden = !(S.newItems && S.newItems.length);
   const m = totalMult();
   $('mult').hidden = m <= 1.001; $('multVal').textContent = 'x' + fmtX(m);
@@ -4940,7 +5008,7 @@ function render() {
   const now = Date.now();
   const hb = $('hypeBtn');
   $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x Hype';
-  if (ev() === 'tour' && S.earned >= goalOf(S.loc)) S.tourMet = runKey();
+
   { const e = ev(), b = $('eventsBtn'), w = e === 'wed' && wedChallenge(), enc = encore();
     b.hidden = !S.onboarded; b.style.setProperty('--evc', e ? EVENTS[e].color : 'transparent'); b.classList.toggle('live', !!e);
     $('eventsBang').hidden = !((w && w.ready && !w.got) || (enc && enc.ready && !enc.got) || (e && S.evSeen !== dayKey())); }
@@ -5004,6 +5072,7 @@ const slotLabel = sl => ({ top: 'top', hat: 'hat', neck: 'necklace', face: 'glas
 let lastT = performance.now(), acc = 0, saveAcc = 0, chartAcc = 170;
 const floatGate = {};
 function tick(t) {
+  if (S && ev() === 'tour' && !tourMet() && stationsPct(90) >= 100) { S.tourMet = runKey(); save(); }
   const realDt = Math.min(0.25, (t - lastT) / 1000); lastT = t;
   const dt = TEST ? realDt * ((S.test && S.test.speed) || 1) : realDt;
   if (TEST && S.test && S.test.hype && S.hypeUntil < Date.now() + 60000) S.hypeUntil = Date.now() + 3600000;
@@ -5053,7 +5122,7 @@ function offline() {
 
 function start(data) {
   syncShine(document);
-  S = (data && data.state) ? Object.assign(fresh(), data.state) : (load() || fresh());
+  S = (data && data.state) ? Object.assign(fresh(), { econV: 1 }, data.state) : (load() || fresh());
   if (!LOCATIONS[S.loc]) S.loc = 0;
   if (!S.vol) S.vol = { master: 80, music: S.music === false ? 0 : 40, sfx: S.sound === false ? 0 : 80 };
   // players still on the old 70 default move to the new 40; anyone who set their own level keeps it
@@ -5085,6 +5154,7 @@ function start(data) {
   // v5 adds Maya's introduction as step 0: players already in (or past) the tutorial keep their place and never see it
   if (S.tutV < 5) { if (S.tut != null) S.tut = S.tut >= TUT.length - 1 ? TUT.length : S.tut + 1; S.tutV = 5; }
   if (S.tut == null) S.tut = (S.stats.hires > 0 || S.loc > 0 || S.albums > 0) ? TUT.length : 0;
+  if ((S.econV || 1) < 2) migrateEcon();
   S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
   applyLook(); buildRoom(); fit();
   if (!(data && data.state)) {
