@@ -737,6 +737,42 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .tut-ptr { position: absolute; border-radius: 18px; z-index: 16; pointer-events: none; background: rgba(255,201,74,.14);
   box-shadow: 0 0 0 2px rgba(255,201,74,.85), 0 0 18px 6px rgba(255,201,74,.45); animation: tutglow 1.4s ease-in-out infinite; }
 .room-wrap > .tut-ptr { z-index: 4; }
+.tut.over-sheet { z-index: 60; } .tut-ptr.over-sheet { z-index: 59; }
+/* Maya's dialogue: portrait (never takes taps) + a warm-white card with a tail pointing at her mouth. She sits behind the bottom bar. */
+.tabs { position: relative; z-index: 14; }
+.tut.maya { inset: 0; left: 0; right: 0; display: block; padding: 0; border-radius: 0; background: none; box-shadow: none; animation: none; pointer-events: none; z-index: 13; }
+.tut.maya.over-sheet { z-index: 60; }
+.mport { position: absolute; width: 118px; overflow: hidden; pointer-events: none; animation: mayaup .28s ease-out; }
+.mport img { position: absolute; left: 0; bottom: 0; width: 118px; height: auto; display: block; transition: opacity .14s ease; }
+.mport.flip img { transform: scaleX(-1); }
+@keyframes mayaup { from { transform: translateY(14px); opacity: 0; } }
+.mcard { position: absolute; pointer-events: auto; box-sizing: border-box; display: flex; flex-direction: column;
+  background: #FFF8EC; color: #1B1830; border: 2px solid #E9D7AE; border-radius: 16px; padding: 10px 13px 8px; box-shadow: 0 6px 18px rgba(0,0,0,.35); animation: up .22s ease-out; }
+.mcard .mname { font-size: 11px; font-weight: 700; color: #6B45C9; letter-spacing: .02em; -webkit-user-select: text; user-select: text; }
+.mcard p { margin: 3px 0 0; font-size: 15px; font-weight: 700; line-height: 1.35; }
+.mcard button { align-self: flex-end; margin-top: 6px; height: 28px; padding: 0 10px; border-radius: 9px; background: rgba(27,24,48,.07); font-size: 12px; font-weight: 700; color: #1B1830; }
+.mtail { position: absolute; left: -8px; top: var(--ty, 50%); width: 12px; height: 12px; background: #FFF8EC; border-left: 2px solid #E9D7AE; border-bottom: 2px solid #E9D7AE; transform: rotate(45deg); }
+.mcard.tail-right .mtail { left: auto; right: -8px; transform: rotate(-135deg); }
+.maya-note { display: flex; align-items: flex-end; gap: 6px; margin: 10px 0 4px; text-align: left; }
+.maya-note .mfig { flex: none; width: 92px; height: 124px; overflow: hidden; position: relative; }
+.maya-note .mfig img { position: absolute; left: 0; top: 0; width: 92px; height: auto; }
+.maya-note .mcard { position: relative; flex: 1; animation: none; box-shadow: none; }
+.maya-note .mtail { top: 22px; }
+.more-cue { position: absolute; left: 0; right: 0; bottom: 0; height: 46px; z-index: 2; pointer-events: none; display: none;
+  background: linear-gradient(180deg, rgba(42,35,74,0), rgba(42,35,74,.92) 70%); }
+.more-cue::after { content: ""; position: absolute; left: 50%; bottom: 14px; width: 11px; height: 11px; margin-left: -6px;
+  border-right: 3px solid #FFC94A; border-bottom: 3px solid #FFC94A; transform: rotate(45deg); animation: morebob 1.2s ease-in-out infinite; }
+.scrim.more-below .more-cue { display: block; }
+@keyframes morebob { 50% { translate: 0 3px; } }
+.maya-note .mcard p { color: #1B1830; font-size: 15px; text-align: left; }
+.maya-note { align-items: center; } .maya-note .mtail { top: 34px; }
+/* album results with Maya's note: on shorter phones the stage art eases down a little; the panel scrolls if it still needs to */
+@media (max-height: 760px) {
+  .album-pop .album-stage { min-height: 0; padding-block: 10px 2px; }
+  .album-pop .album-stage > svg { height: 150px; width: auto; }
+  .album-pop .album-stage .spot { transform: scale(.7); transform-origin: 50% 100%; }
+}
+}
 @keyframes tutglow { 50% { background: rgba(255,201,74,.26); box-shadow: 0 0 0 3px rgba(255,201,74,1), 0 0 30px 12px rgba(255,201,74,.6); } }
 .email { -webkit-user-select: text; user-select: text; font-family: var(--display); font-size: 15px; color: var(--text); word-break: break-all; }
 .toast { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px); transform: translateX(-50%); background: var(--text); color: var(--deep);
@@ -1069,9 +1105,12 @@ html, body { background: var(--bar) !important; }
   </nav>
 
   <div class="tut-ptr" id="tutPtr" hidden></div>
-  <div class="tut" id="tut" hidden><p id="tutText"></p><button id="tutSkip">Skip tips</button></div>
+  <div class="tut maya" id="tut" hidden>
+    <div class="mport" id="mayaPort"><img id="mayaImg" alt="" draggable="false"></div>
+    <div class="mcard" id="mayaCard" role="status"><span class="mname">Maya · Your manager</span><p id="tutText"></p><button id="tutSkip">Skip tips</button><i class="mtail" aria-hidden="true"></i></div>
+  </div>
   <div class="scrim" id="scrim" hidden>
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div><div class="more-cue" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -1746,58 +1785,143 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 123, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 124, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
+// ---------- tutorial: the core loop first, one highlighted action at a time ----------
+// Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
+// began, so a replay never auto-completes from old progress. Steps that don't apply (nothing left to unlock or hire) skip themselves.
+// No step needs an ad, a purchase, gems or an item.
+const tutBase = () => S.tutBase || { lifetime: 0, upgrades: 0, unlocks: 0, hires: 0 };
+const tutFirst = () => LOC().stations.find(st => lvl(st.id)) || LOC().stations[0];
+const tutLocked = () => LOC().stations.find(st => !lvl(st.id));
+const tutHire = () => LOC().stations.find(st => lvl(st.id) && !S.crew[st.id]);
+const stBtn = st => st && els[st.id] && els[st.id].b;
+const say = (pose, text) => ({ pose, text });   // Maya's pose for a line: 'explaining' | 'thinking' | 'celebrating'
 const TUT = [
-  { text: 'Tap the laptop to make your first beat. You can also hold it down to keep producing.', target: () => els.beats && els.beats.b, done: () => S.stats.lifetime > 0 },
-  { text: 'Nice! Tap the laptop, then the green Upgrade button. Hold it to buy faster.', target: () => $('pop').hidden ? (els.beats && els.beats.b) : $('upBtn'), done: () => S.stats.upgrades >= 1 },
-  { text: 'Keep making beats. Save $80 and tap Street Busk to unlock it.', target: () => els.busk && els.busk.b, done: () => S.stats.unlocks >= 1 },
-  { text: 'Hire crew so stations keep earning without you. Open Crew.', target: () => tabTile('crew'), done: () => S.stats.hires >= 1 },
-  { text: 'Tap 2x Hype and watch a quick ad to double everything you earn for 20 minutes.', target: () => $('hypeBtn').querySelector('.orb'), done: () => S.stats.hypes >= 1 },
-  { text: 'Free cash and gems every 10 minutes: open the Free crate.', target: () => $('crateBtn'), done: () => S.stats.crates >= 1, timeout: 12000 },
-  { text: 'Goals and daily tasks pay out gems. Check them in Goals.', target: () => $('goalsBtn'), done: () => sheetKey === 'goals', timeout: 10000 },
-  { text: "Your crew works even while you're away. Earn $2.5M to move up, and track it in Career.", target: () => tabTile('career'), done: () => false, timeout: 8000 },
-  { text: 'Make it yours: change your hair, look and outfits anytime in Style.', target: () => tabTile('style'), done: () => sheetKey === 'style', timeout: 8000 },
+  { text: () => say('explaining', `Let's get your first track going! Tap the ${tutFirst().name} to earn. Hold it to keep going.`), target: () => stBtn(tutFirst()), done: () => tutTapped > 0 },   // your own tap, not crew income
+  { text: () => { if ($('pop').hidden) return say('celebrating', `Nice work! Tap the ${(def(S.selected) || tutFirst()).name} again to see its upgrades.`);
+      const st = def(S.selected) || tutFirst(), c = buyPlan(st).cost;
+      return S.cash >= c ? say('explaining', 'Tap Upgrade. Higher levels earn more.') : say('thinking', `Let's earn ${fmt(c)} first, then tap Upgrade.`); },
+    target: () => $('pop').hidden ? stBtn(def(S.selected) || tutFirst()) : $('upBtn'), done: () => S.stats.upgrades > tutBase().upgrades },
+  { text: () => { const st = tutLocked(); return S.cash >= st.unlock ? say('explaining', `You're ready! Tap ${st.name} to unlock it.`) : say('thinking', `Let's save ${fmt(st.unlock)} to unlock ${st.name}. Keep earning!`); },
+    target: () => stBtn(tutLocked()), skip: () => !tutLocked(), done: () => S.stats.unlocks > tutBase().unlocks },
+  { text: () => { const st = tutHire(); if (sheetKey !== 'crew' || $('scrim').hidden) return say('explaining', "Let's get you some help! Open Crew to hire someone who keeps a station earning without tapping.");
+      return S.cash >= st.crewCost ? say('explaining', `Tap ${fmt(st.crewCost)} to hire. Your crew keeps earning while you're away, too.`) : say('thinking', `We need ${fmt(st.crewCost)} to hire your first crew member. Keep earning!`); },
+    target: () => (sheetKey === 'crew' && !$('scrim').hidden) ? ($('sheet').querySelector(`[data-hire="${(tutHire() || {}).id}"]`)) : tabTile('crew'),
+    inSheet: 'crew', skip: () => !tutHire(), done: () => S.stats.hires > tutBase().hires },
+  { text: () => LOCATIONS[S.loc + 1] ? say('explaining', `Our next stop is the ${LOCATIONS[S.loc + 1].name}! Earn ${fmt(goalOf(S.loc))} to get there. You can track it in Career.`)
+      : say('explaining', "We've reached the stadium! Track the rest of your tour in Career."),
+    target: () => tabTile('career'), done: () => sheetKey === 'career', timeout: 9000 },
 ];
-// one-time pointers after the tutorial, for the two big moments of the loop: your first move up, and your first album
-const COACH = [
-  { id: 'move1', text: () => `Goal reached! Open Career to move up to the ${LOCATIONS[S.loc + 1].name}.`, show: () => S.loc === 0 && !(S.maxLoc > 0) && movePct() >= 100 },
-  { id: 'album1', text: () => 'Tour complete! Open Career and drop your first album for a permanent income boost.', show: () => !(S.albums > 0) && albumReady() },
+// after the core steps: one short pointer when a feature first matters, never two at once, with a pause between them.
+// move1 / album1 keep their old ids so players who already saw them don't see them again.
+const TIPS = [
+  { id: 'outside', text: () => say('explaining', 'Want a look around? Drag the room down to see outside.'), show: () => true, noTarget: true },
+  { id: 'move1', text: () => say('celebrating', `We did it! Open Career to move up to the ${LOCATIONS[S.loc + 1].name}.`), show: () => !(S.maxLoc > S.loc) && LOCATIONS[S.loc + 1] && movePct() >= 100, target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
+  { id: 'album1', text: () => say('celebrating', 'Your tour is complete! Open Career to drop your first album and earn a permanent income boost.'), show: () => !(S.albums > 0) && albumReady(), target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
+  { id: 'goals', text: () => say('celebrating', 'You finished a goal! Open Goals to claim your gems.'), show: () => goalsClaimable(), target: () => $('goalsBtn'), done: () => sheetKey === 'goals' },
+  { id: 'daily', text: () => say('explaining', "Your daily reward is ready! You'll find Daily Rewards inside Goals."), show: () => dailyReady() && S.daily.last, target: () => $('goalsBtn'), done: () => sheetKey === 'daily' },
+  { id: 'crate', text: () => say('celebrating', 'A free crate is ready! Open it for cash and gems.'), show: () => !$('crateBtn').disabled && !$('crateBang').hidden, target: () => $('crateBtn'), done: () => sheetKey != null && !$('scrim').hidden },
+  { id: 'hype', text: () => say('explaining', 'Want a boost? 2x Hype doubles your earnings for a while. Use it whenever you like.'), show: () => S.stats.lifetime > 2000 && !(S.hypeUntil > Date.now()), target: () => $('hypeBtn').querySelector('.orb') },
+  { id: 'inv', text: () => say('explaining', "Looking for your items? Open Shop, then Inventory. They'll wait there until you use them."), show: () => invQty('skips') + invQty('frenzies') > 0, target: () => tabTile('shop'), done: () => sheetKey === 'inv' },
+  { id: 'style', text: () => say('celebrating', 'You unlocked a new look! Try it on in Style.'), show: () => S.newItems && S.newItems.length > 0, target: () => tabTile('style'), done: () => sheetKey === 'style' },
+  { id: 'pass', text: () => say('celebrating', 'You earned a Backstage Pass reward! Open Pass to collect it.'), show: () => passClaimable(), target: () => $('passBtn'), done: () => sheetKey === 'pass' },
+  { id: 'events', text: () => say('explaining', "There's an event on today! Open Events to see what's happening."), show: () => !$('eventsBang').hidden, target: () => $('eventsBtn'), done: () => sheetKey === 'events' },
+  { id: 'charts', text: () => say('explaining', "Let's see how you rank against other artists. Open The Charts!"), show: () => S.loc > 0 || S.stats.playSec > 1800, target: () => $('chartsBtn'), done: () => sheetKey === 'charts' },
 ];
+const TIP_SECS = 7000, TIP_GAP = 25000;   // a tip shows for about 7 s (or until you act on it); then at least 25 s before the next
+let tutTapped = 0;   // taps on a station this session (the first step waits for one)
+const tutActive = () => S && S.tut != null && S.tut < TUT.length;
+let tipNow = null, tipEnd = 0;
+function startTutorial() {   // Settings > Replay: the steps again, from wherever you are; progress, rewards and saves are untouched
+  S.tut = 0; S.tipsOff = false; S.tutBase = { lifetime: S.stats.lifetime, upgrades: S.stats.upgrades, unlocks: S.stats.unlocks, hires: S.stats.hires };
+  S.coach = Object.fromEntries(Object.entries(S.coach || {}).filter(([k]) => TIPS.find(t => t.id === k && t.keep)));   // ordinary tips can show again
+  tutShownAt = 0; tipNow = null; save(); closeSheet(); updateTut();
+}
 let tutShownAt = 0;
+// ---------- Maya, your manager: one dialogue component for every tutorial line and tip ----------
+const MAYA_W = 118, MAYA_H = 170, MAYA_MOUTH = .52;   // portrait cropped at the hips: full blouse, star and waist show above the bar   // portrait size (CSS px) and mouth height as a share of the portrait
+function mayaPose(pose) {   // a quick cross-fade between poses, nothing more
+  const img = $('mayaImg'); if (img.dataset.pose === pose) return;
+  const first = !img.dataset.pose; img.dataset.pose = pose;
+  const set = () => { img.src = `art/maya-${pose}.webp?v=124`; img.style.opacity = 1; };
+  if (first) return set(); img.style.opacity = 0; setTimeout(set, 140);
+}
+// Default: lower-left, rising from behind the bottom bar, card to her right. If that would cover the highlighted control, an open
+// upgrade card or the panel the step needs, she switches sides, then sits on top of the open panel, then at the top of the room.
+function placeMaya(app, room, r, step) {
+  const port = $('mayaPort'), card = $('mayaCard'), bar = document.querySelector('.tabs').getBoundingClientRect();
+  const sheetOpen = !$('scrim').hidden, sh = sheetOpen ? $('sheet').getBoundingClientRect() : null, pop = !$('pop').hidden ? $('pop').getBoundingClientRect() : null;
+  const cw = app.width - MAYA_W - 16; card.style.width = cw + 'px'; const ch = card.offsetHeight;
+  const hit = (a, b) => b && a.l < b.right && a.r > b.left && a.t < b.bottom && a.b > b.top;
+  const tgt = r && { left: r.left - 8, right: r.right + 8, top: r.top - 8, bottom: r.bottom + 8 };
+  const inBar = r && r.top >= bar.top - 34, leftHalf = r && (r.left + r.width / 2) < app.left + app.width * .4;
+  const C = [];
+  if (!sheetOpen) { const cb = bar.top - (inBar ? 36 : 22); C.push({ flip: !!(inBar && leftHalf), cardB: cb, portB: bar.top + 12, clip: false }, { flip: !(inBar && leftHalf), cardB: cb, portB: bar.top + 12, clip: false }); }
+  else C.push({ flip: false, cardB: sh.top - 8, portB: sh.top, clip: true });
+  C.push({ flip: false, cardB: room.top + 8 + ch, portB: room.top + 14 + ch, clip: true, top: true });
+  const make = c => { const visH = c.clip ? Math.max(60, Math.min(MAYA_H * .92, c.portB - room.top - 2)) : MAYA_H;
+    const pl = c.flip ? app.right - 4 - MAYA_W : app.left + 4, cl = c.flip ? pl + 6 - cw : pl + MAYA_W - 6;
+    return { c, visH, pl, pt: c.portB - visH, cl, ct: c.cardB - ch }; };
+  const blocked = g => { const parts = [{ l: g.cl, r: g.cl + cw, t: g.ct, b: g.ct + ch }, { l: g.pl + 14, r: g.pl + MAYA_W - 14, t: g.pt, b: g.c.portB }];
+    return g.ct < room.top + 2 || parts.some(p => hit(p, tgt) || hit(p, pop) || (sheetOpen && !g.c.clip && hit(p, sh))) || (sheetOpen && hit(parts[0], sh)); };
+  let geo = null;
+  for (const c of C) { const g = make(c); if (!blocked(g)) { geo = g; break; }
+    // before giving up the bottom spot for a target in the room, try scrolling the room so the target sits clear above Maya
+    if (!c.clip && !c.top && step && !step._scrolled && step._el && $('stage').contains(step._el)) {
+      step._scrolled = true; const need = (r.bottom + 10) - g.ct;   // px the target must move up
+      if (need > 0 && panY - need / fitS >= panMin && r.top - need > room.top + 4) { setPan(panY - need / fitS); return placeMaya(app, room, step._el.getBoundingClientRect(), step); } } }
+  geo = geo || make(C[C.length - 1]); const pick = geo.c;
+  port.classList.toggle('flip', pick.flip); card.classList.toggle('tail-right', pick.flip);
+  Object.assign(port.style, { left: geo.pl - app.left + 'px', top: geo.pt - app.top + 'px', height: geo.visH + 'px' });
+  $('mayaImg').style.bottom = (pick.clip ? geo.visH - MAYA_H : 0) + 'px';   // clipped: her upper body shows, cut at the panel / card line
+  Object.assign(card.style, { left: geo.cl - app.left + 'px', top: geo.ct - app.top + 'px' });
+  const mouth = geo.pt + MAYA_H * MAYA_MOUTH;   // the image's top edge is the portrait box's top edge in every placement
+  card.style.setProperty('--ty', Math.max(10, Math.min(ch - 22, mouth - geo.ct - 7)) + 'px');
+}
 function updateTut() {
   const tip = $('tut'), ptr = $('tutPtr');
   const hide = () => { tip.hidden = true; ptr.hidden = true; document.querySelectorAll('.tut-target').forEach(t => t.classList.remove('tut-target')); };
   $('app').classList.toggle('tut-on', !tip.hidden);
   let step;
-  if (S.tut != null && S.tut < TUT.length && S.loc === 0) {
+  if (!S.onboarded) return hide();
+  if (tutActive()) {
     step = TUT[S.tut];
-    if (step.done() || (step.timeout && tutShownAt && Date.now() - tutShownAt > step.timeout)) { S.tut++; tutShownAt = 0; if (S.tut >= TUT.length) setTimeout(() => toast('Tip: drag the room down to look outside'), 1500); save(); return updateTut(); }
+    if ((step.skip && step.skip()) || step.done() || (step.timeout && tutShownAt && Date.now() - tutShownAt > step.timeout)) {
+      S.tut++; tutShownAt = 0; if (S.tut >= TUT.length) tipEnd = Date.now() - TIP_GAP + 1200; save(); return updateTut(); }
+    if (!$('scrim').hidden && sheetKey !== step.inSheet) return hide();
   } else {
-    if (!S.onboarded) return hide();
-    const c = COACH.find(c => !(S.coach || {})[c.id] && c.show());
-    if (!c) return hide();
-    // done once Career is opened
-    if (sheetKey === 'career') { S.coach = Object.assign({}, S.coach, { [c.id]: true }); save(); return hide(); }
-    step = { text: c.text(), target: () => tabTile('career') };
+    if (S.tipsOff) return hide();
+    const seen = S.coach || {}, now = Date.now();
+    if (tipNow) {   // the tip on screen ends when you act on it or after a few seconds
+      if ((tipNow.done && tipNow.done()) || now > tipEnd) { S.coach = Object.assign({}, S.coach, { [tipNow.id]: true }); tipNow = null; tipEnd = now; save(); return hide(); }
+    } else {
+      if (!$('scrim').hidden || now - tipEnd < TIP_GAP) return hide();
+      const c = TIPS.find(c => !seen[c.id] && c.show()); if (!c) return hide();
+      tipNow = c; tipEnd = now + TIP_SECS;
+    }
+    if (!$('scrim').hidden) return hide();
+    step = tipNow;
   }
-  if (!$('scrim').hidden) return hide();
   if (!tutShownAt) tutShownAt = Date.now();
-  const el = step.target(); if (!el) return hide();
-  document.querySelectorAll('.tut-target').forEach(t => { if (t !== el) t.classList.remove('tut-target'); }); el.classList.add('tut-target');
-  const app = $('app').getBoundingClientRect(), r = el.getBoundingClientRect(), room = $('roomWrap').getBoundingClientRect();
-  if ($('tutText').textContent !== step.text) $('tutText').textContent = step.text;
-  tip.hidden = false; ptr.hidden = false;
-  const cy = r.top + r.height / 2;
-  // keep the tip away from what it points at: targets high in the room get the tip low, and vice versa
-  const low = cy < room.top + room.height * 0.55 || cy > room.bottom;
-  // targets in the tab bar (like Hype, which pokes up into the room) keep the tip above them
-  const floor = cy > room.bottom - 60 ? Math.min(room.bottom, r.top - 10) : room.bottom;
-  tip.style.top = (low ? floor - tip.offsetHeight - 12 : room.top + 56) - app.top + 'px';
+  const el = step.target ? step.target() : null; if (!el && !step.noTarget) return hide();
+  // a target in the room that's scrolled out of view: bring it into view once, when the step starts
+  if (el && $('stage').contains(el) && !step._seen) { step._seen = S.tut + ':' + S.loc; const rr = el.getBoundingClientRect(), rw = $('roomWrap').getBoundingClientRect();
+    if (rr.top < rw.top + 40 || rr.bottom > rw.bottom - 70) setPan(panY + ((rw.top + rw.height * .45) - (rr.top + rr.height / 2)) / fitS); }
+  document.querySelectorAll('.tut-target').forEach(t => { if (t !== el) t.classList.remove('tut-target'); }); if (el) el.classList.add('tut-target');
+  const app = $('app').getBoundingClientRect(), r = el ? el.getBoundingClientRect() : null, room = $('roomWrap').getBoundingClientRect();
+  const line = typeof step.text === 'function' ? step.text() : step.text, said = typeof line === 'string' ? say('explaining', line) : line;
+  if ($('tutText').textContent !== said.text) $('tutText').textContent = said.text;
+  mayaPose(said.pose);
+  tip.classList.toggle('over-sheet', !$('scrim').hidden);
+  tip.hidden = false; ptr.hidden = !el;
+  step._el = el; placeMaya(app, room, r, step);
+  if (!el) return;
   // the glow takes the exact shape of the target, so it is always centered on it
   // glows on room stations live inside the room, under the corner buttons and clipped at its edges;
   // glows on tabs and the upgrade button sit on top of the app
   const host = $('stage').contains(el) ? $('roomWrap') : $('app');
+  ptr.classList.toggle('over-sheet', !$('scrim').hidden);
   if (ptr.parentNode !== host) host.insertBefore(ptr, host === $('app') ? $('tut') : $('stage').nextSibling);
   const base = host.getBoundingClientRect();
   const pad = 5;
@@ -2560,7 +2684,7 @@ function glidePan(v) {   // v in stage units per ms
     panGlide = (Math.abs(v) > .015 && panY !== before) ? requestAnimationFrame(step) : 0; };
   panGlide = requestAnimationFrame(step);
 }
-wrap.addEventListener('pointerdown', e => { stopGlide(); if (S && S.tut != null && S.tut < TUT.length && S.loc === 0 && !$('tut').hidden) return; panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; panSamples = [[performance.now(), panY]]; });
+wrap.addEventListener('pointerdown', e => { stopGlide(); panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; panSamples = [[performance.now(), panY]]; });
 wrap.addEventListener('pointermove', e => {
   if (!panDrag || e.pointerId !== panDrag.id) return;
   const dy = e.clientY - panDrag.y;
@@ -2798,6 +2922,7 @@ function tapStation(st) {
     } else { sfx('denied'); toast('Need ' + fmt(st.unlock) + ' to unlock ' + st.name); }
     render(); return;
   }
+  tutTapped++;
   const wasOpen = popOpen && S.selected === st.id;
   S.selected = st.id;
   let started = false;
@@ -2894,7 +3019,7 @@ function watchAd(onDone) {
     if (left <= 0) { clearInterval(adTimer); done(); } else c.textContent = left;
   }, 1000);
 }
-$('tutSkip').addEventListener('click', () => { if (S.tut != null && S.tut >= TUT.length - 1 || S.loc > 0) S.coach = { move1: true, album1: true }; S.tut = TUT.length; save(); updateTut(); track('tutorial-skipped'); });
+$('tutSkip').addEventListener('click', () => { const was = S.tut; S.tut = TUT.length; S.tipsOff = true; tipNow = null; save(); updateTut(); track('tutorial-skipped/' + (was < TUT.length ? was : 'tip')); });
 $('goalsBtn').addEventListener('click', () => openTab(dailyReady() && !goalsClaimable() ? 'daily' : 'goals'));   // opens on whichever tab has something to claim
 $('passBtn').addEventListener('click', () => openTab('pass'));
 $('eventsBtn').addEventListener('click', () => { evPick = 0; S.evSeen = dayKey(); save(); openTab('events'); });
@@ -2958,6 +3083,10 @@ function albumUpload(n, done) {
   steps.forEach((t, i) => setTimeout(() => { el.querySelector('.ustep').textContent = t; el.querySelectorAll('.plats span').forEach((p, k) => p.classList.toggle('on', k <= i)); if (i === 3) sfx('reward'); }, i * 1050));
   setTimeout(() => { el.remove(); done(); }, 4300);
 }
+const MAYA_ALBUM = ['Your first album is out! We started with a desk and a dream. Now let’s take that sound even further.',
+  'Another album, another step forward. You’re building a catalogue—and a name for yourself.',
+  'From apartment recordings to stadium lights. Look how far you’ve come! Let’s make the next record count.'];
+const MAYA_ALBUM_LATER = ['Another album out in the world. Let’s keep building your legacy!', 'The catalogue keeps growing. Ready for the next chapter?', 'New album, new momentum. Let’s put that boost to work!'];
 function dropAlbum() {
   if (!albumReady()) return;
   S.albums = (S.albums || 0) + 1;
@@ -2980,10 +3109,14 @@ function dropAlbum() {
   buildRoom(); save(); render(); sfx('move'); syncChart(true);
   // the big moment: your artist on the glowing stage with gold rays and sparkles (wearing the new exclusive if there is one)
   const prev = `<div class="dresser album-stage" style="width:100%"><span class="arays"></span><span class="spot"></span>${stageSparks(14)}${bigArtist(it ? Object.assign({}, S.equip, { [it.slot]: it.id }) : S.equip)}</div>`;
-  albumUpload(S.albums, () => openSheet(`<div class="welcome album-pop"><h2>Album #${S.albums} is out!</h2>${prev}<span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
+  const mayaLine = S.albums > (S.mayaAlbum || 0) ? (S.albums <= 3 ? MAYA_ALBUM[S.albums - 1] : MAYA_ALBUM_LATER[(S.albums - 4) % MAYA_ALBUM_LATER.length]) : '';
+  if (mayaLine) { S.mayaAlbum = S.albums; save(); }
+  const mayaNote = mayaLine ? `<div class="maya-note"><span class="mfig"><img src="art/maya-celebrating.webp?v=124" alt="" draggable="false"></span><div class="mcard"><span class="mname">Maya · Your manager</span><p>${mayaLine}</p><i class="mtail" aria-hidden="true"></i></div></div>` : '';
+  albumUpload(S.albums, () => (setTimeout(moreBelow, 60), setTimeout(moreBelow, 700), openSheet(`<div class="welcome album-pop"><h2>Album #${S.albums} is out!</h2>${prev}<span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
     <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive that adds +${Math.round(it.bonus * 100)}% income to your wardrobe.` : ''} ${micNow ? ' You earned the <b style="color:#FFC94A">Golden Mic</b>: 2x income, forever.' : ''} +${albumGems + plaqueGems} gems${plaqueGems ? ` (including the ${LOCATIONS[lastLoc()].name} plaque)` : ''}.${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p></div>
+    ${mayaNote}
     ${it ? `<button class="cta" data-equip="${it.id}" data-then="close">Wear it</button>` : ''}
-    <button class="ghost" data-close>Start the next run</button>`));
+    <button class="ghost" data-close>Start the next run</button>`)));
 }
 
 // ---------- sheets ----------
@@ -2998,7 +3131,10 @@ function syncShine(root) {
   const t = (performance.now() / 1000) % 4.5;
   root.querySelectorAll('.card, .offer, .sbtn.crate, .tab-hype .orb, .tab.shop .ticon, .tab .ticon.wt').forEach(el => el.style.setProperty('--shine-at', `-${t.toFixed(2)}s`));
 }
+function moreBelow() { const sh = $('sheet'); $('scrim').classList.toggle('more-below', !!sh.querySelector('.album-pop') && sh.scrollHeight - sh.clientHeight - sh.scrollTop > 6); }
+$('sheet').addEventListener('scroll', moreBelow, { passive: true });
 function openSheet(html) {
+  $('scrim').classList.remove('more-below');
   try { setHudH(); } catch (e) {}
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
   $('sheet').classList.toggle('shopmode', nextSheetKey === 'shop');
@@ -3168,6 +3304,7 @@ $('scrim').addEventListener('click', e => {
   const pf = e.target.closest('[data-prof]');
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
+  if (e.target.closest('[data-tut-replay]')) { startTutorial(); track('tutorial-replay'); return; }
   const tg = e.target.closest('[data-tab-go]');
   if (tg) return openTab(tg.dataset.tabGo);
   const adb = e.target.closest('[data-ad]');
@@ -3233,7 +3370,7 @@ $('scrim').addEventListener('click', e => {
   if (tsp) { S.test.speed = +tsp.dataset.testSpeed; save(); render(); return openTab('settings'); }
   if (e.target.closest('[data-test-hype]')) { S.test.hype = !S.test.hype; if (!S.test.hype) S.hypeUntil = 0; save(); render(); return openTab('settings'); }
   if (e.target.closest('[data-test-gems]')) { S.gems += 1000; sfx('gems'); save(); render(); return openTab('settings'); }
-  if (e.target.closest('[data-reset]')) { S = fresh(); if (TEST) Object.assign(S, { test: { speed: 10, hype: true }, onboarded: true, name: 'Test Artist' }); S.tut = 0; tutShownAt = 0; applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
+  if (e.target.closest('[data-reset]')) { S = fresh(); if (TEST) Object.assign(S, { test: { speed: 10, hype: true }, onboarded: true, name: 'Test Artist' }); S.tut = 0; S.tutBase = null; S.tipsOff = false; tutShownAt = 0; applyLook(); buildRoom(); save(); closeSheet(); render(); toast('New career started'); }
 });
 $('scrim').addEventListener('change', e => {
   if (e.target.id === 'countrySel') { S.country = e.target.value || null; save(); syncChart(true).then(() => { if (Charts.tab === 'country') loadChart().then(() => openTab('charts')); }); toast('Country saved'); }
@@ -4552,6 +4689,10 @@ function openTab(tab) {
         <p>Help shape the game: ${FB_QS.length} quick questions.</p>
         <button class="cta" data-tab-go="feedback">Give feedback</button>
       </div>
+      <div class="sec"><h3>Tutorial</h3>
+        <p>Walk through the basics again. Your progress and rewards stay as they are.</p>
+        <button class="ghost" data-tut-replay>Replay tutorial</button>
+      </div>
       ${TEST ? `<div class="sec testsec"><h3>Test mode <small class="h3note">separate save</small></h3>
         <p>Your real career is safe. Nothing here posts to The Charts or play tracking.</p>
         <div class="speeds">${[1, 10, 50, 200].map(n => `<button class="stab ${(S.test.speed || 1) === n ? 'on' : ''}" data-test-speed="${n}">${n}x</button>`).join('')}</div>
@@ -4801,6 +4942,12 @@ function start(data) {
   if ((S.tutV || 0) < 2) { if (S.tut != null && S.tut >= 4) S.tut = TUT.length; S.tutV = 2; }
   // the tips grew from 7 to 9 steps: anyone who finished the old ones (or left the apartment) is done
   if (S.tutV < 3) { if (S.tut != null && (S.tut >= 7 || S.loc > 0 || S.albums > 0)) S.tut = TUT.length; S.tutV = 3; }   // players past the old tips don't get the new Hype tip
+  if (S.mayaAlbum == null) S.mayaAlbum = S.albums || 0;
+  if (S.tutV < 4) {
+    if (S.tut != null && S.tut >= 4) S.tut = TUT.length;
+    // players who already finished the old tutorial only get the tips for things that moved (Daily Rewards, Inventory)
+    if (S.tut != null && S.tut >= TUT.length) S.coach = Object.assign(Object.fromEntries(TIPS.filter(t => !['daily', 'inv'].includes(t.id) && !t.keep).map(t => [t.id, true])), S.coach || {});
+    S.tutV = 4; }
   if (S.tut == null) S.tut = (S.stats.hires > 0 || S.loc > 0 || S.albums > 0) ? TUT.length : 0;
   S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
   applyLook(); buildRoom(); fit();
