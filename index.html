@@ -1841,6 +1841,7 @@ const tutHire = () => LOC().stations.find(st => lvl(st.id) && !S.crew[st.id]);
 const stBtn = st => st && els[st.id] && els[st.id].b;
 const say = (pose, text) => ({ pose, text });   // Maya's pose for a line: 'explaining' | 'thinking' | 'celebrating'
 const TUT = [
+  { text: () => say('explaining', 'Hey, superstar! I\u2019m Maya, your manager. You bring the sound\u2060\u2014\u2060I\u2019ll help you build the career. Let\u2019s make your first track!'), noTarget: true, done: () => false, info: 'Let\u2019s do it' },   // intro: waits for the button
   { text: () => say('explaining', `Let's get your first track going! Tap the ${tutFirst().name} to earn. Hold it to keep going.`), target: () => stBtn(tutFirst()), done: () => tutTapped > 0 },   // your own tap, not crew income
   { text: () => { if ($('pop').hidden) return say('celebrating', `Nice work! Tap the ${(def(S.selected) || tutFirst()).name} again to see its upgrades.`);
       const st = def(S.selected) || tutFirst(), c = buyPlan(st).cost;
@@ -1859,6 +1860,8 @@ const TUT = [
 // after the core steps: one short pointer when a feature first matters, never two at once, with a pause between them.
 // move1 / album1 keep their old ids so players who already saw them don't see them again.
 const TIPS = [
+  { id: 'boost', text: () => say('explaining', 'Pro tip: press and hold a station with crew to speed it up. Let go any time.'), show: () => LOC().stations.some(st => lvl(st.id) && S.crew[st.id]),
+    target: () => stBtn(LOC().stations.find(st => lvl(st.id) && S.crew[st.id] && st.id === S.selected) || LOC().stations.find(st => lvl(st.id) && S.crew[st.id])), done: () => boostUsed, info: 'Got it' },
   { id: 'outside', text: () => say('explaining', 'Want a look around? Drag the room down to see outside.'), show: () => true, noTarget: true, info: 'Got it' },
   { id: 'move1', text: () => say('celebrating', `We did it! Open Career to move up to the ${LOCATIONS[S.loc + 1].name}.`), show: () => !(S.maxLoc > S.loc) && LOCATIONS[S.loc + 1] && movePct() >= 100, target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
   { id: 'album1', text: () => say('celebrating', 'Your tour is complete! Open Career to drop your first album and earn a permanent income boost.'), show: () => !(S.albums > 0) && albumReady(), target: () => tabTile('career'), done: () => sheetKey === 'career', keep: true },
@@ -2613,11 +2616,12 @@ function buildRoom() {
       prog: b.querySelector('.prog'), lock: b.querySelector('.lockspot'), furn: b.querySelector('.furn'), crew: $('crew-' + st.id) };
     b.addEventListener('click', () => tapStation(st));
     // hold to keep producing: the press itself starts a track, and while the finger stays down each finished track starts the next
-    b.addEventListener('pointerdown', () => {
-      if (lvl(st.id) && S.crew[st.id]) { boostPress = st.id; boostWasHeld = false; setTimeout(() => { if (boostPress === st.id && !panMoved) { boostSt = st.id; boostWasHeld = true; } }, 220); return; }   // crewed: hold to run it faster
+    b.addEventListener('pointerdown', e => {
+      const pid = e.pointerId;
+      if (lvl(st.id) && S.crew[st.id]) { boostPress = st.id; boostWasHeld = false; setTimeout(() => { if (boostPress === st.id && !panMoved) { boostSt = st.id; boostWasHeld = true; boostUsed = true; pressLock = true; try { b.setPointerCapture(pid); } catch (err) {} } }, 220); return; }   // crewed: hold to run it faster
       if (!lvl(st.id) || S.crew[st.id]) return;
       holdSt = st.id;
-      setTimeout(() => { if (holdSt === st.id && !panMoved && !S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); } }, 220);
+      setTimeout(() => { if (holdSt === st.id && !panMoved) { pressLock = true; try { b.setPointerCapture(pid); } catch (err) {} if (!S.running[st.id]) { S.running[st.id] = true; S.prog[st.id] = S.prog[st.id] || 0; sfx('tap'); } } }, 220);
     });
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => b.addEventListener(ev, () => { if (holdSt === st.id) holdSt = null; if (boostPress === st.id) { boostPress = null; boostSt = null; } }));
     b.addEventListener('contextmenu', e => e.preventDefault());
@@ -2738,11 +2742,12 @@ function glidePan(v) {   // v in stage units per ms
     panGlide = (Math.abs(v) > .015 && panY !== before) ? requestAnimationFrame(step) : 0; };
   panGlide = requestAnimationFrame(step);
 }
-wrap.addEventListener('pointerdown', e => { stopGlide(); panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; panSamples = [[performance.now(), panY]]; });
+window.addEventListener('pointerup', () => { pressLock = false; }); window.addEventListener('pointercancel', () => { pressLock = false; });
+wrap.addEventListener('pointerdown', e => { pressLock = false; stopGlide(); panDrag = { y: e.clientY, start: panY, id: e.pointerId }; panMoved = false; panSamples = [[performance.now(), panY]]; });
 wrap.addEventListener('pointermove', e => {
   if (!panDrag || e.pointerId !== panDrag.id) return;
   const dy = e.clientY - panDrag.y;
-  if (!panMoved && Math.abs(dy) < 10) return;
+  if (!panMoved && (pressLock || Math.abs(dy) < 10)) return;   // a hold that has started owns the finger until it lifts
   if (!panMoved) { panMoved = true; holdSt = null; clearBoost(); closePop(); try { wrap.setPointerCapture(e.pointerId); } catch (err) {} }
   setPan(panDrag.start + dy / fitS);
   const now = performance.now(); panSamples.push([now, panY]); while (panSamples.length > 2 && now - panSamples[0][0] > 100) panSamples.shift();
@@ -2991,7 +2996,7 @@ function tapStation(st) {
   render();
 }
 // upgrade card that pops out of the tapped station
-let popOpen = false, holdSt = null;
+let popOpen = false, holdSt = null, pressLock = false, boostUsed = false;
 // holding a crewed station runs it at BOOST_SPEED; one station at a time. A quick tap counts as BOOST_TAP_MS of holding, and taps never stack
 // past the hold speed, so tapping fast can't beat simply holding.
 const BOOST_SPEED = 1.5, BOOST_TAP_MS = 500;
@@ -5077,6 +5082,8 @@ function start(data) {
     // players who already finished the old tutorial only get the tips for things that moved (Daily Rewards, Inventory)
     if (S.tut != null && S.tut >= TUT.length) S.coach = Object.assign(Object.fromEntries(TIPS.filter(t => !['daily', 'inv'].includes(t.id) && !t.keep).map(t => [t.id, true])), S.coach || {});
     S.tutV = 4; }
+  // v5 adds Maya's introduction as step 0: players already in (or past) the tutorial keep their place and never see it
+  if (S.tutV < 5) { if (S.tut != null) S.tut = S.tut >= TUT.length - 1 ? TUT.length : S.tut + 1; S.tutV = 5; }
   if (S.tut == null) S.tut = (S.stats.hires > 0 || S.loc > 0 || S.albums > 0) ? TUT.length : 0;
   S.stats.maxLevel = Math.max(S.stats.maxLevel, ...Object.values(S.levels));
   applyLook(); buildRoom(); fit();
