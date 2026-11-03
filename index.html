@@ -779,7 +779,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 @keyframes tutglow { 50% { background: rgba(255,201,74,.26); box-shadow: 0 0 0 3px rgba(255,201,74,1), 0 0 30px 12px rgba(255,201,74,.6); } }
 .email { -webkit-user-select: text; user-select: text; font-family: var(--display); font-size: 15px; color: var(--text); word-break: break-all; }
 .toast { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px); transform: translateX(-50%); background: var(--text); color: var(--deep);
-  font-size: 14px; font-weight: 700; padding: 10px 16px; border-radius: 999px; z-index: 30; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis;
+  font-size: 14px; font-weight: 700; padding: 10px 16px; border-radius: 999px; z-index: 30; pointer-events: none; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis;
   animation: toastin .2s ease-out, toastout .35s ease-in 1.45s forwards; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
 @keyframes toastin { from { opacity: 0; transform: translate(-50%, -8px); } }
 @keyframes toastout { to { opacity: 0; transform: translate(-50%, -8px); } }
@@ -2934,7 +2934,9 @@ let toastT;
 function toast(msg) {
   document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
-  $('app').appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 1850);
+  const hud = document.querySelector('.hud'), app = $('app');   // pinned just below the dark header bar, clear of cash and gems
+  if (hud) t.style.top = Math.round(hud.getBoundingClientRect().bottom - app.getBoundingClientRect().top + 8) + 'px';
+  app.appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 1850);
 }
 
 // ---------- actions ----------
