@@ -631,6 +631,9 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .clist { display: flex; flex-direction: column; gap: 6px; transition: opacity .15s; }
 .clist.dim { opacity: .45; }
 .sheet.tall { height: 100%; }
+.sheet.pinned { height: min(74%, 620px); overflow: hidden; }   /* Crew and Upgrades share one size and position */
+.sheet.pinned > .pscroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; margin: 0 -4px; padding: 0 4px 8px; }
+.sheet.pinned > .pscroll > * { flex-shrink: 0; }
 .crow { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 8px 12px 8px 8px; }
 .crow.me { box-shadow: inset 0 0 0 2px var(--gem); }
 .crow .cr { width: 32px; text-align: center; font: 400 15px var(--display); color: var(--muted); }
@@ -1782,10 +1785,34 @@ const unlockRank = st => [...LOC().stations].sort((a, b) => a.unlock - b.unlock)
 const crewCostOf = st => Math.ceil(st.crewCost * (S.loc >= 2 && unlockRank(st) >= 2 ? 0.3 : 1));   // the top two crews on the Loft and later cost 70% less
 const upgAffordable = () => upgList().map((u, i) => i).filter(i => !upgOwned().includes(i) && S.cash >= upgCost(i));
 const upgNewAffordable = () => upgAffordable().some(i => !(S.upgSeen || []).includes(i));   // the Crew dot: something affordable you haven't looked at yet
-function buyUpg(i) {
+let lastUpgBuy = 0;
+function buyUpg(i, btn) {
+  if (performance.now() - lastUpgBuy < 150) return;   // one tap buys one item, even as the next row slides under the finger
   const u = upgList()[i]; if (!u || upgOwned().includes(i) || S.cash < upgCost(i)) { sfx('denied'); return; }
+  lastUpgBuy = performance.now();
   S.cash -= upgCost(i); S.upg = [...upgOwned(), i]; S.stats.upgBuys = (S.stats.upgBuys || 0) + 1; upgCache = null;
-  sfx('milestone'); toast(u[0] + ': ' + upgText(u)); save(); render(); openTab('upgrades');
+  S.upgSeen = upgAffordable();
+  sfx('milestone'); toast(u[0] + ': ' + upgText(u)); save();
+  // update the list in place: the bought row moves to Owned, the rows below slide up, the scroll position stays
+  const row = btn && btn.closest('.row.upg'), box = $('upgScroll');
+  if (row && box) {
+    const done = box.querySelector('.upg-done'), owned = box.querySelector('.upg-owned');
+    row.remove(); row.classList.add('got'); const b = row.querySelector('[data-upg]'); if (b) b.outerHTML = '<span class="hired">Owned</span>';
+    owned.appendChild(row); done.hidden = false; done.querySelector('summary span').textContent = upgOwned().length;
+    box.querySelector('.upg-empty').hidden = !!box.querySelector('[data-upg]');
+  } else if (sheetKey === 'upgrades') openTab('upgrades');
+  render();
+}
+// while Crew or Upgrades is open, buttons follow your cash live (no rebuilding the list)
+function liveCrewSheet() {
+  if (sheetKey !== 'upgrades' && sheetKey !== 'crew') return;
+  const sh = $('sheet');
+  sh.querySelectorAll('[data-upg]').forEach(b => { const off = S.cash < upgCost(+b.dataset.upg); if (b.disabled !== off) b.disabled = off; });
+  sh.querySelectorAll('[data-hire]').forEach(b => { const st = def(b.dataset.hire), off = !st || !lvl(st.id) || S.cash < crewCostOf(st); if (b.disabled !== off) b.disabled = off; });
+  const tab = sh.querySelector('[data-tab-go="upgrades"]'); if (!tab) return;
+  const n = upgAffordable().length, dot = tab.querySelector('.tdot');
+  if (n && !dot) tab.insertAdjacentHTML('beforeend', `<i class="tdot">${n}</i>`); else if (!n && dot) dot.remove(); else if (dot && dot.textContent !== String(n)) dot.textContent = n;
+  if (sheetKey === 'upgrades') S.upgSeen = upgAffordable();   // what you can see on the open list counts as seen
 }
 const upgText = ([, , kind, sid, x]) => { const nm = sid && (def(sid) || {}).name;
   return kind === 'profit' ? `${nm} pays x${x}` : kind === 'speed' ? `${nm} runs ${x}x faster` : kind === 'crew' ? `Crewed stations run ${Math.round((x - 1) * 100)}% faster`
@@ -3023,11 +3050,15 @@ function toast(msg) {
   document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
   const hud = document.querySelector('.hud'), app = $('app');   // pinned just below the dark header bar, clear of cash and gems
-  let y = hud ? hud.getBoundingClientRect().bottom : 0;
-  if (!$('scrim').hidden) { const head = document.querySelector('#sheet .sheet-head'), sh = $('sheet').getBoundingClientRect();   // a panel is open: clear its title and close button
-    const hb = head ? head.getBoundingClientRect().bottom : 0; y = Math.max(y, hb > sh.top ? hb : sh.top); }
-  t.style.top = Math.round(y - app.getBoundingClientRect().top + 8) + 'px';
-  app.appendChild(t); clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 1850);
+  app.appendChild(t);
+  const top0 = app.getBoundingClientRect().top, hb = hud ? hud.getBoundingClientRect().bottom : 0, th = t.offsetHeight;
+  let y = hb + 8;
+  if (!$('scrim').hidden) {   // a panel is open: use the space above it, or else go below its title and tabs
+    const sh = $('sheet').getBoundingClientRect();
+    if (sh.top - hb >= th + 16) y = sh.top - th - 8;
+    else { const below = [...$('sheet').querySelectorAll('.sheet-head, .segtabs')].map(e => e.getBoundingClientRect().bottom).filter(b => b > sh.top); y = Math.max(hb, below.length ? Math.max(...below) : sh.top) + 8; }
+  }
+  t.style.top = Math.round(y - top0) + 'px'; clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 1850);
 }
 
 // ---------- actions ----------
@@ -3319,6 +3350,7 @@ function openSheet(html) {
   $('scrim').classList.remove('more-below');
   try { setHudH(); } catch (e) {}
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
+  $('sheet').classList.toggle('pinned', nextSheetKey === 'crew' || nextSheetKey === 'upgrades');
   $('sheet').classList.toggle('shopmode', nextSheetKey === 'shop');
   const sh = $('sheet'), refresh = !$('scrim').hidden && nextSheetKey && nextSheetKey === sheetKey;
   if (sheetKey && !$('scrim').hidden && !refresh) sheetScroll[sheetKey] = sh.scrollTop;
@@ -3488,7 +3520,7 @@ $('scrim').addEventListener('click', e => {
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
   if (e.target.closest('[data-tut-replay]')) { startTutorial(); track('tutorial-replay'); return; }
-  const ub = e.target.closest('[data-upg]'); if (ub) return buyUpg(+ub.dataset.upg);
+  const ub = e.target.closest('[data-upg]'); if (ub) return buyUpg(+ub.dataset.upg, ub);
   const tg = e.target.closest('[data-tab-go]');
   if (tg) return openTab(tg.dataset.tabGo);
   const adb = e.target.closest('[data-ad]');
@@ -4434,17 +4466,17 @@ function openTab(tab) {
         : `<button class="hire" data-hire="${st.id}" ${!unlocked || S.cash < crewCostOf(st) ? 'disabled' : ''}>${fmt(crewCostOf(st))}</button>`;
       return `<div class="row"><span class="ric">${svgIc(st.icon, '#F4F1EA', 20)}</span><span class="rt"><b>${st.crew}</b><span>${unlocked ? 'Runs ' + st.name + ' for you, even offline' : 'Unlock ' + st.name + ' first'}</span></span>${right}</div>`;
     }).join('');
-    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('crew')}<p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}`);
+    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('crew')}<div class="pscroll"><p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}</div>`);
   } else if (tab === 'upgrades') {
     S.upgOpened = true; S.upgSeen = upgAffordable(); save();
     const list = upgList().map((u, i) => [u, i]), own = upgOwned();
     const open = list.filter(([, i]) => !own.includes(i)).sort((a, b) => a[0][1] - b[0][1]), done = list.filter(([, i]) => own.includes(i));
     const row = ([u, i], bought) => `<div class="row upg ${bought ? 'got' : ''}"><span class="ric">${svgIc(u[2] === 'profit' || u[2] === 'all' ? 'star' : u[2] === 'speed' || u[2] === 'crew' ? 'sliders' : 'phone', bought ? '#8BF0A0' : '#FFC94A', 20)}</span>
       <span class="rt"><b>${u[0]}</b><span>${upgText(u)}</span></span>${bought ? '<span class="hired">Owned</span>' : `<button class="hire" data-upg="${i}" ${S.cash < upgCost(i) ? 'disabled' : ''}>${fmt(upgCost(i))}</button>`}</div>`;
-    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('upgrades')}
+    openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('upgrades')}<div class="pscroll" id="upgScroll">
       <p>One-time boosts for the ${LOC().name}. Buy any of them, in any order. They reset when you move up or drop an album.</p>
-      ${open.length ? open.map(x => row(x, false)).join('') : '<p class="cnote">Every Upgrade here is yours.</p>'}
-      ${done.length ? `<details class="upg-done"><summary>Owned (${done.length})</summary>${done.map(x => row(x, true)).join('')}</details>` : ''}`);
+      ${open.map(x => row(x, false)).join('')}<p class="cnote upg-empty" ${open.length ? 'hidden' : ''}>Every Upgrade here is yours.</p>
+      <details class="upg-done" ${done.length ? '' : 'hidden'}><summary>Owned (<span>${done.length}</span>)</summary><div class="upg-owned">${done.map(x => row(x, true)).join('')}</div></details></div>`);
   } else if (tab === 'career') {
     const pct = movePct();
     const allLocs = [...LOCATIONS.map(l => l.name), ...FUTURE];
@@ -4957,6 +4989,7 @@ function applyLook() {
 
 // ---------- render ----------
 function render() {
+  try { liveCrewSheet(); } catch (e) {}
   setFit($('cash'), fmt(S.cash).slice(1), 19, 12);   // the coin already says it's cash
   const ps = perSec() * mult();
   $('rate').hidden = true;
