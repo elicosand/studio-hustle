@@ -682,6 +682,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .hire.money { background: var(--gem); }
 .hire.on { background: var(--panel); color: var(--cash); box-shadow: inset 0 0 0 2px var(--cash); }
 .row.locked .rt b { color: var(--muted); }
+.hire.off { background: var(--line); color: var(--text); }
 .hire:disabled { background: var(--line); color: var(--muted); cursor: default; }
 .hired { font-size: 13px; font-weight: 700; color: var(--cash); padding: 0 8px; }
 .big-bar { height: 14px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
@@ -2590,7 +2591,16 @@ const bestInSlot = sl => ITEMS.filter(i => i.slot === sl && S.owned && S.owned[i
 const gearMult = () => 1 + SLOTS.reduce((a, [sl]) => { const it = bestInSlot(sl); return a + (it ? it.bonus : 0); }, 0);
 const wearingMythic = () => SLOTS.some(([sl]) => { const it = itemById(S.equip && S.equip[sl]); return it && it.rar === 'mythic'; });
 const MIC_FREE_AT = 10;   // the Golden Mic is free at this album, so free players reach the same ceiling
-const boostMult = () => (S.perks.goldenMic ? 2 : 1) * (S.perks.monitors ? 1.25 : 1);
+// Test access (one tester account, checked on the server): simulated Golden Mic / Day-One Crew. Kept in memory only, never in the save.
+let TESTG = null;
+const perkOn = id => !!S.perks[id] || !!(TESTG && TESTG[id === 'goldenMic' ? 'golden_mic' : id === 'autoCrew' ? 'day_one_crew' : '_']);
+async function testCall(fn, body) {
+  if (!cloud().uid || !(await ensureAuth())) return null;
+  const r = await supa('/rest/v1/rpc/' + fn, { method: 'POST', auth: true, body: body || {} });
+  return r.ok ? { data: r.data } : null;
+}
+async function loadTestAccess() { try { const r = await testCall('test_state'); TESTG = r && r.data ? r.data : null; if (TESTG) { applyAutoCrew(); render(); } } catch (e) {} }
+const boostMult = () => (perkOn('goldenMic') ? 2 : 1) * (S.perks.monitors ? 1.25 : 1);
 const payout = st => st.base * lvl(st.id) * Math.pow(MILE_PAY, milesHit(lvl(st.id))) * (upgFx().pay[st.id] || 1) * upgFx().all * fame() * gearMult() * boostMult();
 const bestRate = () => LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), 0);
 const skipValue = secs => Math.round(Math.max(perSec(), bestRate()) * secs);
@@ -3206,7 +3216,7 @@ $('settings').addEventListener('click', () => openTab('settings'));
 
 // Day-One Crew: the first station of a fresh map already has its crew
 function applyAutoCrew() {
-  if (!S.perks.autoCrew) return;
+  if (!perkOn('autoCrew')) return;
   const first = LOC().stations[0];
   if (lvl(first.id) && !S.crew[first.id]) { S.crew[first.id] = true; S.running[first.id] = true; }
 }
@@ -3520,6 +3530,9 @@ $('scrim').addEventListener('click', e => {
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
   if (e.target.closest('[data-tut-replay]')) { startTutorial(); track('tutorial-replay'); return; }
+  const tset = e.target.closest('[data-test-set]');
+  if (tset) { const k = tset.dataset.testSet; tset.disabled = true; testCall('test_set', { item: k, enabled: !TESTG[k] }).then(r => { if (r) { TESTG = r.data; applyAutoCrew(); toast(`${k === 'golden_mic' ? 'Golden Mic' : 'Day-One Crew'} ${TESTG[k] ? 'on' : 'off'} (test)`); } else toast("Couldn't reach the server"); render(); openTab('testaccess'); }); return; }
+  if (e.target.closest('[data-test-reset]')) { testCall('test_reset').then(r => { if (r) { TESTG = r.data; toast('Test grants reset'); } else toast("Couldn't reach the server"); render(); openTab('testaccess'); }); return; }
   const ub = e.target.closest('[data-upg]'); if (ub) return buyUpg(+ub.dataset.upg, ub);
   const tg = e.target.closest('[data-tab-go]');
   if (tg) return openTab(tg.dataset.tabGo);
@@ -4467,6 +4480,14 @@ function openTab(tab) {
       return `<div class="row"><span class="ric">${svgIc(st.icon, '#F4F1EA', 20)}</span><span class="rt"><b>${st.crew}</b><span>${unlocked ? 'Runs ' + st.name + ' for you, even offline' : 'Unlock ' + st.name + ' first'}</span></span>${right}</div>`;
     }).join('');
     openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('crew')}<div class="pscroll"><p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}</div>`);
+  } else if (tab === 'testaccess') {
+    if (!TESTG) return closeSheet();
+    const row = (k, name, what) => `<div class="row"><span class="ric">${svgIc(k === 'golden_mic' ? 'mic' : 'note', '#FFC94A', 20)}</span><span class="rt"><b>${name}</b><span>${what}</span></span>
+      <button class="hire ${TESTG[k] ? '' : 'off'}" data-test-set="${k}">${TESTG[k] ? 'On' : 'Off'}</button></div>`;
+    openSheet(`<div class="sheet-head"><h2>Test access</h2>${closeBtn()}</div>
+      <p>Test-only grants for this account. They aren't purchases, aren't saved in your career, and can be switched off any time.</p>
+      ${row('golden_mic', 'Golden Mic', '2x income, permanently while on')}${row('day_one_crew', 'Day-One Crew', 'The first station on every map starts with crew')}
+      <button class="ghost" data-test-reset>Reset test grants</button>`);
   } else if (tab === 'upgrades') {
     S.upgOpened = true; S.upgSeen = upgAffordable(); save();
     const list = upgList().map((u, i) => [u, i]), own = upgOwned();
@@ -4925,6 +4946,7 @@ function openTab(tab) {
         <p>Walk through the basics again. Your progress and rewards stay as they are.</p>
         <button class="ghost" data-tut-replay>Replay tutorial</button>
       </div>
+      ${TESTG ? `<div class="sec"><h3>Test access</h3><p>Simulated test grants for this test account only.</p><button class="ghost" data-tab-go="testaccess">Open test access</button></div>` : ''}
       ${TEST ? `<div class="sec testsec"><h3>Test mode <small class="h3note">separate save</small></h3>
         <p>Your real career is safe. Nothing here posts to The Charts or play tracking.</p>
         <div class="speeds">${[1, 10, 50, 200].map(n => `<button class="stab ${(S.test.speed || 1) === n ? 'on' : ''}" data-test-speed="${n}">${n}x</button>`).join('')}</div>
@@ -5075,7 +5097,12 @@ const CODES = { '87sz5h13': 'founder' };
 function redeem(raw) {
   const t = (raw || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), kind = CODES[codeHash(t)];
   if (!t) return;
-  if (!kind) { sfx('denied'); toast("That code didn't work. Check the spelling"); return; }
+  if (!kind) {   // not a public code: it may be a test-access code, which only the server can check (and only for its one account)
+    testCall('test_redeem', { code: t }).then(r => {
+      if (r) { TESTG = r.data; sfx('bling'); toast('Test access unlocked'); render(); openTab('testaccess'); }
+      else { sfx('denied'); toast("That code didn't work. Check the spelling"); }
+    }).catch(() => { sfx('denied'); toast("That code didn't work. Check the spelling"); });
+    return; }
   if (kind === 'founder') {
     if (S.owned.founder) { toast('Founder already unlocked'); return; }
     S.owned.founder = true; S.newItems = [...(S.newItems || []), 'founder']; save(); render(); sfx('bling'); track('code/founder'); syncChart(true);
@@ -5199,6 +5226,7 @@ function start(data) {
     if (S.onboarded) setTimeout(() => syncChart(true), 1500);
   }
   pass();   // a new month delivers last season's unclaimed rewards
+  setTimeout(loadTestAccess, 2500);
   setTimeout(startHeartbeat, 4000);
   if (S.passRecap) { const r = S.passRecap; S.passRecap = null; setTimeout(() => toast('Backstage Pass season ended. Delivered: ' + rewardLine(r)), 3200); }
   render(); save(); startTracking();
