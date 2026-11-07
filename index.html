@@ -1145,6 +1145,7 @@ details.more[open] > summary { margin-bottom: 8px; }
 @keyframes bangwig { 0%, 84%, 100% { rotate: 0deg; } 87% { rotate: -14deg; } 90% { rotate: 12deg; } 93% { rotate: -8deg; } 96% { rotate: 4deg; } }
 @media (prefers-reduced-motion: reduce) { .bang:not([hidden]) { animation: none; } }
 #sbMileLabel { display: inline-flex; align-items: center; gap: 3px; } #sbMileLabel img { width: 16px; height: 13px; }
+.cta.vlink { margin-top: 14px; background: #7C63E8; color: #fff; box-shadow: 0 4px 0 #5A47B8; }
 </style>
 </head>
 <body>
@@ -1994,6 +1995,9 @@ const VAULT = [
   // Piggy: unlock 180, 45 levels, tips worth x1.2 ... x10 (78,620 gems). Ours: bonus coins are worth more
   { id: 'piggy', name: 'Piggy Bank', icon: 'pig', costs: vcosts(180, 45), what: 'Bonus coins are worth more',
     fx: L => 1 + 0.2 * L, show: v => 'x' + (Math.round(v * 10) / 10) },
+  // Hype Cap: moved here from the Hype panel, same prices (80/200/400): how much Hype can stack up
+  { id: 'cap', name: 'Hype Cap', icon: 'cap', costs: [80, 200, 400], what: 'Hype can stack up longer',
+    fx: L => HYPE_CAPS[L], show: v => v + 'h' },
   // Knife: unlock 210, 45 levels, offline earnings x1.2 ... x10 (78,650 gems)
   { id: 'ot', name: 'Overtime', icon: 'clock', costs: vcosts(210, 45), what: 'Away earnings are worth more',
     fx: L => 1 + 0.2 * L, show: v => 'x' + (Math.round(v * 10) / 10) },
@@ -2009,13 +2013,17 @@ const vLv = id => Math.max(id === 'remote' ? 1 : 0, ((S && S.vault) || {})[id] |
 const vaultFx = id => VAULT.find(v => v.id === id).fx(vLv(id));
 const vaultCost = v => v.costs[vLv(v.id)];   // undefined once maxed
 const vaultAffordable = () => VAULT.some(v => vaultCost(v) != null && S.gems >= vaultCost(v));
-const VAULT_IC = { jar: '', remote: '', tv: '', pig: '',
+const VAULT_IC = { cap: '', mon: '', jar: '', remote: '', tv: '', pig: '',
   pick: '<path d="M4 20l9-9"/><path d="M14.5 3.5c3 0 6 3 6 6-2-2-4-2.5-6-2.5S10.5 7.5 8.5 9.5c0-3 3-6 6-6z"/>',
   seed: '<rect x="3" y="7" width="18" height="11" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 4h12"/>',
   moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
   clock: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2"/><path d="M9 2h6"/>',
   case: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M3 13h18"/>' };
 const VART = {
+  cap: `<rect x="8" y="18" width="42" height="28" rx="6" fill="#FFE48A" stroke="#1B1830" stroke-width="3"/><rect x="50" y="26" width="6" height="12" rx="2" fill="#1B1830"/>
+    <rect x="12" y="22" width="24" height="20" rx="3" fill="#FF6FAE"/><path d="M31 21 L22 33 H29 L26 43 L37 29 H30 L33 21Z" fill="#fff" stroke="#1B1830" stroke-width="2.4" stroke-linejoin="round"/>`,
+  mon: `<rect x="7" y="12" width="22" height="40" rx="5" fill="#2C2F48" stroke="#1B1830" stroke-width="3"/><rect x="35" y="12" width="22" height="40" rx="5" fill="#2C2F48" stroke="#1B1830" stroke-width="3"/>
+    <circle cx="18" cy="38" r="7.5" fill="#8BF0A0" stroke="#1B1830" stroke-width="2.5"/><circle cx="46" cy="38" r="7.5" fill="#8BF0A0" stroke="#1B1830" stroke-width="2.5"/><circle cx="18" cy="21" r="3.5" fill="#F4F1EA"/><circle cx="46" cy="21" r="3.5" fill="#F4F1EA"/>`,
   jar: `<path d="M20 14 H44 V20 Q50 24 50 32 V50 Q50 56 44 56 H20 Q14 56 14 50 V32 Q14 24 20 20Z" fill="#BFEAFF" stroke="#1B1830" stroke-width="3" stroke-linejoin="round"/>
     <rect x="18" y="9" width="28" height="7" rx="3" fill="#8FD8F5" stroke="#1B1830" stroke-width="3"/><ellipse cx="26" cy="46" rx="7" ry="3.5" fill="#FFC94A" stroke="#1B1830" stroke-width="2.4"/>
     <ellipse cx="38" cy="42" rx="7" ry="3.5" fill="#FFC94A" stroke="#1B1830" stroke-width="2.4"/><ellipse cx="31" cy="36" rx="7" ry="3.5" fill="#FFD86B" stroke="#1B1830" stroke-width="2.4"/><path d="M20 26 V40" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>`,
@@ -2041,7 +2049,7 @@ const VART = {
     <rect x="27" y="28" width="10" height="8" rx="2" fill="#FFC94A" stroke="#1B1830" stroke-width="2.4"/>` };
 const vArt = (k, sz = 64) => `<svg width="${sz}" height="${sz}" viewBox="0 0 64 64" aria-hidden="true">${VART[k]}</svg>`;
 // what each upgrade changes, as one short label for the detail popup
-const VLABEL = { tip: 'Second coin chance', remote: 'Hype boost', tv: 'Hype per ad', piggy: 'Bonus coin value', gem: 'Gem offer chance', seed: 'First station starts at', night: 'Max offline time', ot: 'Offline earnings', case: 'Backer cash' };
+const VLABEL = { cap: 'Hype stacks up to', tip: 'Second coin chance', remote: 'Hype boost', tv: 'Hype per ad', piggy: 'Bonus coin value', gem: 'Gem offer chance', seed: 'First station starts at', night: 'Max offline time', ot: 'Offline earnings', case: 'Backer cash' };
 let vaultSel = null;
 const vIc = (k, c = '#F4F1EA', sz = 22) => `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${VAULT_IC[k]}</svg>`;
 function buyVault(id) {
@@ -2054,7 +2062,8 @@ function buyVault(id) {
 function seedCash() { const L = vLv('seed'); if (!L) return; const st = LOC().stations[0]; S.cash += bulkCost(st, vaultFx('seed') - 1); }
 const CRATE_CD = 600, OFFLINE_BASE = 2 * 3600, OFFLINE_OWL = 8 * 3600;
 const OFFLINE_RATE = 0.5;
-const offlineCap = () => (S.perks.nightOwl ? OFFLINE_OWL : OFFLINE_BASE) * vaultFx('night'), offlineRate = () => OFFLINE_RATE * vaultFx('ot');
+// Night Owl was retired: longer offline time is the Vault's Night Shift
+const offlineCap = () => OFFLINE_BASE * vaultFx('night'), offlineRate = () => OFFLINE_RATE * vaultFx('ot');
 const capHrs = () => { const h = Math.round(offlineCap() / 360) / 10; return h + (h === 1 ? ' hour' : ' hours'); };   // crew earn at half speed while you're away; the ad doubles it back to full, so playing stays the best way to earn
 const AD_SECONDS = 5;
 const HYPE_LEN = [20, 24, 28, 32], HYPE_LEN_COST = [50, 120, 250];     // minutes per ad, gems for the next level
@@ -2063,8 +2072,8 @@ const hypeLv = () => Object.assign({ len: 0, cap: 0 }, S.hypeLv);
 const hypePerAd = () => Math.round(HYPE_BASE_MIN * vaultFx('tv')) * 60;
 const hypeX = () => vaultFx('remote');
 const hypeTxt = () => fmtX(hypeX()) + 'x';
-const hypeCap = () => HYPE_CAPS[hypeLv().cap] * 3600;
-const capText = () => { const h = HYPE_CAPS[hypeLv().cap]; return h % 1 ? h + ' hours' : h + ' hours'; };
+const hypeCap = () => vaultFx('cap') * 3600;
+const capText = () => vaultFx('cap') + ' hours';
 const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Necklaces'], ['face', 'Glasses']];
 // rar: rarity (common, rare, epic, legendary, mythic) is separate from the source. album: reward for dropping that album. gems: bought in the shop.
 // bonus: added to your wardrobe bonus while owned (the best item in each slot counts, whatever you wear)
@@ -2123,7 +2132,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 145, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 146, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -2399,7 +2408,6 @@ const OFFERS = {
   adFree: { name: 'Ad-Free Rewards', sub: 'Every ad reward instantly, forever', line: 'Every ad reward instantly, forever', money: '$6.99', once: true },
   autoCrew: { name: 'Day-One Crew', sub: 'Your first station runs itself on every map', line: 'Your first station runs itself on every map', money: '$2.99', once: true },
   monitors: { name: 'Pro Monitors', sub: 'Permanent +25% income', gems: 300, once: true },
-  nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
   skip15: { name: 'Time Skip · 15 min', sub: 'Instant cash', gems: 10, skip: 900 },
   skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
   hypeRefill: { name: 'Hype Refill', sub: 'Fill your Hype all the way to its cap, no ads', gems: 25 },
@@ -2553,11 +2561,16 @@ DEALS.forEach(d => { OFFERS[d.id] = { name: d.name, get sub() { return dealSub(d
 const tvPart = () => { const L = vLv('tv'), n = Math.min(2, 24 - L), c = VAULT.find(v => v.id === 'tv').costs.slice(L, L + n).reduce((a, b) => a + b, 0);
   return n > 0 ? [`TV upgrade (+${n} Vault level${n > 1 ? 's' : ''})`, c] : ['150 gems (TV maxed)', 150]; };
 function tvUp(n) { const L = vLv('tv'), k = Math.min(n, 24 - L); S.vault = Object.assign({}, S.vault, { tv: L + k }); if (k < n) S.gems += 150; }
+// pack items that are now Vault upgrades: raise to a level (worth: the gems those levels cost), or gems if already there
+const vGrantPart = (id, toL, nm, fallback) => { const v = VAULT.find(x => x.id === id), L = vLv(id), to = Math.min(toL, v.costs.length);
+  return L < to ? [nm, v.costs.slice(L, to).reduce((a, b) => a + b, 0)] : [`${fallback} gems (you have ${nm})`, fallback]; };
+function vGrant(id, toL, fallback) { const v = VAULT.find(x => x.id === id), L = vLv(id), to = Math.min(toL, v.costs.length);
+  if (L < to) S.vault = Object.assign({}, S.vault, { [id]: to }); else S.gems += fallback; }
 function packParts(id) { const lv = hypeLv(), own = (iid, nm, v) => S.owned[iid] ? [`${v} gems (you own the ${nm})`, v] : [nm, v],
     perk = (pid, nm, v) => S.perks[pid] ? [`${v} gems (you own ${nm})`, v] : [nm, v],
     hype = (key, nm, costs) => lv[key] < costs.length ? [nm, costs[lv[key]]] : [`150 gems (${nm.toLowerCase()} maxed)`, 150];
-  return id === 'starter' ? [own('flame', 'Flame Hoodie', 105), ['450 gems', 450], perk('nightOwl', 'Night Owl', 200)]
-    : id === 'rising' ? [own('varsity', 'Varsity Jacket', 120), ['750 gems', 750], tvPart(), hype('cap', 'Hype cap upgrade', HYPE_CAP_COST)]
+  return id === 'starter' ? [own('flame', 'Flame Hoodie', 105), ['450 gems', 450], vGrantPart('night', Math.max(9, vLv('night') + 1), 'Night Shift upgrade (8h+ offline)', 200)]
+    : id === 'rising' ? [own('varsity', 'Varsity Jacket', 120), ['750 gems', 750], tvPart(), vGrantPart('cap', vLv('cap') + 1, 'Hype Cap upgrade', 150)]
     : id === 'headliner' ? [own('puffer', 'Puffer Jacket', 325), ['1,500 gems', 1500], perk('monitors', 'Pro Monitors', 300)] : []; }
 const packTag = id => valueTag(packParts(id).reduce((a, x) => a + x[1], 0), OFFERS[id].price);
 const localDay = (t = Date.now()) => Math.floor((t - new Date(t).getTimezoneOffset() * 60000) / 86400000);
@@ -2632,7 +2645,7 @@ function migrateEcon() {
   S.econV = 2; S.upgV = UPG_V;   // converted straight onto the current lists
 }
 function fresh() {
-  return Object.assign(runState(0), { econV: 2, upgV: UPG_V, mgV: 1, hypeV: 1, vault: {}, gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
+  return Object.assign(runState(0), { econV: 2, upgV: UPG_V, mgV: 1, hypeV: 1, vaultV: 2, vault: {}, gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
     buyMode: 1, vol: { master: 80, music: 20, sfx: 80 }, volV: 3, daily: { last: '', streak: 0 }, last: Date.now() });
 }
 
@@ -2672,6 +2685,14 @@ function tone(freq, dur, type, vol, when = 0, slideTo = 0) {
   o.connect(g).connect(busSfx); o.start(t0); o.stop(t0 + dur + 0.02);
 }
 let noiseBuf = null;
+function thud(dur, vol) {   // low, muffled noise burst (cloth/bag on a surface)
+  const a = ac(); if (!a) return;
+  if (!noiseBuf) { noiseBuf = a.createBuffer(1, a.sampleRate * 0.2, a.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(), t0 = a.currentTime;
+  src.buffer = noiseBuf; f.type = 'lowpass'; f.frequency.value = 380;
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  src.connect(f).connect(g).connect(busSfx); src.start(t0); src.stop(t0 + dur + 0.02);
+}
 function chaNoise(dur, vol) {
   const a = ac(); if (!a) return;
   if (!noiseBuf) { noiseBuf = a.createBuffer(1, a.sampleRate * 0.2, a.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
@@ -2696,8 +2717,10 @@ const SFX = {
     tone(523, 0.35, 'triangle', 0.04); tone(784, 0.35, 'triangle', 0.03, 0.05); },
   reward: () => [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, 0.18, 'sine', 0.05, i * 0.07)),
   // the Backer walks in: a soft shop-door bell, a few light strikes of one small bell (warm, not shrill)
-  doorbell: () => { [[0, 1109, 1], [0.085, 1047, 0.75], [0.18, 1109, 0.55], [0.3, 1047, 0.35]].forEach(([w, f, v]) => {
-    tone(f, 0.95, 'sine', 0.045 * v, w); tone(f * 2.76, 0.4, 'sine', 0.012 * v, w); tone(f * 5.4, 0.14, 'sine', 0.004 * v, w); }); },
+  // the Backer sets a bag of coins down: a soft cloth thump, then a few coins settling inside
+  doorbell: () => { thud(0.16, 0.16); tone(110, 0.16, 'sine', 0.05);
+    [[0.03, 3150, 1], [0.07, 2650, 0.8], [0.1, 3600, 0.7], [0.15, 2900, 0.55], [0.21, 3350, 0.4], [0.29, 2750, 0.28]].forEach(([w, f, v]) => {
+      const j = 1 + (Math.random() - 0.5) * 0.08; tone(f * j, 0.07, 'triangle', 0.011 * v, w); tone(f * j * 1.48, 0.05, 'sine', 0.005 * v, w); }); },
   hype: () => tone(220, 0.35, 'sawtooth', 0.04, 0, 880),
   move: () => [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, i === 4 ? 0.5 : 0.16, 'square', 0.035, i * 0.11)),
   tap: () => tone(660, 0.04, 'sine', 0.03),
@@ -2823,7 +2846,7 @@ const KEY = TEST ? 'artist-tycoon-test' : 'artist-tycoon-v1';   // save key kept
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null }, JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }   // a save without a version predates Model B
+    if (raw) { const s = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null, vaultV: null }, JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }   // a save without a version predates Model B
   } catch (e) {}
   return null;
 }
@@ -3691,8 +3714,8 @@ function grant(id) {
   const hypeUp = key => { const lv = hypeLv(), costs = key === 'len' ? HYPE_LEN_COST : HYPE_CAP_COST;
     if (lv[key] < costs.length) { lv[key]++; S.hypeLv = lv; } else S.gems += 150; };
   if (['starter', 'rising', 'headliner'].includes(id)) owe('gems');
-  if (id === 'starter') { item('flame', 105); S.gems += 450; perk('nightOwl', 200); }
-  if (id === 'rising') { item('varsity', 120); S.gems += 750; tvUp(2); hypeUp('cap'); }
+  if (id === 'starter') { item('flame', 105); S.gems += 450; vGrant('night', Math.max(9, vLv('night') + 1), 200); }
+  if (id === 'rising') { item('varsity', 120); S.gems += 750; tvUp(2); vGrant('cap', vLv('cap') + 1, 150); }
   if (id === 'headliner') { item('puffer', 325); S.gems += 1500; perk('monitors', 300); }
   if (o.deal) {
     const d = o.deal, a = activeDeals().find(x => x.deal.id === id);
@@ -4670,7 +4693,7 @@ function mergeCareer(keep, other) {
 }
 async function cloudLoad() {
   const p = Cloud.pend; if (!p || !p.row) return;
-  const c = cloud(), n = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null }, p.row.data), keepCode = (p.row.data.cloud || {}).code;
+  const c = cloud(), n = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null, vaultV: null }, p.row.data), keepCode = (p.row.data.cloud || {}).code;
   if (p.sameUser) n.cloud = Object.assign({}, c, { code: keepCode || c.code, friends: (p.row.data.cloud || {}).friends || c.friends, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at), created: false, synced: -1 });
   else { await dropGuest(p.old);
     n.cloud = { uid: p.d.user.id, at: p.d.access_token, rt: p.d.refresh_token, exp: Date.now() + (p.d.expires_in || 3600) * 1000, email: p.email, code: keepCode || null, friends: (p.row.data.cloud || {}).friends || [], created: false, synced: -1, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at) }; }
@@ -5156,7 +5179,7 @@ function openTab(tab) {
       ${offer('adFree', ART.noAds(), '#8FD8F5', '', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>', 'No waiting')}
       ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', '', '', 'Hands-free · Forever')}
       ${(() => { // one-time perks get their own section and leave the shop once owned (like outfits)
-        const perks = [['monitors', ART.monitors(), '+25% income<br>forever'], ['nightOwl', ART.moon(), '8h offline<br>earnings']].filter(([id]) => !S.perks[id]);
+        const perks = [['monitors', ART.monitors(), '+25% income<br>forever']].filter(([id]) => !S.perks[id]);
         return perks.length ? `<div class="banner">Permanent upgrades</div><div class="cards two ${perks.length === 1 ? 'solo' : ''}">${perks.map(([id, art, t]) => card(id, art, t, '', 'gold perk').replace('<span class="wall', '<span class="tag qtag">Forever</span><span class="wall')).join('')}</div>` : ''; })()}
       <div class="banner">Boosts</div>
       <div class="cards two boosts">
@@ -5224,9 +5247,7 @@ function openTab(tab) {
       <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : (S.perks.adFree ? `Add ${mins} minutes` : `Watch ad: +${mins} minutes`)}</button>
       <p class="adnote">${adGemNote()}</p>
       ${S.perks.goldenMic ? `<p>Golden Mic stacks with Hype for ${fmtX(2 * hypeX())}x income.</p>` : ''}
-      <div class="sec"><h3>Hype upgrades</h3>
-        ${up('cap', 'Bigger Hype cap', HYPE_CAPS, HYPE_CAP_COST, 'h max')}
-        <button class="ghost" data-tab-go="vault">Stronger, longer Hype: Remote and TV in the Vault</button></div>`);
+      <button class="cta vlink" data-tab-go="vault">Upgrade Hype in the Vault</button>`);
   } else if (tab === 'style') {
     S.newItems = [];
     const g = Math.round((gearMult() - 1) * 100);
@@ -5562,7 +5583,7 @@ function offline() {
 
 function start(data) {
   syncShine(document);
-  S = (data && data.state) ? Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null }, data.state) : (load() || fresh());
+  S = (data && data.state) ? Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null, vaultV: null }, data.state) : (load() || fresh());
   if (!LOCATIONS[S.loc]) S.loc = 0;
   if (!S.vol) S.vol = { master: 80, music: S.music === false ? 0 : 40, sfx: S.sound === false ? 0 : 80 };
   // players still on the old 70 default move to the new 40; anyone who set their own level keeps it
@@ -5596,6 +5617,11 @@ function start(data) {
   if (S.hypeV == null) { S.hypeV = 1; const old = (S.hypeLv && S.hypeLv.len) || 0, tv = [0, 2, 2, 3][old] || 0;
     S.vault = Object.assign({}, S.vault, { remote: Math.max(10, (S.vault || {}).remote || 0), tv: Math.max(tv, (S.vault || {}).tv || 0) });
     if (S.hypeLv) S.hypeLv = Object.assign({}, S.hypeLv, { len: 0 }); }
+  // Hype cap levels bought in the Hype panel move into the Vault
+  if ((S.vaultV || 0) < 2) { S.vaultV = 2; const v = Object.assign({}, S.vault), hl = S.hypeLv || {};
+    if (hl.cap) v.cap = Math.max(v.cap || 0, hl.cap);
+    if (S.perks && S.perks.nightOwl) { v.night = Math.min(29, Math.max(v.night || 0, 9 + 4 * (v.night || 0))); S.perks = Object.assign({}, S.perks, { nightOwl: false }); }   // Night Owl owners: Night Shift levels with at least the same hours
+    S.vault = v; if (S.hypeLv) S.hypeLv = Object.assign({}, S.hypeLv, { cap: 0 }); }
   if (S.mgV == null) { S.mgV = 1; const started = (S.loc || 0) > 0 || Object.values(S.levels || {}).some(v => v > 0);
     if (started) { S.oldAlbumGems = S.albums || 0; S.mg = { k: runKey(), got: Object.fromEntries(Object.entries(S.levels || {}).map(([id, L]) => [id, MILE_GEM_AT.filter(m => L >= m).length])) }; } }
   if (S.tutV < 5) { if (S.tut != null) S.tut = S.tut >= TUT.length - 1 ? TUT.length : S.tut + 1; S.tutV = 5; }
