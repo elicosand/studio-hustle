@@ -1022,6 +1022,45 @@ html, body { background: var(--bar) !important; }
 .segtabs .stab { position: relative; height: 40px; font-weight: 700; font-size: 14px; }
 .segtabs .tdot { position: absolute; top: -6px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: #F0453A; color: #fff;
   border: 2px solid var(--text); font: 700 11px/16px var(--body); font-style: normal; text-align: center; }
+/* ---- Patch 2: light UI direction (Crew, Upgrades, Career). Neutral surfaces, purple for brand and headers, pink as a selective accent ---- */
+.sheet.light { --accent: #F7A3C6; --cash: #8BF0A0; --panel: #F6F4FB; --panel-2: #FFFFFF; --line: #E6E2F1; --text: #1E1A33; --muted: #6E6990; --ink: #EFEAFB; background: var(--panel); color: var(--text); }
+.sheet.light > .sheet-head { margin: -18px calc(-1 * max(18px, env(safe-area-inset-right, 0px))) 0 calc(-1 * max(18px, env(safe-area-inset-left, 0px)));
+  padding: 14px max(18px, env(safe-area-inset-right, 0px)) 14px max(18px, env(safe-area-inset-left, 0px)); background: linear-gradient(180deg, #5A47B8, #4A3A9E); border-radius: 24px 24px 0 0; }
+.sheet.light > .sheet-head h2 { color: #FFFFFF; }
+.sheet.light > .sheet-head .close { background: rgba(255,255,255,.16); color: #FFFFFF; }
+.sheet.light .row { background: #FFFFFF; box-shadow: 0 1px 0 #E6E2F1, 0 2px 8px rgba(30,26,51,.06); border: 1px solid #ECE9F5; }
+.sheet.light .row .ric { background: #4A3A9E; }   /* brand purple tiles keep white and gold icons readable */
+.sheet.light .hire:disabled, .sheet.light .cta:disabled { background: #ECEAF3; color: #A39EBC; box-shadow: none; }
+.sheet.light .hire.off { background: #ECEAF3; color: var(--text); }
+.sheet.light .segtabs { background: #ECE8F6; border-radius: 14px; padding: 4px; gap: 4px; }
+.sheet.light .segtabs .stab { background: transparent; color: #6E6990; border-radius: 10px; height: 36px; }
+.sheet.light .segtabs .stab.on { background: #FFFFFF; color: #4A3A9E; box-shadow: 0 1px 4px rgba(30,26,51,.12); }
+.sheet.light .segtabs .tdot { border-color: #FFFFFF; }
+.sheet.light .hired { background: #8BF0A0; color: #14122A; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 800; }
+.sheet.light .upg-done summary, .sheet.light .h3note { color: var(--muted); }
+.sheet.light .statgrid div { background: #FFFFFF; border: 1px solid #ECE9F5; }
+.sheet.light .big-bar { background: #ECE8F6; }
+.sheet.light .cta.pink { background: #F7A3C6; color: #14122A; box-shadow: 0 3px 0 #D981A6; }
+.sheet.light .stab.on, .sheet.light .fbo.on { background: #4A3A9E; color: #FFFFFF; border-color: #4A3A9E; }   /* selected states: brand purple with white text */
+.sheet.light .evd.sel { background: #4A3A9E; border-color: #4A3A9E; } .sheet.light .evd.sel small, .sheet.light .evd.sel b { color: #FFFFFF; }
+.sheet.light .loc.done { color: #2FA552; } .sheet.light .loc.done .dot { background: #8BF0A0; } .sheet.light .loc.now .dot { background: #F7A3C6; }
+.sheet.light details.more > summary { color: #4A3A9E; }
+/* Career layout */
+.nextmove { background: #FFFFFF; border: 1px solid #ECE9F5; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 10px rgba(30,26,51,.06); }
+.nm-route { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
+.nm-route .from { color: var(--muted); } .nm-route .to { color: #4A3A9E; } .nm-route svg { flex: none; color: var(--muted); }
+.nm-goal { font-size: 15px; font-weight: 700; color: var(--text); margin: 0; }
+.nm-meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--muted); }
+.tour { display: flex; align-items: center; gap: 0; padding: 2px 4px; }
+.tour .tstop { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 700 11px/1 var(--body); background: #ECE8F6; color: #A39EBC; }
+.tour .tstop.done { background: #8BF0A0; color: #14122A; } .tour .tstop.now { background: #F7A3C6; color: #14122A; box-shadow: 0 0 0 4px rgba(247,163,198,.3); }
+.tour .tline { flex: 1; height: 3px; background: #ECE8F6; } .tour .tline.done { background: #8BF0A0; }
+details.more > summary { cursor: pointer; font-size: 13px; font-weight: 700; list-style: none; padding: 2px 0; }
+details.more > summary::-webkit-details-marker { display: none; } details.more > summary::before { content: 'ⓘ '; }
+details.more[open] > summary { margin-bottom: 8px; }
+.albumline { display: flex; align-items: center; gap: 12px; }
+.albumline .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } .albumline .rt b { font-size: 15px; } .albumline .rt span { font-size: 12px; color: var(--muted); }
+.albumline .cta { width: auto; padding: 0 16px; height: 44px; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -3392,12 +3431,14 @@ function syncShine(root) {
 }
 function moreBelow() { const sh = $('sheet'); $('scrim').classList.toggle('more-below', !!sh.querySelector('.album-pop') && sh.scrollHeight - sh.clientHeight - sh.scrollTop > 6); }
 $('sheet').addEventListener('scroll', moreBelow, { passive: true });
+const DARK_SHEETS = ['shop', 'inv', 'boosts', 'style', 'studio', 'profile'];   // shop and style keep their dark backgrounds
 function openSheet(html) {
   clearBoost();
   $('scrim').classList.remove('more-below');
   try { setHudH(); } catch (e) {}
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
   $('sheet').classList.toggle('pinned', nextSheetKey === 'crew' || nextSheetKey === 'upgrades');
+  $('sheet').classList.toggle('light', !!nextSheetKey && !DARK_SHEETS.includes(nextSheetKey));   // light panels everywhere except the Shop and Style screens
   $('sheet').classList.toggle('shopmode', nextSheetKey === 'shop');
   const sh = $('sheet'), refresh = !$('scrim').hidden && nextSheetKey && nextSheetKey === sheetKey;
   if (sheetKey && !$('scrim').hidden && !refresh) sheetScroll[sheetKey] = sh.scrollTop;
@@ -4542,27 +4583,32 @@ function openTab(tab) {
     const moveBtn = next
       ? `<button class="cta" ${pct < 100 ? 'disabled' : ''} data-move-ask>${pct < 100 ? 'Keep grinding' : 'Move to ' + next.name}</button>`
       : '';
+    const tourStops = allLocs.map((l, i) => `${i ? `<span class="tline ${i <= S.loc ? 'done' : ''}"></span>` : ''}<span class="tstop ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}" title="${l}">${i < S.loc ? '✓' : i + 1}</span>`).join('');
+    const goalLine = next ? `Max every station${ev() === 'tour' ? ' (level 90 during Tour Rush)' : ''} to move up` : `Max every station${ev() === 'tour' ? ' (level 90 during Tour Rush)' : ''} to finish the tour`;
     openSheet(`<div class="sheet-head"><h2>Career</h2>${closeBtn()}</div>
-      <div class="sec">
-        <h3>Move Up</h3>
-        <p>${next ? `Max every station here (level ${ev() === 'tour' ? '90 during Tour Rush' : LV_CAP}) to move into the ${next.name}.` : `This is the last stop on the tour. Max every station here${ev() === 'tour' ? ' (level 90 during Tour Rush)' : ''} to finish it and drop an album.`}${tourMet() ? ' Tour Rush already unlocked your move, and it stays unlocked.' : ''}${legacyGoal() ? ` Or earn ${fmt(goalOf(S.loc))} here, your goal from before the update.` : ''}</p>
+      <div class="nextmove">
+        <div class="nm-route"><span class="from">${LOC().name}</span>${next ? `<svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5l9 7-9 7z" fill="currentColor"/></svg><span class="to">${next.name}</span>` : '<span class="to">· final stop</span>'}</div>
+        <p class="nm-goal">${goalLine}</p>
         <div class="big-bar"><i style="width:${pct}%"></i></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span>${maxedCount()} of ${LOC().stations.length} stations maxed</span><span>${Math.floor(pct)}%</span></div>
-        <div style="display:flex;flex-direction:column;gap:10px">${allLocs.map((l, i) => `<div class="loc ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}"><span class="dot"></span>${l}${i === S.loc ? ' · you are here' : ''}</div>`).join('')}</div>
-        ${moveBtn}
+        <div class="nm-meta"><span>${maxedCount()} of ${LOC().stations.length} stations maxed</span><span>${Math.floor(pct)}%</span></div>
+        ${tourMet() ? '<p class="cnote">Tour Rush already unlocked your move, and it stays unlocked.</p>' : legacyGoal() ? `<p class="cnote">Or earn ${fmt(goalOf(S.loc))} here, your goal from before the update.</p>` : ''}
+        ${next ? moveBtn : `<button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Drop album · locked'}</button>`}
       </div>
-      <div class="sec">
-        <h3>Drop Album</h3>
-        <p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever (+${pctTxt(FAME_PER_ALBUM)} each up to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}), plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and max every station there.` : `Max every station in the ${last.name} first.`}</p>
-        <div class="row"><span class="ric">${svgIc('note', '#FFC94A', 20)}</span><span class="rt"><b>Albums dropped: ${S.albums || 0}</b><span>Fame bonus x${fmtX(fame())}${nextExclusive() ? ` · next exclusive at album ${nextExclusive().album}` : ''}</span></span></div>
-        <button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop album #' + ((S.albums || 0) + 1) : 'Locked'}</button>
+      <div class="sec"><h3>The tour <small class="h3note">stop ${S.loc + 1} of ${allLocs.length}</small></h3>
+        <div class="tour" role="list" aria-label="Tour progress">${tourStops}</div>
+        <details class="more"><summary>All stops</summary><div style="display:flex;flex-direction:column;gap:8px">${allLocs.map((l, i) => `<div class="loc ${i === S.loc ? 'now' : i < S.loc ? 'done' : ''}"><span class="dot"></span>${l}${i === S.loc ? ' · you are here' : ''}</div>`).join('')}</div></details>
+      </div>
+      <div class="sec"><h3>Albums</h3>
+        <div class="albumline"><span class="ric" style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#4A3A9E;flex:none">${svgIc('note', '#FFFFFF', 20)}</span>
+          <span class="rt"><b>${S.albums || 0} dropped · fame x${fmtX(fame())}</b><span>${nextExclusive() ? `Next exclusive outfit at album ${nextExclusive().album}` : 'Every album adds fame'}</span></span>
+          ${next ? `<button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop' : 'Locked'}</button>` : ''}</div>
+        <details class="more"><summary>How albums work</summary><p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever (+${pctTxt(FAME_PER_ALBUM)} each up to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}), plus ${GEMS_PER_ALBUM} gems. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and max every station there.` : `Max every station in the ${last.name} first.`}</p></details>
       </div>
       <div class="sec"><h3>Plaques <small class="h3note">${clearsOf().filter(Boolean).length} of ${allLocs.length} maps cleared</small></h3>
         ${plaqueRow(clearsOf())}
-        <p class="cnote">Every time you clear a map its plaque counts it. Frames upgrade to Silver, Gold, Platinum and Diamond at 3, 5, 10 and 20 clears.</p>
-        ${MAP_GEMS[S.mapPaid || 0] && LOCATIONS[S.mapPaid || 0] ? `<p class="cnote">Next first clear: the ${allLocs[S.mapPaid || 0]} pays ${MAP_GEMS[S.mapPaid || 0]} gems.</p>` : ''}</div>
-      <div class="sec">
-        <h3>Career stats <small class="h3note">all-time</small></h3>
+        ${MAP_GEMS[S.mapPaid || 0] && LOCATIONS[S.mapPaid || 0] ? `<p class="cnote">Next first clear: the ${allLocs[S.mapPaid || 0]} pays ${MAP_GEMS[S.mapPaid || 0]} gems.</p>` : ''}
+        <details class="more"><summary>About plaques</summary><p>Every time you clear a map its plaque counts it. Frames upgrade to Silver, Gold, Platinum and Diamond at 3, 5, 10 and 20 clears.</p></details></div>
+      <details class="sec more"><summary>Career stats (all-time)</summary>
         <div class="statgrid">
           <div class="wide"><b>${titleTag(S.albums, S.maxLoc)}</b><span>Your title on The Charts${(() => { const nx = TITLES[TITLES.indexOf(titleOf(S.albums, S.maxLoc)) + 1]; return nx ? ` · next: ${nx[2]} at ${nx[0] ? 'album ' + nx[0] : 'the ' + allLocs[nx[1]]}` : ''; })()}</span></div>
           <div><b>${S.albums || 0}</b><span>Albums dropped</span></div>
@@ -4576,7 +4622,7 @@ function openTab(tab) {
           <div><b>${playTime(S.stats.playSec)}</b><span>Time in the studio</span></div>
           <div><b>${Object.keys(S.goalsDone).length} / ${GOALS.length}</b><span>Goals completed</span></div>
         </div>
-      </div>`);
+      </details>`);
   } else if (tab === 'welcome') {
     openSheet(`<div class="welcome-hero"><span class="wh-ic">${ART.mic()}</span><h2>Welcome to Studio Hustle</h2><p>You're a new artist in a rundown apartment. Let's get you on the charts.</p></div>
       <label class="lbl" for="welcomeName">Your artist name</label>
