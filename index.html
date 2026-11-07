@@ -787,6 +787,10 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .upload.travel { z-index: 2147483000; background: radial-gradient(circle at 50% 40%, #1F6B5C, #0C2420 75%); transition: opacity .28s ease; }   /* the album screen's layout, in deep teal */
 .upload.travel.off { opacity: 0; }
 .upload.travel .car { width: 240px; margin-bottom: 10px; height: auto; overflow: visible; }
+.upload.travel .pcar-run { position: relative; width: 172px; height: 129px; }
+.upload.travel .pcar-run .body { position: relative; z-index: 1; display: block; }
+.upload.travel .pcar-run .lines { position: absolute; left: -50px; top: 44px; transform: scale(.86); transform-origin: right center; }
+.upload.travel .pcar-run .shadow { position: absolute; left: 22px; right: 10px; bottom: -4px; height: 10px; border-radius: 50%; background: #000; opacity: .25; }
 .upload.travel .car .body { animation: carbob .32s ease-in-out infinite alternate; }
 .upload.travel .car .wheel { animation: carspin .45s linear infinite; }
 .upload.travel .car .lines { animation: carlines .4s linear infinite; }
@@ -924,6 +928,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .outside .car.rev .cb { transform: scaleX(-1); }
 
 .outside .car .veh { display: block; overflow: visible; }
+.outside .car .pcar { display: block; margin-top: -2px; }   /* wheels sit on the same line the old cars used */
 .outside .car .hl { position: absolute; right: -60px; top: 26px; width: 90px; height: 36px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,230,140,.55), rgba(255,230,140,0)); }
 @keyframes drive { 0% { transform: translateX(-260px); } 50%, 100% { transform: translateX(650px); } }
 @keyframes driveback { 0% { transform: translateX(650px); } 50%, 100% { transform: translateX(-260px); } }
@@ -954,8 +959,8 @@ html, body { background: var(--bar) !important; }
 .gem-col { margin-right: 6px; }
 .hud-ic { left: -15px; width: 37px; height: 37px; }
 .gemic img { width: 32px; }
-#buyGems { position: relative; width: 25px; height: 25px; border-radius: 8px; box-shadow: inset 0 -2px 0 rgba(20,18,42,.25); }
-#buyGems svg { width: 13px; height: 13px; }
+#buyGems { position: relative; width: 31px; height: 31px; margin: -3px -5px -3px 0; border-radius: 10px; box-shadow: inset 0 -2px 0 rgba(20,18,42,.25), 0 0 0 2px var(--bar-edge); }   /* a bit bigger than the pill, like Eatventure's + */
+#buyGems svg { width: 15px; height: 15px; }
 #buyGems::after { content: ""; position: absolute; inset: -8px -6px; }   /* keeps a 37x41 touch area */
 .mult { top: calc(100% + 6px); }   /* clear of the slimmer pill border */
 /* Hype button spans the same height as the icon + label of the other buttons, so their centers line up */
@@ -1084,7 +1089,6 @@ html, body { background: var(--bar) !important; }
 .sparks i { position: absolute; left: var(--x); top: var(--y); width: 6px; height: 6px; border-radius: 50%; background: #FFF4C2; box-shadow: 0 0 6px 2px rgba(255,214,90,.9); opacity: 0; animation: spark 1.6s ease-in-out var(--d) infinite; }
 @keyframes spark { 0%, 100% { opacity: 0; transform: scale(.3); } 45% { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .sparks i { animation: none; opacity: .7; } }
-.sheet-head.vhead { gap: 12px; } .sheet-head.vhead h2 { flex: 1; }
 .vgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 4px; }
 .vtile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 4px 10px; border-radius: 16px; background: #fff; border: 1px solid #ECE9F5;
   box-shadow: 0 3px 0 #E2DEF0; font: 400 15px/1 var(--display); color: #14122A; cursor: pointer; }
@@ -1101,6 +1105,10 @@ html, body { background: var(--bar) !important; }
 .vbox b { font: 400 26px/1.25 var(--display); color: #14122A; } .vbox i { font-style: normal; color: #5C5780; } .vbox em { font-style: normal; color: #2FA552; }
 .vup { margin: 10px 0 4px; text-align: center; font-weight: 700; color: #5C5780; }
 .cta.vbuy { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.shopb { position: absolute; left: env(safe-area-inset-left, 0px); bottom: -23px; z-index: 8; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 0 14px 14px 0;
+  background: linear-gradient(160deg, #7FE0FF, #3FB4EA); color: #fff; box-shadow: 0 3px 0 #2A86B5; }
+.shopb:active { transform: translateY(2px); box-shadow: 0 1px 0 #2A86B5; }
+.side-l, .side-r { top: 34px; }   /* both side columns start just below the Shop button on the line, level with each other */
 .sbtn.vaultb { background: linear-gradient(160deg, #B9A6FF, #7C63E8); color: #fff; }
 .vrow .rt b .vlv { font-style: normal; font-weight: 600; font-size: 12px; color: #5C5780; margin-left: 4px; }
 .vrow .vfx { display: block; margin-top: 2px; font-size: 13px; color: #5C5780; } .vrow .vfx b { color: #14122A; } .vrow .vfx b.up { color: #2FA552; }
@@ -1169,6 +1177,7 @@ details.more[open] > summary { margin-bottom: 8px; }
 </script>
 <div class="app" id="app">
   <header class="hud">
+<button class="shopb" id="shopBtn" aria-label="Shop"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20" r="1.4"></circle><circle cx="17" cy="20" r="1.4"></circle></svg></button>
     <div class="hud-pills">
     <div class="pill cash-pill">
       <span class="hud-ic coin" aria-hidden="true"><span>$</span></span>
@@ -1207,10 +1216,6 @@ details.more[open] > summary { margin-bottom: 8px; }
       <button class="sbtn gpass" id="passBtn" aria-label="Backstage Pass">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2l5 7 5-7"></path><rect x="5" y="9" width="14" height="13" rx="2.5"></rect><path d="M10 9h4"></path><path d="M9 17h6"></path><circle cx="12" cy="13.5" r="1.4"></circle></svg>
         <span class="cap">Pass</span><span class="bang" id="passDot" hidden>!</span>
-      </button>
-      <button class="sbtn vaultb" id="vaultBtn" aria-label="Vault">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="17" rx="2.5"></rect><circle cx="12" cy="11.5" r="4"></circle><path d="M12 9.5v2l1.4 1.2"></path><path d="M7 20v1.5M17 20v1.5"></path></svg>
-        <span class="cap">Vault</span><span class="bang" id="vaultDot" hidden>!</span>
       </button>
     </div>
     <div class="side side-r">
@@ -1267,12 +1272,12 @@ details.more[open] > summary { margin-bottom: 8px; }
       <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9" r="2.5"></circle><path d="M17 14a5 5 0 0 1 4.5 5"></path></svg></span><span class="tcap">Crew</span><span class="bang" id="crewBang" hidden>!</span></button>
     <button class="tab" data-tab="style">
       <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg></span><span class="tcap">Style</span><span class="bang" id="styleBang" hidden>!</span></button>
-    <button class="tab-hype" id="hypeBtn" aria-label="2x Hype">
+    <button class="tab-hype" id="hypeBtn" aria-label="Hype">
       <span class="orb"><i class="spk"></i><i class="spk"></i><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
-      <span class="hl" id="hypeLbl">2x Hype</span>
+      <span class="hl" id="hypeLbl">Hype</span>
     </button>
-    <button class="tab shop" data-tab="shop">
-      <span class="ticon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20" r="1.4"></circle><circle cx="17" cy="20" r="1.4"></circle></svg><i class="spk"></i><i class="spk"></i></span><span class="tcap">Shop</span></button>
+    <button class="tab" data-tab="vault" id="vaultTab">
+      <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="17" rx="2.5"></rect><circle cx="12" cy="11.5" r="4"></circle><path d="M12 9.5v2l1.4 1.2"></path><path d="M7 20v1.5M17 20v1.5"></path></svg></span><span class="tcap">Vault</span><span class="bang" id="vaultDot" hidden>!</span></button>
 
     <button class="tab" data-tab="career">
       <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></span><span class="tcap">Career</span><span class="tab-pct" id="movePct">0%</span></button>
@@ -1960,36 +1965,61 @@ const maxedCount = () => LOC().stations.filter(st => lvl(st.id) >= LV_CAP).lengt
 // ---------- The Vault: permanent gem upgrades, priced and tiered exactly like Eatventure's Vault (community sheet by Spectre).
 // costs[0] unlocks Lv 1; costs[n] buys Lv n+1. Every item shares Eatventure's per-level gem column; unlock prices are each item's own.
 const VSTEP = [10, 20, 40, 60, 90, 120, 160, 200, 250, 300, 360, 420, 490, 560, 640, 720, 810, 900, 1000, 1110, 1210, 1320, 1440, 1560, 1690, 1820, 1960, 2100,
-  2250, 2400, 2560, 2720, 2890, 3060, 3240, 3420, 3610, 3800, 4000, 4200, 4410, 4620, 4840, 5060];   // Lv 2 ... Lv 45
+  2250, 2400, 2560, 2720, 2890, 3060, 3240, 3420, 3610, 3800, 4000, 4200, 4410, 4620, 4840, 5060, 5290, 5520, 5760, 6000, 6250];   // Lv 2 ... Lv 50
 const vcosts = (unlock, maxLv) => [unlock, ...VSTEP.slice(0, maxLv - 1)];
+const HYPE_BASE_MIN = 20;   // minutes of Hype per ad before TV upgrades
 const VAULT = [
+  // Tip Jar: free unlock, 20 levels, 12% +2% a level, 50% at Lv 20 (7,150 gems). Ours: chance a second bonus coin pops out with each one
+  { id: 'tip', name: 'Tip Jar', icon: 'jar', costs: vcosts(0, 20), what: 'Chance a second bonus coin pops out with each one',
+    fx: L => L ? 10 + 2 * L : 0, show: v => v + '%' },
+  // Remote: 50 levels, ad boost x1.1 ... x6 (107,290 gems). Ours: Hype's income multiplier. Everyone starts at Lv 1 (x1.1), so the 30-gem unlock is free
+  { id: 'remote', name: 'Remote', icon: 'remote', costs: vcosts(30, 50), what: 'Hype multiplies your income by more',
+    fx: L => 1 + 0.1 * Math.max(1, L), show: v => 'x' + (Math.round(v * 10) / 10) },
   // Pickaxe: unlock 60, 14 levels, 10% +3% a level, 50% at Lv 14 (2,580 gems)
   { id: 'gem', name: 'Gem Finder', icon: 'pick', costs: vcosts(60, 14), what: 'Chance the Backer offers 6 gems instead of cash',
     fx: L => !L ? 0 : L >= 14 ? 50 : 10 + 3 * (L - 1), show: v => v + '%' },
-  // Checkbook: unlock 300, 20 levels (7,450 gems). Ours: the first station's starting level, Lv 21 at most (the Lv 25 gem stays ahead)
-  { id: 'seed', name: 'Starting Cash', icon: 'seed', costs: vcosts(300, 20), what: 'Start every new map with enough cash to take your first station to',
-    fx: L => 1 + L, show: (v, L) => L ? 'Lv ' + v : 'None' },
   // Hour Glass: unlock 90, 29 levels, max offline time x1.33 ... x10.66 (21,450 gems)
   { id: 'night', name: 'Night Shift', icon: 'moon', costs: vcosts(90, 29), what: 'Crew keep earning longer while you\u2019re away',
     fx: L => 1 + L / 3, show: v => 'x' + (Math.round(v * 100) / 100) },
+  // TV: unlock 150, 24 levels, ad boost duration x1.1 +0.3 a level, x8 at Lv 24 (12,380 gems). Ours: minutes of Hype per ad (replaces the shop's Longer Hype)
+  { id: 'tv', name: 'TV', icon: 'tv', costs: vcosts(150, 24), what: 'Each Hype ad lasts longer',
+    fx: L => L ? 1.1 + 0.3 * (L - 1) : 1, show: v => Math.round(HYPE_BASE_MIN * v) + ' min' },
+  // Piggy: unlock 180, 45 levels, tips worth x1.2 ... x10 (78,620 gems). Ours: bonus coins are worth more
+  { id: 'piggy', name: 'Piggy Bank', icon: 'pig', costs: vcosts(180, 45), what: 'Bonus coins are worth more',
+    fx: L => 1 + 0.2 * L, show: v => 'x' + (Math.round(v * 10) / 10) },
   // Knife: unlock 210, 45 levels, offline earnings x1.2 ... x10 (78,650 gems)
   { id: 'ot', name: 'Overtime', icon: 'clock', costs: vcosts(210, 45), what: 'Away earnings are worth more',
     fx: L => 1 + 0.2 * L, show: v => 'x' + (Math.round(v * 10) / 10) },
   // Suitcase: unlock 270, 45 levels, investor cash x1.2 ... x10 (78,710 gems)
   { id: 'case', name: 'Briefcase', icon: 'case', costs: vcosts(270, 45), what: 'Bigger Backer cash offers',
     fx: L => 1 + 0.2 * L, show: v => 'x' + (Math.round(v * 10) / 10) },
+  // Checkbook: unlock 300, 20 levels (7,450 gems). Ours: the first station's starting level, Lv 21 at most (the Lv 25 gem stays ahead)
+  { id: 'seed', name: 'Starting Cash', icon: 'seed', costs: vcosts(300, 20), what: 'Start every new map with enough cash to take your first station to',
+    fx: L => 1 + L, show: (v, L) => L ? 'Lv ' + v : 'None' },
+  // (Pickaxe above)
 ];
-const vLv = id => ((S && S.vault) || {})[id] || 0;
+const vLv = id => Math.max(id === 'remote' ? 1 : 0, ((S && S.vault) || {})[id] || 0);   // everyone owns Remote Lv 1
 const vaultFx = id => VAULT.find(v => v.id === id).fx(vLv(id));
 const vaultCost = v => v.costs[vLv(v.id)];   // undefined once maxed
 const vaultAffordable = () => VAULT.some(v => vaultCost(v) != null && S.gems >= vaultCost(v));
-const VAULT_IC = {
+const VAULT_IC = { jar: '', remote: '', tv: '', pig: '',
   pick: '<path d="M4 20l9-9"/><path d="M14.5 3.5c3 0 6 3 6 6-2-2-4-2.5-6-2.5S10.5 7.5 8.5 9.5c0-3 3-6 6-6z"/>',
   seed: '<rect x="3" y="7" width="18" height="11" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 4h12"/>',
   moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
   clock: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2"/><path d="M9 2h6"/>',
   case: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M3 13h18"/>' };
 const VART = {
+  jar: `<path d="M20 14 H44 V20 Q50 24 50 32 V50 Q50 56 44 56 H20 Q14 56 14 50 V32 Q14 24 20 20Z" fill="#BFEAFF" stroke="#1B1830" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="18" y="9" width="28" height="7" rx="3" fill="#8FD8F5" stroke="#1B1830" stroke-width="3"/><ellipse cx="26" cy="46" rx="7" ry="3.5" fill="#FFC94A" stroke="#1B1830" stroke-width="2.4"/>
+    <ellipse cx="38" cy="42" rx="7" ry="3.5" fill="#FFC94A" stroke="#1B1830" stroke-width="2.4"/><ellipse cx="31" cy="36" rx="7" ry="3.5" fill="#FFD86B" stroke="#1B1830" stroke-width="2.4"/><path d="M20 26 V40" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>`,
+  remote: `<rect x="20" y="6" width="24" height="52" rx="8" fill="#4A4560" stroke="#1B1830" stroke-width="3" transform="rotate(-18 32 32)"/>
+    <g transform="rotate(-18 32 32)"><circle cx="32" cy="17" r="4" fill="#FF6F6F" stroke="#1B1830" stroke-width="2"/><circle cx="32" cy="30" r="6" fill="#8A85A3" stroke="#1B1830" stroke-width="2"/>
+    <circle cx="27" cy="42" r="2.4" fill="#D9D6E8"/><circle cx="37" cy="42" r="2.4" fill="#D9D6E8"/><circle cx="27" cy="49" r="2.4" fill="#D9D6E8"/><circle cx="37" cy="49" r="2.4" fill="#8BF0A0"/></g>`,
+  tv: `<path d="M24 14 L18 6 M40 14 L46 6" stroke="#1B1830" stroke-width="3" stroke-linecap="round"/><rect x="8" y="14" width="48" height="38" rx="7" fill="#B9824F" stroke="#1B1830" stroke-width="3"/>
+    <rect x="13" y="19" width="30" height="28" rx="5" fill="#CFE6F2" stroke="#1B1830" stroke-width="2.5"/><circle cx="49" cy="26" r="3.2" fill="#FF6F6F" stroke="#1B1830" stroke-width="2"/><circle cx="49" cy="36" r="3.2" fill="#6FD3FF" stroke="#1B1830" stroke-width="2"/><path d="M18 56 H46" stroke="#1B1830" stroke-width="3" stroke-linecap="round"/>`,
+  pig: `<ellipse cx="32" cy="36" rx="21" ry="16" fill="#FFC94A" stroke="#1B1830" stroke-width="3"/><path d="M22 23 L20 13 L30 20" fill="#FFC94A" stroke="#1B1830" stroke-width="3" stroke-linejoin="round"/>
+    <ellipse cx="51" cy="37" rx="5" ry="6" fill="#FFB12E" stroke="#1B1830" stroke-width="2.5"/><circle cx="40" cy="31" r="2.2" fill="#1B1830"/><rect x="26" y="20" width="12" height="3.5" rx="1.7" fill="#1B1830"/>
+    <path d="M20 50 V56 M42 50 V56" stroke="#1B1830" stroke-width="5" stroke-linecap="round"/><path d="M14 33 Q8 30 10 25" fill="none" stroke="#1B1830" stroke-width="2.5" stroke-linecap="round"/>`,
   pick: `<path d="M15 51 L37 29" stroke="#1B1830" stroke-width="10" stroke-linecap="round"/><path d="M15 51 L37 29" stroke="#B9824F" stroke-width="5.5" stroke-linecap="round"/>
     <path d="M22 18 Q38 8 52 22 Q44 18 37 22 L33 26 Q29 20 22 18Z" fill="#C9CFDC" stroke="#1B1830" stroke-width="3" stroke-linejoin="round"/>
     <path d="M40 40 L50 34 L58 42 L50 54 L40 46Z" fill="#B48CFF" stroke="#1B1830" stroke-width="3" stroke-linejoin="round"/><path d="M45 43 L50 37 L53 43" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`,
@@ -2004,7 +2034,7 @@ const VART = {
     <rect x="27" y="28" width="10" height="8" rx="2" fill="#FFC94A" stroke="#1B1830" stroke-width="2.4"/>` };
 const vArt = (k, sz = 64) => `<svg width="${sz}" height="${sz}" viewBox="0 0 64 64" aria-hidden="true">${VART[k]}</svg>`;
 // what each upgrade changes, as one short label for the detail popup
-const VLABEL = { gem: 'Gem offer chance', seed: 'First station starts at', night: 'Max offline time', ot: 'Offline earnings', case: 'Backer cash' };
+const VLABEL = { tip: 'Second coin chance', remote: 'Hype boost', tv: 'Hype per ad', piggy: 'Bonus coin value', gem: 'Gem offer chance', seed: 'First station starts at', night: 'Max offline time', ot: 'Offline earnings', case: 'Backer cash' };
 let vaultSel = null;
 const vIc = (k, c = '#F4F1EA', sz = 22) => `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${VAULT_IC[k]}</svg>`;
 function buyVault(id) {
@@ -2023,7 +2053,9 @@ const AD_SECONDS = 5;
 const HYPE_LEN = [20, 24, 28, 32], HYPE_LEN_COST = [50, 120, 250];     // minutes per ad, gems for the next level
 const HYPE_CAPS = [2, 2.5, 3, 4], HYPE_CAP_COST = [80, 200, 400];      // hours of stacked Hype
 const hypeLv = () => Object.assign({ len: 0, cap: 0 }, S.hypeLv);
-const hypePerAd = () => HYPE_LEN[hypeLv().len] * 60;
+const hypePerAd = () => Math.round(HYPE_BASE_MIN * vaultFx('tv')) * 60;
+const hypeX = () => vaultFx('remote');
+const hypeTxt = () => fmtX(hypeX()) + 'x';
 const hypeCap = () => HYPE_CAPS[hypeLv().cap] * 3600;
 const capText = () => { const h = HYPE_CAPS[hypeLv().cap]; return h % 1 ? h + ' hours' : h + ' hours'; };
 const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Necklaces'], ['face', 'Glasses']];
@@ -2117,7 +2149,7 @@ const TUT = [
 // move1 / album1 keep their old ids so players who already saw them don't see them again.
 const TIPS = [
   { id: 'vault', text: () => say('celebrating', 'New: the Vault! Spend gems on permanent upgrades that never reset. Start with Gem Finder to get gem offers from the Backer.'),
-    show: () => vaultAffordable(), target: () => $('vaultBtn'), done: () => sheetKey === 'vault' || !!S.vaultSeen },
+    show: () => vaultAffordable(), target: () => tabTile('vault'), done: () => sheetKey === 'vault' || !!S.vaultSeen },
   { id: 'backer', text: () => say('explaining', 'That\u2019s the Backer! He invests in rising artists. Tap him and watch a short ad to take his offer.'), show: () => !!backerEl,
     target: () => backerEl, done: () => sheetKey === 'backer' || (S.stats.backer || 0) > 0 },
   { id: 'boost', text: () => say('explaining', 'Pro tip: press and hold a station with crew to run it 2x faster. Let go any time.'), show: () => LOC().stations.some(st => lvl(st.id) && S.crew[st.id]),
@@ -2130,7 +2162,7 @@ const TIPS = [
   { id: 'goals', text: () => say('celebrating', 'You finished a goal! Open Goals to claim your gems.'), show: () => goalsClaimable(), target: () => $('goalsBtn'), done: () => sheetKey === 'goals' },
   { id: 'daily', text: () => say('explaining', "Your daily reward is ready! You'll find Daily Rewards inside Goals."), show: () => dailyReady() && S.daily.last, target: () => $('goalsBtn'), done: () => sheetKey === 'daily' },
   { id: 'crate', text: () => say('celebrating', 'A free crate is ready! Open it for cash and gems.'), show: () => !$('crateBtn').disabled && !$('crateBang').hidden, target: () => $('crateBtn'), done: () => Date.now() < S.crateReady },   // the crate is cooling down: it was opened
-  { id: 'hype', text: () => say('explaining', 'Want a boost? 2x Hype doubles your earnings for a while. Use it whenever you like.'), show: () => S.stats.lifetime > 2000 && !(S.hypeUntil > Date.now()), target: () => $('hypeBtn').querySelector('.orb'), done: () => S.hypeUntil > Date.now() || sheetKey === 'hype', info: 'Got it' },
+  { id: 'hype', text: () => say('explaining', 'Want a boost? Hype multiplies your earnings for a while. Use it whenever you like, and make it stronger in the Vault.'), show: () => S.stats.lifetime > 2000 && !(S.hypeUntil > Date.now()), target: () => $('hypeBtn').querySelector('.orb'), done: () => S.hypeUntil > Date.now() || sheetKey === 'hype', info: 'Got it' },
   { id: 'inv', text: () => say('explaining', "Looking for your items? Open Shop, then Inventory. They'll wait there until you use them."), show: () => invQty('skips') + invQty('frenzies') > 0, target: () => tabTile('shop'), done: () => sheetKey === 'inv' },
   { id: 'style', text: () => say('celebrating', 'You unlocked a new look! Try it on in Style.'), show: () => S.newItems && S.newItems.length > 0, target: () => tabTile('style'), done: () => sheetKey === 'style' },
   { id: 'pass', text: () => say('celebrating', 'You earned a Backstage Pass reward! Open Pass to collect it.'), show: () => passClaimable(), target: () => $('passBtn'), done: () => sheetKey === 'pass' },
@@ -2258,7 +2290,7 @@ const GOALS = [
   { id: 'hire1', tier: 1, text: 'Hire your first crew member', target: 1, val: () => S.stats.hires, gems: 10 },
   { id: 'crate1', tier: 1, text: 'Open a crate', target: 1, val: () => S.stats.crates, gems: 5 },
   { id: 'lv25', tier: 1, text: 'Get any station to Lv 25', target: 25, val: () => S.stats.maxLevel, gems: 10 },
-  { id: 'hype1', tier: 1, text: 'Turn on 2x Hype', target: 1, val: () => S.stats.hypes, gems: 5 },
+  { id: 'hype1', tier: 1, text: 'Turn on Hype', target: 1, val: () => S.stats.hypes, gems: 5 },
   { id: 'hire4', tier: 1, text: 'Hire 4 crew members', target: 4, val: () => S.stats.hires, gems: 15 },
   { id: 'earn100k', tier: 1, text: 'Earn $100K in total', target: 1e5, val: () => S.stats.lifetime, gems: 10, money: true },
   { id: 'lv50', tier: 1, text: 'Get any station to Lv 50', target: 50, val: () => S.stats.maxLevel, gems: 15 },
@@ -2363,7 +2395,7 @@ const OFFERS = {
   nightOwl: { name: 'Night Owl', sub: 'Offline earnings last 8 hours instead of 2', gems: 200, once: true },
   skip15: { name: 'Time Skip · 15 min', sub: 'Instant cash', gems: 10, skip: 900 },
   skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
-  hypeRefill: { name: 'Hype Refill', sub: 'Fill your 2x Hype all the way to its cap, no ads', gems: 25 },
+  hypeRefill: { name: 'Hype Refill', sub: 'Fill your Hype all the way to its cap, no ads', gems: 25 },
   fanFrenzy: { name: 'Fan Frenzy', sub: 'Brings a crowd of fans to tap for 30 minutes', gems: 20 },
   gems100: { name: 'Handful of Gems', sub: '80 gems', money: '$0.99', gemsOut: 80 },
   gems550: { name: 'Bag of Gems', get sub() { return gemPackSub(500, 4.99); }, money: '$4.99', gemsOut: 500 },
@@ -2511,11 +2543,14 @@ const dealSub = d => [d.gems.toLocaleString('en-US') + ' gems', d.skipH ? `${d.s
   d.outfit ? (S && dealOutfit() ? dealOutfit().name : '+400 gems (you own every outfit it could give)') : ''].filter(Boolean);
 DEALS.forEach(d => { OFFERS[d.id] = { name: d.name, get sub() { return dealSub(d).join(', '); }, line: d.line, money: d.money, deal: d }; });
 // the one-time packs, exactly as grant() pays them for this player: [label, worth in gems]
+const tvPart = () => { const L = vLv('tv'), n = Math.min(2, 24 - L), c = VAULT.find(v => v.id === 'tv').costs.slice(L, L + n).reduce((a, b) => a + b, 0);
+  return n > 0 ? [`TV upgrade (+${n} Vault level${n > 1 ? 's' : ''})`, c] : ['150 gems (TV maxed)', 150]; };
+function tvUp(n) { const L = vLv('tv'), k = Math.min(n, 24 - L); S.vault = Object.assign({}, S.vault, { tv: L + k }); if (k < n) S.gems += 150; }
 function packParts(id) { const lv = hypeLv(), own = (iid, nm, v) => S.owned[iid] ? [`${v} gems (you own the ${nm})`, v] : [nm, v],
     perk = (pid, nm, v) => S.perks[pid] ? [`${v} gems (you own ${nm})`, v] : [nm, v],
     hype = (key, nm, costs) => lv[key] < costs.length ? [nm, costs[lv[key]]] : [`150 gems (${nm.toLowerCase()} maxed)`, 150];
   return id === 'starter' ? [own('flame', 'Flame Hoodie', 105), ['450 gems', 450], perk('nightOwl', 'Night Owl', 200)]
-    : id === 'rising' ? [own('varsity', 'Varsity Jacket', 120), ['750 gems', 750], hype('len', 'Hype length upgrade', HYPE_LEN_COST), hype('cap', 'Hype cap upgrade', HYPE_CAP_COST)]
+    : id === 'rising' ? [own('varsity', 'Varsity Jacket', 120), ['750 gems', 750], tvPart(), hype('cap', 'Hype cap upgrade', HYPE_CAP_COST)]
     : id === 'headliner' ? [own('puffer', 'Puffer Jacket', 325), ['1,500 gems', 1500], perk('monitors', 'Pro Monitors', 300)] : []; }
 const packTag = id => valueTag(packParts(id).reduce((a, x) => a + x[1], 0), OFFERS[id].price);
 const localDay = (t = Date.now()) => Math.floor((t - new Date(t).getTimezoneOffset() * 60000) / 86400000);
@@ -2590,7 +2625,7 @@ function migrateEcon() {
   S.econV = 2; S.upgV = UPG_V;   // converted straight onto the current lists
 }
 function fresh() {
-  return Object.assign(runState(0), { econV: 2, upgV: UPG_V, mgV: 1, vault: {}, gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
+  return Object.assign(runState(0), { econV: 2, upgV: UPG_V, mgV: 1, hypeV: 1, vault: {}, gems: 25, albums: 0, maxLoc: 0, hypeUntil: 0, crateReady: 0, stats: { upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, goalsDone: {}, owned: { basic: true }, equip: { top: 'basic', hat: null, neck: null, face: null }, perks: {}, skin: SKINS[3], phones: PHONES[0],
     buyMode: 1, vol: { master: 80, music: 20, sfx: 80 }, volV: 3, daily: { last: '', streak: 0 }, last: Date.now() });
 }
 
@@ -2781,7 +2816,7 @@ const KEY = TEST ? 'artist-tycoon-test' : 'artist-tycoon-v1';   // save key kept
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null }, JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }   // a save without a version predates Model B
+    if (raw) { const s = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null }, JSON.parse(raw)); if (!LOCATIONS[s.loc]) s.loc = 0; return s; }   // a save without a version predates Model B
   } catch (e) {}
   return null;
 }
@@ -2847,7 +2882,7 @@ const hypeOn = () => Date.now() < S.hypeUntil;
 const hypeLeftToFill = () => Math.max(0, hypeCap() * 1000 - Math.max(0, S.hypeUntil - Date.now()));   // hypeCap is in seconds
 const frenzyOn = () => Date.now() < (S.frenzyUntil || 0);
 // everything that multiplies income, in one place
-const totalMult = () => (Date.now() < S.hypeUntil ? 2 : 1) * boostMult() * fame();   // wardrobe is shown separately as a profit bonus
+const totalMult = () => (Date.now() < S.hypeUntil ? hypeX() : 1) * boostMult() * fame();   // wardrobe is shown separately as a profit bonus
 const playTime = sec => { const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60); return h ? `${h}h ${m}m` : m ? `${m}m` : `${Math.floor(sec)}s`; };
 // sets text and shrinks the font until it fits its column (never cuts off with "...")
 function setFit(el, text, max, min) {
@@ -2858,7 +2893,7 @@ function setFit(el, text, max, min) {
   while (size > min && room && el.scrollWidth > room) { size--; el.style.fontSize = size + 'px'; }
 }
 const fmtX = n => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n >= 100 ? Math.round(n).toString() : n >= 10 ? (Math.round(n * 10) / 10).toString() : (Math.round(n * 100) / 100).toString();
-const mult = () => hypeOn() ? 2 : 1;
+const mult = () => hypeOn() ? hypeX() : 1;
 const perSec = () => LOC().stations.reduce((a, st) => a + (lvl(st.id) && S.crew[st.id] ? payout(st) / cycleTime(st) : 0), 0);
 const legacyGoal = () => S.legacyGoal === S.loc && S.legacyAlbums === (S.albums || 0);
 const movePct = () => tourMet() ? 100 : Math.min(100, Math.max(stationsPct(ev() === 'tour' ? 90 : LV_CAP), legacyGoal() ? S.earned / goalOf(S.loc) * 100 : 0));
@@ -3000,7 +3035,8 @@ let shownPanLoc = -1, fitS = 1, bgPos = [], panY = 0, panDrag = null, panMoved =
 // ---------- street traffic: each lane runs its own random timer. A car picks a model and paint (avoiding an instant repeat),
 // a steady speed for its whole crossing, starts fully offscreen and is removed once it's off the other side.
 // Average: about one car per lane every 12 seconds, with rare close pairs and longer quiet spells.
-const CAR_PAINT = ['#FF6FAE', '#6FD3FF', '#FFC94A', '#8BF0A0', '#F4F1EA', '#B18CFF', '#FF9E57', '#F57F86', '#62CFF3', '#9AD8B6'];
+const CAR_PAINT = ['#FF6FAE', '#6FD3FF', '#FFC94A', '#8BF0A0', '#F4F1EA', '#B18CFF', '#FF9E57', '#F57F86', '#62CFF3', '#9AD8B6'];   // the one car, in these paints (art/cars/car0-9)
+const CAR_IMG = i => `<img class="pcar" src="art/cars/car${i}.webp?v=1" width="104" height="78" alt="" draggable="false">`;
 const CAR_FROM = -560, CAR_TO = 950, CAR_SPEED = 76, CAR_GAP = 300;   // stage px, px per second, minimum bumper room
 const Traffic = { lanes: [], n: 0 };
 const pickNot = (list, last) => { let x; do { x = list[Math.floor(Math.random() * list.length)]; } while (list.length > 1 && x === last && Math.random() < .8); return x; };
@@ -3016,10 +3052,10 @@ function spawnCar(L) {
     const left = (p.t + D / p.v * 1000 - now) / 1000;   // seconds until it leaves the road
     v = Math.min(v, (D - CAR_GAP) / left);
   }
-  const model = pickNot(Object.keys(VEHICLES), L.model), paint = pickNot(CAR_PAINT, L.paint), id = 'c' + (++Traffic.n);
-  L.model = model; L.paint = paint;
+  const paint = pickNot(CAR_PAINT.map((_, i) => i), L.paint);   // one car model everywhere; only the paint changes
+  L.paint = paint;
   const car = document.createElement('div'); car.className = 'car' + (L.rev ? ' rev' : '');
-  car.innerHTML = `<div class="cb">${VEHICLES[model].replace(/UID/g, id).replace('PAINT', paint)}${L.night ? '<i class="hl"></i>' : ''}<i class="ex"></i><i class="ex"></i><i class="ex"></i></div>`;
+  car.innerHTML = `<div class="cb">${CAR_IMG(paint)}${L.night ? '<i class="hl"></i>' : ''}<i class="ex"></i><i class="ex"></i><i class="ex"></i></div>`;
   L.el.appendChild(car);
   const [a, b] = L.rev ? [CAR_TO, CAR_FROM] : [CAR_FROM, CAR_TO], ms = D / v * 1000;
   const anim = car.animate([{ transform: `translateX(${a}px)` }, { transform: `translateX(${b}px)` }], { duration: ms, easing: 'linear' });
@@ -3145,7 +3181,7 @@ const EVENTS = {
 const WEEKEND = ['fans', 'gems', 'tour', 'crates', 'hype'];
 const EV_TAGS = { monday: ['2× crate cash', '2× crate gems', '2× ad gem limit'], wed: [], friday: ['1.5× Backer visits'],
   fans: ['2× Backer visits'], gems: ['2× milestone gems', '2× ad gems', '2× Backer gems'],
-  tour: ['Move up at level 90'], crates: ['Free crate every 5 min', 'Normal crate payouts'], hype: ['2× Hype per ad', '1 free Hype boost'] };
+  tour: ['Move up at level 90'], crates: ['Free crate every 5 min', 'Normal crate payouts'], hype: ['2× Hype time per ad', '1 free Hype boost'] };
 // the fine print: limits, what isn't affected, and how it ends
 const EV_NOTE = k => ({
   monday: 'Richer crates: each pays double. They still come every 10 minutes. Daily task and map rewards are unchanged.',
@@ -3256,20 +3292,27 @@ function maybeCoin(st) {
   if (bcoinEl || Date.now() - bcoinAt < BCOIN_GAP || Math.random() > BCOIN_ODDS || !els[st.id]) return;
   if (S.tut != null && S.tut < TUT.length) return;
   bcoinAt = Date.now();
+  bcoinEl = popCoin(st);
+  if (Math.random() * 100 < vaultFx('tip')) {   // Tip Jar: a second coin, from another working station when there is one
+    const others = LOC().stations.filter(o => o.id !== st.id && lvl(o.id) && els[o.id]);
+    setTimeout(() => popCoin(others.length ? others[Math.floor(Math.random() * others.length)] : st, true), 350); }
+}
+function popCoin(st, extra) {
   const b = els[st.id].b, el = document.createElement('button');
   el.className = 'bcoin'; el.setAttribute('aria-label', 'Bonus coin: tap to collect');
   if (!S.coinHint) { S.coinHint = true; toast('A bonus coin popped out! Tap it quick'); }
   el.innerHTML = '<span class="coin">$</span>';
   el.style.left = (b.offsetLeft + b.offsetWidth / 2 + (Math.random() * 60 - 30)) + 'px';
   el.style.top = (b.offsetTop + b.offsetHeight * 0.45) + 'px';
-  stage.appendChild(el); bcoinEl = el;
+  stage.appendChild(el);
   const gone = setTimeout(() => { el.classList.add('gone'); setTimeout(() => { el.remove(); if (bcoinEl === el) bcoinEl = null; }, 400); }, BCOIN_LIFE);
   el.addEventListener('click', e => {
     e.stopPropagation(); if (el.classList.contains('gone')) return; clearTimeout(gone);
-    const v = Math.max(20, skipValue(BCOIN_SECS)); earn(v); sfx('reward'); el.classList.add('gone');
+    const v = Math.max(20, Math.round(skipValue(BCOIN_SECS) * vaultFx('piggy'))); earn(v); sfx('reward'); el.classList.add('gone');
     const f = document.createElement('span'); f.className = 'floater'; f.textContent = '+' + fmt(v); f.style.left = el.style.left; f.style.top = el.style.top; stage.appendChild(f); setTimeout(() => f.remove(), 1000);
     setTimeout(() => { el.remove(); if (bcoinEl === el) bcoinEl = null; }, 400); save();
   });
+  return el;
 }
 function floater(st, text) {
   const b = els[st.id].b;
@@ -3382,7 +3425,7 @@ function addHype() {
   const add = Math.min(hypePerAd() * 1000 * (ev() === 'hype' ? 2 : 1), now + hypeCap() * 1000 - base);
   if (add <= 0) { toast('Hype is maxed at ' + capText()); return; }
   S.hypeUntil = base + add; S.stats.hypes++; sfx('hype'); save(); render();
-  toast('+' + Math.round(add / 60000) + ' min of 2x Hype');
+  toast('+' + Math.round(add / 60000) + ' min of Hype');
 }
 let adTimer = null;
 const AD_GEMS = 5, AD_GEM_LIMIT = 8;   // 40 gems a day from ads (daily tasks add 20); ads past the limit still give their normal reward
@@ -3416,7 +3459,7 @@ $('mayaOk').addEventListener('click', mayaOk);
 $('tutSkip').addEventListener('click', () => { const was = S.tut; S.tut = TUT.length; S.tipsOff = true; tipNow = null; save(); updateTut(); track('tutorial-skipped/' + (was < TUT.length ? was : 'tip')); });
 $('goalsBtn').addEventListener('click', () => openTab(dailyReady() && !goalsClaimable() ? 'daily' : 'goals'));   // opens on whichever tab has something to claim
 $('passBtn').addEventListener('click', () => openTab('pass'));
-$('vaultBtn').addEventListener('click', () => { S.vaultSeen = true; openTab('vault'); });
+$('shopBtn').addEventListener('click', () => openTab('shop'));
 $('eventsBtn').addEventListener('click', () => { evPick = 0; S.evSeen = dayKey(); save(); openTab('events'); });
 $('crateBtn').addEventListener('click', () => {
   if (Date.now() < S.crateReady) return;
@@ -3435,7 +3478,7 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
 // soft click for navigation buttons (money actions have their own sounds)
 // Back buttons reopen the previous sheet at the spot you left it
 document.addEventListener('click', e => { if (e.target.closest('.close.back')) { backNav = true; setTimeout(() => { backNav = false; }, 0); } }, true);
-document.addEventListener('click', e => { if (e.target.closest('.tab, .tab-hype, .close, .sbtn, #mult, #chartsBtn, #settings, #buyGems, .ghost, #tutSkip, .sw, .stab, .slot, #popClose, #modeBtn')) sfx('click'); }, true);
+document.addEventListener('click', e => { if (e.target.closest('.tab, .tab-hype, .close, .sbtn, .shopb, #mult, #chartsBtn, #settings, #buyGems, .ghost, #tutSkip, .sw, .stab, .slot, #popClose, #modeBtn')) sfx('click'); }, true);
 $('buyGems').addEventListener('click', () => openTab('shop'));
 $('chartsBtn').addEventListener('click', () => { openTab('charts'); refreshCharts(); });
 $('mult').addEventListener('click', () => openTab('boosts'));
@@ -3475,7 +3518,8 @@ function travelTo(name, done) {
     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BF0A0" stroke-width="2.4" stroke-linecap="round"><path d="M4 20 9 4M20 20 15 4M12 6v2M12 11v2M12 16v2"/></svg>',
     '<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 22s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" fill="#FF6FAE"/><circle cx="12" cy="10" r="2.6" fill="#14122A"/></svg>',
     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FD3FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>'];
-  el.innerHTML = `<svg class="car" width="200" height="112" viewBox="0 0 200 112" aria-hidden="true">    <ellipse cx="104" cy="101" rx="78" ry="6" fill="#14122A" opacity=".18"/>    <g class="lines" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity=".85"><path d="M8 52h22M2 66h26M12 80h18"/></g>    <g class="body">      <path d="M36 86 V66 Q36 56 48 54 L70 50 L88 30 Q92 26 98 26 H134 Q141 26 145 31 L160 50 L172 53 Q184 56 184 68 V86 Z" fill="#FFC94A" stroke="#14122A" stroke-width="5" stroke-linejoin="round"/>      <path d="M78 50 L93 33 Q95 31 98 31 H114 V50 Z" fill="#BFF0FF" stroke="#14122A" stroke-width="4" stroke-linejoin="round"/>      <path d="M120 31 H133 Q137 31 140 34 L153 50 H120 Z" fill="#BFF0FF" stroke="#14122A" stroke-width="4" stroke-linejoin="round"/>      <path d="M96 36 l8 -2" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/>      <path d="M117 52 V82" stroke="#14122A" stroke-width="3" opacity=".55"/>      <path d="M44 64 H178" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".35"/>      <rect x="172" y="60" width="10" height="8" rx="3" fill="#FFE27A" stroke="#14122A" stroke-width="3"/>      <rect x="36" y="62" width="8" height="7" rx="2" fill="#FF4D6D" stroke="#14122A" stroke-width="3"/>      <rect x="126" y="58" width="12" height="4" rx="2" fill="#14122A" opacity=".6"/>    </g>    <g class="wheel" style="transform-origin:70px 88px"><circle cx="70" cy="88" r="14" fill="#2A2740" stroke="#14122A" stroke-width="5"/><circle cx="70" cy="88" r="5.5" fill="#D9D6E8"/><path d="M70 78v20M60 88h20" stroke="#D9D6E8" stroke-width="2.5" opacity=".6"/></g>    <g class="wheel" style="transform-origin:152px 88px"><circle cx="152" cy="88" r="14" fill="#2A2740" stroke="#14122A" stroke-width="5"/><circle cx="152" cy="88" r="5.5" fill="#D9D6E8"/><path d="M152 78v20M142 88h20" stroke="#D9D6E8" stroke-width="2.5" opacity=".6"/></g>  </svg><h2>${name}</h2><p class="ustep">Packing up the gear\u2026</p><div class="upbar"><i></i></div><div class="plats">${ic.map(i => `<span>${i}</span>`).join('')}</div>`;
+  el.innerHTML = `<div class="car pcar-run" aria-hidden="true"><svg class="lines" width="70" height="60" viewBox="0 0 70 60"><g stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity=".85"><path d="M14 12h26M4 30h34M18 48h22"/></g></svg>
+    <img class="body" src="art/cars/car2.webp?v=1" width="172" height="129" alt="" draggable="false"><span class="shadow"></span></div><h2>${name}</h2><p class="ustep">Packing up the gear\u2026</p><div class="upbar"><i></i></div><div class="plats">${ic.map(i => `<span>${i}</span>`).join('')}</div>`;
   document.body.appendChild(el);
   const steps = ['Packing up the gear\u2026', 'Hitting the road\u2026', 'Pulling up outside\u2026', 'Moving in!'], T = 3500, t0 = performance.now();
   steps.forEach((t, i) => setTimeout(() => { el.querySelector('.ustep').textContent = t; el.querySelectorAll('.plats span').forEach((p, k) => p.classList.toggle('on', k <= i)); }, i * T / 4));
@@ -3636,7 +3680,7 @@ function grant(id) {
     if (lv[key] < costs.length) { lv[key]++; S.hypeLv = lv; } else S.gems += 150; };
   if (['starter', 'rising', 'headliner'].includes(id)) owe('gems');
   if (id === 'starter') { item('flame', 105); S.gems += 450; perk('nightOwl', 200); }
-  if (id === 'rising') { item('varsity', 120); S.gems += 750; hypeUp('len'); hypeUp('cap'); }
+  if (id === 'rising') { item('varsity', 120); S.gems += 750; tvUp(2); hypeUp('cap'); }
   if (id === 'headliner') { item('puffer', 325); S.gems += 1500; perk('monitors', 300); }
   if (o.deal) {
     const d = o.deal, a = activeDeals().find(x => x.deal.id === id);
@@ -3750,7 +3794,7 @@ $('scrim').addEventListener('click', e => {
     if (room < 60000) { sfx('denied'); toast('Your Hype is full. Your free Hype waits until it runs lower'); return; }
     const left = freeHypeLeft(), add = Math.min(left, room); bumpRev();
     S.freeHype = { wk: weekendKey(), left: left - add }; S.hypeUntil = Math.max(Date.now(), S.hypeUntil) + add; S.stats.hypes++; sfx('hype'); save(); render();
-    toast('+' + Math.round(add / 60000) + ' min of free 2x Hype' + (left - add >= 60000 ? ` · ${Math.round((left - add) / 60000)} min saved until Sunday midnight` : '')); return openTab('events'); }
+    toast('+' + Math.round(add / 60000) + ' min of free Hype' + (left - add >= 60000 ? ` · ${Math.round((left - add) / 60000)} min saved until Sunday midnight` : '')); return openTab('events'); }
   if (e.target.closest('[data-hol-gift]')) { const g = liveHols(Date.now(), 'gift')[0]; if (!g) return; const k = g.key + ':gift', G = g.h.gift;
     if ((S.hol || {})[k]) return; bumpRev(); S.hol = Object.assign({}, S.hol, { [k]: true }); S.gems += G.gems; owe('gems'); addInv('skips', G.skips, 'hol:' + k + ':s');
     if (G.item && itemById(G.item) && !S.owned[G.item]) { S.owned[G.item] = true; S.newItems = [...(S.newItems || []), G.item]; }
@@ -4614,7 +4658,7 @@ function mergeCareer(keep, other) {
 }
 async function cloudLoad() {
   const p = Cloud.pend; if (!p || !p.row) return;
-  const c = cloud(), n = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null }, p.row.data), keepCode = (p.row.data.cloud || {}).code;
+  const c = cloud(), n = Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null }, p.row.data), keepCode = (p.row.data.cloud || {}).code;
   if (p.sameUser) n.cloud = Object.assign({}, c, { code: keepCode || c.code, friends: (p.row.data.cloud || {}).friends || c.friends, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at), created: false, synced: -1 });
   else { await dropGuest(p.old);
     n.cloud = { uid: p.d.user.id, at: p.d.access_token, rt: p.d.refresh_token, exp: Date.now() + (p.d.expires_in || 3600) * 1000, email: p.email, code: keepCode || null, friends: (p.row.data.cloud || {}).friends || [], created: false, synced: -1, backedAt: Date.now(), lastUp: Date.parse(p.row.updated_at) }; }
@@ -4759,7 +4803,7 @@ function openTab(tab) {
   if (tab.startsWith('cloud-')) { nextSheetKey = tab; return cloudSheet(tab); }
   nextSheetKey = tab;
   liveSig = LIVE[tab] ? LIVE[tab]() : '';
-  const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') || tab === 'inv' ? 'shop' : tab;
+  const tabName = ['move-confirm', 'album-confirm'].includes(tab) ? 'career' : tab.startsWith('pay:') || tab === 'inv' ? 'shop' : tab === 'vitem' ? 'vault' : tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tabName));
   const loc = LOC(), next = LOCATIONS[S.loc + 1];
   if (tab === 'studio') return closeSheet();
@@ -4772,6 +4816,7 @@ function openTab(tab) {
     }).join('');
     openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('crew')}<div class="pscroll"><p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to ${capHrs()}).</p>${rows}</div>`);
   } else if (tab === 'vault') {
+    S.vaultSeen = true;
     const tiles = VAULT.map(v => {
       const L = vLv(v.id), c = vaultCost(v), can = c != null && S.gems >= c;
       return `<button class="vtile ${L ? '' : 'locked'}" data-vopen="${v.id}" aria-label="${v.name}">${can ? '<span class="vcan">\u2191</span>' : ''}
@@ -4782,10 +4827,10 @@ function openTab(tab) {
   } else if (tab === 'vitem') {
     const v = VAULT.find(x => x.id === vaultSel); if (!v) return openTab('vault');
     const L = vLv(v.id), c = vaultCost(v), now = v.show(v.fx(L), L), nxt = c != null ? v.show(v.fx(L + 1), L + 1) : null;
-    openSheet(`<div class="sheet-head vhead"><button class="close vback" data-vback aria-label="Back to the Vault"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><h2>${v.name}</h2>${closeBtn()}</div>
+    openSheet(`<div class="sheet-head"><h2>${v.name}</h2>${headBtns('data-vback')}</div>
       <div class="vdet"><div class="vtile big"><span class="vart">${vArt(v.icon, 84)}</span><b>${c == null ? 'MAX' : L ? 'Level ' + L : 'Locked'}</b></div><p>${v.what}${v.id === 'seed' ? ':' : '.'}</p></div>
       <div class="vbox"><span>${VLABEL[v.id]}</span><b>${now}${nxt ? ` <i>\u203A</i> <em>${nxt}</em>` : ''}</b></div>
-      ${c == null ? '<button class="cta" disabled>Maxed out</button>' : `<p class="vup">${L ? 'Upgrade' : 'Unlock'}</p><button class="cta vbuy" data-vault="${v.id}" ${S.gems < c ? 'disabled' : ''}>${GEM_MINI}${c}</button>`}`);
+      ${c == null ? '<button class="cta" disabled>Maxed out</button>' : `<p class="vup">${L ? 'Upgrade' : 'Unlock'}</p><button class="cta vbuy" data-vault="${v.id}" ${S.gems < c ? 'disabled' : ''}>${c ? GEM_MINI + c : 'Free'}</button>`}`);
   } else if (tab === 'backer') {
     const o = backerOffer; if (!o) return closeSheet();
     const amt = o.gems ? `+${o.gems} gems` : `+${fmt(o.cash)}`;
@@ -5009,11 +5054,11 @@ function openTab(tab) {
     const bolt = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6FAE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>';
     openSheet(`<div class="sheet-head"><h2>Your multipliers</h2>${closeBtn()}</div>
       <div class="welcome"><span class="amt" style="color:var(--gem)">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others, and your wardrobe adds profit on top.</p>${perSec() > 0 ? `<p>Your crew earns <b style="color:var(--cash)">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
-      ${row(h, bolt, '2x Hype', h ? 2 : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
+      ${row(h, bolt, hypeTxt() + ' Hype', h ? hypeX() : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
       ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}`)}
       ${row(!!S.perks.goldenMic, svgIc('mic', '#FFC94A', 20), 'Golden Mic', S.perks.goldenMic ? 2 : 1, S.perks.goldenMic ? 'Owned · forever' : `In the Shop, or free at album ${MIC_FREE_AT}`)}
       ${row(!!S.perks.monitors, svgIc('sliders', '#8BF0A0', 20), 'Pro Monitors', S.perks.monitors ? 1.25 : 1, S.perks.monitors ? 'Owned · forever' : 'Available in the Shop')}
-      <p class="mathline">${[h ? 2 : 1, f, S.perks.goldenMic ? 2 : 1, S.perks.monitors ? 1.25 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>
+      <p class="mathline">${[h ? hypeX() : 1, f, S.perks.goldenMic ? 2 : 1, S.perks.monitors ? 1.25 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>
       <h3 style="margin-top:14px">Profit bonus</h3>
       <div class="row mrow ${g > 1 ? '' : 'off'}"><span class="ric">${svgIc('shirt', '#B18CFF', 20)}</span><span class="rt"><b>Wardrobe</b><span>${g > 1 ? `Your best item in each slot${S.owned.lucky ? ' · crates pay 2x' : ''}` : 'Collect items in Style for a bonus'}</span></span><span class="xv">+${Math.round((g - 1) * 100)}%</span></div>
       <p class="cnote">Outfits add profit to every payout on top of your multiplier.</p>`);
@@ -5155,21 +5200,21 @@ function openTab(tab) {
       `);
   } else if (tab === 'hype') {
     const left = Math.max(0, S.hypeUntil - Date.now());
-    const full = left >= hypeCap() * 1000 - 1000, lv = hypeLv(), mins = HYPE_LEN[lv.len];
+    const full = left >= hypeCap() * 1000 - 1000, lv = hypeLv(), mins = Math.round(hypePerAd() / 60);
     const up = (key, label, vals, costs, unit) => { const i = lv[key], max = i >= costs.length;
       return `<div class="row"><span class="ric">${svgIc(key === 'len' ? 'star' : 'monitor', '#FF6FAE', 20)}</span>
         <span class="rt"><b>${label}</b><span>${max ? vals[i] + unit + ' · maxed' : vals[i] + unit + ' → ' + vals[i + 1] + unit}</span>
         <span class="pips">${vals.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</span></span>
         ${max ? '<span class="hired">Max</span>' : `<button class="hire" data-hup="${key}" ${S.gems < costs[i] ? 'disabled' : ''}><i class="g"></i> ${costs[i]}</button>`}</div>`; };
-    openSheet(`<div class="sheet-head"><h2>2x Hype</h2>${closeBtn()}</div>
+    openSheet(`<div class="sheet-head"><h2>${hypeTxt()} Hype</h2>${closeBtn()}</div>
       <div class="welcome"><span class="amt" style="color:var(--accent)">${left ? hms(left) : 'Off'}</span>
-      <p>Each ad adds ${mins} minutes of double income, up to ${capText()}. Hype keeps counting while you're away, and it doubles offline earnings too.</p></div>
+      <p>Each ad adds ${mins} minutes of ${hypeTxt()} income, up to ${capText()}. Hype keeps counting while you're away, and it boosts offline earnings too.</p></div>
       <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : (S.perks.adFree ? `Add ${mins} minutes` : `Watch ad: +${mins} minutes`)}</button>
       <p class="adnote">${adGemNote()}</p>
-      ${S.perks.goldenMic ? '<p>Golden Mic stacks with Hype for 4x income.</p>' : ''}
+      ${S.perks.goldenMic ? `<p>Golden Mic stacks with Hype for ${fmtX(2 * hypeX())}x income.</p>` : ''}
       <div class="sec"><h3>Hype upgrades</h3>
-        ${up('len', 'Longer Hype', HYPE_LEN, HYPE_LEN_COST, ' min per ad')}
-        ${up('cap', 'Bigger Hype cap', HYPE_CAPS, HYPE_CAP_COST, 'h max')}</div>`);
+        ${up('cap', 'Bigger Hype cap', HYPE_CAPS, HYPE_CAP_COST, 'h max')}
+        <button class="ghost" data-tab-go="vault">Stronger, longer Hype: Remote and TV in the Vault</button></div>`);
   } else if (tab === 'style') {
     S.newItems = [];
     const g = Math.round((gearMult() - 1) * 100);
@@ -5385,7 +5430,7 @@ function render() {
 
   const now = Date.now();
   const hb = $('hypeBtn');
-  $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : '2x Hype';
+  $('hypeLbl').textContent = hypeOn() ? hms(S.hypeUntil - now) : hypeTxt() + ' Hype';
 
   { const e = ev(), b = $('eventsBtn'), w = e === 'wed' && wedChallenge(), enc = encore();
     b.hidden = !S.onboarded; b.style.setProperty('--evc', e ? EVENTS[e].color : 'transparent'); b.classList.toggle('live', !!e);
@@ -5493,7 +5538,7 @@ function offline() {
   if (secs < 30) return;
   // hype time that overlapped the counted part of the time away pays double
   const hyped = Math.max(0, Math.min(secs, (Math.min(S.hypeUntil, last + secs * 1000) - last) / 1000));
-  const v = Math.round(perSec() * (secs + hyped) * offlineRate());
+  const v = Math.round(perSec() * (secs + hyped * (hypeX() - 1)) * offlineRate());
   if (v < 1) return;
   earn(v); pendingBonus = v; owe('cash');
   const h = Math.floor(secs / 3600), m = Math.floor(secs % 3600 / 60);
@@ -5505,7 +5550,7 @@ function offline() {
 
 function start(data) {
   syncShine(document);
-  S = (data && data.state) ? Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null }, data.state) : (load() || fresh());
+  S = (data && data.state) ? Object.assign(fresh(), { econV: 1, upgV: 1, mgV: null, hypeV: null }, data.state) : (load() || fresh());
   if (!LOCATIONS[S.loc]) S.loc = 0;
   if (!S.vol) S.vol = { master: 80, music: S.music === false ? 0 : 40, sfx: S.sound === false ? 0 : 80 };
   // players still on the old 70 default move to the new 40; anyone who set their own level keeps it
@@ -5535,6 +5580,10 @@ function start(data) {
     if (S.tut != null && S.tut >= TUT.length) S.coach = Object.assign(Object.fromEntries(TIPS.filter(t => !['daily', 'inv'].includes(t.id) && !t.keep).map(t => [t.id, true])), S.coach || {});
     S.tutV = 4; }
   // v5 adds Maya's introduction as step 0: players already in (or past) the tutorial keep their place and never see it
+  // Hype moved into the Vault: players from before keep 2x (Remote Lv 10) and any Longer Hype they bought (as TV levels)
+  if (S.hypeV == null) { S.hypeV = 1; const old = (S.hypeLv && S.hypeLv.len) || 0, tv = [0, 2, 2, 3][old] || 0;
+    S.vault = Object.assign({}, S.vault, { remote: Math.max(10, (S.vault || {}).remote || 0), tv: Math.max(tv, (S.vault || {}).tv || 0) });
+    if (S.hypeLv) S.hypeLv = Object.assign({}, S.hypeLv, { len: 0 }); }
   if (S.mgV == null) { S.mgV = 1; const started = (S.loc || 0) > 0 || Object.values(S.levels || {}).some(v => v > 0);
     if (started) { S.oldAlbumGems = S.albums || 0; S.mg = { k: runKey(), got: Object.fromEntries(Object.entries(S.levels || {}).map(([id, L]) => [id, MILE_GEM_AT.filter(m => L >= m).length])) }; } }
   if (S.tutV < 5) { if (S.tut != null) S.tut = S.tut >= TUT.length - 1 ? TUT.length : S.tut + 1; S.tutV = 5; }
