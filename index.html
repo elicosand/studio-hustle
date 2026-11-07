@@ -1065,6 +1065,38 @@ html, body { background: var(--bar) !important; }
 .nm-route .from { color: var(--muted); } .nm-route .to { color: #4A3A9E; } .nm-route svg { flex: none; color: var(--muted); }
 .nm-goal { font-size: 15px; font-weight: 700; color: var(--text); margin: 0; }
 .nm-meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--muted); }
+.backer { position: absolute; left: 50%; top: 14px; width: 66px; height: 104px; margin-left: -33px; z-index: 6; padding: 0; background: none; border: 0; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; animation: bkin .45s cubic-bezier(.2,1.5,.4,1) both; }
+.backer .fig { position: absolute; left: 2px; bottom: 12px; width: 62px; height: 83px; scale: .9; transform-origin: 50% 100%; animation: bkbob 1.4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 3px rgba(255,214,90,1)) drop-shadow(0 0 12px rgba(255,201,74,.75)); }
+.backer::before { content: ""; position: absolute; left: 50%; bottom: 6px; width: 76px; height: 20px; margin-left: -38px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,90,.6), rgba(255,214,90,0)); }
+.backer .bub { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); display: grid; place-items: center; width: 34px; height: 30px; border-radius: 11px; background: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(255,201,74,.95); animation: bkpulse 1s ease-in-out infinite alternate; }
+.backer .bub::after { content: ""; position: absolute; left: 50%; bottom: -5px; margin-left: -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: #fff; }
+.backer .fcoin { display: grid; place-items: center; width: 22px; height: 22px; border-width: 2px; font-size: 13px; }
+.backer .btag { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); font: 400 10px/1 var(--display); color: #14122A; background: #FFD84D; padding: 3px 7px; border-radius: 999px; white-space: nowrap; }
+.backer.leave { animation: bkout .35s ease-in both; }
+@keyframes bkin { from { opacity: 0; transform: translateY(-14px) scale(.6); } }
+@keyframes bkout { to { opacity: 0; transform: translateY(-14px) scale(.7); } }
+@keyframes bkbob { to { translate: 0 -3px; } } @keyframes bkpulse { to { box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(255,201,74,.95), 0 0 16px rgba(255,214,90,.9); } }
+@media (prefers-reduced-motion: reduce) { .backer, .backer .fig, .backer .bub { animation: none; } }
+.backer .case { position: absolute; left: 37px; top: 57px; }
+.sparks { position: absolute; inset: 0; pointer-events: none; }
+.sparks i { position: absolute; left: var(--x); top: var(--y); width: 6px; height: 6px; border-radius: 50%; background: #FFF4C2; box-shadow: 0 0 6px 2px rgba(255,214,90,.9); opacity: 0; animation: spark 1.6s ease-in-out var(--d) infinite; }
+@keyframes spark { 0%, 100% { opacity: 0; transform: scale(.3); } 45% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .sparks i { animation: none; opacity: .7; } }
+.bk-pop { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 0 2px; }
+.bk-say { position: relative; display: flex; align-items: center; gap: 8px; background: #fff; border: 2.5px solid #1B1830; border-radius: 16px; padding: 8px 16px; font: 400 26px/1 var(--display); color: #14122A; }
+.bk-say::after { content: ""; position: absolute; left: 50%; bottom: -11px; margin-left: -8px; border: 9px solid transparent; border-bottom: 0; border-top-color: #1B1830; }
+.bk-say .fcoin { width: 26px; height: 26px; font-size: 15px; display: grid; place-items: center; }
+.bk-stage { position: relative; width: 150px; height: 140px; display: grid; place-items: end center; }
+.bk-stage::before { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,90,.55), rgba(255,214,90,0)); }
+.bk-stage .sparks { inset: 0 20px; } .bk-stage .sparks i { transform-origin: center; }
+.bk-pop p { margin: 0; font: 600 16px/1.3 var(--body, inherit); color: #5C5780; }
+.bk-claim { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.backer-offer { display: flex; align-items: center; gap: 14px; background: #FFFFFF; border: 1px solid #ECE9F5; border-radius: 18px; padding: 12px 14px; }
+.bk-fig { position: relative; filter: drop-shadow(0 0 4px rgba(255,214,90,1)) drop-shadow(0 0 14px rgba(255,201,74,.7)); }
+.bk-fig .case { position: absolute; left: 52px; top: 87px; }
+.backer-offer .bk-amt { display: block; font: 400 26px/1.1 var(--display); color: #2FA552; margin-top: 4px; } .backer-offer .bk-amt.gem { color: #9A6A00; }
 .tour { display: flex; align-items: center; gap: 0; padding: 2px 4px; }
 .tour .tstop { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 700 11px/1 var(--body); background: #ECE8F6; color: #A39EBC; }
 .tour .tstop.done { background: #8BF0A0; color: #14122A; } .tour .tstop.now { background: #F7A3C6; color: #14122A; box-shadow: 0 0 0 4px rgba(247,163,198,.3); }
@@ -1884,7 +1916,7 @@ function liveCrewSheet() {
 }
 const upgText = ([, , kind, sid, x]) => { const nm = sid && (def(sid) || {}).name;
   return kind === 'profit' ? `${nm} pays x${x}` : kind === 'speed' ? `${nm} runs ${x}x faster` : kind === 'crew' ? `Crewed stations run ${Math.round((x - 1) * 100)}% faster`
-    : kind === 'all' ? `All stations pay x${x}` : kind === 'fanfreq' ? `Fans visit ${Math.round((x - 1) * 100)}% more often · +5% all pay` : `Fans pay ${x}x · +5% all pay`; };
+    : kind === 'all' ? `All stations pay x${x}` : kind === 'fanfreq' ? `The Backer visits ${Math.round((x - 1) * 100)}% more often · +5% all pay` : `Backer cash offers ${x}x bigger · +5% all pay`; };
 const crewTabs = on => segTabs(on, [['crew', 'Crew', ''], ['upgrades', 'Upgrades' + (S.upgOpened ? '' : ' <em class="newtag">NEW</em>'), upgAffordable().length ? String(upgAffordable().length) : '']]);
 const growthOf = () => ECON.G[LOC().id] || 1.12;
 const stationsPct = cap => { const sts = LOC().stations; return sts.reduce((a, st) => a + Math.min(lvl(st.id), cap), 0) / (sts.length * cap) * 100; };
@@ -1988,6 +2020,8 @@ const TUT = [
 // after the core steps: one short pointer when a feature first matters, never two at once, with a pause between them.
 // move1 / album1 keep their old ids so players who already saw them don't see them again.
 const TIPS = [
+  { id: 'backer', text: () => say('explaining', 'That\u2019s the Backer! He invests in rising artists. Tap him and watch a short ad to take his offer.'), show: () => !!backerEl,
+    target: () => backerEl, done: () => sheetKey === 'backer' || (S.stats.backer || 0) > 0 },
   { id: 'boost', text: () => say('explaining', 'Pro tip: press and hold a station with crew to run it 2x faster. Let go any time.'), show: () => LOC().stations.some(st => lvl(st.id) && S.crew[st.id]),
     target: () => stBtn(LOC().stations.find(st => lvl(st.id) && S.crew[st.id] && st.id === S.selected) || LOC().stations.find(st => lvl(st.id) && S.crew[st.id])), done: () => boostUsed, info: 'Got it' },
   { id: 'upgrades', text: () => say('celebrating', 'New! Upgrades now live in Crew: big one-time boosts for this map. Open Crew, then Upgrades.'), show: () => upgAffordable().length > 0,
@@ -2181,7 +2215,7 @@ const TASKS = [
   { id: 'crates', text: 'Open 3 crates', stat: 'crates', target: 3 },
   { id: 'payouts', text: 'Make 400 tracks', stat: 'payouts', target: 400 },
   { id: 'hypes', text: 'Watch 2 Hype ads', stat: 'hypes', target: 2 },
-  { id: 'fans', text: 'Tap 5 fans', stat: 'fans', target: 5 },
+  { id: 'fans', text: 'Tap the Backer 5 times', stat: 'fans', target: 5 },
   { id: 'play', text: 'Play for 15 minutes', stat: 'playSec', target: 900, time: true },
 ];
 const TASK_GEMS = 5, TASK_BONUS = 15;   // finishing all three is worth more than a single ad
@@ -2232,7 +2266,7 @@ const OFFERS = {
   skip15: { name: 'Time Skip · 15 min', sub: 'Instant cash', gems: 10, skip: 900 },
   skip1: { name: 'Time Skip · 1 hour', sub: 'Instant cash', gems: 30, skip: 3600 },
   hypeRefill: { name: 'Hype Refill', sub: 'Fill your 2x Hype all the way to its cap, no ads', gems: 25 },
-  fanFrenzy: { name: 'Fan Frenzy', sub: 'Fans and paparazzi show up 3x as often for 30 minutes', gems: 20 },
+  fanFrenzy: { name: 'Fan Frenzy', sub: 'Brings a crowd of fans to tap for 30 minutes', gems: 20 },
   gems100: { name: 'Handful of Gems', sub: '80 gems', money: '$0.99', gemsOut: 80 },
   gems550: { name: 'Bag of Gems', get sub() { return gemPackSub(500, 4.99); }, money: '$4.99', gemsOut: 500 },
   gems1200: { name: 'Chest of Gems', get sub() { return gemPackSub(1200, 9.99); }, money: '$9.99', gemsOut: 1200 },
@@ -2346,7 +2380,7 @@ const passClaimable = () => { const p = pass(), t = passTier(); for (let i = 1; 
 const rewardLine = r => [r.item ? itemById(r.item).name : '', r.gems ? r.gems + ' gems' : '', r.skips ? r.skips + (r.skips === 1 ? ' skip' : ' skips') : '', r.frenzy ? r.frenzy + 'x Fan Frenzy' : ''].filter(Boolean).join(' + ');
 // ---------- inventory: stored time skips and Fan Frenzies. Whole numbers, never below zero, saved with the career ----------
 const INV = { skips: { name: 'Time Skip', icon: () => '<img src="art/shop/boost-60.svg" width="44" height="45" alt="">', time: '1 hour', what: () => `Instantly earn 1 hour of cash: ${fmt(skipValue(3600))} at your current income.` },
-  frenzies: { name: 'Fan Frenzy', icon: () => ART.frenzy().replace('width="78" height="78"', 'width="48" height="48"'), time: '30 minutes', what: () => frenzyOn() ? 'Adds 30 minutes to your active Fan Frenzy.' : 'Fans and paparazzi show up 3x as often for 30 minutes.' } };
+  frenzies: { name: 'Fan Frenzy', icon: () => ART.frenzy().replace('width="78" height="78"', 'width="48" height="48"'), time: '30 minutes', what: () => frenzyOn() ? 'Adds 30 minutes to your active Fan Frenzy.' : 'A crowd of fans shows up to tap for 30 minutes. Fans only come during a Frenzy.' } };
 // every grant and every use is an entry with its own id. Counts are the sum of entries, so merging two copies of a career
 // (another tab, another phone) can't duplicate a reward or bring back a spent item.
 function invLog() { if (!S.invLog) { S.invLog = {}; for (const k of ['skips', 'frenzies']) if (S[k] > 0) S.invLog['legacy:' + k] = [k, Math.floor(S[k])]; } return S.invLog; }
@@ -2997,26 +3031,26 @@ function flushOwed() {
 // event from a five-week rotation. Tuesday and Thursday are quiet on purpose (Thursday can host a holiday like Thanksgiving).
 // Colors are soft pastels and every event also has its own icon, so color is never the only cue.
 const EVENTS = {
-  monday: { name: 'Music Monday', short: 'Crates pay 2x cash and 2x gems, and the daily gem limits for ads and fans are doubled', color: '#9BEBC8' },
+  monday: { name: 'Music Monday', short: 'Crates pay 2x cash and 2x gems, and the daily ad gem limit is doubled', color: '#9BEBC8' },
   wed: { name: 'Wednesday Challenge', short: 'One goal for a big gem prize', color: '#FFB3D1' },
-  friday: { name: 'Fan Friday', short: 'Fans show up 1.5x as often', color: '#8FE3DA' },
-  fans: { name: 'Fan Weekend', short: 'All weekend (Sat + Sun): fans show up 2x as often, with double the daily fan gem limit', color: '#8FE3DA' },
-  gems: { name: 'Gem Rush', short: 'All weekend: album drops, ads and fans give double gems', color: '#C9B0FF' },
+  friday: { name: 'Fan Friday', short: 'The Backer visits 1.5x as often', color: '#8FE3DA' },
+  fans: { name: 'Fan Weekend', short: 'All weekend (Sat + Sun): the Backer visits 2x as often', color: '#8FE3DA' },
+  gems: { name: 'Gem Rush', short: 'All weekend: album drops, ads and Backer gem offers give double gems', color: '#C9B0FF' },
   tour: { name: 'Tour Rush', short: 'All weekend: move up once every station reaches level 90', color: '#A9C1FF' },
   crates: { name: 'Crate Party', short: 'All weekend: a free crate every 5 minutes instead of 10, with normal payouts', color: '#FFD978' },
   hype: { name: 'Hype Weekend', short: 'All weekend: every Hype ad gives twice the time, plus one free Hype boost', color: '#FFBFA0' },
 };
 // the weekend rotation and its date anchor are unchanged, so weekends already on the calendar stay put
 const WEEKEND = ['fans', 'gems', 'tour', 'crates', 'hype'];
-const EV_TAGS = { monday: ['2× crate cash', '2× crate gems', '2× ad gem limit', '2× fan gem limit'], wed: [], friday: ['1.5× fan visits'],
-  fans: ['2× fan visits', '2× fan gem limit'], gems: ['2× album gems', '2× ad gems', '2× fan gems'],
+const EV_TAGS = { monday: ['2× crate cash', '2× crate gems', '2× ad gem limit'], wed: [], friday: ['1.5× Backer visits'],
+  fans: ['2× Backer visits'], gems: ['2× album gems', '2× ad gems', '2× Backer gems'],
   tour: ['Move up at level 90'], crates: ['Free crate every 5 min', 'Normal crate payouts'], hype: ['2× Hype per ad', '1 free Hype boost'] };
 // the fine print: limits, what isn't affected, and how it ends
 const EV_NOTE = k => ({
   monday: 'Richer crates: each pays double. They still come every 10 minutes. Daily task and map rewards are unchanged.',
-  friday: 'The fan gem limit stays normal. Stacks with a Fan Frenzy for 3.5× fans. Ends at midnight, before the weekend event starts.',
+  friday: 'The Backer drops by 1.5× as often. A Fan Frenzy still brings its own crowd. Ends at midnight, before the weekend event starts.',
   fans: 'Stacks with a Fan Frenzy for 4× fans (they add up, not multiply). More Frenzies add time, not speed.',
-  gems: `Daily limits count ads and gem fans, not gems, so you get the full doubled amount: up to ${AD_GEM_LIMIT * AD_GEMS * 2} ad gems and ${FAN_GEM_CAP * 2} fan gems a day. Crates, tasks and map rewards are unchanged.`,
+  gems: `The ad limit counts ads, not gems, so you get the full doubled amount: up to ${AD_GEM_LIMIT * AD_GEMS * 2} ad gems a day. Backer gem offers are doubled too. Crates, tasks and map rewards are unchanged.`,
   tour: 'Goals you reach this weekend stay reached, even after it ends. Unfinished goals go back to normal size on Monday; the cash you earned stays.',
   crates: 'More crates: twice as often as usual (every 5 minutes instead of 10), each with its normal cash and gems. One crate waits at a time, so open it to start the next timer.',
   hype: `Ad-Free Rewards counts too. Hype still stops at your cap (${capText()}).`,
@@ -3050,7 +3084,7 @@ const evEnds = () => { const w = new Date().getDay(), d = localDay(); return day
 // Wednesday goals: about 15-30 minutes of ordinary play, spread over any number of sessions. No ads or purchases needed.
 // The cash and upgrade targets scale to the player: worked out the first time the goal is seen that day, then fixed for the day.
 const WED_POOL = [
-  { id: 'fans', text: 'Tap 20 fans', stat: 'fans', target: 20 },
+  { id: 'fans', text: 'Tap the Backer 20 times', stat: 'fans', target: 20 },
   { id: 'crates', text: 'Open 3 free crates', stat: 'crates', target: 3 },
   { id: 'cash', text: 'Earn 15 minutes of income from your stations', stat: 'liveCash', scale: 'cash' },
   { id: 'upgrades', text: 'Buy upgrades at your usual pace', stat: 'upgrades', scale: 'upgrades' },
@@ -3072,7 +3106,7 @@ function wedTarget(c) {
 const wedText = (c, target) => c.scale === 'cash' ? `Earn ${fmt(target)} from your stations` : c.scale === 'upgrades' ? `Buy ${target.toLocaleString('en-US')} upgrades` : c.text;
 // the goals before Build 119: a challenge already started under them finishes under them (same goal, same progress)
 const WED_LEGACY = [
-  { id: 'legacy0', text: 'Buy 800 upgrades', stat: 'upgrades', target: 800 }, { id: 'legacy1', text: 'Tap 25 fans', stat: 'fans', target: 25 },
+  { id: 'legacy0', text: 'Buy 800 upgrades', stat: 'upgrades', target: 800 }, { id: 'legacy1', text: 'Tap the Backer 25 times', stat: 'fans', target: 25 },
   { id: 'legacy2', text: 'Spend 30 minutes in the studio', stat: 'playSec', target: 1800, mins: true }, { id: 'legacy3', text: 'Hire 10 crew members', stat: 'hires', target: 10 },
   { id: 'legacy4', text: 'Open 4 crates', stat: 'crates', target: 4 }];
 function wedChallenge() {
@@ -3086,7 +3120,7 @@ function wedChallenge() {
 }
 // Weekend Encore: one optional goal per weekend (Sat + Sun together) for Backstage Pass stars. Ordinary play only, paid once.
 const ENCORE = {
-  fans: { text: 'Tap 15 fans', stat: 'fans', target: 15 },
+  fans: { text: 'Tap the Backer 15 times', stat: 'fans', target: 15 },
   gems: { text: 'Open 3 free crates', stat: 'crates', target: 3 },
   tour: { text: 'Spend 20 minutes in the studio', stat: 'playSec', target: 1200, mins: true },
   crates: { text: 'Open 5 free crates', stat: 'crates', target: 5 },
@@ -3627,6 +3661,7 @@ $('scrim').addEventListener('click', e => {
   if (pf) { Charts.view = pf.dataset.prof === 'me' ? 'me' : Charts.rows[+pf.dataset.prof]; if (Charts.view) { sfx('tap'); openTab('profile'); } return; }
   if (e.target.closest('[data-back-charts]')) return openTab('charts');
   if (e.target.closest('[data-tut-replay]')) { startTutorial(); track('tutorial-replay'); return; }
+  if (e.target.closest('[data-backer-ad]')) { if (!backerOffer) return; backerEl && (backerEl._until = Date.now() + 60000); watchAd(() => payBacker()); return; }
   const tset = e.target.closest('[data-test-set]');
   if (tset) { const k = tset.dataset.testSet; tset.disabled = true; testCall('test_set', { item: k, enabled: !TESTG[k] }).then(r => { if (r) { TESTG = r.data; applyAutoCrew(); toast(`${k === 'golden_mic' ? 'Golden Mic' : 'Day-One Crew'} ${TESTG[k] ? 'on' : 'off'} (test)`); } else toast("Couldn't reach the server"); render(); openTab('testaccess'); }); return; }
   if (e.target.closest('[data-test-reset]')) { testCall('test_reset').then(r => { if (r) { TESTG = r.data; toast('Test grants reset'); } else toast("Couldn't reach the server"); render(); openTab('testaccess'); }); return; }
@@ -3972,6 +4007,7 @@ function fanGemsToday() { const d = new Date().toDateString(); if (!S.fanDay || 
 // More Frenzies only add time, never more speed.
 const fanRate = () => 1 + (frenzyOn() ? 2 : 0) + (ev() === 'fans' ? 1 : ev() === 'friday' ? 0.5 : 0);
 function fanTick(dt) {
+  if (!frenzyOn()) { fanAcc = 0; return; }   // walking fans only come with a Fan Frenzy (shop or inventory); everyday visits are the Backer
   if (fanEl || document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
   fanAcc += dt * fanRate();
   if (fanAcc < fanNext) return;
@@ -3991,7 +4027,7 @@ function spawnFan() {
   const walk = el.animate([{ left: from + 'px' }, { left: to + 'px' }], { duration: FAN_WALK, easing: 'linear', fill: 'forwards' });
   walk.onfinish = () => { if (el.classList.contains('got')) return; el.remove(); if (fanEl === el) fanEl = null; };
   el.addEventListener('click', e => { e.stopPropagation(); tapFan(el, walk); });
-  if (!S.fanHint) { S.fanHint = true; toast('A fan showed up! Tap them for a bonus'); }
+  if (!S.fanHint) { S.fanHint = true; toast('Fan Frenzy! Tap the fans for a bonus'); }
 }
 function tapFan(el, walk) {
   if (el.classList.contains('got')) return;
@@ -4007,6 +4043,48 @@ function tapFan(el, walk) {
   stage.appendChild(f); setTimeout(() => f.remove(), 1000);
   setTimeout(() => { el.remove(); if (fanEl === el) fanEl = null; }, 600);
   save(); render();
+}
+// ---------- The Backer: a stationary visitor who replaces everyday fans. Same timing and cash/gem odds as fans had;
+// like Eatventure's Investor: he stays 15 s and his reward is always behind an ad. No daily gem limit: gems stay rare through the odds.
+const BACKER_MIN = 30, BACKER_MAX = 90, BACKER_LIFE = 15000, BACKER_CASH_SECS = 60, BACKER_GEMS = 6, BACKER_GEM_ODDS = 0;   // 0% until the Vault's gem upgrade turns gem offers on (Patch 4)
+let backerAcc = 0, backerNext = BACKER_MIN + Math.random() * (BACKER_MAX - BACKER_MIN), backerEl = null, backerOffer = null;
+const backerFigure = (w = 62, h = 83) => miniFigure({ body: '#16141F', trim: '#FFC94A', style: 'jacket', skin: '#C68A5C', hair: '#16141F', pants: '#1F1C2B', hs: 'buzz',
+  beanie: '#16141F', face: { style: 'aviator', color: '#FFC94A', lens: '#14122A' } }, w, h);
+const CASE_SVG = (w = 26) => `<svg class="case" width="${w}" height="${w * .8}" viewBox="0 0 30 24" aria-hidden="true"><path d="M10 6 V3.5 Q10 2 11.5 2 H18.5 Q20 2 20 3.5 V6" fill="none" stroke="#1B1830" stroke-width="2.4"/><rect x="2" y="6" width="26" height="16" rx="3.5" fill="#3B3552" stroke="#1B1830" stroke-width="2.4"/><path d="M2.5 12.5 H27.5" stroke="#1B1830" stroke-width="1.6" opacity=".55"/><rect x="12.5" y="10.5" width="5" height="4.5" rx="1" fill="#FFC94A" stroke="#1B1830" stroke-width="1.4"/></svg>`;
+const SPARKS = n => Array.from({ length: n }, (_, i) => `<i style="--d:${(i * 0.37) % 1.6}s;--x:${[8, 52, 4, 56, 30, 18, 44][i % 7]}px;--y:${[22, 18, 52, 50, 4, 72, 70][i % 7]}px"></i>`).join('');
+const PLAY_IC = '<svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true"><rect x="1.5" y="1.5" width="19" height="15" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M9 5.5 L14.5 9 L9 12.5 Z" fill="currentColor"/></svg>';
+const backerRate = () => 1 + (ev() === 'fans' ? 1 : ev() === 'friday' ? 0.5 : 0);
+function backerTick(dt) {
+  if (backerEl) { if (Date.now() > backerEl._until && sheetKey !== 'backer') backerLeave(); return; }
+  if (document.hidden || !S.onboarded || (S.tut != null && S.tut < TUT.length) || !$('scrim').hidden) return;
+  backerAcc += dt * backerRate();
+  if (backerAcc < backerNext) return;
+  backerAcc = 0; backerNext = (BACKER_MIN + Math.random() * (BACKER_MAX - BACKER_MIN)) / upgFx().fanFreq;
+  spawnBacker();
+}
+function spawnBacker() {
+  const gem = Math.random() < BACKER_GEM_ODDS;
+  const el = document.createElement('button');
+  el.className = 'backer' + (gem ? ' gemoffer' : ''); el.setAttribute('aria-label', 'The Backer has an offer for you');
+  el.innerHTML = `<span class="bub${gem ? ' gem' : ''}">${gem ? GEM_MINI : COIN_MINI}</span><div class="fig">${backerFigure()}${CASE_SVG()}</div><span class="sparks">${SPARKS(7)}</span><span class="btag">Backer</span>`;
+  el._gem = gem; el._until = Date.now() + BACKER_LIFE;
+  wrap.appendChild(el); backerEl = el;
+  el.addEventListener('click', e => { e.stopPropagation(); openBacker(); });
+}
+function backerLeave() { const el = backerEl; backerEl = null; backerOffer = null; if (!el) return; el.classList.add('leave'); setTimeout(() => el.remove(), 400); }
+function openBacker() {
+  if (!backerEl) return;
+  if (!backerOffer) backerOffer = backerEl._gem ? { gems: BACKER_GEMS * (ev() === 'gems' ? 2 : 1) } : { cash: Math.max(50, Math.round(skipValue(BACKER_CASH_SECS) * upgFx().fanVal)) };   // the amount is fixed when you look at it
+  if (!backerEl._met) { backerEl._met = true; S.stats.fans = (S.stats.fans || 0) + 1; S.stats.backer = (S.stats.backer || 0) + 1; }
+  openTab('backer');
+}
+function payBacker() {
+  const o = backerOffer; if (!o || !backerEl) return;
+  const k = 1;
+  if (o.gems) { S.gems += o.gems * k; owe('gems'); } else { earn(o.cash * k); owe('cash'); }
+  sfx('reward'); track('backer/' + (o.gems ? 'gems' : 'cash'));
+  backerLeave(); closeSheet(); save(); render();
+  toast(o.gems ? `+${o.gems * k} gems from the Backer` : `+${fmt(o.cash * k)} from the Backer`);
 }
 const myLook = (bt = S.bt) => ({ hs: S.hs || defaultHair(bt), hc: S.hc || HAIR_COLORS[0], fd: S.fd || null, ph: S.phones !== 'none' });
 // ears only show when the headphones are off (the cups normally sit right where they are)
@@ -4586,6 +4664,14 @@ function openTab(tab) {
       return `<div class="row"><span class="ric">${svgIc(st.icon, '#F4F1EA', 20)}</span><span class="rt"><b>${st.crew}</b><span>${unlocked ? 'Runs ' + st.name + ' for you, even offline' : 'Unlock ' + st.name + ' first'}</span></span>${right}</div>`;
     }).join('');
     openSheet(`<div class="sheet-head"><h2>Crew</h2>${closeBtn()}</div>${crewTabs('crew')}<div class="pscroll"><p>Hire someone for a station and it keeps earning without tapping, even while you're away (up to 2 hours).</p>${rows}</div>`);
+  } else if (tab === 'backer') {
+    const o = backerOffer; if (!o) return closeSheet();
+    const amt = o.gems ? `+${o.gems} gems` : `+${fmt(o.cash)}`;
+    openSheet(`<div class="sheet-head"><h2>The Backer</h2>${closeBtn()}</div>
+      <div class="bk-pop"><div class="bk-say">${o.gems ? GEM_MINI : COIN_MINI}<b>${o.gems ? o.gems : fmt(o.cash)}</b></div>
+        <div class="bk-stage"><div class="bk-fig">${backerFigure(96, 128)}${CASE_SVG(40)}</div><span class="sparks">${SPARKS(7)}</span></div>
+        <p>${o.gems ? 'Free gems for the studio!' : 'Free cash for the studio!'}</p></div>
+      <button class="cta pink bk-claim" data-backer-ad>${S.perks.adFree ? '' : PLAY_IC}Claim</button>`);
   } else if (tab === 'testaccess') {
     if (!TESTG) return closeSheet();
     const row = (k, name, what) => `<div class="row"><span class="ric">${svgIc(k === 'golden_mic' ? 'mic' : 'note', '#FFC94A', 20)}</span><span class="rt"><b>${name}</b><span>${what}</span></span>
@@ -4727,7 +4813,7 @@ function openTab(tab) {
   } else if (tab.startsWith('inv-use:')) {
     const k = tab.slice(8), it = INV[k]; if (!it) return;
     openSheet(`<div class="sheet-head"><h2>Use a ${it.name}?</h2>${headBtns('data-tab-go="inv"')}</div>
-      <div class="invconf"><span class="invic">${it.icon()}</span>${k === 'skips' ? `<b class="amt">+${fmt(skipValue(3600))}</b><p>Added to your cash right now. That's 1 hour at your current income.</p>` : `<b class="amt">30 min</b><p>${frenzyOn() ? `Adds 30 minutes to your active Fan Frenzy (${hms(S.frenzyUntil - Date.now())} left now). Fans still come 3x as often, not more.` : 'Fans and paparazzi show up 3x as often for 30 minutes.'}</p>`}
+      <div class="invconf"><span class="invic">${it.icon()}</span>${k === 'skips' ? `<b class="amt">+${fmt(skipValue(3600))}</b><p>Added to your cash right now. That's 1 hour at your current income.</p>` : `<b class="amt">30 min</b><p>${frenzyOn() ? `Adds 30 minutes to your active Fan Frenzy (${hms(S.frenzyUntil - Date.now())} left now). Fans still come 3x as often, not more.` : 'A crowd of fans shows up to tap for 30 minutes. Fans only come during a Frenzy.'}</p>`}
       <p class="cnote">You have ${invQty(k)}. This uses 1.</p></div>
       <button class="cta" data-inv-use="${k}">Use 1 ${it.name}</button><button class="ghost" data-tab-go="inv">Cancel</button>`);
   } else if (tab === 'pass') {
@@ -4898,7 +4984,7 @@ function openTab(tab) {
         ${card('skip15', ART.clock(0), 'Skip 15 min', '+' + fmt(skipValue(900)), 'gold spend')}
         ${card('skip1', ART.clock(4), 'Skip 1 hour', '+' + fmt(skipValue(3600)), 'gold spend', 'Best value')}
         ${card('hypeRefill', ART.bolt(), 'Hype Refill<br>fill to max', hypeLeftToFill() > 60000 ? '+' + hms(hypeLeftToFill()) : 'Full', 'gold spend')}
-        ${card('fanFrenzy', ART.frenzy(), 'Fan Frenzy<br>3x fans', frenzyOn() ? hms(S.frenzyUntil - Date.now()) + ' left' : '30 min', 'gold spend')}
+        ${card('fanFrenzy', ART.frenzy(), 'Fan Frenzy<br>fan crowd', frenzyOn() ? hms(S.frenzyUntil - Date.now()) + ' left' : '30 min', 'gold spend')}
       </div>
       <div class="banner">Time Skip Packs</div>
       <div class="skipbar"><span>Each skip grants 1 hour of cash.</span><button class="hire" data-tab-go="inv">Inventory${invQty('skips') + invQty('frenzies') ? ' · ' + (invQty('skips') + invQty('frenzies')) : ''}</button></div>
@@ -4909,7 +4995,7 @@ function openTab(tab) {
         ${skipCard('skips60', 3, '60 skips', 'Best value', 5)}
       </div>
       <div class="banner">Fan Frenzy Packs</div>
-      <div class="skipbar"><span>Each Frenzy brings fans and paparazzi 3× as often for 30 minutes. Store them and use whenever you want.</span></div>
+      <div class="skipbar"><span>Each Frenzy brings a crowd of fans to tap for 30 minutes. Fans only show up during a Frenzy. Store them and use whenever you want.</span></div>
       <div class="cards gems skips">
         ${skipCard('frenzy4', 1, '4 Frenzies', '', 3, 'frenzies')}
         ${skipCard('frenzy20', 2, '20 Frenzies', '', 4, 'frenzies')}
@@ -5270,7 +5356,7 @@ function tick(t) {
     }
     els[st.id].bar.style.width = (Math.min(1, S.prog[st.id]) * 100) + '%';
   });
-  fanTick(dt); ratTick(dt);
+  fanTick(dt); backerTick(dt); ratTick(dt);
   acc += realDt; saveAcc += realDt; S.stats.playSec += dt;
   if (acc > 0.1) { render(); acc = 0; }
   if (saveAcc > 5) { save(); saveAcc = 0; }
