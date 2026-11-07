@@ -1902,7 +1902,7 @@ function payMileGems(st, before, after) {
   const owed = MILE_GEM_AT.filter(m => after >= m).length, had = S.mg.got[st.id] || 0;
   if (owed <= had) return 0;
   const g = (owed - had) * MILE_GEM * (ev() === 'gems' ? 2 : 1);
-  S.mg.got[st.id] = owed; S.gems += g; owe('gems'); return g;
+  S.mg.got[st.id] = owed; S.gems += g; owe('gems', g, els[st.id] && els[st.id].b); return g;
 }
 const lastLoc = () => LOCATIONS.length - 1;
 // album boost grows with the length of the tour: +25% with 3 maps, +50% once all 6 are in
@@ -2123,7 +2123,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 144, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 145, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -3155,8 +3155,11 @@ function flurry(kind, x, y, n = 10) {
 // pop-up when it closes, or straight from where you tapped if no pop-up shows them
 let owed = { cash: 0, gems: 0 }, owedArmed = false, owedT = null, lastTap = { x: innerWidth / 2, y: innerHeight / 2 };
 document.addEventListener('pointerdown', e => { lastTap = { x: e.clientX, y: e.clientY }; }, true);
-function owe(kind) {
+// n: how many to fly (one gem flies as one gem); from: the element they fly out of
+function owe(kind, n, from) {
   owed[kind] = 1;
+  if (n) owed[kind + 'N'] = Math.min(10, (owed[kind + 'N'] || 0) + n);
+  if (from) owed.from = from;
   clearTimeout(owedT); owedT = setTimeout(() => { if (!owedArmed) flushOwed(); }, 80);
 }
 function flushOwed() {
@@ -3165,8 +3168,10 @@ function flushOwed() {
   let x = lastTap.x, y = lastTap.y;
   const sh = $('sheet'), amt = !$('scrim').hidden && sh.querySelector('.amt');
   if (amt) { const r = amt.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top + r.height / 2; }
-  if (owed.cash) flurry('cash', x, y, 12);
-  if (owed.gems) flurry('gems', x, y + (owed.cash ? 16 : 0), 10);
+  else if (owed.from && owed.from.isConnected) { const r = owed.from.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top + r.height / 3; }
+  if (owed.cash) flurry('cash', x, y, owed.cashN || 12);
+  if (owed.gems) flurry('gems', x, y + (owed.cash ? 16 : 0), owed.gemsN || 10);
+  owed.cashN = owed.gemsN = 0; owed.from = null;
   sfx(owed.gems ? 'gems' : 'reward');
   owed = { cash: 0, gems: 0 };
 }
@@ -4239,7 +4244,7 @@ function openBacker() {
 function payBacker() {
   const o = backerOffer; if (!o || !backerEl) return;
   const k = 1;
-  if (o.gems) { S.gems += o.gems * k; owe('gems'); } else { earn(o.cash * k); owe('cash'); }
+  if (o.gems) { S.gems += o.gems * k; owe('gems', o.gems * k); } else { earn(o.cash * k); owe('cash'); }
   sfx('reward'); track('backer/' + (o.gems ? 'gems' : 'cash'));
   backerLeave(); closeSheet(); save(); render();
   toast(o.gems ? `+${o.gems * k} gems from the Backer` : `+${fmt(o.cash * k)} from the Backer`);
@@ -4842,7 +4847,7 @@ function openTab(tab) {
     const o = backerOffer; if (!o) return closeSheet();
     const amt = o.gems ? `+${o.gems} gems` : `+${fmt(o.cash)}`;
     openSheet(`<div class="sheet-head"><h2>The Backer</h2>${closeBtn()}</div>
-      <div class="bk-pop"><div class="bk-say">${o.gems ? GEM_MINI : COIN_MINI}<b>${o.gems ? o.gems : fmt(o.cash)}</b></div>
+      <div class="bk-pop"><div class="bk-say">${o.gems ? GEM_MINI : COIN_MINI}<b>${o.gems ? o.gems : fmt(o.cash).replace(/^\$/, "")}</b></div>
         <div class="bk-stage"><div class="bk-fig">${backerFigure(96, 128)}${CASE_SVG(40)}</div><span class="sparks">${SPARKS(7)}</span></div>
         <p>${o.gems ? 'Free gems for the studio!' : 'Free cash for the studio!'}</p></div>
       <button class="cta pink bk-claim" data-backer-ad>${S.perks.adFree ? '' : PLAY_IC}Claim</button>`);
