@@ -54,7 +54,7 @@ button:focus-visible { outline: 3px solid var(--gem); outline-offset: 2px; }
 .app { position: fixed; top: 0; bottom: 0; left: 0; right: 0; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); background: var(--ink); }
 
 /* HUD: two equal pills centered as a group; each icon overlaps its pill's left edge and the value is centered in what's left */
-.hud { position: relative; z-index: 7; display: flex; align-items: center; padding-block: 20px 26px;
+.hud { position: relative; z-index: 21; display: flex; align-items: center; padding-block: 20px 26px;
   padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: env(safe-area-inset-right, 0px); }
 .hud-pills { flex: 1; min-width: 0; display: flex; justify-content: center; gap: 12px; padding-left: 16px; }
 #settings { flex: 0 0 58px; }
@@ -1021,7 +1021,7 @@ html, body { background: var(--bar) !important; }
 .ev-hero .ev-art { position: relative; z-index: 1; width: 120px; height: 140px; overflow: hidden; flex: none; }
 .ev-hero .ev-art > svg { position: absolute; left: 50%; top: 4px; width: 150px; height: auto; transform: translateX(-50%); }
 .ev-hero .flag { position: absolute; left: 50%; bottom: 0; width: 104px; height: 144px; margin-left: -34px; z-index: 0; }
-.side { gap: 10px; }
+.side { gap: 14px; }   /* was 10: a little more breathing room */
 .side .sbtn { width: 54px; height: 62px; padding-bottom: 14px; box-sizing: border-box; }
 .side .sbtn .cap { bottom: 4px; }
 .segtabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 14px; }
@@ -1108,7 +1108,7 @@ html, body { background: var(--bar) !important; }
 .shopb { position: absolute; left: env(safe-area-inset-left, 0px); bottom: -18px; z-index: 8; width: 46px; height: 36px; display: grid; place-items: center; border-radius: 0 14px 14px 0;
   background: linear-gradient(160deg, #7FE0FF, #3FB4EA); color: #fff; box-shadow: 0 3px 0 #2A86B5; }
 .shopb:active { transform: translateY(2px); box-shadow: 0 1px 0 #2A86B5; }
-.side-l, .side-r { top: 28px; }   /* both side columns start just below the Shop button on the line, level with each other */
+.side-l, .side-r { top: 29px; }   /* columns start one 14px gap below the Shop cart */   /* both side columns start just below the Shop button on the line, level with each other */
 .sbtn.vaultb { background: linear-gradient(160deg, #B9A6FF, #7C63E8); color: #fff; }
 .vrow .rt b .vlv { font-style: normal; font-weight: 600; font-size: 12px; color: #5C5780; margin-left: 4px; }
 .vrow .vfx { display: block; margin-top: 2px; font-size: 13px; color: #5C5780; } .vrow .vfx b { color: #14122A; } .vrow .vfx b.up { color: #2FA552; }
@@ -1139,8 +1139,8 @@ details.more[open] > summary { margin-bottom: 8px; }
 .albumline .rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } .albumline .rt b { font-size: 15px; } .albumline .rt span { font-size: 12px; color: var(--muted); }
 .albumline .cta { width: auto; padding: 0 16px; height: 44px; font-size: 14px; }
 /* Build 142: shimmer only on the Hype button and the free crate; no other button glows or glints */
-.tab .ticon.wt::after, .card::after, .offer::after { display: none !important; }
-.act.ready, .tab-pct.full, .tab-pct.album, .offer .rib, .rib.small { animation: none !important; }
+.tab .ticon.wt::after { display: none !important; }
+.act.ready, .tab-pct.full, .tab-pct.album { animation: none !important; }
 .bang:not([hidden]) { animation: bangwig 2.6s ease-in-out infinite; transform-origin: 50% 80%; }
 @keyframes bangwig { 0%, 84%, 100% { rotate: 0deg; } 87% { rotate: -14deg; } 90% { rotate: 12deg; } 93% { rotate: -8deg; } 96% { rotate: 4deg; } }
 @media (prefers-reduced-motion: reduce) { .bang:not([hidden]) { animation: none; } }
@@ -1219,10 +1219,6 @@ details.more[open] > summary { margin-bottom: 8px; }
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
         <span class="cap">Goals</span><span class="bang" id="goalsDot" hidden>!</span>
       </button>
-      <button class="sbtn gpass" id="passBtn" aria-label="Backstage Pass">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2l5 7 5-7"></path><rect x="5" y="9" width="14" height="13" rx="2.5"></rect><path d="M10 9h4"></path><path d="M9 17h6"></path><circle cx="12" cy="13.5" r="1.4"></circle></svg>
-        <span class="cap">Pass</span><span class="bang" id="passDot" hidden>!</span>
-      </button>
     </div>
     <div class="side side-r">
       <button class="sbtn charts" id="chartsBtn" aria-label="The Charts">
@@ -1232,6 +1228,10 @@ details.more[open] > summary { margin-bottom: 8px; }
       <button class="sbtn events" id="eventsBtn" aria-label="Events">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"></path><path d="M5 4h13l-2.5 4.5L18 13H5"></path></svg>
         <span class="cap">Events</span><span class="bang evdot" id="eventsBang" hidden>!</span>
+      </button>
+      <button class="sbtn gpass" id="passBtn" aria-label="Backstage Pass">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2l5 7 5-7"></path><rect x="5" y="9" width="14" height="13" rx="2.5"></rect><path d="M10 9h4"></path><path d="M9 17h6"></path><circle cx="12" cy="13.5" r="1.4"></circle></svg>
+        <span class="cap">Pass</span><span class="bang" id="passDot" hidden>!</span>
       </button>
     </div>
     <div class="stage" id="stage">
