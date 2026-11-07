@@ -750,6 +750,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .soon { font-size: 12px; font-weight: 700; color: var(--muted); background: var(--line); border-radius: 999px; padding: 6px 10px; flex: none; }
 .keeps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .keeps div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.dval { display: block; font-size: 11px; font-weight: 700; opacity: .75; }
 .keeps b { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
 
 .tut { position: absolute; left: 16px; right: 16px; z-index: 15; display: flex; align-items: center; gap: 10px; background: var(--text); color: var(--deep);
@@ -1027,6 +1028,19 @@ html, body { background: var(--bar) !important; }
 .sheet.light > .sheet-head { margin: -18px calc(-1 * max(18px, env(safe-area-inset-right, 0px))) 0 calc(-1 * max(18px, env(safe-area-inset-left, 0px)));
   padding: 14px max(18px, env(safe-area-inset-right, 0px)) 14px max(18px, env(safe-area-inset-left, 0px)); background: linear-gradient(180deg, #5A47B8, #4A3A9E); border-radius: 24px 24px 0 0; }
 .sheet.light > .sheet-head h2 { color: #FFFFFF; }
+.sheet.light.std, .sheet.light.std.tall { height: min(74%, 620px); }
+.sheet.light > .sheet-head { min-height: 64px; box-sizing: border-box; }
+.sheet.light > .sheet-head .close { width: 40px; height: 40px; border-radius: 12px; outline: none; box-shadow: none; border: 0; }
+.sheet .close { outline: none; } html.kbd .sheet .close:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }   /* focus ring only for keyboard users */
+.sheet.light .adnote { font-size: 13px !important; color: #9A6A00 !important; }   /* gold text darkened for contrast on light panels */
+/* readable text at phone size */
+.sheet.light { --muted: #5C5780; }
+.sheet.light p { font-size: 14px; }
+.sheet.light .row .rt span, .sheet.light .albumline .rt span { font-size: 13px; }
+.sheet.light .keeps div { font-size: 14px; } .sheet.light .keeps b { font-size: 14px; }
+.keeps ul { margin: 4px 0 0; padding-left: 16px; } .keeps li { margin: 2px 0; }
+.keeps .gain { grid-column: 1 / -1; background: #EFFCF2 !important; border: 1px solid #BFEFCB; } .keeps .lose { background: #FFF1F6 !important; border: 1px solid #F6CADB; }
+.sheet.light .cerr { font-size: 14px; }
 .sheet.light > .sheet-head .close { background: rgba(255,255,255,.16); color: #FFFFFF; }
 .sheet.light .row { background: #FFFFFF; box-shadow: 0 1px 0 #E6E2F1, 0 2px 8px rgba(30,26,51,.06); border: 1px solid #ECE9F5; }
 .sheet.light .row .ric { background: #4A3A9E; }   /* brand purple tiles keep white and gold icons readable */
@@ -3431,6 +3445,9 @@ function syncShine(root) {
 }
 function moreBelow() { const sh = $('sheet'); $('scrim').classList.toggle('more-below', !!sh.querySelector('.album-pop') && sh.scrollHeight - sh.clientHeight - sh.scrollTop > 6); }
 $('sheet').addEventListener('scroll', moreBelow, { passive: true });
+const MAIN_SHEETS = ['career', 'crew', 'upgrades', 'goals', 'daily', 'pass', 'events', 'charts', 'settings', 'hype', 'feedback', 'testaccess'];
+window.addEventListener('keydown', e => { if (e.key === 'Tab') document.documentElement.classList.add('kbd'); });
+window.addEventListener('pointerdown', () => document.documentElement.classList.remove('kbd'));
 const DARK_SHEETS = ['shop', 'inv', 'boosts', 'style', 'studio', 'profile'];   // shop and style keep their dark backgrounds
 function openSheet(html) {
   clearBoost();
@@ -3438,7 +3455,8 @@ function openSheet(html) {
   try { setHudH(); } catch (e) {}
   $('sheet').classList.toggle('tall', nextSheetKey === 'charts');
   $('sheet').classList.toggle('pinned', nextSheetKey === 'crew' || nextSheetKey === 'upgrades');
-  $('sheet').classList.toggle('light', !!nextSheetKey && !DARK_SHEETS.includes(nextSheetKey));   // light panels everywhere except the Shop and Style screens
+  $('sheet').classList.toggle('light', !!nextSheetKey && !DARK_SHEETS.includes(nextSheetKey));
+  $('sheet').classList.toggle('std', MAIN_SHEETS.includes(nextSheetKey));   // main panels share one size, so headers sit in the same place   // light panels everywhere except the Shop and Style screens
   $('sheet').classList.toggle('shopmode', nextSheetKey === 'shop');
   const sh = $('sheet'), refresh = !$('scrim').hidden && nextSheetKey && nextSheetKey === sheetKey;
   if (sheetKey && !$('scrim').hidden && !refresh) sheetScroll[sheetKey] = sh.scrollTop;
@@ -3568,6 +3586,7 @@ $('scrim').addEventListener('click', e => {
   const ct = e.target.closest('[data-ctab]');
   if (ct) { if (Charts.tab === ct.dataset.ctab) return; Charts.tab = ct.dataset.ctab; Charts.status = 'loading'; openTab('charts'); loadChart().then(() => { if (sheetKey === 'charts') openTab('charts'); }); return; }
   if (e.target.closest('[data-chart-retry]')) { refreshCharts(); return; }
+  if (e.target.closest('[data-backup-retry]')) { Cloud.err = ''; backup(true).then(() => { if (sheetKey === 'settings') openTab('settings'); }); toast('Trying again…'); return; }
   if (e.target.closest('[data-add-friend]')) { addFriend($('friendInput').value); return; }
   if (e.target.closest('[data-copy-code]')) { const code = cloud().code; try { navigator.clipboard.writeText(code).then(() => toast('Code copied'), () => toast('Your code: ' + code)); } catch (err) { toast('Your code: ' + code); } return; }
   const hu = e.target.closest('[data-hup]');
@@ -4246,7 +4265,7 @@ async function syncChart(force) {
       if (albums >= (S.albums || 0)) break;
     }
     Charts.lastSync = Date.now(); Charts.status = 'ok'; Charts.syncError = ''; save();
-  } catch (e) { Charts.status = 'offline'; Charts.syncError = /Failed to fetch|Load failed|NetworkError/i.test(e.message) ? (inPreview ? 'the preview can\'t connect. Open the real game link to use The Charts.' : 'No connection') : e.message; }
+  } catch (e) { Charts.status = 'offline'; Charts.syncError = inPreview && /Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'The preview can\'t connect. Open the real game link to use The Charts.' : playerError(e); }
   Charts.busy = false;
   if (Charts.again) { Charts.again = false; await syncChart(true); }
 }
@@ -4304,7 +4323,7 @@ async function backup(force, leaving, mine) {   // mine: this device's copy wins
       if (!r.ok) throw new Error(`Backup failed (${r.status}) ${why(r.data)}`);
       Cloud.sig = sig; c.backedAt = Date.now(); c.lastUp = now.getTime(); Cloud.err = ''; save(); { const el = $('csStatus'); if (el) el.innerHTML = csStatus(); } Cloud.busy = false; return true;
     }
-  } catch (e) { Cloud.err = /Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message; }
+  } catch (e) { Cloud.err = playerError(e); }
   Cloud.busy = false; return false;
 }
 async function fetchSave(uid, token) {
@@ -4357,7 +4376,7 @@ async function cloudSend(email, mode) {
     }
     Cloud.flow = { email, mode, sent: Date.now() }; track('cloud-code-' + mode);
     Cloud.busy = false; document.querySelectorAll('.toast').forEach(t => t.remove()); openTab('cloud-code');
-  } catch (e) { Cloud.busy = false; sfx('denied'); toast(/Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message); }
+  } catch (e) { Cloud.busy = false; sfx('denied'); toast(playerError(e) + ' Please try again.'); }
 }
 // step 2: check the code
 async function cloudVerify(token) {
@@ -4377,7 +4396,7 @@ async function cloudVerify(token) {
     Cloud.pend = { row, d, email: f.email, old: { uid: c.uid, at: c.at } };
     if (row && row.data) return openTab('cloud-found');
     await cloudKeep();
-  } catch (e) { Cloud.busy = false; sfx('denied'); toast(/Failed to fetch|Load failed|NetworkError/i.test(e.message) ? 'No connection' : e.message); }
+  } catch (e) { Cloud.busy = false; sfx('denied'); toast(playerError(e) + ' Please try again.'); }
 }
 // the guest career this device was using goes away once it joins an email account, so it doesn't show twice on The Charts
 async function dropGuest(old) {
@@ -4428,11 +4447,20 @@ async function cloudKeep() {
   else if (p.row && p.row.data) { mergeCareer(S, p.row.data); render(); }
   save(); await backup(true, false, true); syncChart(true); sfx('bling'); toast(p.sameUser ? 'Kept this device\'s save' : 'Progress protected'); closeSheet(); track('cloud-kept');
 }
+// errors shown to players: plain words, never raw status codes (the technical detail stays in the console)
+function playerError(e) {
+  const m = String((e && e.message) || e || ''); try { console.warn('[cloud]', m); } catch (x) {}
+  if (/Failed to fetch|Load failed|NetworkError|timed out/i.test(m)) return "You're offline right now.";
+  if (/Sign-in/i.test(m)) return "We couldn't connect your account just now.";
+  if (/Save failed|Backup failed/i.test(m)) return "Your backup didn't go through.";
+  if (/cloud save/i.test(m)) return "We couldn't load your cloud save.";
+  return 'The server had a problem.';
+}
 function csStatus() {
   const c = cloud();
-  const when = c.backedAt ? 'Backed up ' + agoTxt(c.backedAt) : Cloud.err ? 'Backup paused · ' + Cloud.err : 'Backing up now…';
+  const when = c.backedAt ? 'Backed up ' + agoTxt(c.backedAt) : Cloud.err ? 'Backup paused' : 'Backing up now…';
   const status = c.email ? `<b>Protected</b><span>${maskEmail(c.email)} · ${when.charAt(0).toLowerCase() + when.slice(1)}</span>`
-    : `<b>${c.backedAt ? when : Cloud.err ? 'Backup paused' : 'Backing up now…'}</b><span>${!c.backedAt && Cloud.err ? Cloud.err : 'Saved to this device\'s guest account'}</span>`;
+    : `<b>${c.backedAt ? when : Cloud.err ? 'Backup paused' : 'Backing up now…'}</b><span>${!c.backedAt && Cloud.err ? Cloud.err + ' Your progress is safe on this phone.' : 'Saved to this device\'s guest account'}</span>${Cloud.err ? '<button class="hire" data-backup-retry>Try again</button>' : ''}`;
   return status;
 }
 function cloudSec() {
@@ -4655,7 +4683,7 @@ function openTab(tab) {
       <div class="stabs period-tabs">${[['week', 'This week'], ['all', 'All time']].map(([k, l]) => `<button class="stab ${Charts.period === k ? 'on' : ''}" data-period="${k}">${l}</button>`).join('')}</div>
       ${Charts.period === 'week' ? (Charts.hasWeek === false ? `<p class="cnote">Weekly Charts need a quick database update. Showing all-time until then.</p>` : `<p class="cnote">Ranked by albums dropped this week. Ties go to cash earned this week. New week in <b>${resetIn}</b>.</p>`) : ''}
       <div class="row chartme" data-prof="me" role="button" tabindex="0" aria-label="See your profile"><span class="rank">${Charts.rank ? '#' + Charts.rank : '–'}</span><span class="rt"><b>${esc(cleanName(S.name))}</b><span>${titleTag(S.albums, S.maxLoc)} · ${fmt(weekly ? wk.earned : S.stats.lifetime)}${weekly ? ' this week' : ''}</span></span><span class="xv">${weekly ? wk.albums : S.albums || 0} <small>${weekly ? 'this week' : 'albums'}</small></span></div>
-      ${Charts.syncError ? `<p class="cerr">Not saved to the charts yet: ${esc(Charts.syncError)} <button class="hire" data-chart-retry>Retry</button></p>` : ''}
+      ${Charts.syncError ? `<p class="cerr">Your rank isn't updated yet. ${esc(Charts.syncError)} Your progress is safe on this phone. <button class="hire" data-chart-retry>Try again</button></p>` : ''}
       <div class="stabs charts-tabs">${tabs.map(([k, l]) => `<button class="stab ${Charts.tab === k ? 'on' : ''}" data-ctab="${k}">${esc(l)}</button>`).join('')}</div>
       <div class="clist ${Charts.status === 'loading' && Charts.rows.length ? 'dim' : ''}">${body}</div>
       ${Charts.hasSeen !== false && Online.ok !== false ? '<p class="cnote onlegend"><i class="ondot on"></i> Recently active · within 5 minutes <button class="oninfo" data-online-info aria-label="About the green dot"><span>i</span></button></p>' : ''}
@@ -4788,13 +4816,16 @@ function openTab(tab) {
         <span class="ch-arrow" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5l9 7-9 7z" fill="currentColor"></path></svg></span>
         <div class="ch-card next"><span class="ch-art">${plaqueArt(S.loc + 1, 1, 64)}</span><b>${next.name}</b><small>Next</small></div></div>
       ${firstTime && gemsNext ? `<p class="ch-reward">First move here: <b>+${gemsNext} gems</b> and the ${LOC().name} plaque</p>` : ''}
-      <div class="keeps"><div><b>You keep</b>Your style, gems and fame</div><div><b>You start fresh</b>Cash, stations and crew</div></div>
+      <div class="keeps"><div><b>You keep</b><ul><li>Gems &amp; inventory</li><li>Outfits &amp; style</li><li>Fame, perks &amp; Hype</li></ul></div>
+        <div class="lose"><b>Starts fresh</b><ul><li>Cash to $0</li><li>Levels &amp; crew${perkOn('autoCrew') ? ' (Day-One Crew rehires your first)' : ''}</li><li>Upgrades</li></ul></div></div>
       <p>The ${next.name} earns about 50 times more per tap, so you'll be past your old income within a few minutes.</p>
       <button class="cta" data-move>Move Up</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'album-confirm') {
     openSheet(`<div class="sheet-head"><h2>Drop album #${(S.albums || 0) + 1}?</h2>${closeBtn()}</div>
-      <div class="keeps"><div><b>You gain</b>Fame x${fmtX(fame() + fameNext())} on every station, forever, plus ${GEMS_PER_ALBUM} gems</div><div><b>You restart</b>Back in the apartment with $0</div></div>
-      <button class="cta pink" data-album>Drop it</button><button class="ghost" data-close>Not yet</button>`);
+      <div class="keeps"><div class="gain"><b>You gain</b><ul><li>Fame x${fmtX(fame())} → x${fmtX(fame() + fameNext())} on every station, forever</li><li>+${GEMS_PER_ALBUM} gems</li>${nextExclusive() && nextExclusive().album === (S.albums || 0) + 1 ? '<li>An exclusive outfit</li>' : ''}</ul></div>
+        <div><b>You keep</b><ul><li>Gems &amp; inventory</li><li>Outfits &amp; style</li><li>Plaques &amp; goals</li><li>Perks &amp; Hype</li><li>Pass progress</li></ul></div>
+        <div class="lose"><b>Resets</b><ul><li>Back to the Apartment</li><li>Cash to $0</li><li>Levels &amp; crew</li><li>Upgrades</li></ul></div></div>
+      <button class="cta pink" data-album>Drop album #${(S.albums || 0) + 1}</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'shop') {
     const owned = id => OFFERS[id].once && S.perks[id];
     // deterministic sparkle positions so they don't jump around on every refresh
@@ -5002,11 +5033,11 @@ function openTab(tab) {
     const ready = dailyReady(), today = ready ? nextStreak() : S.daily.streak;
     const cells = DAILY.map((r, i) => {
       const d = i + 1, got = ready ? d < today : d <= today;
-      const what = [r.min ? r.min + ' min cash' : '', r.gems ? r.gems + ' gems' : ''].filter(Boolean).join(' + ');
+      const what = [r.min ? r.min + ' min cash' + (r.min ? ` <small class=\"dval\">≈ ${fmt(skipValue(r.min * 60))}</small>` : '') : '', r.gems ? r.gems + ' gems' : ''].filter(Boolean).join(' + ');
       return `<div class="day ${got ? 'got' : ''} ${ready && d === today ? 'today' : ''} ${d === 7 ? 'big' : ''}"><b>Day ${d}</b><span>${got ? 'Claimed' : what}</span></div>`;
     }).join('');
     openSheet(`<div class="sheet-head"><h2>Goals</h2>${closeBtn()}</div>${goalsTabs('daily')}
-      <p>Log in every day to climb the streak. Cash rewards are worth that many minutes of your best income.</p>
+      <p>Log in every day to climb the streak. Cash days pay a lump sum: \"5 min cash\" means 5 minutes of what you earn right now (about ${fmt(skipValue(300))} today).</p>
       <div class="days">${cells}</div>
       <button class="cta" ${ready ? 'data-claim' : 'disabled'}>${ready ? 'Claim day ' + today : 'Come back tomorrow'}</button>`);
   } else if (tab === 'settings') {
