@@ -2005,7 +2005,7 @@ const VAULT = [
     fx: L => L ? 10 + 2 * L : 0, show: v => v + '%' },
   // Remote: 50 levels, ad boost x1.1 ... x6 (107,290 gems). Ours: Hype's income multiplier. Everyone starts at Lv 1 (x1.1), so the 30-gem unlock is free
   { id: 'remote', name: 'Remote', icon: 'remote', costs: vcosts(30, 50), what: 'Hype multiplies your income by more',
-    fx: L => 1 + 0.1 * Math.max(1, L), show: v => 'x' + (Math.round(v * 10) / 10) },
+    fx: L => 1 + 0.1 * Math.max(1, L), show: v => 'x' + (Math.round(2 * v * 10) / 10) },   // shown as the full Hype boost (2x base x Remote)
   // Pickaxe: unlock 60, 14 levels, 10% +3% a level, 50% at Lv 14 (2,580 gems)
   { id: 'gem', name: 'Gem Finder', icon: 'pick', costs: vcosts(60, 14), what: 'Chance the Backer offers 6 gems instead of cash',
     fx: L => !L ? 0 : L >= 14 ? 50 : 10 + 3 * (L - 1), show: v => v + '%' },
@@ -2093,14 +2093,16 @@ const HYPE_LEN = [20, 24, 28, 32], HYPE_LEN_COST = [50, 120, 250];     // minute
 const HYPE_CAPS = [2, 2.5, 3, 4], HYPE_CAP_COST = [80, 200, 400];      // hours of stacked Hype
 const hypeLv = () => Object.assign({ len: 0, cap: 0 }, S.hypeLv);
 const hypePerAd = () => Math.round(HYPE_BASE_MIN * vaultFx('tv')) * 60;
-const hypeX = () => vaultFx('remote');
+const hypeX = () => 2 * vaultFx('remote');   // Hype ad = 2x base x the Remote factor (Build 158)
 const hypeTxt = () => fmtX(hypeX()) + 'x';
 const hypeCap = () => vaultFx('cap') * 3600;
 const capText = () => vaultFx('cap') + ' hours';
 const SLOTS = [['top', 'Tops'], ['hat', 'Hats'], ['neck', 'Necklaces'], ['face', 'Glasses']];
 // rar: rarity (common, rare, epic, legendary, mythic) is separate from the source. album: reward for dropping that album. gems: bought in the shop.
 // bonus: added to your wardrobe bonus while owned (the best item in each slot counts, whatever you wear)
-const ITEMS = [
+const GEAR_RAR = { common: 5, rare: 15, epic: 40, legendary: 100, mythic: 200 };   // % on a top (weight 1)
+const GEAR_SLOT_W = { top: 1, hat: 0.75, neck: 0.6, face: 0.5 };
+const ITEMS = (() => { const list = [
   { id: 'basic', rar: 'common', slot: 'top', name: 'Plain Hoodie', bonus: 0, look: { body: '#E8E2F4', trim: '#B9B3CF', style: 'hoodie' } },
   // album exclusives: free for finishing runs, so they match or beat the shop item of the same slot
   { id: 'debut', rar: 'epic', slot: 'top', name: 'Debut Hoodie', album: 1, bonus: 0.08, look: { body: '#2A2733', trim: '#FF6FAE', style: 'hoodie' } },
@@ -2154,8 +2156,15 @@ const ITEMS = [
   { id: 'prism', rar: 'mythic', slot: 'face', name: 'Prism Visors', gems: 300, bonus: 0.15, look: { style: 'visor' } },
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
+  // Build 158 gear: every bonus-giving item adds to one All Profit pool (best item per slot, whatever you wear).
+  // Bonus = rarity value x slot weight (top > hat > necklace > glasses). Gem price follows value: 25 x (bonus %)^1.35, rounded.
+  const nice = x => { const st = x < 1000 ? 10 : x < 10000 ? 50 : 500; return Math.round(x / st) * st; };
+  list.forEach(it => { if (!it.bonus || !GEAR_RAR[it.rar]) return;
+    const pct = GEAR_RAR[it.rar] * GEAR_SLOT_W[it.slot]; it.bonus = pct / 100;
+    if (it.gems) { it.oldGems = it.gems; it.gems = nice(25 * Math.pow(pct, 1.35)); } });
+  return list; })();
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 157, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 158, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -2574,8 +2583,8 @@ const packArtFor = g => { const i = PACK_GEMS.findIndex(x => x >= g); return i <
 const valueX = (gemsWorth, price) => Math.floor(gemsWorth / (price * 80) * 10) / 10;
 const valueTag = (gemsWorth, price) => { const x = valueX(gemsWorth, price); return x >= 1.1 ? x.toFixed(1) + 'x value' : ''; };
 // the outfit counts at the real gem price of the one it would give (or the 400 gems paid when every eligible outfit is owned)
-const dealOutfit = () => ITEMS.filter(i => i.gems && !S.owned[i.id] && i.rar !== 'mythic').sort((x, y) => y.gems - x.gems)[0];
-const dealWorth = d => d.gems + d.skipH * 30 + (d.frenzyMin || 0) / 30 * 20 + (d.outfit ? (S && dealOutfit() ? dealOutfit().gems : 400) : 0);
+const dealOutfit = () => ITEMS.filter(i => i.gems && !S.owned[i.id] && i.rar !== 'mythic').sort((x, y) => (y.oldGems || y.gems) - (x.oldGems || x.gems))[0];
+const dealWorth = d => d.gems + d.skipH * 30 + (d.frenzyMin || 0) / 30 * 20 + (d.outfit ? (S && dealOutfit() ? (dealOutfit().oldGems || dealOutfit().gems) : 400) : 0);
 const dealValue = d => valueX(dealWorth(d), d.price);
 const dealSub = d => [d.gems.toLocaleString('en-US') + ' gems', d.skipH ? `${d.skipH}x Skip 1 hour` : '', d.frenzyMin ? `${d.frenzyMin / 30}x Fan Frenzy` : '',
   d.outfit ? (S && dealOutfit() ? dealOutfit().name : '+400 gems (you own every outfit it could give)') : ''].filter(Boolean);
@@ -2594,7 +2603,7 @@ function packParts(id) { const lv = hypeLv(), own = (iid, nm, v) => S.owned[iid]
     hype = (key, nm, costs) => lv[key] < costs.length ? [nm, costs[lv[key]]] : [`150 gems (${nm.toLowerCase()} maxed)`, 150];
   return id === 'starter' ? [own('flame', 'Flame Hoodie', 105), ['450 gems', 450], vGrantPart('night', Math.max(9, vLv('night') + 1), 'Night Shift upgrade (8h+ offline)', 200)]
     : id === 'rising' ? [own('varsity', 'Varsity Jacket', 120), ['750 gems', 750], tvPart(), vGrantPart('cap', vLv('cap') + 1, 'Hype Cap upgrade', 150)]
-    : id === 'headliner' ? [own('puffer', 'Puffer Jacket', 325), ['1,500 gems', 1500], perk('monitors', 'Pro Monitors', 300)] : []; }
+    : id === 'headliner' ? [own('puffer', 'Puffer Jacket', 325), ['1,800 gems', 1800]] : []; }
 const packTag = id => valueTag(packParts(id).reduce((a, x) => a + x[1], 0), OFFERS[id].price);
 const localDay = (t = Date.now()) => Math.floor((t - new Date(t).getTimezoneOffset() * 60000) / 86400000);
 const dayStartMs = n => { const guess = n * 86400000; return guess + new Date(guess).getTimezoneOffset() * 60000; };
@@ -2888,15 +2897,14 @@ const def = id => LOC().stations.find(s => s.id === id);
 const lvl = id => S.levels[id] || 0;
 const milesHit = L => MILES.filter(m => L >= m).length;
 const cycleTime = st => st.cycle / (upgFx().speed[st.id] || 1) / (S.crew[st.id] ? upgFx().crew : 1);   // fixed timer; Upgrades speed it up
-const FAME_LATE = 0.1, FAME_KNEE = 10;   // +50% per album up to album 10, then +10% per album so the multiplier never runs away
-const fameAt = a => 1 + FAME_PER_ALBUM * Math.min(a, FAME_KNEE) + FAME_LATE * Math.max(0, a - FAME_KNEE);
+// Option H (Build 158): Fame grows every album and soft-caps at x6. a = albums dropped before the run
+const FAME_CAP = 6;
+const fameAt = a => 1 + (FAME_CAP - 1) * (1 - Math.exp(-Math.pow(Math.max(0, a) / 26.1, 0.94)));
 const fame = () => fameAt(S.albums || 0);
-const fameNext = () => (S.albums || 0) < FAME_KNEE ? FAME_PER_ALBUM : FAME_LATE;
+const fameNext = () => fameAt((S.albums || 0) + 1) - fameAt(S.albums || 0);
 // every album raises the money goals a little so tours level off at about 30 minutes instead of shrinking to nothing
-const GOAL_SCALE = [1, 1.2, 1.33, 1.41, 1.46, 1.49, 1.49, 1.47];   // album runs 1-8 (0-7 albums already dropped), unchanged
-// from run 9 (8 albums dropped) costs grow linearly, like Fame does: +0.025 a run up to 300 albums dropped, then +0.045,
-// so free players' full album runs settle near 30 minutes and never slow down again (Build 157)
-const goalScale = (a = S.albums || 0) => a < GOAL_SCALE.length ? GOAL_SCALE[a] : Math.round((a <= 300 ? 1.47 + 0.025 * (a - 7) : 8.795 + 0.045 * (a - 300)) * 1000) / 1000;
+// Option H (Build 158): album prices rise from 1.36 and level off at 2.00, so they never drop. a = albums dropped before the run
+const goalScale = (a = S.albums || 0) => Math.round((2 - 0.64 * Math.pow(0.6, Math.max(0, a))) * 1000) / 1000;
 const goalOf = i => LOCATIONS[i].goal * goalScale() * (S && ev() === 'tour' ? 0.75 : 1);
 const nextExclusive = () => ITEMS.filter(i => i.album && i.album > (S.albums || 0)).sort((a, b) => a.album - b.album)[0];
 const pctTxt = x => Math.round(x * 100) + '%';
@@ -2914,7 +2922,7 @@ async function testCall(fn, body) {
   return r.ok ? { data: r.data } : null;
 }
 async function loadTestAccess() { try { const r = await testCall('test_state'); TESTG = r && r.data ? r.data : null; if (TESTG) { applyAutoCrew(); render(); } } catch (e) {} }
-const boostMult = () => micX() * (S.perks.monitors ? 1.25 : 1);
+const boostMult = () => micX();   // Pro Monitors retired in Build 158 (owners refunded 300 gems once)
 const legacyPayX = () => (S.legacyPay && S.legacyPay.key === runKey()) ? S.legacyPay.x : 1;
 const payout = st => legacyPayX() * st.base * lvl(st.id) * Math.pow(MILE_PAY, milesHit(lvl(st.id))) * (upgFx().pay[st.id] || 1) * upgFx().all * fame() * gearMult() * boostMult();
 const bestRate = () => LOC().stations.filter(st => lvl(st.id)).reduce((a, st) => Math.max(a, payout(st) / cycleTime(st)), 0);
@@ -3743,14 +3751,14 @@ function grant(id) {
   if (['starter', 'rising', 'headliner'].includes(id)) owe('gems');
   if (id === 'starter') { item('flame', 105); S.gems += 450; vGrant('night', Math.max(9, vLv('night') + 1), 200); }
   if (id === 'rising') { item('varsity', 120); S.gems += 750; tvUp(2); vGrant('cap', vLv('cap') + 1, 150); }
-  if (id === 'headliner') { item('puffer', 325); S.gems += 1500; perk('monitors', 300); }
+  if (id === 'headliner') { item('puffer', 325); S.gems += 1800; }   // the old Pro Monitors slot is now its 300 gems
   if (o.deal) {
     const d = o.deal, a = activeDeals().find(x => x.deal.id === id);
     if (a) S.deals = Object.assign({}, S.deals, { [a.key]: true });
     S.gems += d.gems; owe('gems');
     if (d.skipH) addInv('skips', d.skipH, a && 'deal:' + a.key + ':s');
     if (d.frenzyMin) addInv('frenzies', d.frenzyMin / 30, a && 'deal:' + a.key + ':f');
-    if (d.outfit) { const it = ITEMS.filter(i => i.gems && !S.owned[i.id] && i.rar !== 'mythic').sort((x, y) => y.gems - x.gems)[0]; if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; } else S.gems += 400; }
+    if (d.outfit) { const it = dealOutfit(); if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; } else S.gems += 400; }
   }
   if (o.hol) { const a = holLive(o), k = a.key + ':' + o.hol.tier, p = holPack(a.h, o.hol.tier);
     S.hol = Object.assign({}, S.hol, { [k]: true }); S.gems += holGemTotal(p); owe('gems');
@@ -4951,7 +4959,7 @@ function openTab(tab) {
         <div class="albumline"><span class="ric" style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#4A3A9E;flex:none">${svgIc('note', '#FFFFFF', 20)}</span>
           <span class="rt"><b>${S.albums || 0} dropped · fame x${fmtX(fame())}</b><span>${nextExclusive() ? `Next exclusive outfit at album ${nextExclusive().album}` : 'Every album adds fame'}</span></span>
           ${next ? `<button class="cta pink" ${canAlbum ? '' : 'disabled'} data-album-ask>${canAlbum ? 'Drop' : 'Locked'}</button>` : ''}</div>
-        <details class="more"><summary>How albums work</summary><p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever (+${pctTxt(FAME_PER_ALBUM)} each up to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}). Every station pays 1 gem at Lv 25, 50, 75 and 100, again on every album. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and max every station there.` : `Max every station in the ${last.name} first.`}</p></details>
+        <details class="more"><summary>How albums work</summary><p>Finish every map to drop an album. It restarts you in the apartment with +${pctTxt(fameNext())} income for your next album, forever. Fame grows with every album and levels off at x${FAME_CAP}. Every station pays 1 gem at Lv 25, 50, 75 and 100, again on every album. Exclusive outfits unlock at albums ${ITEMS.filter(i => i.album).map(i => i.album).sort((a, b) => a - b).join(', ')}. ${canAlbum ? '<b style="color:var(--cash)">Ready to drop.</b>' : S.loc < lastLoc() ? `Reach the ${last.name} and max every station there.` : `Max every station in the ${last.name} first.`}</p></details>
       </div>
       <div class="sec"><h3>Plaques <small class="h3note">${clearsOf().filter(Boolean).length} of ${allLocs.length} maps cleared</small></h3>
         ${plaqueRow(clearsOf())}
@@ -5123,10 +5131,9 @@ function openTab(tab) {
     openSheet(`<div class="sheet-head"><h2>Your multipliers</h2>${closeBtn()}</div>
       <div class="welcome"><span class="amt mgold">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others, and your wardrobe adds profit on top.</p>${perSec() > 0 ? `<p>Your crew earns <b class="mcash">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
       ${row(h, bolt, hypeTxt() + ' Hype', h ? hypeX() : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
-      ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}`)}
+      ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · grows every album, up to x${FAME_CAP}`)}
       ${row(micBought(), svgIc('mic', '#FFC94A', 20), 'Golden Mic', micX(), micBought() ? 'Owned · forever' : 'Available in the Shop')}
-      ${row(!!S.perks.monitors, svgIc('sliders', '#8BF0A0', 20), 'Pro Monitors', S.perks.monitors ? 1.25 : 1, S.perks.monitors ? 'Owned · forever' : 'Available in the Shop')}
-      <p class="mathline">${[h ? hypeX() : 1, f, micX(), S.perks.monitors ? 1.25 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>
+      <p class="mathline">${[h ? hypeX() : 1, f, micX()].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>
       <h3 style="margin-top:14px">Profit bonus</h3>
       <div class="row mrow ${g > 1 ? '' : 'off'}"><span class="ric">${svgIc('shirt', '#B18CFF', 20)}</span><span class="rt"><b>Wardrobe</b><span>${g > 1 ? `Your best item in each slot${S.owned.lucky ? ' · crates pay 2x' : ''}` : 'Collect items in Style for a bonus'}</span></span><span class="xv">+${Math.round((g - 1) * 100)}%</span></div>
       <p class="cnote">Outfits add profit to every payout on top of your multiplier.</p>`);
@@ -5212,7 +5219,7 @@ function openTab(tab) {
       ${offer('adFree', ART.noAds(), '#8FD8F5', '', '<span>Hype</span><span>Crates</span><span>Offline 2x</span>', 'No waiting')}
       ${offer('autoCrew', `<span class="crewart">${crewFigure('dayone-crew')}</span>`, '#9BEBB4', '', '', 'Hands-free · Forever')}
       ${(() => { // one-time perks get their own section and leave the shop once owned (like outfits)
-        const perks = [['monitors', ART.monitors(), '+25% income<br>forever']].filter(([id]) => !S.perks[id]);
+        const perks = [];   // Pro Monitors retired in Build 158
         return perks.length ? `<div class="banner">Permanent upgrades</div><div class="cards two ${perks.length === 1 ? 'solo' : ''}">${perks.map(([id, art, t]) => card(id, art, t, '', 'gold perk').replace('<span class="wall', '<span class="tag qtag">Forever</span><span class="wall')).join('')}</div>` : ''; })()}
       <div class="banner">Boosts</div>
       <div class="cards two boosts">
@@ -5623,6 +5630,7 @@ function start(data) {
   if (S.volV !== 3) { if ([70, 40].includes(S.vol.music)) S.vol.music = 20; S.volV = 3; }
   delete S.music; delete S.sound; delete S.hypeReady;
   S.owned = Object.assign({ basic: true }, S.owned); S.perks = S.perks || {};
+  if (!S.monRefund) { if (S.perks.monitors) { S.gems = (S.gems || 0) + 300; S.perks = Object.assign({}, S.perks, { monitors: false }); S.monRefundPaid = 300; } S.monRefund = 1; }   // Build 158: Pro Monitors retired, owners get their 300 gems back once
   S.equip = Object.assign({ top: 'basic', hat: null, neck: null, face: null }, S.equip);
   S.stats = Object.assign({ upgrades: 0, unlocks: 0, hires: 0, crates: 0, hypes: 0, maxLevel: 1, lifetime: 0, payouts: 0, playSec: 0, ads: 0 }, S.stats);
   // stations were trimmed to 2-2-3-3-4-4: keep saves pointing at stations that still exist
