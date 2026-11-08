@@ -2155,7 +2155,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 156, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 157, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -2424,7 +2424,7 @@ const titleTag = (albums, loc) => { const t = titleOf(albums, loc); return `<spa
 // bonus over the base rate (80 gems per dollar), rounded down: same formula as every value ribbon
 const gemPackSub = (g, price) => `${g.toLocaleString('en-US')} gems · ${Math.floor((g / (price * 80) - 1) * 100)}% bonus`;
 const OFFERS = {
-  goldenMic: { name: 'Golden Mic', sub: 'Double income on everything, forever', line: 'Double income on everything, forever', note: 'Free players earn it in steps: 1.33x at album 10, 1.67x at 15, 2x at 20', money: '$4.99', once: true },
+  goldenMic: { name: 'Golden Mic', sub: 'Double income on everything, forever', line: 'Double income on everything, forever', money: '$4.99', once: true },
   starter: { name: 'Starter Pack', sub: 'A one-time deal for new artists', money: '$2.99', price: 2.99, once: true },
   rising: { name: 'Rising Star Pack', sub: 'For artists with an album out', money: '$4.99', price: 4.99, once: true },
   headliner: { name: 'Headliner Pack', sub: 'For established stars', money: '$9.99', price: 9.99, once: true },
@@ -2894,19 +2894,17 @@ const fame = () => fameAt(S.albums || 0);
 const fameNext = () => (S.albums || 0) < FAME_KNEE ? FAME_PER_ALBUM : FAME_LATE;
 // every album raises the money goals a little so tours level off at about 30 minutes instead of shrinking to nothing
 const GOAL_SCALE = [1, 1.2, 1.33, 1.41, 1.46, 1.49, 1.49, 1.47];   // album runs 1-8 (0-7 albums already dropped), unchanged
-// from run 9 (8 albums dropped) costs grow linearly, like Fame does, so long-term runs settle near 30 minutes instead of slowing down again
-const goalScale = (a = S.albums || 0) => a < GOAL_SCALE.length ? GOAL_SCALE[a] : Math.round((1.47 + 0.05 * (a - 7)) * 100) / 100;
+// from run 9 (8 albums dropped) costs grow linearly, like Fame does: +0.025 a run up to 300 albums dropped, then +0.045,
+// so free players' full album runs settle near 30 minutes and never slow down again (Build 157)
+const goalScale = (a = S.albums || 0) => a < GOAL_SCALE.length ? GOAL_SCALE[a] : Math.round((a <= 300 ? 1.47 + 0.025 * (a - 7) : 8.795 + 0.045 * (a - 300)) * 1000) / 1000;
 const goalOf = i => LOCATIONS[i].goal * goalScale() * (S && ev() === 'tour' ? 0.75 : 1);
 const nextExclusive = () => ITEMS.filter(i => i.album && i.album > (S.albums || 0)).sort((a, b) => a.album - b.album)[0];
 const pctTxt = x => Math.round(x * 100) + '%';
 const bestInSlot = sl => ITEMS.filter(i => i.slot === sl && S.owned && S.owned[i.id]).sort((a, b) => b.bonus - a.bonus)[0];
 const gearMult = () => 1 + SLOTS.reduce((a, [sl]) => { const it = bestInSlot(sl); return a + (it ? it.bonus : 0); }, 0);
 const wearingMythic = () => SLOTS.some(([sl]) => { const it = itemById(S.equip && S.equip[sl]); return it && it.rar === 'mythic'; });
-const MIC_FREE_AT = 10;   // free players earn the Golden Mic in steps from this album, reaching the bought 2x at album 20
-const FREE_MIC = [[20, 2], [15, 1.67], [10, 1.33]];
-const freeMicX = (a = S.albums || 0) => (FREE_MIC.find(([n]) => a >= n) || [0, 1])[1];
-const micBought = () => perkOn('goldenMic');   // bought (or an older save that already had the full 2x: never downgraded)
-const micX = () => micBought() ? 2 : freeMicX();
+const micBought = () => perkOn('goldenMic');   // the Golden Mic is paid-only; older saves that already hold the 2x keep it
+const micX = () => micBought() ? 2 : 1;
 // Test access (one tester account, checked on the server): simulated Golden Mic / Day-One Crew. Kept in memory only, never in the save.
 let TESTG = null;
 const perkOn = id => !!S.perks[id] || !!(TESTG && TESTG[id === 'goldenMic' ? 'golden_mic' : id === 'autoCrew' ? 'day_one_crew' : '_']);
@@ -3659,7 +3657,6 @@ function dropAlbum() {
   applyAutoCrew();
   track(`album/${Math.min(S.albums, 10)}${S.albums > 10 ? '+' : ''}/${hrs(S.stats.playSec)}`);
   const it = ITEMS.find(i => i.album === S.albums);
-  const micNow = !micBought() && freeMicX() > freeMicX(S.albums - 1);
   const albumGems = S.oldAlbumGems === S.albums - 1 ? GEMS_PER_ALBUM * (ev() === 'gems' ? 2 : 1) : 0; S.oldAlbumGems = null; if (albumGems) { S.gems += albumGems; owe('gems'); }
   if (it) { S.owned[it.id] = true; S.newItems = [...(S.newItems || []), it.id]; }
   buildRoom(); save(); render(); sfx('move'); syncChart(true);
@@ -3669,7 +3666,7 @@ function dropAlbum() {
   if (mayaLine) { S.mayaAlbum = S.albums; save(); }
   const mayaNote = mayaLine ? `<div class="maya-note"><span class="mfig"><img src="art/maya-celebrating.webp?v=124" alt="" draggable="false"></span><div class="mcard"><span class="mname">Maya · Your manager</span><p>${mayaLine}</p><i class="mtail" aria-hidden="true"></i></div></div>` : '';
   albumUpload(S.albums, () => (setTimeout(moreBelow, 60), setTimeout(moreBelow, 700), openSheet(`<div class="welcome album-pop"><h2>Album #${S.albums} is out!</h2>${prev}<span class="amt" style="color:var(--gem)">Fame x${fame().toFixed(2)}</span>
-    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive that adds +${Math.round(it.bonus * 100)}% income to your wardrobe.` : ''} ${micNow ? (freeMicX() >= 2 ? ' Your <b style="color:#FFC94A">Golden Mic</b> is now full power: 2x income, forever.' : ` ${freeMicX(S.albums - 1) > 1 ? 'Your <b style="color:#FFC94A">Golden Mic</b> grew' : 'You earned the <b style="color:#FFC94A">Golden Mic</b>'}: ${fmtX(freeMicX())}x income, forever. It grows to ${fmtX(FREE_MIC.slice().reverse().find(([n]) => n > S.albums)[1])}x at album ${FREE_MIC.slice().reverse().find(([n]) => n > S.albums)[0]}.`) : ''}${albumGems + plaqueGems ? ` +${albumGems + plaqueGems} gems${plaqueGems ? ` (including the ${LOCATIONS[lastLoc()].name} plaque)` : ''}.` : ''}${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p></div>
+    <p>Every station now earns ${Math.round((fame() - 1) * 100)}% more, forever.${it ? ` You unlocked the <b style="color:var(--text)">${it.name}</b>, an album exclusive that adds +${Math.round(it.bonus * 100)}% income to your wardrobe.` : ''}${albumGems + plaqueGems ? ` +${albumGems + plaqueGems} gems${plaqueGems ? ` (including the ${LOCATIONS[lastLoc()].name} plaque)` : ''}.` : ''}${nextExclusive() ? ` Next exclusive outfit at album ${nextExclusive().album}.` : ''}</p></div>
     ${mayaNote}
     ${it ? `<button class="cta" data-equip="${it.id}" data-then="close">Wear it</button>` : ''}
     <button class="ghost" data-close>Start the next run</button>`)));
@@ -5127,7 +5124,7 @@ function openTab(tab) {
       <div class="welcome"><span class="amt mgold">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others, and your wardrobe adds profit on top.</p>${perSec() > 0 ? `<p>Your crew earns <b class="mcash">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
       ${row(h, bolt, hypeTxt() + ' Hype', h ? hypeX() : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
       ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}`)}
-      ${row(micX() > 1, svgIc('mic', '#FFC94A', 20), 'Golden Mic', micX(), micBought() ? 'Owned · forever' : micX() > 1 ? (micX() < 2 ? `Free · ${fmtX(micX())}x now, ${fmtX(FREE_MIC.slice().reverse().find(([n]) => n > (S.albums || 0))[1])}x at album ${FREE_MIC.slice().reverse().find(([n]) => n > (S.albums || 0))[0]}` : 'Free · full power, forever') : `In the Shop, or free from album ${MIC_FREE_AT}`)}
+      ${row(micBought(), svgIc('mic', '#FFC94A', 20), 'Golden Mic', micX(), micBought() ? 'Owned · forever' : 'Available in the Shop')}
       ${row(!!S.perks.monitors, svgIc('sliders', '#8BF0A0', 20), 'Pro Monitors', S.perks.monitors ? 1.25 : 1, S.perks.monitors ? 'Owned · forever' : 'Available in the Shop')}
       <p class="mathline">${[h ? hypeX() : 1, f, micX(), S.perks.monitors ? 1.25 : 1].map(fmtX).join(' × ')} = <b>x${fmtX(totalMult())}</b></p>
       <h3 style="margin-top:14px">Profit bonus</h3>
@@ -5151,7 +5148,7 @@ function openTab(tab) {
         <div class="lose"><b>Resets</b><ul><li>Back to the Apartment</li><li>Cash to $0</li><li>Levels &amp; crew</li><li>Upgrades</li></ul></div></div>
       <button class="cta pink" data-album>Drop album #${(S.albums || 0) + 1}</button><button class="ghost" data-close>Not yet</button>`);
   } else if (tab === 'shop') {
-    const owned = id => OFFERS[id].once && (S.perks[id] || (id === 'goldenMic' && freeMicX() >= 2));
+    const owned = id => OFFERS[id].once && S.perks[id];
     // deterministic sparkle positions so they don't jump around on every refresh
     const sparks = (n, seed = 1) => Array.from({ length: n }, (_, i) => { const a = (i * 137 + seed * 53) % 100, b = (i * 71 + seed * 29) % 100;
       return `<i class="spk" style="left:${8 + a * .84}%;top:${6 + b * .7}%;animation-delay:-${((i * .63 + seed * .37) % 2.4).toFixed(2)}s;--k:${(.6 + (i % 3) * .25).toFixed(2)}"></i>`; }).join('');
@@ -5634,7 +5631,6 @@ function start(data) {
   if (TEST) { S.test = Object.assign({ speed: 10, hype: true }, S.test); if (!S.onboarded) { S.onboarded = true; S.name = 'Test Artist'; } $('testChip').hidden = false; }
   if (S.runPlay == null) S.runPlay = S.stats.playSec;
   ITEMS.forEach(i => { if (i.album && i.album <= (S.albums || 0)) S.owned[i.id] = true; });
-  // the free Golden Mic is worked out from albums dropped (freeMicX); an older save that already has the full 2x keeps it
   if (!Array.isArray(S.clears)) S.clears = LOCATIONS.map((_, i) => i < (S.maxLoc || 0) ? Math.max(1, (S.albums || 0) + (i < S.loc ? 1 : 0)) : 0);
   // map-clear rewards arrived in build 36: pay players for the maps they had already cleared
   if (S.mapPaid == null) { S.mapPaid = S.maxLoc || 0; const g = MAP_GEMS.slice(0, S.mapPaid).reduce((a, b) => a + b, 0);
