@@ -602,7 +602,7 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .plaques { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
 .plq-art { position: relative; display: inline-block; line-height: 0; }
 .plq-art.shine svg { filter: drop-shadow(0 0 6px rgba(159,230,255,.6)); }
-.plq-n { position: absolute; top: -6px; right: -7px; min-width: 20px; height: 20px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #14122A; border: 2px solid #FFC94A; color: #FFC94A; font: 400 11px/1 var(--display); display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+.plq-n, .plq .plq-art .plq-n { position: absolute; top: -6px; right: -7px; min-width: 20px; height: 20px; padding: 0 4px; box-sizing: border-box; border-radius: 999px; background: #14122A; border: 2px solid #FFC94A; color: #FFC94A; font: 400 11px/1 var(--display); display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
 .plq { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
 .plq span { font-size: 9.5px; font-weight: 700; line-height: 1.15; color: var(--muted); }
 .plq.won span { color: var(--text); }
@@ -1145,7 +1145,8 @@ details.more[open] > summary { margin-bottom: 8px; }
 @keyframes bangwig { 0%, 84%, 100% { rotate: 0deg; } 87% { rotate: -14deg; } 90% { rotate: 12deg; } 93% { rotate: -8deg; } 96% { rotate: 4deg; } }
 @media (prefers-reduced-motion: reduce) { .bang:not([hidden]) { animation: none; } }
 #sbMileLabel { display: inline-flex; align-items: center; gap: 3px; } #sbMileLabel img { width: 16px; height: 13px; }
-.cta.vlink { margin-top: 14px; background: #7C63E8; color: #fff; box-shadow: 0 4px 0 #5A47B8; }
+.vlink { display: block; margin: 10px auto 0; padding: 8px 12px; background: none; border: 0; color: #5B45C9; font: 700 14px var(--body); cursor: pointer; }
+.hypeinfo { margin-top: 12px; text-align: left; } .hypeinfo p { margin: 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
 .tjump { display: flex; gap: 6px; } .tjump .hire { min-width: 44px; }
 </style>
 </head>
@@ -2133,7 +2134,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 150, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 151, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -5076,7 +5077,7 @@ function openTab(tab) {
             <button class="cta" data-wed ${w.ready && !w.got ? '' : 'disabled'}>${w.got ? 'Claimed' : w.ready ? `Claim ${WED_GEMS} gems + ${PASS_STARS.wed} stars` : 'In progress'}</button>`
           : `<div class="evobj"><b>${ct}</b><span class="evprog">Reward: ${WED_GEMS} gems + ${PASS_STARS.wed} pass stars</span></div>`;
         body += `<p class="evnote">Everything you do on Wednesday counts, across as many visits as you like. No ads or purchases needed. ${c.scale ? 'The amount is set to your progress when you first open the game that day.' : ''}</p>`; }
-      else { body = `<div class="evtags">${EV_TAGS[sel.e].map(t => `<span>${t}</span>`).join('')}</div><p class="evauto">${live ? 'Automatically active. Nothing to turn on.' : 'Turns on automatically when it starts.'}</p>${EV_NOTE(sel.e) ? `<p class="evnote">${EV_NOTE(sel.e)}</p>` : ''}`;
+      else { body = `<div class="evtags">${EV_TAGS[sel.e].map(t => `<span>${t}</span>`).join('')}</div><p class="evauto">${live ? 'Automatically active. Nothing to turn on.' : 'Turns on automatically when it starts.'}</p>${EV_NOTE(sel.e) ? `<details class="more evmore"><summary>Details</summary><p class="evnote">${EV_NOTE(sel.e)}</p></details>` : ''}`;
         if (live && sel.e === 'hype') { const fl = freeHypeLeft(), room = hypeLeftToFill(), mins = x => Math.round(x / 60000);
           body += !freeHypeReady() ? '<p class="evauto">Free Hype boost used this weekend.</p>'
             : room < 60000 ? `<button class="cta" disabled>Hype is full</button><p class="evauto">Your ${mins(fl)} free minutes are saved for when your Hype runs lower. They expire when the weekend ends (Sunday at midnight).</p>`
@@ -5254,11 +5255,11 @@ function openTab(tab) {
         ${max ? '<span class="hired">Max</span>' : `<button class="hire" data-hup="${key}" ${S.gems < costs[i] ? 'disabled' : ''}><i class="g"></i> ${costs[i]}</button>`}</div>`; };
     openSheet(`<div class="sheet-head"><h2>${hypeTxt()} Hype</h2>${closeBtn()}</div>
       <div class="welcome"><span class="amt" style="color:var(--accent)">${left ? hms(left) : 'Off'}</span>
-      <p>Each ad adds ${mins} minutes of ${hypeTxt()} income, up to ${capText()}. Hype keeps counting while you're away, and it boosts offline earnings too.</p></div>
+      </div>
       <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : (S.perks.adFree ? `Add ${mins} minutes` : `Watch ad: +${mins} minutes`)}</button>
       <p class="adnote">${adGemNote()}</p>
-      ${micX() > 1 ? `<p>Golden Mic stacks with Hype for ${fmtX(micX() * hypeX())}x income.</p>` : ''}
-      <button class="cta vlink" data-tab-go="vault">Upgrade Hype in the Vault</button>`);
+      <details class="more hypeinfo"><summary>How Hype works</summary><p>Each ad adds ${mins} minutes of ${hypeTxt()} income, up to ${capText()}. Hype keeps counting while you're away, and it boosts offline earnings too.${micX() > 1 ? ` Golden Mic stacks with Hype for ${fmtX(micX() * hypeX())}x income.` : ''}</p></details>
+      <button class="vlink" data-tab-go="vault">Upgrade Hype in the Vault ›</button>`);
   } else if (tab === 'style') {
     S.newItems = [];
     const g = Math.round((gearMult() - 1) * 100);
