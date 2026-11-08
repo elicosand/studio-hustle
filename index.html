@@ -985,7 +985,10 @@ html, body { background: var(--bar) !important; }
 .tab-pct { top: -20px; margin-right: -36px; z-index: 3; }
 .tab-hype { height: 50px; margin: 0; }
 .tab-hype .orb { top: -14px; bottom: auto; height: 52px; box-shadow: 0 4px 0 #B84778; }
-.tab-hype .hl { margin: -28px 0 0 30px; }   /* clear of the bolt icon at every multiplier width */
+/* bolt and label sit together as one centered group inside the button (Build 156: bolt 20, text 14) */
+.tab-hype .orb { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 10px; box-sizing: border-box; }
+.tab-hype .orb svg { position: static; transform: none; width: 20px; height: 20px; flex: none; }
+.tab-hype .orb .hl { margin: 0; font: 400 14px/1 var(--display); color: #14122A; white-space: nowrap; }
 .fly { position: fixed; z-index: 120; pointer-events: none; width: 26px; height: 26px; }
 .fly .coin { width: 26px; height: 26px; display: grid; place-items: center; font-size: 14px; border-width: 2px; }
 .fly svg { width: 26px; height: 26px; }
@@ -1302,8 +1305,7 @@ details.more[open] > summary { margin-bottom: 8px; }
     <button class="tab" data-tab="style">
       <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 6.6 15 4a3 3 0 0 1-6 0L3.6 6.6 2 12l4 1v8h12v-8l4-1z"></path></svg></span><span class="tcap">Style</span><span class="bang" id="styleBang" hidden>!</span></button>
     <button class="tab-hype" id="hypeBtn" aria-label="Hype">
-      <span class="orb"><i class="spk"></i><i class="spk"></i><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg></span>
-      <span class="hl" id="hypeLbl">Hype</span>
+      <span class="orb"><i class="spk"></i><i class="spk"></i><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg><span class="hl" id="hypeLbl">Hype</span></span>
     </button>
     <button class="tab" data-tab="vault" id="vaultTab">
       <span class="ticon wt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="17" rx="2.5"></rect><circle cx="12" cy="11.5" r="4"></circle><path d="M12 9.5v2l1.4 1.2"></path><path d="M7 20v1.5M17 20v1.5"></path></svg></span><span class="tcap">Vault</span><span class="bang" id="vaultDot" hidden>!</span></button>
@@ -2153,7 +2155,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 155, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 156, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
