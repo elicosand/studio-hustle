@@ -570,6 +570,12 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .mrow .xv { font: 400 18px var(--display); color: var(--gem); padding-right: 6px; }
 .mrow.off .xv { color: var(--muted); }
 .mathline { text-align: center; font-size: 13px !important; } .mathline b { color: var(--gem); }
+.mgold { color: var(--gem); } .mcash { color: var(--cash); }
+/* light panels: gold and mint read poorly on white, so use deeper shades */
+.sheet.light .mgold, .sheet.light .mrow .xv, .sheet.light .mathline b { color: #D98A00; }
+.sheet.light .mrow.off .xv { color: var(--muted); }
+.sheet.light .mcash { color: #1F9A50; }
+.sheet.light .invconf .amt { color: #1F9A50; }
 .statgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .statgrid div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .statgrid b { font: 400 17px var(--display); overflow-wrap: anywhere; }
@@ -1147,9 +1153,18 @@ details.more[open] > summary { margin-bottom: 8px; }
 #sbMileLabel { display: inline-flex; align-items: center; gap: 3px; } #sbMileLabel img { width: 16px; height: 13px; }
 /* Hype opens as a small floating card in the middle of the screen, not a bottom sheet */
 .scrim.float { align-items: center; justify-content: center; padding: 16px 16px calc(16px + var(--tabs-h, 64px)); box-sizing: border-box; }
-.sheet.float { width: min(100%, 340px); max-height: 100%; border-radius: 22px; gap: 12px; padding-bottom: 18px; box-shadow: 0 18px 44px rgba(0,0,0,.5); animation: floatin .18s ease-out; }
+.sheet.float { width: min(100%, 272px); max-height: 100%; border-radius: 22px; gap: 12px; padding-bottom: 18px; box-shadow: 0 18px 44px rgba(0,0,0,.5); animation: floatin .18s ease-out; }
 .sheet.float .adnote { margin: -2px 0 0; text-align: center; }
-.sheet.float .awayamt { display: block; text-align: center; font: 400 34px/1.1 var(--display); color: #23994F; margin: 4px 0 0; }
+.sheet.float .awayamt { display: block; text-align: center; font: 400 27px/1.1 var(--display); color: #EE5E9F; margin: 2px 0 0; }
+/* about 20% smaller than a full panel: header, close button, ad button and text */
+.sheet.float { gap: 10px; padding-left: 14px; padding-right: 14px; padding-bottom: 14px; }
+.sheet.light.float > .sheet-head { min-height: 50px; margin: -18px -14px 0; padding: 10px 14px; border-radius: 22px 22px 0 0; }
+.sheet.float > .sheet-head h2 { font-size: 17px; }
+.sheet.float .close { width: 36px; height: 36px; border-radius: 10px; }
+.sheet.float .cta { height: 42px; border-radius: 13px; font-size: 14px; }
+.sheet.float .adnote { font-size: 11px !important; }
+.sheet.float .cta.boostb { height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1; }
+.cta.boostb .bx { display: flex; align-items: center; gap: 7px; font-size: 17px; } .cta.boostb small { font: 700 13px var(--body); opacity: .85; }
 @keyframes floatin { from { transform: scale(.92); opacity: 0 } }
 .tjump { display: flex; gap: 6px; } .tjump .hire { min-width: 44px; }
 </style>
@@ -2138,7 +2153,7 @@ const ITEMS = [
   { id: 'lucky', rar: 'legendary', slot: 'neck', name: 'Lucky Necklace', gems: 250, bonus: 0.12, perk: 'Crates pay 2x', look: { color: '#FFC94A', charm: '#3DBE5A' } },
 ];
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 153, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 154, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -3676,7 +3691,7 @@ const MAIN_SHEETS = ['vault', 'career', 'crew', 'upgrades', 'goals', 'daily', 'p
 window.addEventListener('keydown', e => { if (e.key === 'Tab') document.documentElement.classList.add('kbd'); });
 window.addEventListener('pointerdown', () => document.documentElement.classList.remove('kbd'));
 const FLOAT_SHEETS = ['hype', 'away'];   // small centered cards: one ad button, closes after the ad
-const DARK_SHEETS = ['shop', 'inv', 'boosts', 'style', 'studio', 'profile'];   // shop and style keep their dark backgrounds
+const DARK_SHEETS = ['shop', 'style', 'studio', 'profile'];   // shop and style keep their dark backgrounds
 function openSheet(html) {
   clearBoost();
   $('scrim').classList.remove('more-below');
@@ -5107,7 +5122,7 @@ function openTab(tab) {
       <span class="rt"><b>${name}</b><span>${how}</span></span><span class="xv">x${fmtX(x)}</span></div>`;
     const bolt = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6FAE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"></path></svg>';
     openSheet(`<div class="sheet-head"><h2>Your multipliers</h2>${closeBtn()}</div>
-      <div class="welcome"><span class="amt" style="color:var(--gem)">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others, and your wardrobe adds profit on top.</p>${perSec() > 0 ? `<p>Your crew earns <b style="color:var(--cash)">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
+      <div class="welcome"><span class="amt mgold">x${fmtX(totalMult())}</span><p>Every station earns this much more than its base pay. Each bonus multiplies the others, and your wardrobe adds profit on top.</p>${perSec() > 0 ? `<p>Your crew earns <b class="mcash">+${fmt(perSec() * mult())} / sec</b> right now.</p>` : ''}</div>
       ${row(h, bolt, hypeTxt() + ' Hype', h ? hypeX() : 1, h ? hms(S.hypeUntil - Date.now()) + ' left' : 'Off · tap the Hype button to start it')}
       ${row(S.albums > 0, svgIc('note', '#FFC94A', 20), 'Fame', f, `${S.albums || 0} album${S.albums === 1 ? '' : 's'} dropped · +${pctTxt(FAME_PER_ALBUM)} each to album ${FAME_KNEE}, then +${pctTxt(FAME_LATE)}`)}
       ${row(micX() > 1, svgIc('mic', '#FFC94A', 20), 'Golden Mic', micX(), micBought() ? 'Owned · forever' : micX() > 1 ? (micX() < 2 ? `Free · ${fmtX(micX())}x now, ${fmtX(FREE_MIC.slice().reverse().find(([n]) => n > (S.albums || 0))[1])}x at album ${FREE_MIC.slice().reverse().find(([n]) => n > (S.albums || 0))[0]}` : 'Free · full power, forever') : `In the Shop, or free from album ${MIC_FREE_AT}`)}
@@ -5260,8 +5275,8 @@ function openTab(tab) {
         <span class="rt"><b>${label}</b><span>${max ? vals[i] + unit + ' · maxed' : vals[i] + unit + ' → ' + vals[i + 1] + unit}</span>
         <span class="pips">${vals.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</span></span>
         ${max ? '<span class="hired">Max</span>' : `<button class="hire" data-hup="${key}" ${S.gems < costs[i] ? 'disabled' : ''}><i class="g"></i> ${costs[i]}</button>`}</div>`; };
-    openSheet(`<div class="sheet-head"><h2>${hypeTxt()} Hype</h2>${closeBtn()}</div>
-      <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : (S.perks.adFree ? `Add ${mins} minutes` : `Watch ad: +${mins} minutes`)}</button>
+    openSheet(`<div class="sheet-head"><h2>Hype</h2>${closeBtn()}</div>
+      <button class="cta pink boostb" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : `<span class="bx">${S.perks.adFree ? '' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M10 11v5l4-2.5z" fill="currentColor"></path><path d="M3 7l4-4M9 7l4-4M15 7l4-4"></path></svg>'}Boost x${fmtX(hypeX())}</span><small>+${mins} min</small>`}</button>
       <p class="adnote">${adGemNote()}</p>
 `);
   } else if (tab === 'style') {
