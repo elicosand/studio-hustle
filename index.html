@@ -1166,6 +1166,7 @@ details.more[open] > summary { margin-bottom: 8px; }
 .sheet.float .close { width: 36px; height: 36px; border-radius: 10px; }
 .sheet.float .cta { height: 42px; border-radius: 13px; font-size: 14px; }
 .sheet.float .adnote { font-size: 11px !important; }
+.sheet.float .cratesub { margin: -6px 0 0; text-align: center; font-size: 13px; font-weight: 700; color: #B07D00; }
 .sheet.float .cta.boostb { height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; line-height: 1; }
 .cta.boostb .bx { display: flex; align-items: center; gap: 7px; font-size: 17px; } .cta.boostb small { font: 700 13px var(--body); opacity: .85; }
 @keyframes floatin { from { transform: scale(.92); opacity: 0 } }
@@ -2164,7 +2165,7 @@ const ITEMS = (() => { const list = [
     if (it.gems) { it.oldGems = it.gems; it.gems = Math.round(GEAR_PRICE_TOP[it.rar] * GEAR_SLOT_W[it.slot] / 10) * 10; } });
   return list; })();
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 159, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 160, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -3536,11 +3537,12 @@ $('crateBtn').addEventListener('click', () => {
   const v = Math.max(25, skipValue(180)) * (S.owned.lucky ? 2 : 1) * cx;   // about 3 minutes of income (more during events)
   earn(v); S.gems += cg; owe('cash'); owe('gems'); S.stats.crates++; S.crateReady = Date.now() + cd * 1000; sfx('reward');
   pendingBonus = v;
-  openSheet(`<div class="sheet-head"><h2>Crate opened</h2>${closeBtn()}</div>
-    <div class="welcome"><span class="amt">+${fmt(v)}</span><p>Plus ${cg} gems. Next crate in ${cd / 60} minutes.${cx > 1 ? ` <b style="color:var(--gem)">${EVENTS[e].name}: ${cx}x!</b>` : ''}</p></div>
-    <button class="cta pink" data-ad="bonus">${S.perks.adFree ? 'Double it' : 'Watch ad: double it'}</button>
-    <p class="adnote">${adGemNote()}</p>
-    <button class="ghost" data-close>Keep ${fmt(v)}</button>`);
+  nextSheetKey = 'crate';   // same small centered card as Hype and Welcome back: X keeps it, a watched ad doubles it and closes
+  openSheet(`<div class="sheet-head"><h2>Free crate</h2>${closeBtn()}</div>
+    <span class="awayamt">+${fmt(v)}</span>
+    <p class="cratesub">+${cg} gems${cx > 1 ? ` · ${EVENTS[e].name} ${cx}x` : ''}</p>
+    <button class="cta pink" data-ad="away">${S.perks.adFree ? '2x crate' : 'Watch ad: 2x crate'}</button>
+    <p class="adnote">${adGemNote()}</p>`);
   save(); render();
 });
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => openTab(t.dataset.tab)));
@@ -3697,7 +3699,7 @@ $('sheet').addEventListener('scroll', moreBelow, { passive: true });
 const MAIN_SHEETS = ['vault', 'career', 'crew', 'upgrades', 'goals', 'daily', 'pass', 'events', 'charts', 'settings', 'feedback', 'testaccess'];
 window.addEventListener('keydown', e => { if (e.key === 'Tab') document.documentElement.classList.add('kbd'); });
 window.addEventListener('pointerdown', () => document.documentElement.classList.remove('kbd'));
-const FLOAT_SHEETS = ['hype', 'away'];   // small centered cards: one ad button, closes after the ad
+const FLOAT_SHEETS = ['hype', 'away', 'crate'];   // small centered cards: one ad button, closes after the ad
 const DARK_SHEETS = ['shop', 'style', 'studio', 'profile'];   // shop and style keep their dark backgrounds
 function openSheet(html) {
   clearBoost();
@@ -5283,7 +5285,9 @@ function openTab(tab) {
         <span class="pips">${vals.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</span></span>
         ${max ? '<span class="hired">Max</span>' : `<button class="hire" data-hup="${key}" ${S.gems < costs[i] ? 'disabled' : ''}><i class="g"></i> ${costs[i]}</button>`}</div>`; };
     openSheet(`<div class="sheet-head"><h2>Hype</h2>${closeBtn()}</div>
-      <button class="cta pink boostb" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : `<span class="bx">${S.perks.adFree ? '' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M10 11v5l4-2.5z" fill="currentColor"></path><path d="M3 7l4-4M9 7l4-4M15 7l4-4"></path></svg>'}Boost x${fmtX(hypeX())}</span><small>+${mins} min</small>`}</button>
+      <span class="awayamt">+${Math.round(mins)} min</span>
+      <p class="cratesub">x${fmtX(hypeX())} income while it runs</p>
+      <button class="cta pink" data-ad="hype" ${full ? 'disabled' : ''}>${full ? 'Maxed at ' + capText() : `${S.perks.adFree ? 'Add' : 'Watch ad:'} x${fmtX(hypeX())} Hype`}</button>
       <p class="adnote">${adGemNote()}</p>
 `);
   } else if (tab === 'style') {
