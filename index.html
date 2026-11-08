@@ -466,7 +466,8 @@ i.g { display: inline-block; width: 17px; height: 17px; background: url("art/gem
 .card .amount { font: 400 20px var(--display); color: var(--deep); text-align: center; padding-bottom: 6px; }
 .gemcard .art { height: 112px; }
 .frenzy-chip { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 6; background: #FFE27A; color: var(--deep); font: 400 12px var(--display); padding: 4px 11px; border-radius: 999px; box-shadow: 0 2px 0 rgba(0,0,0,.3), 0 0 12px rgba(255,226,122,.7); pointer-events: none; white-space: nowrap; }
-.test-chip { position: absolute; left: 50%; top: 88px; transform: translateX(-50%); z-index: 6; background: #F0453A; color: #fff; font: 400 12px var(--display); padding: 3px 10px; border-radius: 999px; pointer-events: none; }
+.test-chip { position: absolute; left: 50%; top: 1px; transform: translateX(-50%); z-index: 6; background: #F0453A; color: #fff; font: 400 10px/1.2 var(--display); padding: 2px 8px; border-radius: 999px; pointer-events: none; }
+.test-chip:not([hidden]) ~ .frenzy-chip { top: 34px; }   /* in test mode the Frenzy chip sits under the TEST pill */
 .speeds { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .testsec { border: 2px dashed #F0453A; border-radius: 16px; padding: 12px; }
 .crewart { display: grid; place-items: center; transform: scale(1.3); }
@@ -1079,12 +1080,17 @@ html, body { background: var(--bar) !important; }
 .nm-route .from { color: var(--muted); } .nm-route .to { color: #4A3A9E; } .nm-route svg { flex: none; color: var(--muted); }
 .nm-goal { font-size: 15px; font-weight: 700; color: var(--text); margin: 0; }
 .nm-meta { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--muted); }
-.backer { position: absolute; left: 50%; top: 46px; width: 66px; height: 104px; margin-left: -33px; z-index: 6; padding: 0; background: none; border: 0; cursor: pointer;
+.backer { position: absolute; left: 50%; top: 52px; width: 66px; height: 104px; margin-left: -33px; z-index: 6; padding: 0; background: none; border: 0; cursor: pointer;
   -webkit-tap-highlight-color: transparent; animation: bkin .45s cubic-bezier(.2,1.5,.4,1) both; }
 .backer .fig { position: absolute; left: 2px; bottom: 12px; width: 62px; height: 83px; scale: .9; transform-origin: 50% 100%; animation: bkbob 1.4s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 3px rgba(255,214,90,1)) drop-shadow(0 0 12px rgba(255,201,74,.75)); }
+  filter: drop-shadow(0 0 2px rgba(255,214,90,.9)); z-index: 1; }
+/* golden light column behind the Backer (Investor-style), fading toward the top */
+.backer::after { content: ""; position: absolute; left: 50%; bottom: 8px; width: 50px; height: 92px; margin-left: -25px; z-index: 0; pointer-events: none;
+  border-radius: 45% 45% 50% 50% / 18% 18% 12% 12%; background: linear-gradient(to top, rgba(255,222,110,.62) 0%, rgba(255,222,110,.38) 45%, rgba(255,222,110,0) 100%);
+  box-shadow: 0 0 18px rgba(255,214,90,.35); animation: bkbeam 1.8s ease-in-out infinite alternate; }
+@keyframes bkbeam { to { opacity: .72; } }
 .backer::before { content: ""; position: absolute; left: 50%; bottom: 6px; width: 76px; height: 20px; margin-left: -38px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,90,.6), rgba(255,214,90,0)); }
-.backer .bub { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); display: grid; place-items: center; width: 34px; height: 30px; border-radius: 11px; background: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(255,201,74,.95); animation: bkpulse 1s ease-in-out infinite alternate; }
+.backer .bub { position: absolute; left: 50%; top: -25px; transform: translateX(-50%); display: grid; place-items: center; width: 34px; height: 30px; border-radius: 11px; background: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(255,201,74,.95); animation: bkpulse 1s ease-in-out infinite alternate; }
 .backer .bub::after { content: ""; position: absolute; left: 50%; bottom: -5px; margin-left: -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: #fff; }
 .backer .fcoin { display: grid; place-items: center; width: 22px; height: 22px; border-width: 2px; font-size: 13px; }
 .backer .btag { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); font: 400 10px/1 var(--display); color: #14122A; background: #FFD84D; padding: 3px 7px; border-radius: 999px; white-space: nowrap; }
@@ -1092,7 +1098,7 @@ html, body { background: var(--bar) !important; }
 @keyframes bkin { from { opacity: 0; transform: translateY(-14px) scale(.6); } }
 @keyframes bkout { to { opacity: 0; transform: translateY(-14px) scale(.7); } }
 @keyframes bkbob { to { translate: 0 -3px; } } @keyframes bkpulse { to { box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 0 3px rgba(255,201,74,.95), 0 0 16px rgba(255,214,90,.9); } }
-@media (prefers-reduced-motion: reduce) { .backer, .backer .fig, .backer .bub { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .backer, .backer .fig, .backer .bub, .backer::after { animation: none; } }
 .backer .case { position: absolute; left: 37px; top: 57px; }
 .sparks { position: absolute; inset: 0; pointer-events: none; }
 .sparks i { position: absolute; left: var(--x); top: var(--y); width: 6px; height: 6px; border-radius: 50%; background: #FFF4C2; box-shadow: 0 0 6px 2px rgba(255,214,90,.9); opacity: 0; animation: spark 1.6s ease-in-out var(--d) infinite; }
@@ -1129,12 +1135,16 @@ html, body { background: var(--bar) !important; }
 .bk-say::after { content: ""; position: absolute; left: 50%; bottom: -11px; margin-left: -8px; border: 9px solid transparent; border-bottom: 0; border-top-color: #1B1830; }
 .bk-say .fcoin { width: 26px; height: 26px; font-size: 15px; display: grid; place-items: center; }
 .bk-stage { position: relative; width: 150px; height: 140px; display: grid; place-items: end center; }
-.bk-stage::before { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 34px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,90,.55), rgba(255,214,90,0)); }
+.bk-stage::before { content: ""; position: absolute; bottom: 2px; left: 50%; width: 70px; height: 12px; margin-left: -35px; border-radius: 50%; background: rgba(20,18,42,.12); }   /* plain floor shadow */
 .bk-stage .sparks { inset: 0 20px; } .bk-stage .sparks i { transform-origin: center; }
 .bk-pop p { margin: 0; font: 600 16px/1.3 var(--body, inherit); color: #5C5780; }
 .bk-claim { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+/* inside the small floating card */
+.sheet.float .bk-pop { gap: 4px; padding: 0; } .sheet.float .bk-say { font-size: 20px; padding: 6px 13px; border-radius: 13px; z-index: 2; margin-bottom: -15px; } .sheet.float .bk-say .fcoin { width: 22px; height: 22px; font-size: 13px; }
+.sheet.float .bk-stage { width: 128px; height: 104px; margin-top: 4px; } .sheet.float .bk-fig { scale: .8; transform-origin: 50% 100%; translate: 0 -10px; } .sheet.float .bk-stage::before { bottom: 6px; width: 58px; margin-left: -29px; height: 10px; }
+.sheet.float .bk-pop p { font-size: 14px; margin-top: 24px; }
 .backer-offer { display: flex; align-items: center; gap: 14px; background: #FFFFFF; border: 1px solid #ECE9F5; border-radius: 18px; padding: 12px 14px; }
-.bk-fig { position: relative; filter: drop-shadow(0 0 4px rgba(255,214,90,1)) drop-shadow(0 0 14px rgba(255,201,74,.7)); }
+.bk-fig { position: relative; z-index: 1; }   /* the popup shows him plain; the glow is only in the room */
 .bk-fig .case { position: absolute; left: 52px; top: 87px; }
 .backer-offer .bk-amt { display: block; font: 400 26px/1.1 var(--display); color: #2FA552; margin-top: 4px; } .backer-offer .bk-amt.gem { color: #9A6A00; }
 .tour { display: flex; align-items: center; gap: 0; padding: 2px 4px; }
@@ -2165,7 +2175,7 @@ const ITEMS = (() => { const list = [
     if (it.gems) { it.oldGems = it.gems; it.gems = Math.round(GEAR_PRICE_TOP[it.rar] * GEAR_SLOT_W[it.slot] / 10) * 10; } });
   return list; })();
 const itemById = id => ITEMS.find(i => i.id === id);
-const BUILD = 160, CONTACT = 'playstudiohustle@gmail.com';
+const BUILD = 161, CONTACT = 'playstudiohustle@gmail.com';
 const tabTile = t => { const b = document.querySelector(`[data-tab="${t}"]`); return b && (b.querySelector('.ticon') || b); };
 // ---------- tutorial: the core loop first, one highlighted action at a time ----------
 // Each step works on whatever map you're on (so Settings > Replay works anywhere) and compares against the numbers when the run
@@ -3699,7 +3709,7 @@ $('sheet').addEventListener('scroll', moreBelow, { passive: true });
 const MAIN_SHEETS = ['vault', 'career', 'crew', 'upgrades', 'goals', 'daily', 'pass', 'events', 'charts', 'settings', 'feedback', 'testaccess'];
 window.addEventListener('keydown', e => { if (e.key === 'Tab') document.documentElement.classList.add('kbd'); });
 window.addEventListener('pointerdown', () => document.documentElement.classList.remove('kbd'));
-const FLOAT_SHEETS = ['hype', 'away', 'crate'];   // small centered cards: one ad button, closes after the ad
+const FLOAT_SHEETS = ['hype', 'away', 'crate', 'backer'];   // small centered cards: one ad button, closes after the ad
 const DARK_SHEETS = ['shop', 'style', 'studio', 'profile'];   // shop and style keep their dark backgrounds
 function openSheet(html) {
   clearBoost();
@@ -4295,7 +4305,7 @@ function spawnBacker() {
   const gem = Math.random() < vaultFx('gem') / 100;
   const el = document.createElement('button');
   el.className = 'backer' + (gem ? ' gemoffer' : ''); el.setAttribute('aria-label', 'The Backer has an offer for you');
-  el.innerHTML = `<span class="bub${gem ? ' gem' : ''}">${gem ? GEM_MINI : COIN_MINI}</span><div class="fig">${backerFigure()}${CASE_SVG()}</div><span class="sparks">${SPARKS(7)}</span><span class="btag">Backer</span>`;
+  el.innerHTML = `<span class="bub${gem ? ' gem' : ''}">${gem ? GEM_MINI : COIN_MINI}</span><div class="fig">${backerFigure()}${CASE_SVG()}</div><span class="sparks">${SPARKS(7)}</span>`;
   el._gem = gem; el._until = Date.now() + BACKER_LIFE;
   stage.appendChild(el); backerEl = el; sfx('doorbell');   // part of the room: same wall spot on every map, and he moves with the room when you drag it
   el.addEventListener('click', e => { e.stopPropagation(); openBacker(); });
@@ -4915,7 +4925,7 @@ function openTab(tab) {
     const amt = o.gems ? `+${o.gems} gems` : `+${fmt(o.cash)}`;
     openSheet(`<div class="sheet-head"><h2>The Backer</h2>${closeBtn()}</div>
       <div class="bk-pop"><div class="bk-say">${o.gems ? GEM_MINI : COIN_MINI}<b>${o.gems ? o.gems : fmt(o.cash).replace(/^\$/, "")}</b></div>
-        <div class="bk-stage"><div class="bk-fig">${backerFigure(96, 128)}${CASE_SVG(40)}</div><span class="sparks">${SPARKS(7)}</span></div>
+        <div class="bk-stage"><div class="bk-fig">${backerFigure(96, 128)}${CASE_SVG(40)}</div></div>
         <p>${o.gems ? 'Free gems for the studio!' : 'Free cash for the studio!'}</p></div>
       <button class="cta pink bk-claim" data-backer-ad>${S.perks.adFree ? '' : PLAY_IC}Claim</button>`);
   } else if (tab === 'testaccess') {
