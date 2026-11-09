@@ -15,12 +15,13 @@ Music by Elijah Gray.
 | `sw.js` | Offline support. Bump `VERSION` on each new upload |
 | `netlify.toml` | Netlify settings (no build step needed) |
 
-## Put it online (GitHub + Netlify)
+## Where the game lives
 
-1. **GitHub:** create a new repository named `studio-hustle`. On the repo page choose **Add file → Upload files**, drag in everything from this folder (keep the `music` and `icons` folders), and commit.
-2. **Netlify:** choose **Add new site → Import an existing project → GitHub**, pick `studio-hustle`. Leave the build command empty and the publish directory as `.`, then deploy.
-3. In Netlify's **Site configuration**, change the site name to `studio-hustle` if it's free. Your link becomes `studio-hustle.netlify.app`.
-4. Every time you upload new files to GitHub, Netlify republishes automatically.
+**https://studio-hustle.netlify.app/** is the one game site for everyone (alpha/beta). There is no separate tester or production copy.
+
+- Releases: the Netlify site `studio-hustle` deploys `main` from this repo. A push to `main` is a release for every player.
+- Netlify settings: no build command, publish directory `.` (see `netlify.toml`).
+- The old address, `elicosand.github.io/studio-hustle/`, is retired. GitHub Pages publishes the `pages-redirect` branch, which only shows a "moved" notice. It must never publish `main` again, and it gets switched off after the move.
 
 ## Install on a phone
 
@@ -29,5 +30,5 @@ Music by Elijah Gray.
 
 ## Notes for this build
 
-- Progress saves on each device in the browser.
+- Progress saves on each device in the browser, and backs up to the player's cloud account. Players who protect their career with an email can load it on any phone (Settings → Cloud save → Already protected? Load my career).
 - Ads and purchases are test placeholders. Real ads (e.g. AdMob) and real purchases come when the game is packaged for the App Store and Google Play.
