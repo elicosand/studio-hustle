@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2A2A33">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://studio-hustle.netlify.app/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Studio Hustle">
+<title>Studio Hustle has moved</title>
+<style>
+  :root { --bg: #2A2A33; --card: #FFFFFF; --ink: #14122A; --sub: #5F5A7A; --brand: #6343CC; --go: #8BF0A0; }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+  main { width: 100%; max-width: 420px; background: var(--card); border-radius: 22px; padding: 24px 20px 20px; box-shadow: 0 6px 0 rgba(0,0,0,.35); }
+  .logo { display: block; width: 72px; height: 72px; border-radius: 18px; margin: 0 auto 12px; }
+  h1 { font-size: 24px; line-height: 1.2; margin: 0 0 8px; text-align: center; }
+  p { margin: 0 0 12px; color: var(--sub); }
+  .lead { text-align: center; }
+  .addr { display: block; text-align: center; font-weight: 700; color: var(--ink); word-break: break-all; margin: -4px 0 14px; }
+  .go { display: block; width: 100%; text-align: center; text-decoration: none; background: var(--go); color: var(--ink); font-weight: 800; font-size: 18px;
+    padding: 15px 16px; border-radius: 16px; border: 2px solid var(--ink); box-shadow: 0 4px 0 var(--ink); margin: 4px 0 20px; }
+  .go:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+  h2 { font-size: 17px; margin: 0 0 8px; }
+  ol { margin: 0 0 14px; padding-left: 22px; color: var(--ink); }
+  li { margin-bottom: 8px; }
+  li b { white-space: nowrap; }
+  .note { background: #F1EEF8; border-radius: 14px; padding: 12px 14px; font-size: 14px; color: var(--ink); margin: 0; }
+  .note a { color: var(--brand); font-weight: 700; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="icons/icon-192.png" alt="">
+  <h1>Studio Hustle has moved</h1>
+  <p class="lead">The game now has one home for everyone. This old address doesn't run the game anymore.</p>
+  <span class="addr">studio-hustle.netlify.app</span>
+  <a class="go" href="https://studio-hustle.netlify.app/">Open the new address</a>
+  <h2>Bring your career with you</h2>
+  <ol>
+    <li>Open the new address and add it to your Home Screen (iPhone: <b>Share → Add to Home Screen</b>).</li>
+    <li>Open the new icon. Tap <b>⚙️ Settings</b>, scroll to <b>Cloud save</b> and tap <b>Already protected? Load my career</b>.</li>
+    <li>Enter the email you protected your progress with, then type the 6-digit code we email you.</li>
+    <li>On <b>Cloud save found</b>, tap <b>Load cloud save</b>. (Not "Keep this device's save", which would replace your career with the new blank one.) Your albums, outfits, gems and Charts listing come back.</li>
+    <li>Delete this old icon from your Home Screen.</li>
+  </ol>
+  <p class="note">Never added an email to your career? Your save is still safe. Email <a href="mailto:playstudiohustle@gmail.com?subject=Move%20my%20Studio%20Hustle%20career">playstudiohustle@gmail.com</a> with your artist name and we'll move it for you.</p>
+</main>
+<script>
+// This address used to run the game offline. Remove that saved copy so only this notice is left.
+if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())).catch(() => {});
+if (window.caches) caches.keys().then(ks => ks.forEach(k => caches.delete(k))).catch(() => {});
+</script>
+</body>
+</html>
