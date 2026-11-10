@@ -17,11 +17,11 @@ Music by Elijah Gray.
 
 ## Where the game lives
 
-**https://studio-hustle.netlify.app/** is the one game site for everyone (alpha/beta). There is no separate tester or production copy.
+**https://studiohustle.github.io/** is the one game site for everyone (alpha/beta). There is no separate tester or production copy.
 
-- Releases: the Netlify site `studio-hustle` deploys `main` from this repo. A push to `main` is a release for every player.
-- Netlify settings: no build command, publish directory `.` (see `netlify.toml`).
-- The old address, `elicosand.github.io/studio-hustle/`, is retired. GitHub Pages publishes the `pages-redirect` branch, which only shows a "moved" notice. It must never publish `main` again, and it gets switched off after the move.
+- Home: the repo `studiohustle/studiohustle.github.io`, served free by GitHub Pages from `main`. A push to `main` is a release for every player.
+- The old address, `elicosand.github.io/studio-hustle/`, is retired. Its repo (`elicosand/studio-hustle`) only publishes the `pages-redirect` branch, a "moved" notice. It never publishes the game again, and gets switched off and archived after the move.
+- Netlify is not used (its free plan charges credits per deploy).
 
 ## Install on a phone
 
