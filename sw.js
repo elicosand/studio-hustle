@@ -1,4 +1,4 @@
-// Studio Hustle moved to https://studio-hustle.netlify.app/ . This replaces the old offline worker:
+// Studio Hustle moved to https://studiohustle.github.io/ . This replaces the old offline worker:
 // it deletes the saved copy of the old game, stops working offline, and removes itself.
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
